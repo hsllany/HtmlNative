@@ -1,0 +1,4 @@
+<template>
+    <text class="video_box_tag">hello world</text>
+    <image class="video_box_subtitle"></image>
+</template>
