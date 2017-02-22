@@ -6,15 +6,17 @@ import java.util.List;
 
 
 public final class SyntaxTree {
+
+    private static final String TAG = SyntaxTree.class.getSimpleName();
+
     private int mDepth;
     private SyntaxTree mParent;
     private int mIndex;
-    private List<SyntaxTree> mChildren;
+    List<SyntaxTree> mChildren;
     private String mNodeName;
-    private AttrsSet mAttrs;
+    AttrsSet mAttrs;
 
     // for cache use
-    String mTagCache;
     int mBracketPair;
     int mTagPair;
 
@@ -44,6 +46,19 @@ public final class SyntaxTree {
         mChildren.add(child);
         return child;
     }
+
+    public boolean isLeaf() {
+        return mChildren.isEmpty();
+    }
+
+    public boolean isContainer() {
+        return !isLeaf();
+    }
+
+    public int childrenCount() {
+        return mChildren.size();
+    }
+
 
     public void walkThrough(WalkAction action) {
         this.walkThroughInternal(action, mDepth);

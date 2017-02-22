@@ -1,7 +1,7 @@
 package com.mozz.remoteview.json.parser.token;
 
 
-public class Token {
+public final class Token {
     private Type mType;
 
     private Object mValue;

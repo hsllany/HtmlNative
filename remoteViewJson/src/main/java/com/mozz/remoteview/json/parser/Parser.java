@@ -12,13 +12,15 @@ import static com.mozz.remoteview.json.parser.token.Type.*;
 
 public final class Parser {
 
-    private static final String TAG = "Parser";
+    private static final String TAG = Parser.class.getSimpleName();
 
     private static boolean DEBUG = false;
 
-    private Lexer mLexer;
+    private final Lexer mLexer;
 
     private int mLookFor;
+
+    private Token mCurrentToken;
 
     private static final int LK_LeftArrowBracket = 1;
     private static final int LK_RightArrowBracket = 1 << 1;
@@ -28,7 +30,6 @@ public final class Parser {
     private static final int LK_EQUAL = 1 << 5;
     private static final int LK_INT = 1 << 6;
     private static final int LK_DOUBLE = 1 << 7;
-
     private static final int LK_NUMBER = LK_INT | LK_DOUBLE;
 
     public Parser(CodeReader reader) {
@@ -36,21 +37,22 @@ public final class Parser {
     }
 
     public SyntaxTree process() throws SytaxError {
+
         lookFor(LK_LeftArrowBracket);
 
 
         try {
-            Token t = scan();
+            scan();
 
-            if (t.type() == LeftAngleBracket) {
+            if (mCurrentToken.type() == LeftAngleBracket) {
                 lookFor(LK_ID);
 
-                Token nextToken = scan();
-                if (nextToken.type() != Type.Id) {
+                scan();
+                if (mCurrentToken.type() != Type.Id) {
                     throw new SytaxError("", mLexer.line());
                 }
 
-                SyntaxTree tree = new SyntaxTree(nextToken.stringValue(), null, 0, 0);
+                SyntaxTree tree = new SyntaxTree(mCurrentToken.stringValue(), null, 0, 0);
                 tree.mTagPair = 1;
                 tree.mBracketPair = 1;
                 processInternal(tree);
@@ -75,44 +77,42 @@ public final class Parser {
         boolean meetEndTag = false;
         try {
             while (true) {
-                Token t;
+                scan();
 
-                t = scan();
-
-                switch (t.type()) {
+                switch (mCurrentToken.type()) {
                     case LeftAngleBracket:
 
                         checkLookingFor(LK_LeftArrowBracket);
 
                         lookFor(LK_SLASH | LK_ID);
 
-                        Token nextToken = scan();
+                        scan();
 
-                        if (nextToken.type() == Type.Slash) {
+                        if (mCurrentToken.type() == Type.Slash) {
 
                             meetEndTag = true;
 
                             tree.mBracketPair++;
                             checkLookingFor(LK_SLASH);
-                            Token nextNextToken = scan();
+                            scan();
 
                             // compare the tag string
-                            if (!tree.getNodeName().equals(nextNextToken.value())) {
-                                throw new SytaxError("node is not right" + nextNextToken.value() + ", " + tree.getNodeName(), mLexer.line());
+                            if (!tree.getNodeName().equals(mCurrentToken.value())) {
+                                throw new SytaxError("node is not right" + mCurrentToken.value() + ", " + tree.getNodeName(), mLexer.line());
                             }
 
-                            nextNextToken = scan();
+                            scan();
 
-                            if (nextNextToken.type() != Type.RightAngleBracket) {
+                            if (mCurrentToken.type() != Type.RightAngleBracket) {
                                 throw new SytaxError("must be end with >", mLexer.line());
                             }
                             return;
 
-                        } else if (nextToken.type() == Type.Id) {
+                        } else if (mCurrentToken.type() == Type.Id) {
 
                             checkLookingFor(LK_ID);
 
-                            String tag = nextToken.stringValue();
+                            String tag = mCurrentToken.stringValue();
 
                             SyntaxTree child = tree.addChild(tag, index++);
                             child.mTagPair = 1;
@@ -135,7 +135,7 @@ public final class Parser {
 
                     case Id:
                         checkLookingFor(LK_ID);
-                        attrName = t.stringValue();
+                        attrName = mCurrentToken.stringValue();
                         lookFor(LK_EQUAL);
                         break;
 
@@ -149,28 +149,30 @@ public final class Parser {
 
                     case Value:
                         checkLookingFor(LK_VALUE);
-                        tree.addAttr(attrName, t.stringValue());
+                        tree.addAttr(attrName, mCurrentToken.stringValue());
                         lookFor(LK_ID | LK_RightArrowBracket);
                         break;
 
                     case Int:
                         checkLookingFor(LK_INT);
-                        tree.addAttr(attrName, t.intValue());
+                        tree.addAttr(attrName, mCurrentToken.intValue());
                         lookFor(LK_ID | LK_RightArrowBracket);
                         break;
 
                     case Double:
                         checkLookingFor(LK_DOUBLE);
-                        tree.addAttr(attrName, t.doubleValue());
+                        tree.addAttr(attrName, mCurrentToken.doubleValue());
                         lookFor(LK_ID | LK_RightArrowBracket);
                         break;
 
                     case Slash:
+
+                        tree.mTagPair--;
                         checkLookingFor(LK_SLASH);
                         lookFor(LK_RightArrowBracket);
 
-                        Token nextToken3 = scan();
-                        if (nextToken3.type() != Type.RightAngleBracket) {
+                        scan();
+                        if (mCurrentToken.type() != Type.RightAngleBracket) {
                             throw new SytaxError("unknown tag", mLexer.line());
                         }
 
@@ -199,15 +201,17 @@ public final class Parser {
         mLookFor |= status;
     }
 
-    private Token scan() throws EOFException, SytaxError {
-        Token t = mLexer.scan();
-        log("scan in " + t);
-        return t;
+    private void scan() throws EOFException, SytaxError {
+        mCurrentToken = mLexer.scan();
     }
 
     private static void log(String msg) {
         if (DEBUG)
             Log.d(TAG, msg);
+    }
+
+    public static void toggleDebug(boolean debug) {
+        DEBUG = debug;
     }
 
     private void checkLookingFor(int status) throws SytaxError {

@@ -4,9 +4,11 @@ import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 
-import com.mozz.remoteview.json.RVJInstance;
 import com.mozz.remoteview.json.parser.Parser;
+import com.mozz.remoteview.json.parser.RemoteViewInflater;
 import com.mozz.remoteview.json.parser.SyntaxTree;
 import com.mozz.remoteview.json.parser.SytaxError;
 import com.mozz.remoteview.json.parser.reader.StringCodeReader;
@@ -22,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
         Thread t = new Thread(new Runnable() {
             @Override
@@ -39,11 +40,25 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("TestDemo", code);
 
                     long time1 = SystemClock.uptimeMillis();
-                    
+
                     Parser p = new Parser(new StringCodeReader(code));
                     SyntaxTree tree = p.process();
 
-                    Log.d("TestDemo", "spend " + (SystemClock.uptimeMillis() - time1));
+                    final View view;
+                    try {
+                        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                        view = RemoteViewInflater.from(MainActivity.this).inflate(MainActivity.this, tree, null, false, layoutParams);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                MainActivity.this.setContentView(view);
+                            }
+                        });
+                        Log.d("TestDemo", "========>spend " + (SystemClock.uptimeMillis() - time1));
+                    } catch (RemoteViewInflater.RemoteInflateException e) {
+                        e.printStackTrace();
+                    }
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (SytaxError sytaxError) {
