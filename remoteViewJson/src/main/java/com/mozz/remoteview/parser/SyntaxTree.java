@@ -1,4 +1,6 @@
-package com.mozz.remoteview.json.parser;
+package com.mozz.remoteview.parser;
+
+import android.util.Log;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -8,6 +10,7 @@ import java.util.List;
 public final class SyntaxTree {
 
     private static final String TAG = SyntaxTree.class.getSimpleName();
+    private static boolean DEBUG = false;
 
     private int mDepth;
     private SyntaxTree mParent;
@@ -43,6 +46,9 @@ public final class SyntaxTree {
 
     public SyntaxTree addChild(String nodeName, int index) {
         SyntaxTree child = new SyntaxTree(nodeName, this, this.mDepth + 1, index);
+        if (DEBUG) {
+            Log.d(TAG, "add child " + child.toString() + " to " + this.toString() + ".");
+        }
         mChildren.add(child);
         return child;
     }
@@ -82,11 +88,11 @@ public final class SyntaxTree {
     }
 
 
-    public void wholeTreeToString() {
+    public String wholeTreeToString() {
+        final StringBuilder sb = new StringBuilder();
         this.walkThrough(new WalkAction() {
             @Override
             public void act(SyntaxTree node, int depth) {
-                StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < depth; i++) {
                     sb.append("--");
                 }
@@ -94,6 +100,8 @@ public final class SyntaxTree {
                 System.out.println(sb.toString());
             }
         });
+
+        return sb.toString();
     }
 
     @Override
@@ -106,7 +114,11 @@ public final class SyntaxTree {
         return mParent;
     }
 
-    public interface WalkAction {
+    public static void toggleDebug(boolean debug) {
+        DEBUG = debug;
+    }
+
+    interface WalkAction {
         void act(SyntaxTree node, int depth);
     }
 }

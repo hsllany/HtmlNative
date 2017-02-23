@@ -1,14 +1,14 @@
-package com.mozz.remoteview.json.parser;
+package com.mozz.remoteview.parser;
 
 import android.util.Log;
 
-import com.mozz.remoteview.json.parser.reader.CodeReader;
-import com.mozz.remoteview.json.parser.token.Token;
-import com.mozz.remoteview.json.parser.token.Type;
+import com.mozz.remoteview.parser.reader.CodeReader;
+import com.mozz.remoteview.parser.token.Token;
+import com.mozz.remoteview.parser.token.Type;
 
 import java.io.EOFException;
 
-import static com.mozz.remoteview.json.parser.token.Type.*;
+import static com.mozz.remoteview.parser.token.Type.*;
 
 public final class Parser {
 
@@ -36,7 +36,7 @@ public final class Parser {
         mLexer = new Lexer(reader);
     }
 
-    public SyntaxTree process() throws SytaxError {
+    public SyntaxTree process() throws SyntaxError {
 
         lookFor(LK_LeftArrowBracket);
 
@@ -49,7 +49,7 @@ public final class Parser {
 
                 scan();
                 if (mCurrentToken.type() != Type.Id) {
-                    throw new SytaxError("", mLexer.line());
+                    throw new SyntaxError("", mLexer.line());
                 }
 
                 SyntaxTree tree = new SyntaxTree(mCurrentToken.stringValue(), null, 0, 0);
@@ -59,7 +59,7 @@ public final class Parser {
 
                 return tree;
             } else {
-                throw new SytaxError("< is need", mLexer.line());
+                throw new SyntaxError("< is need", mLexer.line());
             }
 
         } catch (EOFException e) {
@@ -67,7 +67,7 @@ public final class Parser {
         }
     }
 
-    private void processInternal(SyntaxTree tree) throws SytaxError {
+    private void processInternal(SyntaxTree tree) throws SyntaxError {
         int index = 0;
 
         lookFor(LK_VALUE | LK_RightArrowBracket | LK_SLASH);
@@ -98,13 +98,13 @@ public final class Parser {
 
                             // compare the tag string
                             if (!tree.getNodeName().equals(mCurrentToken.value())) {
-                                throw new SytaxError("node is not right" + mCurrentToken.value() + ", " + tree.getNodeName(), mLexer.line());
+                                throw new SyntaxError("node is not right" + mCurrentToken.value() + ", " + tree.getNodeName(), mLexer.line());
                             }
 
                             scan();
 
                             if (mCurrentToken.type() != Type.RightAngleBracket) {
-                                throw new SytaxError("must be end with >", mLexer.line());
+                                throw new SyntaxError("must be end with >", mLexer.line());
                             }
                             return;
 
@@ -128,7 +128,7 @@ public final class Parser {
 
                         tree.mBracketPair--;
                         if (tree.mBracketPair != 0) {
-                            throw new SytaxError("<> must be in pairs, " + ", bracketPair=" + tree.mBracketPair, mLexer.line());
+                            throw new SyntaxError("<> must be in pairs, " + ", bracketPair=" + tree.mBracketPair, mLexer.line());
                         }
 
                         break;
@@ -142,7 +142,7 @@ public final class Parser {
                     case Equal:
                         checkLookingFor(LK_EQUAL);
                         if (attrName == null) {
-                            throw new SytaxError("attrName is null", mLexer.line());
+                            throw new SyntaxError("attrName is null", mLexer.line());
                         }
                         lookFor(LK_VALUE | LK_NUMBER);
                         break;
@@ -173,12 +173,12 @@ public final class Parser {
 
                         scan();
                         if (mCurrentToken.type() != Type.RightAngleBracket) {
-                            throw new SytaxError("unknown tag", mLexer.line());
+                            throw new SyntaxError("unknown tag", mLexer.line());
                         }
 
                         tree.mBracketPair--;
                         if (tree.mBracketPair != 0) {
-                            throw new SytaxError("<> must be in pairs, " + ", bracketPair=" + tree.mBracketPair, mLexer.line());
+                            throw new SyntaxError("<> must be in pairs, " + ", bracketPair=" + tree.mBracketPair, mLexer.line());
                         }
                         return;
 
@@ -187,7 +187,7 @@ public final class Parser {
             }
         } catch (EOFException e) {
             if (meetEndTag) {
-                throw new SytaxError("not end with </", mLexer.line());
+                throw new SyntaxError("not end with </", mLexer.line());
             }
             return;
         }
@@ -201,7 +201,7 @@ public final class Parser {
         mLookFor |= status;
     }
 
-    private void scan() throws EOFException, SytaxError {
+    private void scan() throws EOFException, SyntaxError {
         mCurrentToken = mLexer.scan();
     }
 
@@ -214,9 +214,9 @@ public final class Parser {
         DEBUG = debug;
     }
 
-    private void checkLookingFor(int status) throws SytaxError {
+    private void checkLookingFor(int status) throws SyntaxError {
         if (!isLookingFor(status)) {
-            throw new SytaxError("Looking for " + status, this.mLexer.line());
+            throw new SyntaxError("Looking for " + status, this.mLexer.line());
         }
     }
 }

@@ -1,6 +1,6 @@
-package com.mozz.remoteview.json.parser;
+package com.mozz.remoteview.parser;
 
-import com.mozz.remoteview.json.parser.reader.StringCodeReader;
+import com.mozz.remoteview.parser.reader.StringCodeReader;
 
 import org.junit.Test;
 

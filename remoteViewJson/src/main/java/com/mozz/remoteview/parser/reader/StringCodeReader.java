@@ -1,7 +1,6 @@
-package com.mozz.remoteview.json.parser.reader;
+package com.mozz.remoteview.parser.reader;
 
 import java.io.EOFException;
-import java.io.IOException;
 
 public class StringCodeReader implements CodeReader {
     private String code;

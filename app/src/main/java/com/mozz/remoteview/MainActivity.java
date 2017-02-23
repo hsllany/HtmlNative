@@ -4,14 +4,15 @@ import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.mozz.remoteview.json.parser.Parser;
-import com.mozz.remoteview.json.parser.RemoteViewInflater;
-import com.mozz.remoteview.json.parser.SyntaxTree;
-import com.mozz.remoteview.json.parser.SytaxError;
-import com.mozz.remoteview.json.parser.reader.StringCodeReader;
+import com.mozz.remoteview.parser.Parser;
+import com.mozz.remoteview.parser.RemoteViewInflater;
+import com.mozz.remoteview.parser.SyntaxTree;
+import com.mozz.remoteview.parser.SyntaxError;
+import com.mozz.remoteview.parser.reader.StringCodeReader;
 
 import java.io.IOException;
 
@@ -25,49 +26,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Thread t = new Thread(new Runnable() {
+//        long time2 = SystemClock.uptimeMillis();
+//        View v2 = LayoutInflater.from(MainActivity.this).inflate(R.layout.activity_test, null);
+//        Log.d("TestDemo", "LayoutInflater========>spend " + (SystemClock.uptimeMillis() - time2));
+
+        RemoteViewLoader loader = new RemoteViewLoader(this, "http://192.168.31.52/testLayout.xml");
+        loader.load(new OnViewLoaded() {
             @Override
-            public void run() {
-                OkHttpClient okHttpClient = new OkHttpClient();
-                Request request = new Request.Builder()
-                        .url("http://10.58.107.21/testLayout.xml")
-                        .build();
-
-                Response r = null;
-                try {
-                    r = okHttpClient.newCall(request).execute();
-                    String code = r.body().string();
-                    Log.d("TestDemo", code);
-
-                    long time1 = SystemClock.uptimeMillis();
-
-                    Parser p = new Parser(new StringCodeReader(code));
-                    SyntaxTree tree = p.process();
-
-                    final View view;
-                    try {
-                        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                        view = RemoteViewInflater.from(MainActivity.this).inflate(MainActivity.this, tree, null, false, layoutParams);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                MainActivity.this.setContentView(view);
-                            }
-                        });
-                        Log.d("TestDemo", "========>spend " + (SystemClock.uptimeMillis() - time1));
-                    } catch (RemoteViewInflater.RemoteInflateException e) {
-                        e.printStackTrace();
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (SytaxError sytaxError) {
-                    sytaxError.printStackTrace();
-                }
-
+            public void onViewLoaded(View v) {
+                setContentView(v);
             }
         });
-
-        t.start();
     }
 }

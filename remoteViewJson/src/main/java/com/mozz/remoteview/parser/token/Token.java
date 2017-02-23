@@ -1,4 +1,4 @@
-package com.mozz.remoteview.json.parser.token;
+package com.mozz.remoteview.parser.token;
 
 
 public final class Token {

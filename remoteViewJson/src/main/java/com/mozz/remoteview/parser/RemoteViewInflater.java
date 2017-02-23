@@ -1,12 +1,13 @@
-package com.mozz.remoteview.json.parser;
+package com.mozz.remoteview.parser;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -53,13 +54,19 @@ public class RemoteViewInflater {
         } else {
             View view = createViewFromTag(tree.getNodeName(), ANDROID_VIEW_PREFIX, context, tree.mAttrs, params);
 
-            if (view == null && attachToRoot)
+            if (view == null && attachToRoot) {
                 return root;
+            } else if (view == null) {
+                return null;
+            }
 
             if (view instanceof ViewGroup) {
 
                 ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+
                 ViewGroup viewGroup = (ViewGroup) view;
+
                 for (SyntaxTree child : tree.mChildren) {
                     View v = inflate(context, child, null, false, layoutParams);
                     viewGroup.addView(v, layoutParams);
@@ -102,7 +109,7 @@ public class RemoteViewInflater {
             mConstructorArgs[0] = context;
             final View view = constructor.newInstance(mConstructorArgs);
 
-            attrsSet.apply(view, params);
+            attrsSet.apply(context, view, params);
             return view;
         } catch (ClassNotFoundException e) {
             e.printStackTrace();

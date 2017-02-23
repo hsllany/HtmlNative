@@ -1,6 +1,6 @@
-package com.mozz.remoteview.json.parser;
+package com.mozz.remoteview.parser;
 
-import com.mozz.remoteview.json.parser.reader.StringCodeReader;
+import com.mozz.remoteview.parser.reader.StringCodeReader;
 
 import org.junit.Test;
 
@@ -32,7 +32,7 @@ public class ParserTest {
             SyntaxTree rootTree = parser.process();
             rootTree.wholeTreeToString();
 
-        } catch (SytaxError sytaxError) {
+        } catch (SyntaxError sytaxError) {
             sytaxError.printStackTrace();
         }
 

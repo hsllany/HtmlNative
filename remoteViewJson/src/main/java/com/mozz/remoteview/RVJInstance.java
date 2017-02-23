@@ -1,4 +1,4 @@
-package com.mozz.remoteview.json;
+package com.mozz.remoteview;
 
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaValue;

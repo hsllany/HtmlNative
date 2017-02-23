@@ -1,4 +1,4 @@
-package com.mozz.remoteview.json.parser.token;
+package com.mozz.remoteview.parser.token;
 
 /**
  * Created by Yang Tao on 17/2/21.

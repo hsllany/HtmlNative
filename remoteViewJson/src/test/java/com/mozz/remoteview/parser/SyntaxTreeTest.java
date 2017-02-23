@@ -1,8 +1,6 @@
-package com.mozz.remoteview.json.parser;
+package com.mozz.remoteview.parser;
 
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by Yang Tao on 17/2/21.

@@ -1,4 +1,4 @@
-package com.mozz.remoteview.json.parser.reader;
+package com.mozz.remoteview.parser.reader;
 
 import java.io.EOFException;
 

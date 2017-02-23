@@ -1,10 +1,10 @@
-package com.mozz.remoteview.json.parser;
+package com.mozz.remoteview.parser;
 
 import android.support.annotation.Nullable;
 
-import com.mozz.remoteview.json.parser.reader.CodeReader;
-import com.mozz.remoteview.json.parser.token.Token;
-import com.mozz.remoteview.json.parser.token.Type;
+import com.mozz.remoteview.parser.reader.CodeReader;
+import com.mozz.remoteview.parser.token.Token;
+import com.mozz.remoteview.parser.token.Type;
 
 import java.io.EOFException;
 
@@ -25,7 +25,7 @@ final class Lexer {
     }
 
     @Nullable
-    Token scan() throws EOFException, SytaxError {
+    Token scan() throws EOFException, SyntaxError {
 
         this.skipWhiteSpace();
 
@@ -64,7 +64,7 @@ final class Lexer {
         return null;
     }
 
-    private Token scanNumber() throws EOFException, SytaxError {
+    private Token scanNumber() throws EOFException, SyntaxError {
         int v = 0;
         boolean nagitive = false;
         if (peek() == '-') {
@@ -99,7 +99,7 @@ final class Lexer {
             next();
 
             if (!Lexer.isDigit(peek()) && peek() != '-') {
-                throw new SytaxError("Illegal word when reading Number!", line());
+                throw new SyntaxError("Illegal word when reading Number!", line());
             }
             boolean expIsNagitive = false;
             if (peek() == '-') {
@@ -128,7 +128,7 @@ final class Lexer {
         do {
             mBuffer.append(peek());
             next();
-        } while (isLetter(peek()) || isDigit(peek()));
+        } while (isLetter(peek()) || isDigit(peek()) || peek() == '.');
 
         return new Token(Type.Id, mBuffer.toString());
     }

@@ -1,7 +1,6 @@
-package com.mozz.remoteview.json.parser.reader;
+package com.mozz.remoteview.parser.reader;
 
 import java.io.EOFException;
-import java.io.IOException;
 
 /**
  * Created by Yang Tao on 17/2/21.
