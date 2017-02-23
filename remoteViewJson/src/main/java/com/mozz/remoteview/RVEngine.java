@@ -8,21 +8,21 @@ import org.luaj.vm2.lib.jse.JsePlatform;
  * Created by Yang Tao on 17/2/21.
  */
 
-public class RVJInstance {
+public class RVEngine {
 
-    private RVJInstance() {
+    private RVEngine() {
         Globals globals = JsePlatform.standardGlobals();
         LuaValue chunk = globals.load("print 'hello, world'");
         chunk.invoke();
     }
 
-    private static RVJInstance sInstance = null;
+    private static RVEngine sInstance = null;
 
-    public static RVJInstance getInstance() {
+    public static RVEngine getInstance() {
         if (sInstance == null) {
-            synchronized (RVJInstance.class) {
+            synchronized (RVEngine.class) {
                 if (sInstance == null) {
-                    sInstance = new RVJInstance();
+                    sInstance = new RVEngine();
                 }
             }
         }

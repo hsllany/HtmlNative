@@ -15,10 +15,6 @@ final class Lexer {
 
     private StringBuilder mBuffer = new StringBuilder();
 
-    private int mLookFor = LK_NOTHING;
-
-    private static final int LK_ELEMENT = 0x01;
-    private static final int LK_NOTHING = 0;
 
     Lexer(CodeReader reader) {
         mReader = reader;
@@ -31,14 +27,12 @@ final class Lexer {
 
         switch (peek()) {
             case '<':
-                mLookFor = LK_NOTHING;
                 next();
                 return new Token(Type.LeftAngleBracket);
             case '"':
                 next();
                 return scanValue();
             case '>':
-                mLookFor = LK_ELEMENT;
                 next();
                 return new Token(Type.RightAngleBracket);
             case '/':
@@ -47,6 +41,8 @@ final class Lexer {
             case '=':
                 next();
                 return new Token(Type.Equal);
+            case '{':
+                return scanCode();
         }
 
         if (isDigit(peek()) || peek() == '-') {
@@ -54,14 +50,22 @@ final class Lexer {
         }
 
         if (isLetter(peek()) || peek() == '_') {
-            if (mLookFor == LK_ELEMENT) {
-                return scanElement();
-            } else {
-                return scanId();
-            }
-
+            return scanId();
         }
         return null;
+    }
+
+    private Token scanCode() throws EOFException {
+        clearBuf();
+
+        next();
+        while (peek() != '}') {
+            mBuffer.append(peek());
+            next();
+        }
+
+        next();
+        return new Token(Type.Code, mBuffer.toString());
     }
 
     private Token scanNumber() throws EOFException, SyntaxError {
@@ -147,25 +151,12 @@ final class Lexer {
 
     }
 
-    private Token scanElement() throws EOFException {
-        clearBuf();
-
-        do {
-            mBuffer.append(peek());
-            next();
-        } while (peek() != '<');
-        mLookFor = LK_NOTHING;
-
-        return new Token(Type.Element, mBuffer.toString());
-    }
-
 
     private void skipWhiteSpace() throws EOFException {
         for (; ; ) {
             char ch = peek();
             if (ch == ' ' || ch == '\r' || ch == '\n' || ch == '\t' || ch == '\f' || ch == '\b') {
                 next();
-                continue;
             } else {
                 break;
             }

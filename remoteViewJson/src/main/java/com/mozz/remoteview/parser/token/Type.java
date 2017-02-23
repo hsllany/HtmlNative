@@ -17,7 +17,9 @@ public enum Type {
     // for value in quot
     Value("Value"),
     // for inner text
-    Element("Element");
+    Element("Element"),
+
+    Code("Code");
 
     private String value;
 

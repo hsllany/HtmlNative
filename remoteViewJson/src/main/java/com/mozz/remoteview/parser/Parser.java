@@ -8,13 +8,14 @@ import com.mozz.remoteview.parser.token.Type;
 
 import java.io.EOFException;
 
-import static com.mozz.remoteview.parser.token.Type.*;
+import static com.mozz.remoteview.parser.token.Type.Id;
+import static com.mozz.remoteview.parser.token.Type.LeftAngleBracket;
 
 public final class Parser {
 
     private static final String TAG = Parser.class.getSimpleName();
 
-    private static boolean DEBUG = false;
+    static boolean DEBUG = false;
 
     private final Lexer mLexer;
 
@@ -30,16 +31,20 @@ public final class Parser {
     private static final int LK_EQUAL = 1 << 5;
     private static final int LK_INT = 1 << 6;
     private static final int LK_DOUBLE = 1 << 7;
+    private static final int LK_CODE = 1 << 8;
     private static final int LK_NUMBER = LK_INT | LK_DOUBLE;
 
     public Parser(CodeReader reader) {
         mLexer = new Lexer(reader);
     }
 
-    public SyntaxTree process() throws SyntaxError {
+    public RVContext process() throws SyntaxError {
 
-        lookFor(LK_LeftArrowBracket);
+        lookFor(LK_LeftArrowBracket | LK_ID);
 
+        RVContext rvContext = new RVContext();
+        rvContext.mRootTree = new RVDomTree(rvContext, null, 0, 0);
+        rvContext.mFunctionTable = new FunctionTable();
 
         try {
             scan();
@@ -52,22 +57,90 @@ public final class Parser {
                     throw new SyntaxError("", mLexer.line());
                 }
 
-                SyntaxTree tree = new SyntaxTree(mCurrentToken.stringValue(), null, 0, 0);
-                tree.mTagPair = 1;
-                tree.mBracketPair = 1;
-                processInternal(tree);
+                rvContext.mRootTree.mNodeName = mCurrentToken.stringValue();
 
-                return tree;
+                rvContext.mRootTree.mTagPair = 1;
+                rvContext.mRootTree.mBracketPair = 1;
+
+                // scan the view tree first
+                processInternal(rvContext.mRootTree);
+
+                // scan the related code then
+                scan();
+                if (mCurrentToken.type() == Id) {
+                    processCode(mCurrentToken.stringValue(), rvContext.mFunctionTable, false);
+                }
+
+            } else if (mCurrentToken.type() == Id) {
+
+                processCode(mCurrentToken.stringValue(), rvContext.mFunctionTable, true);
+
+                if (mCurrentToken.type() != LeftAngleBracket) {
+                    throw new SyntaxError("unknown state " + mCurrentToken, mLexer.line());
+                }
+
+                //scan for the tree node name
+                scan();
+                if (mCurrentToken.type() != Type.Id) {
+                    throw new SyntaxError("", mLexer.line());
+                }
+
+                rvContext.mRootTree.mNodeName = mCurrentToken.stringValue();
+                rvContext.mRootTree.mTagPair = 1;
+                rvContext.mRootTree.mBracketPair = 1;
+
+                processInternal(rvContext.mRootTree);
+
+                // scan the related code then, there may be another code block here
+                scan();
+                if (mCurrentToken.type() == Id) {
+                    processCode(mCurrentToken.stringValue(), rvContext.mFunctionTable, false);
+                }
+
+
             } else {
                 throw new SyntaxError("< is need", mLexer.line());
             }
 
         } catch (EOFException e) {
-            return null;
+            return rvContext;
+        }
+
+        return rvContext;
+    }
+
+    private void processCode(String functionName, FunctionTable functionTable, boolean positionStart) throws SyntaxError {
+        lookFor(LK_CODE);
+        try {
+            while (true) {
+                scan();
+
+                switch (mCurrentToken.type()) {
+                    case Id:
+                        checkLookingFor(LK_ID);
+                        functionName = mCurrentToken.stringValue();
+                        lookFor(LK_CODE);
+                        break;
+                    case Code:
+                        checkLookingFor(LK_CODE);
+                        functionTable.putFunction(functionName, mCurrentToken.stringValue());
+                        lookFor(LK_ID);
+                        break;
+
+                    // if meet other token, just return
+                    default:
+                        if (positionStart)
+                            return;
+                        else
+                            throw new SyntaxError("reach the end of the script", mLexer.line());
+                }
+            }
+        } catch (EOFException e) {
+            return;
         }
     }
 
-    private void processInternal(SyntaxTree tree) throws SyntaxError {
+    private void processInternal(RVDomTree tree) throws SyntaxError {
         int index = 0;
 
         lookFor(LK_VALUE | LK_RightArrowBracket | LK_SLASH);
@@ -96,7 +169,7 @@ public final class Parser {
                             checkLookingFor(LK_SLASH);
                             scan();
 
-                            // compare the tag string
+                            // compare the tag string with tree.nodeName
                             if (!tree.getNodeName().equals(mCurrentToken.value())) {
                                 throw new SyntaxError("node is not right" + mCurrentToken.value() + ", " + tree.getNodeName(), mLexer.line());
                             }
@@ -106,6 +179,8 @@ public final class Parser {
                             if (mCurrentToken.type() != Type.RightAngleBracket) {
                                 throw new SyntaxError("must be end with >", mLexer.line());
                             }
+
+                            // here reach the end of the view tree, just return.
                             return;
 
                         } else if (mCurrentToken.type() == Type.Id) {
@@ -114,7 +189,7 @@ public final class Parser {
 
                             String tag = mCurrentToken.stringValue();
 
-                            SyntaxTree child = tree.addChild(tag, index++);
+                            RVDomTree child = tree.addChild(tag, index++);
                             child.mTagPair = 1;
                             child.mBracketPair = 1;
                             processInternal(child);
@@ -165,6 +240,7 @@ public final class Parser {
                         lookFor(LK_ID | LK_RightArrowBracket);
                         break;
 
+                    // for <a/> case
                     case Slash:
 
                         tree.mTagPair--;
@@ -172,6 +248,7 @@ public final class Parser {
                         lookFor(LK_RightArrowBracket);
 
                         scan();
+
                         if (mCurrentToken.type() != Type.RightAngleBracket) {
                             throw new SyntaxError("unknown tag", mLexer.line());
                         }
@@ -182,6 +259,10 @@ public final class Parser {
                         }
                         return;
 
+                    default:
+                        throw new SyntaxError("unknown token", mLexer.line());
+
+
                 }
 
             }
@@ -189,7 +270,6 @@ public final class Parser {
             if (meetEndTag) {
                 throw new SyntaxError("not end with </", mLexer.line());
             }
-            return;
         }
     }
 

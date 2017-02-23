@@ -5,14 +5,13 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.mozz.remoteview.parser.Parser;
+import com.mozz.remoteview.parser.RVContext;
 import com.mozz.remoteview.parser.RemoteViewInflater;
 import com.mozz.remoteview.parser.SyntaxError;
-import com.mozz.remoteview.parser.SyntaxTree;
 import com.mozz.remoteview.parser.reader.StringCodeReader;
 
 import java.io.IOException;
@@ -61,12 +60,12 @@ public class RemoteViewLoader implements Runnable {
             long time1 = SystemClock.uptimeMillis();
 
             Parser p = new Parser(new StringCodeReader(code));
-            SyntaxTree tree = p.process();
+            RVContext rvContext = p.process();
 
             final View view;
             try {
                 ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                view = RemoteViewInflater.from(mContext).inflate(mContext, tree, null, false, layoutParams);
+                view = RemoteViewInflater.from(mContext).inflate(mContext, rvContext, null, false, layoutParams);
                 mMainHandler.post(new Runnable() {
                     @Override
                     public void run() {

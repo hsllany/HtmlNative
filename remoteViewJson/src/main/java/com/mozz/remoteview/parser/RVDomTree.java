@@ -1,5 +1,6 @@
 package com.mozz.remoteview.parser;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.util.Iterator;
@@ -7,45 +8,55 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-public final class SyntaxTree {
+final class RVDomTree {
 
-    private static final String TAG = SyntaxTree.class.getSimpleName();
+    private static final String TAG = RVDomTree.class.getSimpleName();
+
     private static boolean DEBUG = false;
 
     private int mDepth;
-    private SyntaxTree mParent;
+
+    private RVDomTree mParent;
     private int mIndex;
-    List<SyntaxTree> mChildren;
-    private String mNodeName;
+    List<RVDomTree> mChildren;
+    String mNodeName;
     AttrsSet mAttrs;
+
+    RVContext mContext;
 
     // for cache use
     int mBracketPair;
     int mTagPair;
 
-    public SyntaxTree(String nodeName, SyntaxTree parent, int depth, int index) {
+
+    RVDomTree(@NonNull RVContext context, RVDomTree parent, int depth, int index) {
+        this(context, null, parent, depth, index);
+    }
+
+    private RVDomTree(@NonNull RVContext context, String nodeName, RVDomTree parent, int depth, int index) {
+        mContext = context;
         mNodeName = nodeName;
         mDepth = depth;
         mParent = parent;
         mIndex = index;
         mChildren = new LinkedList<>();
-        mAttrs = new AttrsSet();
+        mAttrs = new AttrsSet(context);
     }
 
-    public void addAttr(String attrName, String value) {
+    void addAttr(String attrName, String value) {
         mAttrs.put(attrName, value);
     }
 
-    public void addAttr(String attrName, double value) {
+    void addAttr(String attrName, double value) {
         mAttrs.put(attrName, value);
     }
 
-    public void addAttr(String attrName, int value) {
+    void addAttr(String attrName, int value) {
         mAttrs.put(attrName, value);
     }
 
-    public SyntaxTree addChild(String nodeName, int index) {
-        SyntaxTree child = new SyntaxTree(nodeName, this, this.mDepth + 1, index);
+    RVDomTree addChild(String nodeName, int index) {
+        RVDomTree child = new RVDomTree(mContext, nodeName, this, this.mDepth + 1, index);
         if (DEBUG) {
             Log.d(TAG, "add child " + child.toString() + " to " + this.toString() + ".");
         }
@@ -53,7 +64,7 @@ public final class SyntaxTree {
         return child;
     }
 
-    public boolean isLeaf() {
+    boolean isLeaf() {
         return mChildren.isEmpty();
     }
 
@@ -66,7 +77,7 @@ public final class SyntaxTree {
     }
 
 
-    public void walkThrough(WalkAction action) {
+    private void walkThrough(WalkAction action) {
         this.walkThroughInternal(action, mDepth);
     }
 
@@ -74,30 +85,30 @@ public final class SyntaxTree {
         if (action != null)
             action.act(this, depth);
 
-        Iterator<SyntaxTree> itr = mChildren.iterator();
+        Iterator<RVDomTree> itr = mChildren.iterator();
 
         while (itr.hasNext()) {
-            SyntaxTree child = itr.next();
+            RVDomTree child = itr.next();
             child.walkThroughInternal(action, this.mDepth + 1);
         }
 
     }
 
-    public String getNodeName() {
+    String getNodeName() {
         return mNodeName;
     }
 
 
-    public String wholeTreeToString() {
+    String wholeTreeToString() {
         final StringBuilder sb = new StringBuilder();
         this.walkThrough(new WalkAction() {
             @Override
-            public void act(SyntaxTree node, int depth) {
+            public void act(RVDomTree node, int depth) {
                 for (int i = 0; i < depth; i++) {
                     sb.append("--");
                 }
                 sb.append(node);
-                System.out.println(sb.toString());
+                sb.append('\n');
             }
         });
 
@@ -110,7 +121,7 @@ public final class SyntaxTree {
         return "[" + index + mNodeName + ", attrs=" + mAttrs.toString() + "]";
     }
 
-    public SyntaxTree getParent() {
+    public RVDomTree getParent() {
         return mParent;
     }
 
@@ -119,6 +130,6 @@ public final class SyntaxTree {
     }
 
     interface WalkAction {
-        void act(SyntaxTree node, int depth);
+        void act(RVDomTree node, int depth);
     }
 }

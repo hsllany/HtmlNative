@@ -2,13 +2,19 @@ package com.mozz.remoteview.parser;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.text.Layout;
-import android.util.ArrayMap;
+import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.mozz.remoteview.parser.attrs.Attr;
+import com.mozz.remoteview.parser.attrs.ImageViewAttr;
+import com.mozz.remoteview.parser.attrs.LinearLayoutAttr;
+import com.mozz.remoteview.parser.attrs.TextViewAttr;
+import com.mozz.remoteview.parser.code.Code;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -18,7 +24,7 @@ import java.util.Map;
  * @author YangTao7
  */
 
-public final class AttrsSet {
+final class AttrsSet {
 
     private static final String TAG = AttrsSet.class.getSimpleName();
     private static boolean DEBUG = false;
@@ -32,13 +38,20 @@ public final class AttrsSet {
     private static final String ATTR_PADDING_TOP = "paddingTop";
     private static final String ATTR_PADDING_BOTTOM = "paddingBottom";
     private static final String ATTR_ALPHA = "alpha";
+    private static final String ATTR_ID = "id";
+    private static final String ATTR_ONCLICK = "onClick";
+
+    private static final int VIEW_TAG_ID = 0x123;
 
     private Map<String, Object> mAttrs;
 
+    private RVContext mContext;
+
     private static Map<Class<? extends View>, Attr> sCachedAttrs = new HashMap<>();
 
-    public AttrsSet() {
-        mAttrs = new ArrayMap<>(6);
+    AttrsSet(@NonNull RVContext context) {
+        mContext = context;
+        mAttrs = new HashMap<>(6);
     }
 
     public void put(String paramsKey, String value) {
@@ -58,7 +71,7 @@ public final class AttrsSet {
         return mAttrs.toString();
     }
 
-    public void apply(Context context, View v, ViewGroup.LayoutParams layoutParams) {
+    public void apply(Context context, View v, ViewGroup.LayoutParams layoutParams) throws AttrApplyException {
         Iterator<Map.Entry<String, Object>> itr = mAttrs.entrySet().iterator();
 
         if (v instanceof LinearLayout)
@@ -72,16 +85,19 @@ public final class AttrsSet {
             Map.Entry<String, Object> entry = itr.next();
 
             String params = entry.getKey();
-            Object value = entry.getValue();
+            final Object value = entry.getValue();
 
-            if (params.equals("text") && v instanceof TextView) {
-                ((TextView) v).setText(value.toString());
+            if (DEBUG) {
+                Log.i(TAG, "ready to parse attribute " + params + " with value " + value);
+            }
 
-            } else if (params.equals(ATTR_WIDTH)) {
+            if (params.equals(ATTR_WIDTH)) {
                 if (value instanceof Integer) {
                     width = (Integer) entry.getValue();
                 } else if (value.toString().equalsIgnoreCase("MATCH_PARENT")) {
                     width = ViewGroup.LayoutParams.MATCH_PARENT;
+                } else {
+                    throw new AttrApplyException("Width must be an int or 'WRAP_CONTENT'");
                 }
 
             } else if (params.equals(ATTR_HEIGHT)) {
@@ -89,6 +105,8 @@ public final class AttrsSet {
                     height = (Integer) entry.getValue();
                 } else if (value.toString().equalsIgnoreCase("MATCH_PARENT")) {
                     height = ViewGroup.LayoutParams.MATCH_PARENT;
+                } else {
+                    throw new AttrApplyException("Height must be an int or 'WRAP_CONTENT'");
                 }
 
             } else if (params.equals(ATTR_BACKGROUND)) {
@@ -96,7 +114,9 @@ public final class AttrsSet {
                     int backgroundColor = Color.parseColor(value.toString());
                     v.setBackgroundColor(backgroundColor);
                 } catch (IllegalArgumentException e) {
-                    e.printStackTrace();
+                    AttrApplyException eThrow = new AttrApplyException("color parse wrong!");
+                    eThrow.initCause(e);
+                    throw eThrow;
                 }
 
             } else if (params.equals(ATTR_PADDING)) {
@@ -131,7 +151,30 @@ public final class AttrsSet {
                     double d = (double) value;
                     v.setAlpha((float) d);
                 }
+            } else if (params.equals(ATTR_ID)) {
+                if (value instanceof String) {
+                    v.setTag(VIEW_TAG_ID, value.toString());
+                } else {
+                    throw new AttrApplyException("id must be a string.");
+                }
+            } else if (params.equals(ATTR_ONCLICK)) {
 
+                if (value instanceof String) {
+                    final String functionName = (String) value;
+                    final Code code = mContext.mFunctionTable.retrieveCode(functionName);
+
+                    if (code != null) {
+                        v.setOnClickListener(new View.OnClickListener() {
+
+                            @Override
+                            public void onClick(View v) {
+                                code.excute();
+                            }
+                        });
+                    } else {
+                        Log.w(TAG, "Can't find related function " + functionName);
+                    }
+                }
             } else {
                 Attr attr = sCachedAttrs.get(v.getClass());
                 if (attr == null) {
@@ -162,9 +205,18 @@ public final class AttrsSet {
             return new TextViewAttr();
         } else if (clazz.equals(ImageView.class)) {
             return new ImageViewAttr();
+        } else if (clazz.equals(LinearLayout.class)) {
+            return new LinearLayoutAttr();
         } else {
             return null;
         }
+    }
+
+    public static class AttrApplyException extends Exception {
+        public AttrApplyException(String msg) {
+            super(msg);
+        }
+
     }
 
 }

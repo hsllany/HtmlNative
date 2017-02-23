@@ -1,4 +1,4 @@
-package com.mozz.remoteview.parser;
+package com.mozz.remoteview.parser.attrs;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -16,6 +16,8 @@ public class TextViewAttr implements Attr {
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
             }
+        } else if (params.equals("text")) {
+            textView.setText(value.toString());
         }
     }
 }

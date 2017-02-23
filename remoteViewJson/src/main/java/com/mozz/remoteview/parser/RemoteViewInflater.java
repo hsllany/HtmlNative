@@ -3,41 +3,30 @@ package com.mozz.remoteview.parser;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
-/**
- * Created by Yang Tao on 17/2/22.
- */
 
 public class RemoteViewInflater {
 
     private static final String TAG = RemoteViewInflater.class.getSimpleName();
-    private static boolean DEBUG = false;
+    static boolean DEBUG = false;
 
     private Context mContext;
-
-    private boolean mFactorySet;
-    private LayoutInflater.Factory mFactory;
-    private LayoutInflater.Factory2 mFactory2;
-    private LayoutInflater.Factory2 mPrivateFactory;
 
     private static final HashMap<String, Constructor<? extends View>> sConstructorMap =
             new HashMap<String, Constructor<? extends View>>();
 
-    final Object[] mConstructorArgs = new Object[1];
+    private final Object[] mConstructorArgs = new Object[1];
 
-    static final Class<?>[] sConstructorSignature = new Class[]{
+    private static final Class<?>[] sConstructorSignature = new Class[]{
             Context.class};
 
-    protected RemoteViewInflater(Context context) {
+    private RemoteViewInflater(Context context) {
         mContext = context;
     }
 
@@ -45,7 +34,11 @@ public class RemoteViewInflater {
         return new RemoteViewInflater(context);
     }
 
-    public View inflate(Context context, @NonNull SyntaxTree tree, ViewGroup root, boolean attachToRoot, ViewGroup.LayoutParams params) throws RemoteInflateException {
+    public View inflate(Context context, RVContext rvContext, ViewGroup root, boolean attachToRoot, ViewGroup.LayoutParams params) throws RemoteInflateException {
+        return inflate(context, rvContext.mRootTree, root, attachToRoot, params);
+    }
+
+    protected View inflate(Context context, @NonNull RVDomTree tree, ViewGroup root, boolean attachToRoot, ViewGroup.LayoutParams params) throws RemoteInflateException {
 
         View result = root;
 
@@ -67,14 +60,14 @@ public class RemoteViewInflater {
 
                 ViewGroup viewGroup = (ViewGroup) view;
 
-                for (SyntaxTree child : tree.mChildren) {
+                for (RVDomTree child : tree.mChildren) {
                     View v = inflate(context, child, null, false, layoutParams);
                     viewGroup.addView(v, layoutParams);
                 }
             } else {
                 Log.w(TAG, "View inflate from RemoteViewInflater is not an viewGroup" +
                         view.getClass().getSimpleName() +
-                        ", but related SyntaxTree has children. Will ignore its children!");
+                        ", but related RVDomTree has children. Will ignore its children!");
             }
 
             if (root != null && attachToRoot) {
@@ -109,7 +102,11 @@ public class RemoteViewInflater {
             mConstructorArgs[0] = context;
             final View view = constructor.newInstance(mConstructorArgs);
 
-            attrsSet.apply(context, view, params);
+            try {
+                attrsSet.apply(context, view, params);
+            } catch (AttrsSet.AttrApplyException e) {
+                e.printStackTrace();
+            }
             return view;
         } catch (ClassNotFoundException e) {
             e.printStackTrace();

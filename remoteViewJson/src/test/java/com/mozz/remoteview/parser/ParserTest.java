@@ -4,21 +4,15 @@ import com.mozz.remoteview.parser.reader.StringCodeReader;
 
 import org.junit.Test;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-
 public class ParserTest {
+
+    static {
+        Parser.toggleDebug(true);
+    }
+
     @Test
     public void process() throws Exception {
-
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url("http://localhost/testLayout.xml")
-                .build();
-
-        Response r = client.newCall(request).execute();
-        parserDebugger(r.body().string());
+        parserDebugger(CodesForTest.CodeSimple);
     }
 
     private void parserDebugger(String code) {
@@ -29,8 +23,12 @@ public class ParserTest {
         Parser parser = new Parser(reader);
 
         try {
-            SyntaxTree rootTree = parser.process();
-            rootTree.wholeTreeToString();
+            RVContext rootTree = parser.process();
+            System.out.println("\ntree is :");
+            System.out.println(rootTree.mRootTree.wholeTreeToString());
+
+            System.out.println("\nfunction is :");
+            System.out.println(rootTree.mFunctionTable.toString());
 
         } catch (SyntaxError sytaxError) {
             sytaxError.printStackTrace();

@@ -11,7 +11,7 @@ public class LexerTest {
 
     @Test
     public void testLexerSimple() {
-        LexerDebugger("<com.google.template>\n  <text class=-12.3e-5></text><image class=\"video_box_subtitle\"></image></com.google.template>");
+        LexerDebugger(CodesForTest.CodeComplicated);
     }
 
     private void LexerDebugger(String code) {

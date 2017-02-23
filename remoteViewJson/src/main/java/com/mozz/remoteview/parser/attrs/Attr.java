@@ -1,4 +1,4 @@
-package com.mozz.remoteview.parser;
+package com.mozz.remoteview.parser.attrs;
 
 import android.content.Context;
 import android.view.View;
