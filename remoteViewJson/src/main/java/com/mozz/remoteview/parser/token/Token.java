@@ -12,9 +12,8 @@ public final class Token {
     private static Token sPool;
     private static int sPoolSize = 0;
     private static final int MAX_POOL_SIZE = 20;
-
     private static final Object sPoolSync = new Object();
-    
+
     private Token(Type type, Object value) {
         mType = type;
         mValue = value;
@@ -72,8 +71,6 @@ public final class Token {
     }
 
     private void recycleUnchecked() {
-        // Mark the message as in use while it remains in the recycled object pool.
-        // Clear out all other details.
         mType = Type.Unknown;
         mValue = null;
 
