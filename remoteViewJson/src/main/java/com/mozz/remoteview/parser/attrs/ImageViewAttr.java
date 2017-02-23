@@ -8,8 +8,7 @@ import com.bumptech.glide.Glide;
 import com.mozz.remoteview.parser.MainHandler;
 
 public class ImageViewAttr implements Attr {
-
-
+    
     @Override
     public void apply(final Context context, final View v, String params, final Object value) {
         if (params.equals("src")) {

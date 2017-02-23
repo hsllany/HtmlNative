@@ -3,11 +3,7 @@ package com.mozz.remoteview.parser;
 import android.os.Handler;
 import android.os.Looper;
 
-/**
- * Created by Yang Tao on 17/2/23.
- */
-
-public class MainHandler {
+public final class MainHandler {
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
