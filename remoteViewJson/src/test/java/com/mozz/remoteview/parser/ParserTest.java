@@ -30,7 +30,7 @@ public class ParserTest {
             System.out.println("\nfunction is :");
             System.out.println(rootTree.mFunctionTable.toString());
 
-        } catch (SyntaxError sytaxError) {
+        } catch (RVSyntaxError sytaxError) {
             sytaxError.printStackTrace();
         }
 

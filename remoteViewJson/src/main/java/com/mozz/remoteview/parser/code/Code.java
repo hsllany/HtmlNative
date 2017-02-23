@@ -30,7 +30,7 @@ public class Code {
         return mCode;
     }
 
-    public void excute() {
+    public void execute() {
         long timeStart = SystemClock.currentThreadTimeMillis();
 
         LuaValue chunk = JsePlatform.standardGlobals().load(mCode);
@@ -43,7 +43,8 @@ public class Code {
             Log.d(TAG, mCode);
             Log.d(TAG, "=====");
         }
-        Log.i(TAG, "excuted " + mFunctionName + " spend " + spend + "ms.");
+
+        Log.i(TAG, "executed " + mFunctionName + " spend " + spend + "ms.");
 
 
     }

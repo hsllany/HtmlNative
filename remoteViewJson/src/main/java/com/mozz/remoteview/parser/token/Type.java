@@ -5,6 +5,7 @@ package com.mozz.remoteview.parser.token;
  */
 
 public enum Type {
+    Unknown("unknown"),
     LeftAngleBracket("<"),
     RightAngleBracket(">"),
     Slash("/"),

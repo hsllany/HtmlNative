@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 
 import com.mozz.remoteview.parser.Parser;
 import com.mozz.remoteview.parser.RVContext;
-import com.mozz.remoteview.parser.RemoteViewInflater;
-import com.mozz.remoteview.parser.SyntaxError;
+import com.mozz.remoteview.parser.RVInflater;
+import com.mozz.remoteview.parser.RVSyntaxError;
 import com.mozz.remoteview.parser.reader.StringCodeReader;
 
 import java.io.IOException;
@@ -65,7 +65,7 @@ public class RemoteViewLoader implements Runnable {
             final View view;
             try {
                 ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                view = RemoteViewInflater.from(mContext).inflate(mContext, rvContext, null, false, layoutParams);
+                view = RVInflater.from(mContext).inflate(mContext, rvContext, null, false, layoutParams);
                 mMainHandler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -73,13 +73,13 @@ public class RemoteViewLoader implements Runnable {
                             mCallback.onViewLoaded(view);
                     }
                 });
-                Log.d("TestDemo", "RemoteViewInflater========>spend " + (SystemClock.uptimeMillis() - time1));
-            } catch (RemoteViewInflater.RemoteInflateException e) {
+                Log.d("TestDemo", "RVInflater========>spend " + (SystemClock.uptimeMillis() - time1));
+            } catch (RVInflater.RemoteInflateException e) {
                 e.printStackTrace();
             }
 
 
-        } catch (IOException | SyntaxError e) {
+        } catch (IOException | RVSyntaxError e) {
             e.printStackTrace();
         }
     }

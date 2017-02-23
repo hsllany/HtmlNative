@@ -6,11 +6,16 @@ public final class Token {
 
     private Object mValue;
 
-    public Token(Type type) {
-        this(type, null);
-    }
+    private Token next;
 
-    public Token(Type type, Object value) {
+    // for token pool
+    private static Token sPool;
+    private static int sPoolSize = 0;
+    private static final int MAX_POOL_SIZE = 20;
+
+    private static final Object sPoolSync = new Object();
+    
+    private Token(Type type, Object value) {
         mType = type;
         mValue = value;
     }
@@ -40,4 +45,46 @@ public final class Token {
     public double doubleValue() {
         return (double) mValue;
     }
+
+    public static Token obtainToken(Type type, Object value) {
+        synchronized (sPoolSync) {
+            if (sPool != null) {
+                Token t = sPool;
+                sPool = t.next;
+                t.next = null;
+                sPoolSize--;
+
+                t.mType = type;
+                t.mValue = value;
+                return t;
+            }
+
+            return new Token(type, value);
+        }
+    }
+
+    public static Token obtainToken(Type type) {
+        return obtainToken(type, null);
+    }
+
+    public void recycle() {
+        recycleUnchecked();
+    }
+
+    private void recycleUnchecked() {
+        // Mark the message as in use while it remains in the recycled object pool.
+        // Clear out all other details.
+        mType = Type.Unknown;
+        mValue = null;
+
+        synchronized (sPoolSync) {
+            if (sPoolSize < MAX_POOL_SIZE) {
+                next = sPool;
+                sPool = this;
+                sPoolSize++;
+            }
+        }
+    }
+
+
 }

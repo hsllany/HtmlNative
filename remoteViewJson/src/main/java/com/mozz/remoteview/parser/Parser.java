@@ -21,7 +21,7 @@ public final class Parser {
 
     private int mLookFor;
 
-    private Token mCurrentToken;
+    private Token mCurToken;
 
     private static final int LK_LeftArrowBracket = 1;
     private static final int LK_RightArrowBracket = 1 << 1;
@@ -38,7 +38,7 @@ public final class Parser {
         mLexer = new Lexer(reader);
     }
 
-    public RVContext process() throws SyntaxError {
+    public RVContext process() throws RVSyntaxError {
 
         lookFor(LK_LeftArrowBracket | LK_ID);
 
@@ -49,15 +49,16 @@ public final class Parser {
         try {
             scan();
 
-            if (mCurrentToken.type() == LeftAngleBracket) {
+            if (mCurToken.type() == LeftAngleBracket) {
                 lookFor(LK_ID);
 
                 scan();
-                if (mCurrentToken.type() != Type.Id) {
-                    throw new SyntaxError("", mLexer.line());
+
+                if (mCurToken.type() != Type.Id) {
+                    throw new RVSyntaxError("unknown type of token " + mCurToken.type(), mLexer.line());
                 }
 
-                rvContext.mRootTree.mNodeName = mCurrentToken.stringValue();
+                rvContext.mRootTree.mNodeName = mCurToken.stringValue();
 
                 rvContext.mRootTree.mTagPair = 1;
                 rvContext.mRootTree.mBracketPair = 1;
@@ -67,25 +68,25 @@ public final class Parser {
 
                 // scan the related code then
                 scan();
-                if (mCurrentToken.type() == Id) {
-                    processCode(mCurrentToken.stringValue(), rvContext.mFunctionTable, false);
+                if (mCurToken.type() == Id) {
+                    processCode(mCurToken.stringValue(), rvContext.mFunctionTable, false);
                 }
 
-            } else if (mCurrentToken.type() == Id) {
+            } else if (mCurToken.type() == Id) {
 
-                processCode(mCurrentToken.stringValue(), rvContext.mFunctionTable, true);
+                processCode(mCurToken.stringValue(), rvContext.mFunctionTable, true);
 
-                if (mCurrentToken.type() != LeftAngleBracket) {
-                    throw new SyntaxError("unknown state " + mCurrentToken, mLexer.line());
+                if (mCurToken.type() != LeftAngleBracket) {
+                    throw new RVSyntaxError("unknown state " + mCurToken, mLexer.line());
                 }
 
                 //scan for the tree node name
                 scan();
-                if (mCurrentToken.type() != Type.Id) {
-                    throw new SyntaxError("", mLexer.line());
+                if (mCurToken.type() != Type.Id) {
+                    throw new RVSyntaxError("", mLexer.line());
                 }
 
-                rvContext.mRootTree.mNodeName = mCurrentToken.stringValue();
+                rvContext.mRootTree.mNodeName = mCurToken.stringValue();
                 rvContext.mRootTree.mTagPair = 1;
                 rvContext.mRootTree.mBracketPair = 1;
 
@@ -93,13 +94,13 @@ public final class Parser {
 
                 // scan the related code then, there may be another code block here
                 scan();
-                if (mCurrentToken.type() == Id) {
-                    processCode(mCurrentToken.stringValue(), rvContext.mFunctionTable, false);
+                if (mCurToken.type() == Id) {
+                    processCode(mCurToken.stringValue(), rvContext.mFunctionTable, false);
                 }
 
 
             } else {
-                throw new SyntaxError("< is need", mLexer.line());
+                throw new RVSyntaxError("< is need", mLexer.line());
             }
 
         } catch (EOFException e) {
@@ -109,21 +110,21 @@ public final class Parser {
         return rvContext;
     }
 
-    private void processCode(String functionName, FunctionTable functionTable, boolean positionStart) throws SyntaxError {
+    private void processCode(String functionName, FunctionTable functionTable, boolean positionStart) throws RVSyntaxError {
         lookFor(LK_CODE);
         try {
             while (true) {
                 scan();
 
-                switch (mCurrentToken.type()) {
+                switch (mCurToken.type()) {
                     case Id:
-                        checkLookingFor(LK_ID);
-                        functionName = mCurrentToken.stringValue();
+                        checkState(LK_ID);
+                        functionName = mCurToken.stringValue();
                         lookFor(LK_CODE);
                         break;
                     case Code:
-                        checkLookingFor(LK_CODE);
-                        functionTable.putFunction(functionName, mCurrentToken.stringValue());
+                        checkState(LK_CODE);
+                        functionTable.putFunction(functionName, mCurToken.stringValue());
                         lookFor(LK_ID);
                         break;
 
@@ -132,7 +133,7 @@ public final class Parser {
                         if (positionStart)
                             return;
                         else
-                            throw new SyntaxError("reach the end of the script", mLexer.line());
+                            throw new RVSyntaxError("reach the end of the script", mLexer.line());
                 }
             }
         } catch (EOFException e) {
@@ -140,7 +141,7 @@ public final class Parser {
         }
     }
 
-    private void processInternal(RVDomTree tree) throws SyntaxError {
+    private void processInternal(RVDomTree tree) throws RVSyntaxError {
         int index = 0;
 
         lookFor(LK_VALUE | LK_RightArrowBracket | LK_SLASH);
@@ -152,42 +153,42 @@ public final class Parser {
             while (true) {
                 scan();
 
-                switch (mCurrentToken.type()) {
+                switch (mCurToken.type()) {
                     case LeftAngleBracket:
 
-                        checkLookingFor(LK_LeftArrowBracket);
+                        checkState(LK_LeftArrowBracket);
 
                         lookFor(LK_SLASH | LK_ID);
 
                         scan();
 
-                        if (mCurrentToken.type() == Type.Slash) {
+                        if (mCurToken.type() == Type.Slash) {
 
                             meetEndTag = true;
 
                             tree.mBracketPair++;
-                            checkLookingFor(LK_SLASH);
+                            checkState(LK_SLASH);
                             scan();
 
                             // compare the tag string with tree.nodeName
-                            if (!tree.getNodeName().equals(mCurrentToken.value())) {
-                                throw new SyntaxError("node is not right" + mCurrentToken.value() + ", " + tree.getNodeName(), mLexer.line());
+                            if (!tree.getNodeName().equals(mCurToken.value())) {
+                                throw new RVSyntaxError("node is not right" + mCurToken.value() + ", " + tree.getNodeName(), mLexer.line());
                             }
 
                             scan();
 
-                            if (mCurrentToken.type() != Type.RightAngleBracket) {
-                                throw new SyntaxError("must be end with >", mLexer.line());
+                            if (mCurToken.type() != Type.RightAngleBracket) {
+                                throw new RVSyntaxError("must be end with >", mLexer.line());
                             }
 
                             // here reach the end of the view tree, just return.
                             return;
 
-                        } else if (mCurrentToken.type() == Type.Id) {
+                        } else if (mCurToken.type() == Type.Id) {
 
-                            checkLookingFor(LK_ID);
+                            checkState(LK_ID);
 
-                            String tag = mCurrentToken.stringValue();
+                            String tag = mCurToken.stringValue();
 
                             RVDomTree child = tree.addChild(tag, index++);
                             child.mTagPair = 1;
@@ -198,45 +199,45 @@ public final class Parser {
                         break;
 
                     case RightAngleBracket:
-                        checkLookingFor(LK_RightArrowBracket);
+                        checkState(LK_RightArrowBracket);
                         lookFor(LK_LeftArrowBracket);
 
                         tree.mBracketPair--;
                         if (tree.mBracketPair != 0) {
-                            throw new SyntaxError("<> must be in pairs, " + ", bracketPair=" + tree.mBracketPair, mLexer.line());
+                            throw new RVSyntaxError("<> must be in pairs, " + ", bracketPair=" + tree.mBracketPair, mLexer.line());
                         }
 
                         break;
 
                     case Id:
-                        checkLookingFor(LK_ID);
-                        attrName = mCurrentToken.stringValue();
+                        checkState(LK_ID);
+                        attrName = mCurToken.stringValue();
                         lookFor(LK_EQUAL);
                         break;
 
                     case Equal:
-                        checkLookingFor(LK_EQUAL);
+                        checkState(LK_EQUAL);
                         if (attrName == null) {
-                            throw new SyntaxError("attrName is null", mLexer.line());
+                            throw new RVSyntaxError("attrName is null", mLexer.line());
                         }
                         lookFor(LK_VALUE | LK_NUMBER);
                         break;
 
                     case Value:
-                        checkLookingFor(LK_VALUE);
-                        tree.addAttr(attrName, mCurrentToken.stringValue());
+                        checkState(LK_VALUE);
+                        tree.addAttr(attrName, mCurToken.stringValue());
                         lookFor(LK_ID | LK_RightArrowBracket);
                         break;
 
                     case Int:
-                        checkLookingFor(LK_INT);
-                        tree.addAttr(attrName, mCurrentToken.intValue());
+                        checkState(LK_INT);
+                        tree.addAttr(attrName, mCurToken.intValue());
                         lookFor(LK_ID | LK_RightArrowBracket);
                         break;
 
                     case Double:
-                        checkLookingFor(LK_DOUBLE);
-                        tree.addAttr(attrName, mCurrentToken.doubleValue());
+                        checkState(LK_DOUBLE);
+                        tree.addAttr(attrName, mCurToken.doubleValue());
                         lookFor(LK_ID | LK_RightArrowBracket);
                         break;
 
@@ -244,23 +245,25 @@ public final class Parser {
                     case Slash:
 
                         tree.mTagPair--;
-                        checkLookingFor(LK_SLASH);
+
+                        checkState(LK_SLASH);
+
                         lookFor(LK_RightArrowBracket);
 
                         scan();
 
-                        if (mCurrentToken.type() != Type.RightAngleBracket) {
-                            throw new SyntaxError("unknown tag", mLexer.line());
+                        if (mCurToken.type() != Type.RightAngleBracket) {
+                            throw new RVSyntaxError("unknown tag", mLexer.line());
                         }
 
                         tree.mBracketPair--;
                         if (tree.mBracketPair != 0) {
-                            throw new SyntaxError("<> must be in pairs, " + ", bracketPair=" + tree.mBracketPair, mLexer.line());
+                            throw new RVSyntaxError("<> must be in pairs, " + ", bracketPair=" + tree.mBracketPair, mLexer.line());
                         }
                         return;
 
                     default:
-                        throw new SyntaxError("unknown token", mLexer.line());
+                        throw new RVSyntaxError("unknown token", mLexer.line());
 
 
                 }
@@ -268,7 +271,7 @@ public final class Parser {
             }
         } catch (EOFException e) {
             if (meetEndTag) {
-                throw new SyntaxError("not end with </", mLexer.line());
+                throw new RVSyntaxError("not end with </", mLexer.line());
             }
         }
     }
@@ -281,8 +284,10 @@ public final class Parser {
         mLookFor |= status;
     }
 
-    private void scan() throws EOFException, SyntaxError {
-        mCurrentToken = mLexer.scan();
+    private void scan() throws EOFException, RVSyntaxError {
+        if (mCurToken != null)
+            mCurToken.recycle();
+        mCurToken = mLexer.scan();
     }
 
     private static void log(String msg) {
@@ -294,9 +299,9 @@ public final class Parser {
         DEBUG = debug;
     }
 
-    private void checkLookingFor(int status) throws SyntaxError {
+    private void checkState(int status) throws RVSyntaxError {
         if (!isLookingFor(status)) {
-            throw new SyntaxError("Looking for " + status, this.mLexer.line());
+            throw new RVSyntaxError("Looking for " + status, this.mLexer.line());
         }
     }
 }

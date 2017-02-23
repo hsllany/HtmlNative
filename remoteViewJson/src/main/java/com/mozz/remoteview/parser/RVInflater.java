@@ -11,9 +11,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 
-public class RemoteViewInflater {
+public class RVInflater {
 
-    private static final String TAG = RemoteViewInflater.class.getSimpleName();
+    private static final String TAG = RVInflater.class.getSimpleName();
     static boolean DEBUG = false;
 
     private Context mContext;
@@ -26,12 +26,12 @@ public class RemoteViewInflater {
     private static final Class<?>[] sConstructorSignature = new Class[]{
             Context.class};
 
-    private RemoteViewInflater(Context context) {
+    private RVInflater(Context context) {
         mContext = context;
     }
 
-    public static RemoteViewInflater from(@NonNull Context context) {
-        return new RemoteViewInflater(context);
+    public static RVInflater from(@NonNull Context context) {
+        return new RVInflater(context);
     }
 
     public View inflate(Context context, RVContext rvContext, ViewGroup root, boolean attachToRoot, ViewGroup.LayoutParams params) throws RemoteInflateException {
@@ -65,7 +65,7 @@ public class RemoteViewInflater {
                     viewGroup.addView(v, layoutParams);
                 }
             } else {
-                Log.w(TAG, "View inflate from RemoteViewInflater is not an viewGroup" +
+                Log.w(TAG, "View inflate from RVInflater is not an viewGroup" +
                         view.getClass().getSimpleName() +
                         ", but related RVDomTree has children. Will ignore its children!");
             }

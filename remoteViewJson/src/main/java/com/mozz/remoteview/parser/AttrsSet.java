@@ -161,14 +161,14 @@ final class AttrsSet {
 
                 if (value instanceof String) {
                     final String functionName = (String) value;
-                    final Code code = mContext.mFunctionTable.retrieveCode(functionName);
+                    final Code code = mContext.retrieveCode(functionName);
 
                     if (code != null) {
                         v.setOnClickListener(new View.OnClickListener() {
 
                             @Override
                             public void onClick(View v) {
-                                code.excute();
+                                code.execute();
                             }
                         });
                     } else {

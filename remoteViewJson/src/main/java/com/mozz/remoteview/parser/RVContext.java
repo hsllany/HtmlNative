@@ -10,15 +10,20 @@ public final class RVContext {
     RVDomTree mRootTree;
     FunctionTable mFunctionTable;
 
-    public RVContext() {
+    RVContext() {
         mFunctionTable = new FunctionTable();
     }
 
-    public void putFunction(String functionName, String code) {
+    void putFunction(String functionName, String code) {
         mFunctionTable.putFunction(functionName, code);
     }
 
-    public Code retriveCode(String functionName) {
+    /**
+     *
+     * @param functionName
+     * @return
+     */
+    public Code retrieveCode(String functionName) {
         return mFunctionTable.retrieveCode(functionName);
     }
 }

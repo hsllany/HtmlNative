@@ -15,32 +15,31 @@ final class Lexer {
 
     private StringBuilder mBuffer = new StringBuilder();
 
-
     Lexer(CodeReader reader) {
         mReader = reader;
     }
 
     @Nullable
-    Token scan() throws EOFException, SyntaxError {
+    Token scan() throws EOFException, RVSyntaxError {
 
         this.skipWhiteSpace();
 
         switch (peek()) {
             case '<':
                 next();
-                return new Token(Type.LeftAngleBracket);
+                return Token.obtainToken(Type.LeftAngleBracket);
             case '"':
                 next();
                 return scanValue();
             case '>':
                 next();
-                return new Token(Type.RightAngleBracket);
+                return Token.obtainToken(Type.RightAngleBracket);
             case '/':
                 next();
-                return new Token(Type.Slash);
+                return Token.obtainToken(Type.Slash);
             case '=':
                 next();
-                return new Token(Type.Equal);
+                return Token.obtainToken(Type.Equal);
             case '{':
                 return scanCode();
         }
@@ -65,14 +64,14 @@ final class Lexer {
         }
 
         next();
-        return new Token(Type.Code, mBuffer.toString());
+        return Token.obtainToken(Type.Code, mBuffer.toString());
     }
 
-    private Token scanNumber() throws EOFException, SyntaxError {
+    private Token scanNumber() throws EOFException, RVSyntaxError {
         int v = 0;
-        boolean nagitive = false;
+        boolean negative = false;
         if (peek() == '-') {
-            nagitive = true;
+            negative = true;
             next();
         }
 
@@ -86,7 +85,7 @@ final class Lexer {
         } while (isDigit(peek()));
 
         if (peek() != '.' && peek() != 'E' && peek() != 'e')
-            return new Token(Type.Int, nagitive ? -v : v);
+            return Token.obtainToken(Type.Int, negative ? -v : v);
 
         double x = v, d = 10;
         if (peek() == '.') {
@@ -103,11 +102,11 @@ final class Lexer {
             next();
 
             if (!Lexer.isDigit(peek()) && peek() != '-') {
-                throw new SyntaxError("Illegal word when reading Number!", line());
+                throw new RVSyntaxError("Illegal word when reading Number!", line());
             }
-            boolean expIsNagitive = false;
+            boolean expIsNegative = false;
             if (peek() == '-') {
-                expIsNagitive = true;
+                expIsNegative = true;
                 next();
             }
 
@@ -117,13 +116,13 @@ final class Lexer {
                 next();
             } while (Lexer.isDigit(peek()));
 
-            n = expIsNagitive ? -n : n;
+            n = expIsNegative ? -n : n;
 
             double exp = Math.pow(10, n);
-            return new Token(Type.Double, nagitive ? (-x * exp) : (x * exp));
+            return Token.obtainToken(Type.Double, negative ? (-x * exp) : (x * exp));
 
         } else {
-            return new Token(Type.Double, nagitive ? -x : x);
+            return Token.obtainToken(Type.Double, negative ? -x : x);
         }
     }
 
@@ -134,7 +133,7 @@ final class Lexer {
             next();
         } while (isLetter(peek()) || isDigit(peek()) || peek() == '.');
 
-        return new Token(Type.Id, mBuffer.toString());
+        return Token.obtainToken(Type.Id, mBuffer.toString());
     }
 
     private Token scanValue() throws EOFException {
@@ -147,7 +146,7 @@ final class Lexer {
 
         next();
 
-        return new Token(Type.Value, mBuffer.toString());
+        return Token.obtainToken(Type.Value, mBuffer.toString());
 
     }
 

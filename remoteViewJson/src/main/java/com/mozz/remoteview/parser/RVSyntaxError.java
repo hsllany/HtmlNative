@@ -1,10 +1,10 @@
 package com.mozz.remoteview.parser;
 
-public class SyntaxError extends Exception {
+public class RVSyntaxError extends Exception {
 
     private int mLine;
 
-    SyntaxError(String msg, int line) {
+    RVSyntaxError(String msg, int line) {
         super(msg);
         mLine = line;
     }

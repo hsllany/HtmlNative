@@ -27,11 +27,9 @@ public class LexerTest {
                 System.out.println("---> " + t.toString());
             } catch (IOException e) {
                 break;
-            } catch (SyntaxError sytaxError) {
+            } catch (RVSyntaxError sytaxError) {
                 sytaxError.printStackTrace();
             }
-
-
         }
     }
 
