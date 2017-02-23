@@ -1,4 +1,4 @@
-package com.mozz.remoteview.parser;
+package com.mozz.remoteview.parser.reader;
 
 import com.mozz.remoteview.parser.reader.StringCodeReader;
 

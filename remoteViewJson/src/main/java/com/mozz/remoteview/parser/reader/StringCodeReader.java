@@ -19,7 +19,7 @@ public class StringCodeReader implements CodeReader {
     public char nextCh() throws EOFException {
         if (position < length) {
             ch = code.charAt(position++);
-            if (ch == '\n' || ch == 'r') {
+            if (ch == '\n' || ch == '\r') {
                 this.line++;
             }
 

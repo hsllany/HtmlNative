@@ -12,7 +12,7 @@ public class ParserTest {
 
     @Test
     public void process() throws Exception {
-        parserDebugger(CodesForTest.CodeSimple);
+        parserDebugger("");
     }
 
     private void parserDebugger(String code) {

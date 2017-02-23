@@ -11,7 +11,7 @@ public class LexerTest {
 
     @Test
     public void testLexerSimple() {
-        LexerDebugger(CodesForTest.CodeComplicated);
+        LexerDebugger("");
     }
 
     private void LexerDebugger(String code) {
