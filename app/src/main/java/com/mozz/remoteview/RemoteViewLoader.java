@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.mozz.remoteview.parser.Parser;
-import com.mozz.remoteview.parser.RVContext;
+import com.mozz.remoteview.parser.RVModule;
 import com.mozz.remoteview.parser.RVInflater;
 import com.mozz.remoteview.parser.RVSyntaxError;
 import com.mozz.remoteview.parser.reader.StringCodeReader;
@@ -60,12 +60,12 @@ public class RemoteViewLoader implements Runnable {
             long time1 = SystemClock.uptimeMillis();
 
             Parser p = new Parser(new StringCodeReader(code));
-            RVContext rvContext = p.process();
+            RVModule rvModule = p.process();
 
             final View view;
             try {
                 ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                view = RVInflater.from(mContext).inflate(mContext, rvContext, null, false, layoutParams);
+                view = RVInflater.from(mContext).inflate(mContext, rvModule, null, false, layoutParams);
                 mMainHandler.post(new Runnable() {
                     @Override
                     public void run() {

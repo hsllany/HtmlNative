@@ -34,8 +34,8 @@ public class RVInflater {
         return new RVInflater(context);
     }
 
-    public View inflate(Context context, RVContext rvContext, ViewGroup root, boolean attachToRoot, ViewGroup.LayoutParams params) throws RemoteInflateException {
-        return inflate(context, rvContext.mRootTree, root, attachToRoot, params);
+    public View inflate(Context context, RVModule rvModule, ViewGroup root, boolean attachToRoot, ViewGroup.LayoutParams params) throws RemoteInflateException {
+        return inflate(context, rvModule.mRootTree, root, attachToRoot, params);
     }
 
     protected View inflate(Context context, @NonNull RVDomTree tree, ViewGroup root, boolean attachToRoot, ViewGroup.LayoutParams params) throws RemoteInflateException {

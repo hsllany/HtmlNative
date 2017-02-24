@@ -6,11 +6,11 @@ import com.mozz.remoteview.parser.code.Code;
  * Created by Yang Tao on 17/2/23.
  */
 
-public final class RVContext {
+public final class RVModule {
     RVDomTree mRootTree;
     FunctionTable mFunctionTable;
 
-    RVContext() {
+    RVModule() {
         mFunctionTable = new FunctionTable();
     }
 

@@ -23,7 +23,7 @@ public class ParserTest {
         Parser parser = new Parser(reader);
 
         try {
-            RVContext rootTree = parser.process();
+            RVModule rootTree = parser.process();
             System.out.println("\ntree is :");
             System.out.println(rootTree.mRootTree.wholeTreeToString());
 

@@ -27,19 +27,19 @@ final class Lexer {
         switch (peek()) {
             case '<':
                 next();
-                return Token.obtainToken(Type.LeftAngleBracket);
+                return Token.obtainToken(Type.LeftAngleBracket, mReader.line(), mReader.column());
             case '"':
                 next();
                 return scanValue();
             case '>':
                 next();
-                return Token.obtainToken(Type.RightAngleBracket);
+                return Token.obtainToken(Type.RightAngleBracket, mReader.line(), mReader.column());
             case '/':
                 next();
-                return Token.obtainToken(Type.Slash);
+                return Token.obtainToken(Type.Slash, mReader.line(), mReader.column());
             case '=':
                 next();
-                return Token.obtainToken(Type.Equal);
+                return Token.obtainToken(Type.Equal, mReader.line(), mReader.column());
             case '{':
                 return scanCode();
         }
@@ -55,6 +55,8 @@ final class Lexer {
     }
 
     private Token scanCode() throws EOFException {
+        long startColumn = mReader.column();
+        long line = mReader.line();
         clearBuf();
 
         next();
@@ -64,10 +66,12 @@ final class Lexer {
         }
 
         next();
-        return Token.obtainToken(Type.Code, mBuffer.toString());
+        return Token.obtainToken(Type.Code, mBuffer.toString(), line, startColumn);
     }
 
     private Token scanNumber() throws EOFException, RVSyntaxError {
+        long startColumn = mReader.column();
+        long line = mReader.line();
         int v = 0;
         boolean negative = false;
         if (peek() == '-') {
@@ -85,7 +89,7 @@ final class Lexer {
         } while (isDigit(peek()));
 
         if (peek() != '.' && peek() != 'E' && peek() != 'e')
-            return Token.obtainToken(Type.Int, negative ? -v : v);
+            return Token.obtainToken(Type.Int, negative ? -v : v, line, startColumn);
 
         double x = v, d = 10;
         if (peek() == '.') {
@@ -102,7 +106,7 @@ final class Lexer {
             next();
 
             if (!Lexer.isDigit(peek()) && peek() != '-') {
-                throw new RVSyntaxError("Illegal word when reading Number!", line());
+                throw new RVSyntaxError("Illegal word when reading Number!", line, startColumn);
             }
             boolean expIsNegative = false;
             if (peek() == '-') {
@@ -119,24 +123,30 @@ final class Lexer {
             n = expIsNegative ? -n : n;
 
             double exp = Math.pow(10, n);
-            return Token.obtainToken(Type.Double, negative ? (-x * exp) : (x * exp));
+            return Token.obtainToken(Type.Double, negative ? (-x * exp) : (x * exp), line, startColumn);
 
         } else {
-            return Token.obtainToken(Type.Double, negative ? -x : x);
+            return Token.obtainToken(Type.Double, negative ? -x : x, line, startColumn);
         }
     }
 
     private Token scanId() throws EOFException {
+        long startColumn = mReader.column();
+        long line = mReader.line();
+
         clearBuf();
         do {
             mBuffer.append(peek());
             next();
         } while (isLetter(peek()) || isDigit(peek()) || peek() == '.');
 
-        return Token.obtainToken(Type.Id, mBuffer.toString());
+        return Token.obtainToken(Type.Id, mBuffer.toString(), line, startColumn);
     }
 
     private Token scanValue() throws EOFException {
+        long startColumn = mReader.column();
+        long line = mReader.line();
+
         clearBuf();
 
         do {
@@ -146,7 +156,7 @@ final class Lexer {
 
         next();
 
-        return Token.obtainToken(Type.Value, mBuffer.toString());
+        return Token.obtainToken(Type.Value, mBuffer.toString(), line, startColumn);
 
     }
 
@@ -162,8 +172,18 @@ final class Lexer {
         }
     }
 
-    int line() {
+    void close() {
+        if (mReader != null) {
+            mReader.close();
+        }
+    }
+
+    long line() {
         return mReader.line();
+    }
+
+    long column() {
+        return mReader.column();
     }
 
     private char peek() {

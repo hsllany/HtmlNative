@@ -38,13 +38,13 @@ public final class Parser {
         mLexer = new Lexer(reader);
     }
 
-    public RVContext process() throws RVSyntaxError {
+    public RVModule process() throws RVSyntaxError {
 
         lookFor(LK_LeftArrowBracket | LK_ID);
 
-        RVContext rvContext = new RVContext();
-        rvContext.mRootTree = new RVDomTree(rvContext, null, 0, 0);
-        rvContext.mFunctionTable = new FunctionTable();
+        RVModule rvModule = new RVModule();
+        rvModule.mRootTree = new RVDomTree(rvModule, null, 0, 0);
+        rvModule.mFunctionTable = new FunctionTable();
 
         try {
             scan();
@@ -54,63 +54,80 @@ public final class Parser {
 
                 scan();
 
+                // Id Token should follow <
                 if (mCurToken.type() != Type.Id) {
-                    throw new RVSyntaxError("unknown type of token " + mCurToken.type(), mLexer.line());
+                    throw new RVSyntaxError("unknown type of token " + mCurToken.type() +
+                            ", < should be followed by view name", mLexer.line(), mLexer.column());
                 }
 
-                rvContext.mRootTree.mNodeName = mCurToken.stringValue();
+                rvModule.mRootTree.mNodeName = mCurToken.stringValue();
 
-                rvContext.mRootTree.mTagPair = 1;
-                rvContext.mRootTree.mBracketPair = 1;
+                rvModule.mRootTree.mTagPair = 1;
+                rvModule.mRootTree.mBracketPair = 1;
 
                 // scan the view tree first
-                processInternal(rvContext.mRootTree);
+                processInternal(rvModule.mRootTree);
 
                 // scan the related code then
                 scan();
                 if (mCurToken.type() == Id) {
-                    processCode(mCurToken.stringValue(), rvContext.mFunctionTable, false);
+                    processCode(mCurToken.stringValue(), rvModule.mFunctionTable, false);
                 }
 
             } else if (mCurToken.type() == Id) {
 
-                processCode(mCurToken.stringValue(), rvContext.mFunctionTable, true);
+                // handle the case that code appear first
+                processCode(mCurToken.stringValue(), rvModule.mFunctionTable, true);
 
+                // Id token should follow <
                 if (mCurToken.type() != LeftAngleBracket) {
-                    throw new RVSyntaxError("unknown state " + mCurToken, mLexer.line());
+                    throw new RVSyntaxError("unknown type of token " + mCurToken.type() +
+                            ".", mLexer.line(), mLexer.column());
                 }
 
                 //scan for the tree node name
                 scan();
                 if (mCurToken.type() != Type.Id) {
-                    throw new RVSyntaxError("", mLexer.line());
+                    throw new RVSyntaxError("unknown type of token " + mCurToken.type() +
+                            ", < should be followed by view name", mLexer.line(), mLexer.column());
                 }
 
-                rvContext.mRootTree.mNodeName = mCurToken.stringValue();
-                rvContext.mRootTree.mTagPair = 1;
-                rvContext.mRootTree.mBracketPair = 1;
+                rvModule.mRootTree.mNodeName = mCurToken.stringValue();
+                rvModule.mRootTree.mTagPair = 1;
+                rvModule.mRootTree.mBracketPair = 1;
 
-                processInternal(rvContext.mRootTree);
+                processInternal(rvModule.mRootTree);
 
                 // scan the related code then, there may be another code block here
                 scan();
                 if (mCurToken.type() == Id) {
-                    processCode(mCurToken.stringValue(), rvContext.mFunctionTable, false);
+                    processCode(mCurToken.stringValue(), rvModule.mFunctionTable, false);
                 }
 
 
             } else {
-                throw new RVSyntaxError("< is need", mLexer.line());
+                mLexer.close();
+                throw new RVSyntaxError("LuaV should start with view or code block", mLexer.line(),
+                        mLexer.column());
+
             }
 
         } catch (EOFException e) {
-            return rvContext;
+            mLexer.close();
+            return rvModule;
         }
 
-        return rvContext;
+        throw new RVSyntaxError("LuaV should start with view or code block", mLexer.line(),
+                mLexer.column());
     }
 
-    private void processCode(String functionName, FunctionTable functionTable, boolean positionStart) throws RVSyntaxError {
+    /**
+     * parse the lua code block
+     *
+     * @throws RVSyntaxError
+     */
+    private void processCode(String functionName, FunctionTable functionTable,
+                             boolean positionStart) throws RVSyntaxError {
         lookFor(LK_CODE);
         try {
             while (true) {
@@ -133,14 +150,19 @@ public final class Parser {
                         if (positionStart)
                             return;
                         else
-                            throw new RVSyntaxError("reach the end of the script", mLexer.line());
+                            throw new EOFException();
                 }
             }
         } catch (EOFException e) {
-            return;
+
         }
     }
 
+    /**
+     * parse the tree recursively
+     *
+     * @throws RVSyntaxError
+     */
     private void processInternal(RVDomTree tree) throws RVSyntaxError {
         int index = 0;
 
@@ -172,13 +194,16 @@ public final class Parser {
 
                             // compare the tag string with tree.nodeName
                             if (!tree.getNodeName().equals(mCurToken.value())) {
-                                throw new RVSyntaxError("node is not right" + mCurToken.value() + ", " + tree.getNodeName(), mLexer.line());
+                                throw new RVSyntaxError("View tag should be in pairs, current is<"
+                                        + tree.getNodeName() + "></" + mCurToken.value() + ">",
+                                        mLexer.line(), mLexer.column());
                             }
 
                             scan();
 
                             if (mCurToken.type() != Type.RightAngleBracket) {
-                                throw new RVSyntaxError("must be end with >", mLexer.line());
+                                throw new RVSyntaxError("View tag must be end with >", mLexer.line(),
+                                        mLexer.column());
                             }
 
                             // here reach the end of the view tree, just return.
@@ -204,7 +229,9 @@ public final class Parser {
 
                         tree.mBracketPair--;
                         if (tree.mBracketPair != 0) {
-                            throw new RVSyntaxError("<> must be in pairs, " + ", bracketPair=" + tree.mBracketPair, mLexer.line());
+                            throw new RVSyntaxError("< > must be in pairs, "
+                                    + ", current bracket pair is " + tree.mBracketPair,
+                                    mLexer.line(), mLexer.column());
                         }
 
                         break;
@@ -218,7 +245,8 @@ public final class Parser {
                     case Equal:
                         checkState(LK_EQUAL);
                         if (attrName == null) {
-                            throw new RVSyntaxError("attrName is null", mLexer.line());
+                            throw new RVSyntaxError("attrName is null, please check the state",
+                                    mLexer.line(), mLexer.column());
                         }
                         lookFor(LK_VALUE | LK_NUMBER);
                         break;
@@ -253,17 +281,22 @@ public final class Parser {
                         scan();
 
                         if (mCurToken.type() != Type.RightAngleBracket) {
-                            throw new RVSyntaxError("unknown tag", mLexer.line());
+                            throw new RVSyntaxError("unknown state, slash should be followed by >, " +
+                                    "but currently " + mCurToken.type(), mLexer.line(),
+                                    mLexer.column());
                         }
 
                         tree.mBracketPair--;
                         if (tree.mBracketPair != 0) {
-                            throw new RVSyntaxError("<> must be in pairs, " + ", bracketPair=" + tree.mBracketPair, mLexer.line());
+                            throw new RVSyntaxError("< > must be in pairs, "
+                                    + ", current bracket pair is " + tree.mBracketPair,
+                                    mLexer.line(), mLexer.column());
                         }
                         return;
 
                     default:
-                        throw new RVSyntaxError("unknown token", mLexer.line());
+                        throw new RVSyntaxError("unknown token " + mCurToken.toString(),
+                                mLexer.line(), mLexer.column());
 
 
                 }
@@ -271,7 +304,7 @@ public final class Parser {
             }
         } catch (EOFException e) {
             if (meetEndTag) {
-                throw new RVSyntaxError("not end with </", mLexer.line());
+                throw new RVSyntaxError("View Tag should ends with </", mLexer.line(), mLexer.column());
             }
         }
     }
@@ -301,7 +334,8 @@ public final class Parser {
 
     private void checkState(int status) throws RVSyntaxError {
         if (!isLookingFor(status)) {
-            throw new RVSyntaxError("Looking for " + status, this.mLexer.line());
+            throw new RVSyntaxError(" Looking for " + status + ", but currently is " + mLookFor
+                    , mLexer.line(), mLexer.column());
         }
     }
 }

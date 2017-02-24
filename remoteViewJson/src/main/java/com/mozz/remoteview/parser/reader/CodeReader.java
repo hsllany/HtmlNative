@@ -9,7 +9,11 @@ import java.io.EOFException;
 public interface CodeReader {
     char nextCh() throws EOFException;
 
-    int line();
+    long line();
+
+    long column();
 
     char current();
+
+    void close();
 }

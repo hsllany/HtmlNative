@@ -1,5 +1,7 @@
 package com.mozz.remoteview.parser.reader;
 
+import com.mozz.remoteview.parser.Utils;
+
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,16 +14,12 @@ import java.io.Reader;
 
 public class FileCodeReader implements CodeReader {
 
-    private int line;
-
+    private long line = 1;
+    private long column = 1;
     private InputStream mFileInputStream;
-
     private Reader mFileReader;
-
     private boolean isFirst = true;
-
     private char ch;
-
     private int temp;
 
     public FileCodeReader(InputStream file) {
@@ -41,6 +39,7 @@ public class FileCodeReader implements CodeReader {
 
         try {
             temp = mFileReader.read();
+            column++;
 
             if (temp == -1) {
                 throw new EOFException("reach the end of file");
@@ -48,10 +47,12 @@ public class FileCodeReader implements CodeReader {
             ch = (char) temp;
             if (ch == '\n' || ch == '\r') {
                 this.line++;
+                column = 1;
             }
 
             return ch;
         } catch (IOException e) {
+            close();
             e.printStackTrace();
             throw new EOFException(e.getMessage());
         }
@@ -59,12 +60,23 @@ public class FileCodeReader implements CodeReader {
 
 
     @Override
-    public int line() {
+    public long line() {
         return line;
     }
 
     @Override
     public char current() {
         return ch;
+    }
+
+    @Override
+    public long column() {
+        return column;
+    }
+
+    @Override
+    public void close() {
+        Utils.closeQuitely(mFileInputStream);
+        Utils.closeQuitely(mFileReader);
     }
 }

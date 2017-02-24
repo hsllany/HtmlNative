@@ -2,6 +2,9 @@ package com.mozz.remoteview.parser.token;
 
 
 public final class Token {
+    private long startColumn;
+    private long line;
+
     private Type mType;
 
     private Object mValue;
@@ -45,7 +48,7 @@ public final class Token {
         return (double) mValue;
     }
 
-    public static Token obtainToken(Type type, Object value) {
+    public static Token obtainToken(Type type, Object value, long line, long column) {
         synchronized (sPoolSync) {
             if (sPool != null) {
                 Token t = sPool;
@@ -55,6 +58,8 @@ public final class Token {
 
                 t.mType = type;
                 t.mValue = value;
+                t.line = line;
+                t.startColumn = column;
                 return t;
             }
 
@@ -62,8 +67,8 @@ public final class Token {
         }
     }
 
-    public static Token obtainToken(Type type) {
-        return obtainToken(type, null);
+    public static Token obtainToken(Type type, long line, long column) {
+        return obtainToken(type, null, line, column);
     }
 
     public void recycle() {
@@ -73,6 +78,8 @@ public final class Token {
     private void recycleUnchecked() {
         mType = Type.Unknown;
         mValue = null;
+        startColumn = -1;
+        line = -1;
 
         synchronized (sPoolSync) {
             if (sPoolSize < MAX_POOL_SIZE) {
@@ -84,4 +91,11 @@ public final class Token {
     }
 
 
+    public long getStartColumn() {
+        return startColumn;
+    }
+
+    public long getLine() {
+        return line;
+    }
 }

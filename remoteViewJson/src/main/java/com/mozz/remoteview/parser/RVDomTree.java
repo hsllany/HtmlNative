@@ -22,18 +22,18 @@ final class RVDomTree {
     String mNodeName;
     AttrsSet mAttrs;
 
-    RVContext mContext;
+    RVModule mContext;
 
     // for cache use
     int mBracketPair;
     int mTagPair;
 
 
-    RVDomTree(@NonNull RVContext context, RVDomTree parent, int depth, int index) {
+    RVDomTree(@NonNull RVModule context, RVDomTree parent, int depth, int index) {
         this(context, null, parent, depth, index);
     }
 
-    private RVDomTree(@NonNull RVContext context, String nodeName, RVDomTree parent, int depth, int index) {
+    private RVDomTree(@NonNull RVModule context, String nodeName, RVDomTree parent, int depth, int index) {
         mContext = context;
         mNodeName = nodeName;
         mDepth = depth;

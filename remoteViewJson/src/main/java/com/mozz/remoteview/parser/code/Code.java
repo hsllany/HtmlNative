@@ -6,9 +6,6 @@ import android.util.Log;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
-/**
- * Created by Yang Tao on 17/2/23.
- */
 
 public class Code {
     private static final String TAG = Code.class.getSimpleName();

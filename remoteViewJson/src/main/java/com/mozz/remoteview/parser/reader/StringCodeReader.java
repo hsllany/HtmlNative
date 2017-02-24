@@ -6,8 +6,10 @@ public class StringCodeReader implements CodeReader {
     private String code;
     private int position = 0;
     private int length = 0;
-    private int line = 0;
+    private long line = 1;
+    private long column = 1;
     private char ch = ' ';
+
 
     public StringCodeReader(String str) {
         code = str + ' ';
@@ -19,8 +21,10 @@ public class StringCodeReader implements CodeReader {
     public char nextCh() throws EOFException {
         if (position < length) {
             ch = code.charAt(position++);
+            this.column++;
             if (ch == '\n' || ch == '\r') {
                 this.line++;
+                this.column = 1;
             }
 
             return ch;
@@ -29,12 +33,22 @@ public class StringCodeReader implements CodeReader {
     }
 
     @Override
-    public int line() {
-        return this.line;
+    public long line() {
+        return line;
+    }
+
+    @Override
+    public long column() {
+        return column;
     }
 
     @Override
     public char current() {
         return ch;
+    }
+
+    @Override
+    public void close() {
+
     }
 }

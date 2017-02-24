@@ -45,11 +45,11 @@ final class AttrsSet {
 
     private Map<String, Object> mAttrs;
 
-    private RVContext mContext;
+    private RVModule mContext;
 
     private static Map<Class<? extends View>, Attr> sCachedAttrs = new HashMap<>();
 
-    AttrsSet(@NonNull RVContext context) {
+    AttrsSet(@NonNull RVModule context) {
         mContext = context;
         mAttrs = new HashMap<>(6);
     }
