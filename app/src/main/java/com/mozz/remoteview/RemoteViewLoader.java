@@ -65,7 +65,7 @@ public class RemoteViewLoader implements Runnable {
             final View view;
             try {
                 ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                view = RVInflater.from(mContext).inflate(mContext, rvModule, null, false, layoutParams);
+                view = RVInflater.get().inflate(mContext, rvModule, null, false, layoutParams);
                 mMainHandler.post(new Runnable() {
                     @Override
                     public void run() {

@@ -5,19 +5,18 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 
-public class RVInflater {
+public final class RVInflater {
 
     private static final String TAG = RVInflater.class.getSimpleName();
     static boolean DEBUG = false;
-
-    private Context mContext;
-
+    
     private static final HashMap<String, Constructor<? extends View>> sConstructorMap =
             new HashMap<String, Constructor<? extends View>>();
 
@@ -26,26 +25,48 @@ public class RVInflater {
     private static final Class<?>[] sConstructorSignature = new Class[]{
             Context.class};
 
-    private RVInflater(Context context) {
-        mContext = context;
+    private RVInflater() {
     }
 
-    public static RVInflater from(@NonNull Context context) {
-        return new RVInflater(context);
+    public static RVInflater get() {
+        return new RVInflater();
     }
 
-    public View inflate(Context context, RVModule rvModule, ViewGroup root, boolean attachToRoot, ViewGroup.LayoutParams params) throws RemoteInflateException {
-        return inflate(context, rvModule.mRootTree, rvModule.mAttrs, root, attachToRoot, params);
+    public View inflate(Context context, RVModule rvModule, ViewGroup root, boolean attachToRoot,
+                        ViewGroup.LayoutParams params) throws RemoteInflateException {
+        FrameLayout frameLayout = new FrameLayout(context);
+        ViewContext viewContext = ViewContext.initViewContext(frameLayout, rvModule, context);
+
+        View v = inflate(context, viewContext, rvModule.mRootTree, rvModule.mAttrs, root,
+                attachToRoot, params);
+
+        if (v == null)
+            return null;
+
+        frameLayout.addView(v, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+
+        viewContext.onViewLoaded();
+
+        if (DEBUG) {
+            Log.d(TAG, viewContext.mViewSelector.toString());
+        }
+
+        return frameLayout;
     }
 
-    private View inflate(Context context, RVDomTree tree, AttrsSet attrsSet, ViewGroup root, boolean attachToRoot, ViewGroup.LayoutParams params) throws RemoteInflateException {
+    private View inflate(Context context, ViewContext viewContext, RVDomTree tree,
+                         AttrsSet attrsSet, ViewGroup root, boolean attachToRoot,
+                         ViewGroup.LayoutParams params) throws RemoteInflateException {
 
         View result = root;
 
         if (tree.isLeaf()) {
-            return createViewFromTag(tree, tree.getNodeName(), ANDROID_VIEW_PREFIX, context, attrsSet, params);
+            return createViewFromTag(tree, viewContext, tree.getNodeName(), ANDROID_VIEW_PREFIX,
+                    context, attrsSet, params);
         } else {
-            View view = createViewFromTag(tree, tree.getNodeName(), ANDROID_VIEW_PREFIX, context, attrsSet, params);
+            View view = createViewFromTag(tree, viewContext, tree.getNodeName(), ANDROID_VIEW_PREFIX,
+                    context, attrsSet, params);
 
             if (view == null && attachToRoot) {
                 return root;
@@ -55,13 +76,14 @@ public class RVInflater {
 
             if (view instanceof ViewGroup) {
 
-                ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
+                ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
                 ViewGroup viewGroup = (ViewGroup) view;
 
                 for (RVDomTree child : tree.mChildren) {
-                    View v = inflate(context, child, attrsSet, null, false, layoutParams);
+                    View v = inflate(context, viewContext, child, attrsSet, null, false,
+                            layoutParams);
                     viewGroup.addView(v, layoutParams);
                 }
             } else {
@@ -84,14 +106,17 @@ public class RVInflater {
 
     private static final String ANDROID_VIEW_PREFIX = "android.widget.";
 
-    private View createViewFromTag(RVDomTree tree, String name, String prefix, Context context, AttrsSet attrsSet, ViewGroup.LayoutParams params) {
+    private View createViewFromTag(RVDomTree tree, ViewContext viewContext, String name,
+                                   String prefix, Context context, AttrsSet attrsSet,
+                                   ViewGroup.LayoutParams params) {
+
         Constructor<? extends View> constructor = sConstructorMap.get(name);
 
         try {
             Class<? extends View> clazz;
             if (constructor == null) {
                 // Class not found in the cache, see if it's real, and try to add it
-                clazz = mContext.getClassLoader().loadClass(
+                clazz = context.getClassLoader().loadClass(
                         prefix != null ? (prefix + name) : name).asSubclass(View.class);
 
 
@@ -106,7 +131,7 @@ public class RVInflater {
                 Log.d(TAG, "create view " + view.toString());
             }
             try {
-                attrsSet.apply(context, view, tree, params);
+                attrsSet.apply(context, viewContext, view, tree, params);
             } catch (AttrsSet.AttrApplyException e) {
                 e.printStackTrace();
             }
@@ -147,6 +172,10 @@ public class RVInflater {
         public RemoteInflateException(Throwable throwable) {
             super(throwable);
         }
+    }
+
+    interface RVViewInflateListener {
+        void onViewLoaded();
     }
 
 }

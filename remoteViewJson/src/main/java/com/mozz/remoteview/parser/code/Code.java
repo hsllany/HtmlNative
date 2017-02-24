@@ -3,8 +3,7 @@ package com.mozz.remoteview.parser.code;
 import android.os.SystemClock;
 import android.util.Log;
 
-import org.luaj.vm2.LuaValue;
-import org.luaj.vm2.lib.jse.JsePlatform;
+import com.mozz.remoteview.parser.ViewContext;
 
 
 public class Code {
@@ -27,22 +26,19 @@ public class Code {
         return mCode;
     }
 
-    public void execute() {
+    public void execute(ViewContext context) {
         long timeStart = SystemClock.currentThreadTimeMillis();
 
-        LuaValue chunk = JsePlatform.standardGlobals().load(mCode);
-        chunk.call();
+        context.execute(mCode);
 
         long spend = SystemClock.currentThreadTimeMillis() - timeStart;
 
         if (DEBUG) {
             Log.d(TAG, "=====" + mFunctionName + "=====");
             Log.d(TAG, mCode);
+            Log.i(TAG, "executed " + mFunctionName + " spend " + spend + "ms.");
             Log.d(TAG, "=====");
+
         }
-
-        Log.i(TAG, "executed " + mFunctionName + " spend " + spend + "ms.");
-
-
     }
 }

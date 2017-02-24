@@ -41,9 +41,7 @@ final class AttrsSet {
     private static final String ATTR_ALPHA = "alpha";
     private static final String ATTR_ID = "id";
     private static final String ATTR_ONCLICK = "onClick";
-
-    private static final int VIEW_TAG_ID = 0x123;
-
+    
     private Object[] mAttrs;
     private int[] mLength;
 
@@ -140,7 +138,7 @@ final class AttrsSet {
         return Arrays.toString(objects);
     }
 
-    public void apply(Context context, View v, RVDomTree tree, ViewGroup.LayoutParams layoutParams) throws AttrApplyException {
+    public void apply(Context context, final ViewContext viewContext, View v, RVDomTree tree, ViewGroup.LayoutParams layoutParams) throws AttrApplyException {
         int startPosition = tree.mAttrIndex;
         int treeAttrLength = mLength[startPosition];
 
@@ -222,7 +220,7 @@ final class AttrsSet {
                 }
             } else if (params.equals(ATTR_ID)) {
                 if (value instanceof String) {
-                    v.setTag(VIEW_TAG_ID, value.toString());
+                    viewContext.put((String) value, v);
                 } else {
                     throw new AttrApplyException("id must be a string.");
                 }
@@ -237,7 +235,7 @@ final class AttrsSet {
 
                             @Override
                             public void onClick(View v) {
-                                code.execute();
+                                code.execute(viewContext);
                             }
                         });
                     } else {
