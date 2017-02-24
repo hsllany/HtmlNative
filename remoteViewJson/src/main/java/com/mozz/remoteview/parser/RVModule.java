@@ -2,16 +2,14 @@ package com.mozz.remoteview.parser;
 
 import com.mozz.remoteview.parser.code.Code;
 
-/**
- * Created by Yang Tao on 17/2/23.
- */
-
 public final class RVModule {
     RVDomTree mRootTree;
     FunctionTable mFunctionTable;
+    AttrsSet mAttrs;
 
     RVModule() {
         mFunctionTable = new FunctionTable();
+        mAttrs = new AttrsSet(this);
     }
 
     void putFunction(String functionName, String code) {
@@ -19,7 +17,6 @@ public final class RVModule {
     }
 
     /**
-     *
      * @param functionName
      * @return
      */

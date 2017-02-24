@@ -16,18 +16,19 @@ import com.mozz.remoteview.parser.attrs.LinearLayoutAttr;
 import com.mozz.remoteview.parser.attrs.TextViewAttr;
 import com.mozz.remoteview.parser.code.Code;
 
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
  * @author YangTao7
+ *         NOT THREAD SAFE
  */
 
 final class AttrsSet {
 
     private static final String TAG = AttrsSet.class.getSimpleName();
-    private static boolean DEBUG = false;
+    static boolean DEBUG = false;
 
     private static final String ATTR_WIDTH = "width";
     private static final String ATTR_HEIGHT = "height";
@@ -43,36 +44,105 @@ final class AttrsSet {
 
     private static final int VIEW_TAG_ID = 0x123;
 
-    private Map<String, Object> mAttrs;
+    private Object[] mAttrs;
+    private int[] mLength;
+
+    private int mGrowLength;
+
+    private int mLastGrowLength = -1;
+
+    private int mCompacity;
 
     private RVModule mContext;
 
     private static Map<Class<? extends View>, Attr> sCachedAttrs = new HashMap<>();
 
     AttrsSet(@NonNull RVModule context) {
+        this(context, 10);
+    }
+
+    AttrsSet(RVModule context, int initCompacity) {
         mContext = context;
-        mAttrs = new HashMap<>(6);
+        mAttrs = new Object[initCompacity << 1];
+        mLength = new int[initCompacity];
+        mGrowLength = 0;
+        mCompacity = initCompacity;
     }
 
-    public void put(String paramsKey, String value) {
-        mAttrs.put(paramsKey, value);
+    void put(RVDomTree tree, String paramsKey, Object value) {
+        int startPosition = tree.mAttrIndex;
+
+        if (DEBUG) {
+            Log.d(TAG, "put " + paramsKey + ", " + value.toString() + " in attrs at " + (startPosition + mLength[startPosition]));
+        }
+
+        putInternal(startPosition + mLength[startPosition], paramsKey, value);
+        mLength[startPosition]++;
     }
 
-    public void put(String paramsKey, double value) {
-        mAttrs.put(paramsKey, value);
+    private void putInternal(int position, String paramsKey, Object value) {
+        if (position >= mCompacity) {
+            grow(mCompacity);
+        }
+
+        mAttrs[position << 1] = paramsKey;
+        mAttrs[(position << 1) + 1] = value;
+        mGrowLength++;
     }
 
-    public void put(String paramsKey, int value) {
-        mAttrs.put(paramsKey, value);
+    private void grow(int growSize) {
+        if (growSize > 0) {
+            if (DEBUG) {
+                Log.i(TAG, " grow to " + (mCompacity + growSize));
+            }
+            Object[] temp = mAttrs;
+            int[] tempL = mLength;
+
+            mAttrs = new Object[(mCompacity + growSize) << 1];
+            mLength = new int[mCompacity + growSize];
+
+            System.arraycopy(temp, 0, mAttrs, 0, mCompacity << 1);
+            System.arraycopy(tempL, 0, mLength, 0, mCompacity);
+
+            mCompacity += growSize;
+        }
     }
+
+    void newAttr(RVDomTree tree) {
+        if (mLastGrowLength == mGrowLength) {
+            mGrowLength++;
+        }
+
+        if (mGrowLength >= mCompacity) {
+            grow(mCompacity);
+        }
+
+        if (DEBUG) {
+            Log.d(TAG, "give tree" + tree.toString() + " index at " + mGrowLength);
+        }
+        tree.mAttrIndex = mGrowLength;
+        mLastGrowLength = mGrowLength;
+    }
+
 
     @Override
     public String toString() {
-        return mAttrs.toString();
+        return Arrays.toString(mAttrs);
     }
 
-    public void apply(Context context, View v, ViewGroup.LayoutParams layoutParams) throws AttrApplyException {
-        Iterator<Map.Entry<String, Object>> itr = mAttrs.entrySet().iterator();
+    public String toString(RVDomTree tree) {
+        int startPos = tree.mAttrIndex;
+        int length = mLength[startPos];
+
+        Object[] objects = new Object[length << 1];
+        System.arraycopy(mAttrs, startPos << 1, objects, 0, length << 1);
+
+        return Arrays.toString(objects);
+    }
+
+    public void apply(Context context, View v, RVDomTree tree, ViewGroup.LayoutParams layoutParams) throws AttrApplyException {
+        int startPosition = tree.mAttrIndex;
+        int treeAttrLength = mLength[startPosition];
 
         if (v instanceof LinearLayout)
             ((LinearLayout) v).setOrientation(LinearLayout.VERTICAL);
@@ -81,19 +151,18 @@ final class AttrsSet {
         int width = ViewGroup.LayoutParams.WRAP_CONTENT;
         int height = ViewGroup.LayoutParams.WRAP_CONTENT;
 
-        while (itr.hasNext()) {
-            Map.Entry<String, Object> entry = itr.next();
+        for (int i = startPosition; i < startPosition + treeAttrLength; i++) {
 
-            String params = entry.getKey();
-            final Object value = entry.getValue();
+            String params = (String) mAttrs[i << 1];
+            final Object value = mAttrs[(i << 1) + 1];
 
             if (DEBUG) {
-                Log.i(TAG, "ready to parse attribute " + params + " with value " + value);
+                Log.i(TAG, "ready to parse attribute " + params + " with value " + value + ", for view " + v);
             }
 
             if (params.equals(ATTR_WIDTH)) {
                 if (value instanceof Integer) {
-                    width = (Integer) entry.getValue();
+                    width = (Integer) value;
                 } else if (value.toString().equalsIgnoreCase("MATCH_PARENT")) {
                     width = ViewGroup.LayoutParams.MATCH_PARENT;
                 } else {
@@ -102,7 +171,7 @@ final class AttrsSet {
 
             } else if (params.equals(ATTR_HEIGHT)) {
                 if (value instanceof Integer) {
-                    height = (Integer) entry.getValue();
+                    height = (Integer) value;
                 } else if (value.toString().equalsIgnoreCase("MATCH_PARENT")) {
                     height = ViewGroup.LayoutParams.MATCH_PARENT;
                 } else {

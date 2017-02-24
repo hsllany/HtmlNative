@@ -51,7 +51,7 @@ final class Lexer {
         if (isLetter(peek()) || peek() == '_') {
             return scanId();
         }
-        return null;
+        throw new RVSyntaxError("unknown token", line(), column());
     }
 
     private Token scanCode() throws EOFException {

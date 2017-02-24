@@ -74,6 +74,8 @@ public final class Parser {
                     processCode(mCurToken.stringValue(), rvModule.mFunctionTable, false);
                 }
 
+                scan();
+
             } else if (mCurToken.type() == Id) {
 
                 // handle the case that code appear first
@@ -103,7 +105,7 @@ public final class Parser {
                 if (mCurToken.type() == Id) {
                     processCode(mCurToken.stringValue(), rvModule.mFunctionTable, false);
                 }
-
+                scan();
 
             } else {
                 mLexer.close();
@@ -321,6 +323,10 @@ public final class Parser {
         if (mCurToken != null)
             mCurToken.recycle();
         mCurToken = mLexer.scan();
+
+        if (DEBUG) {
+            Log.d(TAG, "process token ->" + mCurToken);
+        }
     }
 
     private static void log(String msg) {

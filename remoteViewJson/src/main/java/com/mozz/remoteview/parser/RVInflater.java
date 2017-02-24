@@ -35,17 +35,17 @@ public class RVInflater {
     }
 
     public View inflate(Context context, RVModule rvModule, ViewGroup root, boolean attachToRoot, ViewGroup.LayoutParams params) throws RemoteInflateException {
-        return inflate(context, rvModule.mRootTree, root, attachToRoot, params);
+        return inflate(context, rvModule.mRootTree, rvModule.mAttrs, root, attachToRoot, params);
     }
 
-    protected View inflate(Context context, @NonNull RVDomTree tree, ViewGroup root, boolean attachToRoot, ViewGroup.LayoutParams params) throws RemoteInflateException {
+    private View inflate(Context context, RVDomTree tree, AttrsSet attrsSet, ViewGroup root, boolean attachToRoot, ViewGroup.LayoutParams params) throws RemoteInflateException {
 
         View result = root;
 
         if (tree.isLeaf()) {
-            return createViewFromTag(tree.getNodeName(), ANDROID_VIEW_PREFIX, context, tree.mAttrs, params);
+            return createViewFromTag(tree, tree.getNodeName(), ANDROID_VIEW_PREFIX, context, attrsSet, params);
         } else {
-            View view = createViewFromTag(tree.getNodeName(), ANDROID_VIEW_PREFIX, context, tree.mAttrs, params);
+            View view = createViewFromTag(tree, tree.getNodeName(), ANDROID_VIEW_PREFIX, context, attrsSet, params);
 
             if (view == null && attachToRoot) {
                 return root;
@@ -61,7 +61,7 @@ public class RVInflater {
                 ViewGroup viewGroup = (ViewGroup) view;
 
                 for (RVDomTree child : tree.mChildren) {
-                    View v = inflate(context, child, null, false, layoutParams);
+                    View v = inflate(context, child, attrsSet, null, false, layoutParams);
                     viewGroup.addView(v, layoutParams);
                 }
             } else {
@@ -77,13 +77,14 @@ public class RVInflater {
             if (root == null || !attachToRoot) {
                 result = view;
             }
+
             return result;
         }
     }
 
     private static final String ANDROID_VIEW_PREFIX = "android.widget.";
 
-    protected View createViewFromTag(String name, String prefix, Context context, AttrsSet attrsSet, ViewGroup.LayoutParams params) {
+    private View createViewFromTag(RVDomTree tree, String name, String prefix, Context context, AttrsSet attrsSet, ViewGroup.LayoutParams params) {
         Constructor<? extends View> constructor = sConstructorMap.get(name);
 
         try {
@@ -101,9 +102,11 @@ public class RVInflater {
 
             mConstructorArgs[0] = context;
             final View view = constructor.newInstance(mConstructorArgs);
-
+            if (DEBUG) {
+                Log.d(TAG, "create view " + view.toString());
+            }
             try {
-                attrsSet.apply(context, view, params);
+                attrsSet.apply(context, view, tree, params);
             } catch (AttrsSet.AttrApplyException e) {
                 e.printStackTrace();
             }

@@ -12,7 +12,7 @@ final class RVDomTree {
 
     private static final String TAG = RVDomTree.class.getSimpleName();
 
-    private static boolean DEBUG = false;
+    static boolean DEBUG = false;
 
     private int mDepth;
 
@@ -20,9 +20,10 @@ final class RVDomTree {
     private int mIndex;
     List<RVDomTree> mChildren;
     String mNodeName;
-    AttrsSet mAttrs;
 
-    RVModule mContext;
+    RVModule mModule;
+
+    int mAttrIndex;
 
     // for cache use
     int mBracketPair;
@@ -33,30 +34,23 @@ final class RVDomTree {
         this(context, null, parent, depth, index);
     }
 
-    private RVDomTree(@NonNull RVModule context, String nodeName, RVDomTree parent, int depth, int index) {
-        mContext = context;
+    private RVDomTree(@NonNull RVModule module, String nodeName, RVDomTree parent, int depth, int index) {
+        mModule = module;
         mNodeName = nodeName;
         mDepth = depth;
         mParent = parent;
         mIndex = index;
         mChildren = new LinkedList<>();
-        mAttrs = new AttrsSet(context);
+
+        module.mAttrs.newAttr(this);
     }
 
-    void addAttr(String attrName, String value) {
-        mAttrs.put(attrName, value);
-    }
-
-    void addAttr(String attrName, double value) {
-        mAttrs.put(attrName, value);
-    }
-
-    void addAttr(String attrName, int value) {
-        mAttrs.put(attrName, value);
+    void addAttr(String attrName, Object value) {
+        mModule.mAttrs.put(this, attrName, value);
     }
 
     RVDomTree addChild(String nodeName, int index) {
-        RVDomTree child = new RVDomTree(mContext, nodeName, this, this.mDepth + 1, index);
+        RVDomTree child = new RVDomTree(mModule, nodeName, this, this.mDepth + 1, index);
         if (DEBUG) {
             Log.d(TAG, "add child " + child.toString() + " to " + this.toString() + ".");
         }
@@ -118,7 +112,7 @@ final class RVDomTree {
     @Override
     public String toString() {
         String index = "@" + mIndex + ", ";
-        return "[" + index + mNodeName + ", attrs=" + mAttrs.toString() + "]";
+        return "[" + index + mNodeName + ", attrs=" + mModule.mAttrs.toString(this) + "]";
     }
 
     public RVDomTree getParent() {
