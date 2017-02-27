@@ -15,8 +15,8 @@ public final class Utils {
         if (closeable != null) {
             try {
                 closeable.close();
-            } catch (IOException e) {
-
+            } catch (IOException ignored) {
+                // do nothing
             }
         }
     }

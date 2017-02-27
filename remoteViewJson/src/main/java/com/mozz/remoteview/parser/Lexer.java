@@ -51,7 +51,7 @@ final class Lexer {
         if (isLetter(peek()) || peek() == '_') {
             return scanId();
         }
-        throw new RVSyntaxError("unknown token", line(), column());
+        throw new RVSyntaxError("unknown token " + peek(), line(), column());
     }
 
     private Token scanCode() throws EOFException {
@@ -140,7 +140,16 @@ final class Lexer {
             next();
         } while (isLetter(peek()) || isDigit(peek()) || peek() == '.');
 
-        return Token.obtainToken(Type.Id, mBuffer.toString(), line, startColumn);
+        String idStr = mBuffer.toString();
+
+        if (idStr.equals(Type.Template.toString())) {
+            return Token.obtainToken(Type.Template, line, startColumn);
+        } else if (idStr.equals(Type.Script.toString())) {
+            return Token.obtainToken(Type.Script, line, startColumn);
+        } else {
+            return Token.obtainToken(Type.Id, mBuffer.toString(), line, startColumn);
+        }
+
     }
 
     private Token scanValue() throws EOFException {

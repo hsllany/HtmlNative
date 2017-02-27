@@ -16,7 +16,7 @@ public final class RVInflater {
 
     private static final String TAG = RVInflater.class.getSimpleName();
     static boolean DEBUG = false;
-    
+
     private static final HashMap<String, Constructor<? extends View>> sConstructorMap =
             new HashMap<String, Constructor<? extends View>>();
 

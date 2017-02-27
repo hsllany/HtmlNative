@@ -11,8 +11,6 @@ public class LuaRunnerTest {
 
     @Test
     public void testLuaRunner() {
-        LuaRunner.getInstance().run(luaScript);
-        LuaRunner.getInstance().run(helloWorldScript);
     }
 
 }

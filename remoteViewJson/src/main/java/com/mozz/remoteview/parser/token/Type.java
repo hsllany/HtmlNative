@@ -1,26 +1,31 @@
 package com.mozz.remoteview.parser.token;
 
-/**
- * Created by Yang Tao on 17/2/21.
- */
-
 public enum Type {
+
     Unknown("unknown"),
+
     LeftAngleBracket("<"),
+
     RightAngleBracket(">"),
+
     Slash("/"),
+
     Id("Id"),
+
     Int("Int"),
+
     Double("Double"),
-    Quot("\""),
+
     Equal("="),
 
     // for value in quot
     Value("Value"),
-    // for inner text
-    Element("Element"),
 
-    Code("Code");
+    Code("Code"),
+
+    Template("template"),
+
+    Script("script");
 
     private String value;
 

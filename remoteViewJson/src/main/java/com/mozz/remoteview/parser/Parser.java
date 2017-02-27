@@ -1,7 +1,5 @@
 package com.mozz.remoteview.parser;
 
-import android.util.Log;
-
 import com.mozz.remoteview.parser.reader.CodeReader;
 import com.mozz.remoteview.parser.token.Token;
 import com.mozz.remoteview.parser.token.Type;
@@ -10,6 +8,10 @@ import java.io.EOFException;
 
 import static com.mozz.remoteview.parser.token.Type.Id;
 import static com.mozz.remoteview.parser.token.Type.LeftAngleBracket;
+import static com.mozz.remoteview.parser.token.Type.RightAngleBracket;
+import static com.mozz.remoteview.parser.token.Type.Script;
+import static com.mozz.remoteview.parser.token.Type.Slash;
+import static com.mozz.remoteview.parser.token.Type.Template;
 
 public final class Parser {
 
@@ -22,6 +24,8 @@ public final class Parser {
     private int mLookFor;
 
     private Token mCurToken;
+
+    private boolean mReserved = false;
 
     private static final int LK_LeftArrowBracket = 1;
     private static final int LK_RightArrowBracket = 1 << 1;
@@ -40,78 +44,84 @@ public final class Parser {
 
     public RVModule process() throws RVSyntaxError {
 
-        lookFor(LK_LeftArrowBracket | LK_ID);
-
         RVModule rvModule = new RVModule();
         rvModule.mRootTree = new RVDomTree(rvModule, null, 0, 0);
         rvModule.mFunctionTable = new FunctionTable();
 
+
         try {
+            scanFor(LeftAngleBracket);
+
+            // Look ahead to determine whether current is script or template
             scan();
 
-            if (mCurToken.type() == LeftAngleBracket) {
-                lookFor(LK_ID);
+            // Script situation
+            if (mCurToken.type() == Script) {
+                scanFor(RightAngleBracket);
 
-                scan();
+                // scan for code
+                scan(true);
 
-                // Id Token should follow <
-                if (mCurToken.type() != Type.Id) {
-                    throw new RVSyntaxError("unknown type of token " + mCurToken.type() +
-                            ", < should be followed by view name", mLexer.line(), mLexer.column());
-                }
-
-                rvModule.mRootTree.mNodeName = mCurToken.stringValue();
-
-                rvModule.mRootTree.mTagPair = 1;
-                rvModule.mRootTree.mBracketPair = 1;
-
-                // scan the view tree first
-                processInternal(rvModule.mRootTree);
-
-                // scan the related code then
-                scan();
                 if (mCurToken.type() == Id) {
-                    processCode(mCurToken.stringValue(), rvModule.mFunctionTable, false);
+                    scan();
+                    processCode(mCurToken.stringValue(), rvModule.mFunctionTable);
                 }
 
-                scan();
+                scanFor(LeftAngleBracket, Slash, Script, RightAngleBracket);
 
-            } else if (mCurToken.type() == Id) {
+                //scan for <template> tag
+                scanFor(LeftAngleBracket, Template, RightAngleBracket);
 
-                // handle the case that code appear first
-                processCode(mCurToken.stringValue(), rvModule.mFunctionTable, true);
+                scanFor(LeftAngleBracket);
+                scan(true);
 
-                // Id token should follow <
-                if (mCurToken.type() != LeftAngleBracket) {
-                    throw new RVSyntaxError("unknown type of token " + mCurToken.type() +
-                            ".", mLexer.line(), mLexer.column());
-                }
-
-                //scan for the tree node name
-                scan();
-                if (mCurToken.type() != Type.Id) {
-                    throw new RVSyntaxError("unknown type of token " + mCurToken.type() +
-                            ", < should be followed by view name", mLexer.line(), mLexer.column());
-                }
-
-                rvModule.mRootTree.mNodeName = mCurToken.stringValue();
-                rvModule.mRootTree.mTagPair = 1;
-                rvModule.mRootTree.mBracketPair = 1;
-
-                processInternal(rvModule.mRootTree);
-
-                // scan the related code then, there may be another code block here
-                scan();
                 if (mCurToken.type() == Id) {
-                    processCode(mCurToken.stringValue(), rvModule.mFunctionTable, false);
+                    // consume reserved
+                    scan();
+                    rvModule.mRootTree.mNodeName = mCurToken.stringValue();
+                    rvModule.mRootTree.mTagPair = 1;
+                    rvModule.mRootTree.mBracketPair = 1;
+                    processInternal(rvModule.mRootTree);
                 }
+
+                // reach the end of </template>, should contain no more token
+                scanFor(LeftAngleBracket, Slash, Template, RightAngleBracket);
                 scan();
+
+                throw new RVSyntaxError("should end", mLexer.line(), mLexer.column());
+
+            } else if (mCurToken.type() == Template) {
+                scanFor(RightAngleBracket);
+
+                scanFor(LeftAngleBracket);
+                scan(true);
+                if (mCurToken.type() == Id) {
+                    // consume reserved
+                    scan();
+                    rvModule.mRootTree.mNodeName = mCurToken.stringValue();
+                    rvModule.mRootTree.mTagPair = 1;
+                    rvModule.mRootTree.mBracketPair = 1;
+                    processInternal(rvModule.mRootTree);
+                }
+
+                scanFor(LeftAngleBracket, Slash, Template, RightAngleBracket);
+
+                scanFor(LeftAngleBracket, Script, RightAngleBracket);
+                scan(true);
+
+                if (mCurToken.type() == Id) {
+                    scan();
+
+                    processCode(mCurToken.stringValue(), rvModule.mFunctionTable);
+                }
+
+                scanFor(LeftAngleBracket, Slash, Script, RightAngleBracket);
+                scan();
+                throw new RVSyntaxError("should end", mLexer.line(), mLexer.column());
+
 
             } else {
-                mLexer.close();
-                throw new RVSyntaxError("LuaV should start with view or code block", mLexer.line(),
-                        mLexer.column());
-
+                throw new RVSyntaxError("must start with <template> or <script>", mLexer.line(), mLexer.column());
             }
 
         } catch (EOFException e) {
@@ -119,8 +129,6 @@ public final class Parser {
             return rvModule;
         }
 
-        throw new RVSyntaxError("LuaV should start with view or code block", mLexer.line(),
-                mLexer.column());
     }
 
     /**
@@ -128,8 +136,7 @@ public final class Parser {
      *
      * @throws RVSyntaxError
      */
-    private void processCode(String functionName, FunctionTable functionTable,
-                             boolean positionStart) throws RVSyntaxError {
+    private void processCode(String functionName, FunctionTable functionTable) throws RVSyntaxError {
         lookFor(LK_CODE);
         try {
             while (true) {
@@ -149,10 +156,8 @@ public final class Parser {
 
                     // if meet other token, just return
                     default:
-                        if (positionStart)
-                            return;
-                        else
-                            throw new EOFException();
+                        mReserved = true;
+                        return;
                 }
             }
         } catch (EOFException e) {
@@ -166,9 +171,10 @@ public final class Parser {
      * @throws RVSyntaxError
      */
     private void processInternal(RVDomTree tree) throws RVSyntaxError {
+        log("start to parse tree " + tree.getNodeName());
         int index = 0;
 
-        lookFor(LK_VALUE | LK_RightArrowBracket | LK_SLASH);
+        lookFor(LK_ID | LK_RightArrowBracket | LK_SLASH);
 
         String attrName = null;
 
@@ -186,7 +192,7 @@ public final class Parser {
 
                         scan();
 
-                        if (mCurToken.type() == Type.Slash) {
+                        if (mCurToken.type() == Slash) {
 
                             meetEndTag = true;
 
@@ -203,7 +209,7 @@ public final class Parser {
 
                             scan();
 
-                            if (mCurToken.type() != Type.RightAngleBracket) {
+                            if (mCurToken.type() != RightAngleBracket) {
                                 throw new RVSyntaxError("View tag must be end with >", mLexer.line(),
                                         mLexer.column());
                             }
@@ -211,7 +217,7 @@ public final class Parser {
                             // here reach the end of the view tree, just return.
                             return;
 
-                        } else if (mCurToken.type() == Type.Id) {
+                        } else if (mCurToken.type() == Id) {
 
                             checkState(LK_ID);
 
@@ -282,7 +288,7 @@ public final class Parser {
 
                         scan();
 
-                        if (mCurToken.type() != Type.RightAngleBracket) {
+                        if (mCurToken.type() != RightAngleBracket) {
                             throw new RVSyntaxError("unknown state, slash should be followed by >, " +
                                     "but currently " + mCurToken.type(), mLexer.line(),
                                     mLexer.column());
@@ -320,18 +326,43 @@ public final class Parser {
     }
 
     private void scan() throws EOFException, RVSyntaxError {
+        if (mReserved) {
+            log("re-process token ->" + mCurToken);
+            mReserved = false;
+            return;
+        }
         if (mCurToken != null)
             mCurToken.recycle();
         mCurToken = mLexer.scan();
 
-        if (DEBUG) {
-            Log.d(TAG, "process token ->" + mCurToken);
+
+        log("process token ->" + mCurToken);
+
+    }
+
+    private void scan(boolean reserved) throws EOFException, RVSyntaxError {
+        scan();
+        mReserved = reserved;
+    }
+
+    private void scanFor(Type type) throws EOFException, RVSyntaxError {
+        scan();
+
+        if (mCurToken.type() != type) {
+            throw new RVSyntaxError("syntax error, should be " + type.toString() +
+                    "， but current is " + mCurToken.toString(), mLexer.line(), mLexer.column());
+        }
+    }
+
+    private void scanFor(Type... types) throws EOFException, RVSyntaxError {
+        for (Type type : types) {
+            scanFor(type);
         }
     }
 
     private static void log(String msg) {
         if (DEBUG)
-            Log.d(TAG, msg);
+            System.out.println(msg);
     }
 
     public static void toggleDebug(boolean debug) {

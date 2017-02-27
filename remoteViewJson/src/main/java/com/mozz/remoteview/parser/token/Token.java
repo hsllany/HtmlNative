@@ -2,7 +2,9 @@ package com.mozz.remoteview.parser.token;
 
 
 public final class Token {
+
     private long startColumn;
+
     private long line;
 
     private Type mType;
@@ -41,11 +43,25 @@ public final class Token {
     }
 
     public int intValue() {
-        return (int) mValue;
+        if (mValue instanceof Integer)
+            return (int) mValue;
+        else
+            return 0;
     }
 
     public double doubleValue() {
-        return (double) mValue;
+        if (mValue instanceof Double || mValue instanceof Float)
+            return (double) mValue;
+        else
+            return 0d;
+    }
+
+    public boolean booleanValue() {
+        if (mValue instanceof Boolean) {
+            return (boolean) mValue;
+        } else {
+            return false;
+        }
     }
 
     public static Token obtainToken(Type type, Object value, long line, long column) {
@@ -71,6 +87,13 @@ public final class Token {
         return obtainToken(type, null, line, column);
     }
 
+    static void recycleAll() {
+        synchronized (sPoolSync) {
+            sPoolSize = 0;
+            sPool = null;
+        }
+    }
+
     public void recycle() {
         recycleUnchecked();
     }
@@ -90,6 +113,26 @@ public final class Token {
         }
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Token) {
+            Token compare = (Token) obj;
+
+            return compare.mValue.equals(mValue) && compare.mType.equals(mType) &&
+                    compare.line == line && compare.startColumn == startColumn;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int r = 17;
+        r = 31 * r + (int) startColumn;
+        r = 31 * r + (int) line;
+        r = 31 * r + mValue.hashCode();
+        r = 31 * r + mType.hashCode();
+        return r;
+    }
 
     public long getStartColumn() {
         return startColumn;

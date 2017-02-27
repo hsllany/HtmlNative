@@ -1,7 +1,6 @@
 package com.mozz.remoteview.parser;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,15 +8,13 @@ import android.util.ArrayMap;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.mozz.remoteview.parser.code.LuaRunner;
+import com.mozz.remoteview.parser.code.setParams;
+import com.mozz.remoteview.parser.code.toast;
 
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaValue;
-import org.luaj.vm2.lib.OneArgFunction;
-import org.luaj.vm2.lib.TwoArgFunction;
 
 import java.util.Map;
 
@@ -49,7 +46,7 @@ public final class ViewContext {
         if (before != null) {
             Log.w(TAG, "Duplicated id " + id + ", before is " + before + ", current is " + value);
         }
-        return mViewSelector.put(id, value);
+        return before;
     }
 
     @Nullable
@@ -66,11 +63,10 @@ public final class ViewContext {
         long time1 = SystemClock.currentThreadTimeMillis();
 
         mGlobals = LuaRunner.newGlobals();
-        mGlobals.set("textColor", new textColor());
-        mGlobals.set("toast", new toast());
-        mGlobals.set("visible", new visible());
+        mGlobals.set("params", new setParams(this));
+        mGlobals.set("toast", new toast(mContext));
 
-        Log.i(TAG, "init lua module spend " + (SystemClock.currentThreadTimeMillis() - time1) + "ms");
+        Log.i(TAG, "init lua module spend " + (SystemClock.currentThreadTimeMillis() - time1) + " ms");
     }
 
     public static ViewContext getViewContext(FrameLayout v) {
@@ -92,54 +88,5 @@ public final class ViewContext {
         ViewContext v = new ViewContext(module, context);
         layout.setTag(ViewContextTag, v);
         return v;
-    }
-
-    private class textColor extends TwoArgFunction {
-
-        @Override
-        public LuaValue call(LuaValue luaValue, LuaValue luaValue2) {
-            try {
-                String id = luaValue.tojstring();
-
-                int color = Color.parseColor(luaValue2.tojstring());
-
-                View v = findViewById(id);
-                if (v == null) return LuaValue.NIL;
-                
-                if (v instanceof TextView) {
-                    ((TextView) v).setTextColor(color);
-                }
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            }
-
-            return LuaValue.NIL;
-        }
-    }
-
-    private class toast extends OneArgFunction {
-
-        @Override
-        public LuaValue call(LuaValue luaValue) {
-            String msg = luaValue.tojstring();
-            Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
-
-            return LuaValue.NIL;
-        }
-    }
-
-    private class visible extends TwoArgFunction {
-
-        @Override
-        public LuaValue call(LuaValue luaValue, LuaValue luaValue1) {
-            String id = luaValue.tojstring();
-            boolean visible = luaValue1.toboolean();
-
-            View v = findViewById(id);
-            if (v == null) return LuaValue.NIL;
-            v.setVisibility(visible ? View.VISIBLE : View.GONE);
-
-            return LuaValue.NIL;
-        }
     }
 }
