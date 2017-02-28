@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.mozz.remoteview.parser.code.Code;
-import com.mozz.remoteview.parser.code.LuaRunner;
 import com.mozz.remoteview.parser.code.logcat;
 import com.mozz.remoteview.parser.code.properties;
 import com.mozz.remoteview.parser.code.setParams;
@@ -18,6 +17,7 @@ import com.mozz.remoteview.parser.code.toast;
 
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.lib.jse.JsePlatform;
 
 import java.util.Map;
 
@@ -106,14 +106,14 @@ public final class ViewContext {
 
     private void initLuaRunner() {
         long time1 = SystemClock.currentThreadTimeMillis();
-        mGlobals = LuaRunner.newGlobals();
+        mGlobals = JsePlatform.standardGlobals();
         mGlobals.set("params", new setParams(this));
         mGlobals.set("toast", new toast(mContext));
         mGlobals.set("property", new properties.property(this));
         mGlobals.set("setProperty", new properties.setProperty(this));
         mGlobals.set("getProperty", new properties.getProperty(this));
         mGlobals.set("logcat", new logcat());
-        Log.i(TAG, "init lua module spend " + (SystemClock.currentThreadTimeMillis() - time1) + " ms");
+        Log.i(TAG, "init Lua module spend " + (SystemClock.currentThreadTimeMillis() - time1) + " ms");
     }
 
     public static ViewContext getViewContext(FrameLayout v) {

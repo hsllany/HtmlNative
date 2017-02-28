@@ -11,11 +11,11 @@ import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.TwoArgFunction;
 
 /**
- * Created by Yang Tao on 17/2/28.
+ * @author Yang Tao, 17/2/28.
  */
 
 
-public class properties {
+public final class properties {
 
     private static final String TAG = properties.class.getSimpleName();
 

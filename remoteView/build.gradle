@@ -25,7 +25,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.1.0'
     compile 'com.github.bumptech.glide:glide:3.7.0'
 
-    compile fileTree(dir: 'libs', include: ['luaj-jse-3.0.1.jar'])
+//    compile fileTree(dir: 'libs', include: ['luaj-jse-3.0.1.jar'])
 
     androidTestCompile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
