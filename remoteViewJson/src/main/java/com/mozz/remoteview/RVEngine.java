@@ -2,6 +2,8 @@ package com.mozz.remoteview;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.view.ViewGroup;
 
 import com.mozz.remoteview.parser.OnRViewLoaded;
@@ -15,12 +17,17 @@ import java.io.InputStream;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
- * Created by Yang Tao on 17/2/21.
+ * @author Yang Tao, 17/2/21.
  */
 
 public class RVEngine {
 
-    private ThreadPoolExecutor mExecutor;
+    public static final String LUA_TAG = "RVScript";
+
+    private HandlerThread mProcessThread = new HandlerThread("RVProcessThread");
+
+    private Handler mProcessHandler = new Handler(mProcessThread.getLooper());
+
 
     private RVEngine() {
     }
@@ -39,10 +46,6 @@ public class RVEngine {
         return sInstance;
     }
 
-    public static void setThreadPool(ThreadPoolExecutor executor) {
-        getInstance().setExecutor(executor);
-    }
-
     public static void loadView(InputStream inputStream, OnRViewLoaded onRViewLoaded) {
 
     }
@@ -57,10 +60,6 @@ public class RVEngine {
 
     public static void loadView(InputStream inputStream, ViewGroup viewGroup) {
 
-    }
-
-    private void setExecutor(ThreadPoolExecutor mExecutor) {
-        this.mExecutor = mExecutor;
     }
 
     public void onDestory() {

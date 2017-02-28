@@ -41,7 +41,7 @@ final class AttrsSet {
     private static final String ATTR_ALPHA = "alpha";
     private static final String ATTR_ID = "id";
     private static final String ATTR_ONCLICK = "onClick";
-    
+
     private Object[] mAttrs;
     private int[] mLength;
 
@@ -51,7 +51,7 @@ final class AttrsSet {
 
     private int mCompacity;
 
-    private RVModule mContext;
+    private RVModule mModule;
 
     private static Map<Class<? extends View>, Attr> sCachedAttrs = new HashMap<>();
 
@@ -59,8 +59,8 @@ final class AttrsSet {
         this(context, 10);
     }
 
-    AttrsSet(RVModule context, int initCompacity) {
-        mContext = context;
+    AttrsSet(RVModule module, int initCompacity) {
+        mModule = module;
         mAttrs = new Object[initCompacity << 1];
         mLength = new int[initCompacity];
         mGrowLength = 0;
@@ -228,7 +228,7 @@ final class AttrsSet {
 
                 if (value instanceof String) {
                     final String functionName = (String) value;
-                    final Code code = mContext.retrieveCode(functionName);
+                    final Code code = mModule.retrieveCode(functionName);
 
                     if (code != null) {
                         v.setOnClickListener(new View.OnClickListener() {

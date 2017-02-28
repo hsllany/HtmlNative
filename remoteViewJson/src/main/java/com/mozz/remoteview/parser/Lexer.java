@@ -59,8 +59,22 @@ final class Lexer {
         long line = mReader.line();
         clearBuf();
 
+        // Handle the inner bracket of lua script.
+        // Such that: a = {}
+        int scriptBracket = 0;
+
         next();
-        while (peek() != '}') {
+        while (true) {
+
+            if (peek() == '{') {
+                scriptBracket++;
+            } else if (peek() == '}') {
+                scriptBracket--;
+                if (scriptBracket == -1) {
+                    break;
+                }
+            }
+
             mBuffer.append(peek());
             next();
         }
@@ -212,6 +226,6 @@ final class Lexer {
     }
 
     private void clearBuf() {
-        mBuffer.delete(0, mBuffer.length());
+        mBuffer.setLength(0);
     }
 }

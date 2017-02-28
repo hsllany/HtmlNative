@@ -10,7 +10,7 @@ import java.io.InputStreamReader;
  * Created by Yang Tao on 17/2/21.
  */
 
-public class FileCodeReader extends StreamCodeReader {
+public class FileCodeReader extends StreamReader {
 
     public FileCodeReader(File file) throws FileNotFoundException {
         super(new FileReader(file));

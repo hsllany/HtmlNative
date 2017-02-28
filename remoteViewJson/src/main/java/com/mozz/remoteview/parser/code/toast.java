@@ -3,6 +3,8 @@ package com.mozz.remoteview.parser.code;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.mozz.remoteview.parser.MainHandler;
+
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.OneArgFunction;
 
@@ -19,12 +21,18 @@ public class toast extends OneArgFunction {
     }
 
     @Override
-    public LuaValue call(LuaValue luaValue) {
-        Context context = mContext.get();
-        if (context != null) {
-            String msg = luaValue.tojstring();
-            Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
-        }
+    public LuaValue call(final LuaValue luaValue) {
+        MainHandler.instance().post(new Runnable() {
+            @Override
+            public void run() {
+                Context context = mContext.get();
+                if (context != null) {
+                    String msg = luaValue.tojstring();
+                    Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
 
         return LuaValue.NIL;
     }

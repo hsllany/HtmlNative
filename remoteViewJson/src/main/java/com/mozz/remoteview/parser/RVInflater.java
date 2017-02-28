@@ -37,6 +37,8 @@ public final class RVInflater {
         FrameLayout frameLayout = new FrameLayout(context);
         ViewContext viewContext = ViewContext.initViewContext(frameLayout, rvModule, context);
 
+        viewContext.onViewCreate();
+
         View v = inflate(context, viewContext, rvModule.mRootTree, rvModule.mAttrs, root,
                 attachToRoot, params);
 

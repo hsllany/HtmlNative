@@ -9,7 +9,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.mozz.remoteview.parser.code.Code;
 import com.mozz.remoteview.parser.code.LuaRunner;
+import com.mozz.remoteview.parser.code.logcat;
+import com.mozz.remoteview.parser.code.properties;
 import com.mozz.remoteview.parser.code.setParams;
 import com.mozz.remoteview.parser.code.toast;
 
@@ -19,7 +22,7 @@ import org.luaj.vm2.LuaValue;
 import java.util.Map;
 
 /**
- * Created by Yang Tao on 17/2/24.
+ * @author Yang Tao, 17/2/24.
  */
 
 public final class ViewContext {
@@ -30,6 +33,8 @@ public final class ViewContext {
 
     Map<String, View> mViewSelector = new ArrayMap<>();
 
+    private VariablePool mPool = new VariablePool();
+
     private Globals mGlobals;
 
     private RVModule mModule;
@@ -38,6 +43,18 @@ public final class ViewContext {
     ViewContext(RVModule module, Context context) {
         mModule = module;
         mContext = context;
+    }
+
+    public void addVariable(String string, Object object) {
+        mPool.addVariable(string, object);
+    }
+
+    public void updateVariable(String string, Object newValue) {
+        mPool.updateVariable(string, newValue);
+    }
+
+    public Object getVariable(String string) {
+        return mPool.getVariable(string);
     }
 
     @Nullable
@@ -59,13 +76,43 @@ public final class ViewContext {
     }
 
     void onViewLoaded() {
+        callCreated();
 
+    }
+
+    void onViewCreate() {
+        initLuaRunner();
+
+        initVariablePool();
+
+        callCreate();
+    }
+
+    private void initVariablePool() {
+
+    }
+
+    private void callCreate() {
+        Code create = mModule.mFunctionTable.retrieveReserved(FunctionTable.CREATE);
+        if (create == null) return;
+        execute(create);
+    }
+
+    private void callCreated() {
+        Code created = mModule.mFunctionTable.retrieveReserved(FunctionTable.CREATED);
+        if (created == null) return;
+        execute(created);
+    }
+
+    private void initLuaRunner() {
         long time1 = SystemClock.currentThreadTimeMillis();
-
         mGlobals = LuaRunner.newGlobals();
         mGlobals.set("params", new setParams(this));
         mGlobals.set("toast", new toast(mContext));
-
+        mGlobals.set("property", new properties.property(this));
+        mGlobals.set("setProperty", new properties.setProperty(this));
+        mGlobals.set("getProperty", new properties.getProperty(this));
+        mGlobals.set("logcat", new logcat());
         Log.i(TAG, "init lua module spend " + (SystemClock.currentThreadTimeMillis() - time1) + " ms");
     }
 
@@ -77,6 +124,11 @@ public final class ViewContext {
         }
 
         return null;
+    }
+
+
+    public void execute(Code code) {
+        execute(code.toString());
     }
 
     public void execute(String code) {

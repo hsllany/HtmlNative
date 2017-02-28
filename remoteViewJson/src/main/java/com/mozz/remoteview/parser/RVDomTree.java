@@ -17,8 +17,11 @@ final class RVDomTree {
     private int mDepth;
 
     private RVDomTree mParent;
+
     private int mIndex;
+
     List<RVDomTree> mChildren;
+
     String mNodeName;
 
     RVModule mModule;
@@ -27,8 +30,8 @@ final class RVDomTree {
 
     // for cache use
     int mBracketPair;
-    int mTagPair;
 
+    int mTagPair;
 
     RVDomTree(@NonNull RVModule context, RVDomTree parent, int depth, int index) {
         this(context, null, parent, depth, index);

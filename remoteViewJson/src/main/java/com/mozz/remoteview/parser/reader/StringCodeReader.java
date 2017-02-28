@@ -6,7 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public class StringCodeReader extends StreamCodeReader {
+public class StringCodeReader extends StreamReader {
 
     private InputStream inputStream;
 

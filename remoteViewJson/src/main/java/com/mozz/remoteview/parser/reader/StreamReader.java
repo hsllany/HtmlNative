@@ -1,16 +1,13 @@
 package com.mozz.remoteview.parser.reader;
 
-import android.util.Log;
-
 import com.mozz.remoteview.parser.Utils;
 
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Arrays;
 
 
-public class StreamCodeReader implements CodeReader {
+public class StreamReader implements CodeReader {
 
     public static final int CACHE_SIZE = 12;
 
@@ -28,11 +25,11 @@ public class StreamCodeReader implements CodeReader {
 
     private Reader mInputStream;
 
-    public StreamCodeReader() {
+    public StreamReader() {
 
     }
 
-    public StreamCodeReader(Reader inputStream) {
+    public StreamReader(Reader inputStream) {
         mInputStream = inputStream;
     }
 
