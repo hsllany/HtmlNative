@@ -1,1 +1,1 @@
-include ':app', ':remoteViewJson'
+include ':app', ':remoteView'

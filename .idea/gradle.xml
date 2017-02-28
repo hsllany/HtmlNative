@@ -9,7 +9,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/remoteViewJson" />
+            <option value="$PROJECT_DIR$/remoteView" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

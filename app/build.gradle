@@ -20,7 +20,7 @@ android {
 }
 
 dependencies {
-    compile project(':remoteViewJson')
+    compile project(':remoteView')
     compile 'com.squareup.okhttp3:okhttp:3.6.0'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {

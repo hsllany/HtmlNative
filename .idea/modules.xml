@@ -4,7 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/RemoteView.iml" filepath="$PROJECT_DIR$/RemoteView.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/remoteViewJson/remoteViewJson.iml" filepath="$PROJECT_DIR$/remoteViewJson/remoteViewJson.iml" />
+      <module fileurl="file://$PROJECT_DIR$/remoteView/remoteView.iml" filepath="$PROJECT_DIR$/remoteView/remoteView.iml" />
     </modules>
   </component>
 </project>
