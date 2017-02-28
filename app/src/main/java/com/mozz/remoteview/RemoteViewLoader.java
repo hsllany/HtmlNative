@@ -8,11 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.mozz.remoteview.parser.Parser;
-import com.mozz.remoteview.parser.RVModule;
-import com.mozz.remoteview.parser.RVInflater;
-import com.mozz.remoteview.parser.RVSyntaxError;
-import com.mozz.remoteview.parser.reader.StringCodeReader;
+import com.mozz.remoteview.reader.StringCodeReader;
 
 import java.io.IOException;
 

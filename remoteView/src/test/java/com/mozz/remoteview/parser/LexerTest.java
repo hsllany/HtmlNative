@@ -1,9 +1,9 @@
 package com.mozz.remoteview.parser;
 
-import android.util.Log;
-
-import com.mozz.remoteview.parser.reader.StringCodeReader;
-import com.mozz.remoteview.parser.token.Token;
+import com.mozz.remoteview.Lexer;
+import com.mozz.remoteview.RVSyntaxError;
+import com.mozz.remoteview.reader.StringCodeReader;
+import com.mozz.remoteview.token.Token;
 
 import org.junit.Test;
 

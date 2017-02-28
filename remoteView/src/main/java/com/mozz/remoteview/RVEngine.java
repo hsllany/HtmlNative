@@ -6,15 +6,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.view.ViewGroup;
 
-import com.mozz.remoteview.parser.OnRViewLoaded;
-import com.mozz.remoteview.parser.RVModule;
-
-import org.luaj.vm2.Globals;
-import org.luaj.vm2.LuaValue;
-import org.luaj.vm2.lib.jse.JsePlatform;
-
 import java.io.InputStream;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @author Yang Tao, 17/2/21.

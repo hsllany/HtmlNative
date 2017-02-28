@@ -1,5 +1,8 @@
 package com.mozz.remoteview.parser;
 
+import com.mozz.remoteview.RVDomTree;
+import com.mozz.remoteview.RVModule;
+
 import org.junit.Test;
 
 /**
