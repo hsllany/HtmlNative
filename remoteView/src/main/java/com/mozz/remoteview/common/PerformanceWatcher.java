@@ -17,7 +17,7 @@ public interface PerformanceWatcher {
 final class PerformanceWatcherImpl implements PerformanceWatcher {
     private final long time;
     private long lastTime = -1;
-    private StringBuilder mSb;
+    private final StringBuilder mSb;
 
     PerformanceWatcherImpl() {
         time = SystemClock.currentThreadTimeMillis();
@@ -26,12 +26,10 @@ final class PerformanceWatcherImpl implements PerformanceWatcher {
 
     @Override
     public void check(String tag) {
-
         if (lastTime == -1)
             lastTime = SystemClock.currentThreadTimeMillis();
 
         String currentMethod = Thread.currentThread().getStackTrace()[3].toString();
-
 
         long now = SystemClock.currentThreadTimeMillis();
         long duration = now - time;
@@ -51,7 +49,6 @@ final class PerformanceWatcherImpl implements PerformanceWatcher {
             lastTime = SystemClock.currentThreadTimeMillis();
 
         String currentMethod = Thread.currentThread().getStackTrace()[3].toString();
-
 
         long now = SystemClock.currentThreadTimeMillis();
         long duration = now - time;

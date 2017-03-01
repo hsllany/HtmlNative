@@ -2,7 +2,7 @@ package com.mozz.remoteview.token;
 
 public enum Type {
 
-    Unknown("unknown"),
+    Unknown("Unknown"),
 
     LeftAngleBracket("<"),
 
@@ -23,9 +23,9 @@ public enum Type {
 
     Code("Code"),
 
-    Template("template"),
+    Template("Template"),
 
-    Script("script");
+    Script("Script");
 
     private String value;
 
