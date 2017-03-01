@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -267,8 +268,9 @@ final class AttrsSet {
         DEBUG = debug;
     }
 
+    //TODO there is much can be done when dealing with the Attr
     private static Attr getAttrFromView(Class<? extends View> clazz) {
-        if (clazz.equals(TextView.class)) {
+        if (clazz.equals(TextView.class) || clazz.equals(Button.class)) {
             return new TextViewAttr();
         } else if (clazz.equals(ImageView.class)) {
             return new ImageViewAttr();

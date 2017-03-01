@@ -156,9 +156,9 @@ final class Lexer {
 
         String idStr = mBuffer.toString();
 
-        if (idStr.equals(Type.Template.toString())) {
+        if (idStr.equals(Type.Template.toString().toLowerCase())) {
             return Token.obtainToken(Type.Template, line, startColumn);
-        } else if (idStr.equals(Type.Script.toString())) {
+        } else if (idStr.equals(Type.Script.toString().toLowerCase())) {
             return Token.obtainToken(Type.Script, line, startColumn);
         } else {
             return Token.obtainToken(Type.Id, mBuffer.toString(), line, startColumn);

@@ -1,10 +1,13 @@
 package com.mozz.remoteview.code;
 
 import android.graphics.Color;
+import android.support.annotation.MainThread;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.mozz.remoteview.ViewContext;
+import com.mozz.remoteview.common.MainHandler;
 
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.ThreeArgFunction;
@@ -21,21 +24,31 @@ public class setParams extends ThreeArgFunction {
     }
 
     @Override
-    public LuaValue call(LuaValue luaValue, LuaValue luaValue2, LuaValue luaValue3) {
-        try {
-            String id = luaValue.tojstring();
+    public LuaValue call(final LuaValue luaValue, final LuaValue luaValue2, LuaValue luaValue3) {
 
-            int color = Color.parseColor(luaValue2.tojstring());
+        MainHandler.instance().post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String id = luaValue.tojstring();
 
-            View v = viewContext.findViewById(id);
-            if (v == null) return LuaValue.NIL;
+                    View v = viewContext.findViewById(id);
+                    if (v == null) return;
 
-            if (v instanceof TextView) {
-                ((TextView) v).setTextColor(color);
+                    if (luaValue2.tojstring().equals("false")) {
+                        v.setVisibility(View.GONE);
+                        Log.d("BUG", v.toString());
+                    } else {
+                        v.setVisibility(View.VISIBLE);
+                    }
+
+
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                }
             }
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        }
+        });
+
 
         return LuaValue.NIL;
     }

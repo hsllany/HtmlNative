@@ -15,7 +15,7 @@ public final class RVModule {
 
     private static Map<String, RVModule> sCache = new ArrayMap<>();
 
-    private static Object sCacheLock = new Object();
+    private static final Object sCacheLock = new Object();
 
     RVModule() {
         mFunctionTable = new FunctionTable();
@@ -39,6 +39,7 @@ public final class RVModule {
         return parser.process();
     }
 
+    //TODO finish the cache of RVModule
     public static RVModule load(InputStream stream, String tag) throws RVSyntaxError {
         synchronized (sCacheLock) {
             RVModule module = sCache.get(tag);

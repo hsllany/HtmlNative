@@ -1,7 +1,6 @@
 package com.mozz.remoteview;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +10,7 @@ import com.mozz.remoteview.common.MainHandler;
 import com.mozz.remoteview.common.WefRunnable;
 
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 
 /**
  * @author Yang Tao, 17/2/21.
@@ -39,7 +39,7 @@ public class RV {
         return sInstance;
     }
 
-    public void stop() {
+    public void start() {
 
     }
 
@@ -74,15 +74,25 @@ public class RV {
     }
 
     public void loadView(Context context, InputStream inputStream, Activity activity) {
-
+        loadView(context, inputStream, new OnRViewLoadedWeak<Activity>(activity) {
+            @Override
+            public void onViewLoaded(View v) {
+                Activity act = mWeakRef.get();
+                if (act != null && !act.isDestroyed() && v != null) {
+                    act.setContentView(v);
+                }
+            }
+        });
     }
 
-    public void loadView(Context context, InputStream inputStream, Fragment view) {
-
-    }
-
-    public void loadView(Context context, InputStream inputStream, ViewGroup viewGroup) {
-
+    public void loadView(Context context, InputStream inputStream, final ViewGroup viewGroup) {
+        loadView(context, inputStream, new OnRViewLoadedWeak<ViewGroup>(viewGroup) {
+            @Override
+            public void onViewLoaded(View v) {
+                ViewGroup vv = mWeakRef.get();
+                vv.addView(v);
+            }
+        });
     }
 
     public static String version() {
@@ -101,5 +111,13 @@ public class RV {
 
     public interface OnRViewLoaded {
         void onViewLoaded(View v);
+    }
+
+    private abstract class OnRViewLoadedWeak<T> implements OnRViewLoaded {
+        protected WeakReference<T> mWeakRef;
+
+        public OnRViewLoadedWeak(T tt) {
+            this.mWeakRef = new WeakReference<>(tt);
+        }
     }
 }

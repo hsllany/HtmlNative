@@ -1,6 +1,7 @@
 package com.mozz.remoteview;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.SystemClock;
