@@ -1,4 +1,4 @@
-package com.mozz.remoteview;
+package com.mozz.remoteview.common;
 
 import android.os.Handler;
 import android.os.Looper;

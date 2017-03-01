@@ -1,15 +1,48 @@
 package com.mozz.remoteview.code;
 
+import android.os.Handler;
+import android.os.HandlerThread;
+
+import com.mozz.remoteview.Version;
+
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.ZeroArgFunction;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
 /**
- * Created by Yang Tao on 17/2/24.
+ * @author Yang Tao, 17/2/24.
  */
+public final class LuaRunner {
 
-public class LuaRunner {
+    private HandlerThread mScriptThread = new HandlerThread("RVLuaScriptThread");
+    private Handler mHandler;
+
+    private LuaRunner() {
+        mScriptThread.start();
+        mHandler = new Handler(mScriptThread.getLooper());
+    }
+
+    public void quit() {
+        mScriptThread.quit();
+    }
+
+    public void runLuaScript(Runnable r) {
+        mHandler.post(r);
+    }
+
+    private static LuaRunner instance = null;
+
+    public static LuaRunner getInstance() {
+        if (instance == null) {
+            synchronized (LuaRunner.class) {
+                if (instance == null)
+                    instance = new LuaRunner();
+            }
+        }
+
+        return instance;
+    }
 
 
     public static Globals newGlobals() {
@@ -22,7 +55,7 @@ public class LuaRunner {
 
         @Override
         public LuaValue call() {
-            return LuaValue.valueOf("LuaViewVersion:1.0");
+            return LuaValue.valueOf(Version.v);
         }
     }
 

@@ -1,6 +1,6 @@
 package com.mozz.remoteview.reader;
 
-import com.mozz.remoteview.Utils;
+import com.mozz.remoteview.common.Utils;
 
 import java.io.EOFException;
 import java.io.IOException;

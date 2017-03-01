@@ -1,19 +1,26 @@
 package com.mozz.remoteview;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+
+import com.mozz.remoteview.common.Performance;
+import com.mozz.remoteview.common.PerformanceWatcher;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 
-public final class RVInflater {
+final class RVRenderer {
 
-    private static final String TAG = RVInflater.class.getSimpleName();
+    private static final String TAG = RVRenderer.class.getSimpleName();
+
     static boolean DEBUG = false;
 
     private static final HashMap<String, Constructor<? extends View>> sConstructorMap =
@@ -24,30 +31,51 @@ public final class RVInflater {
     private static final Class<?>[] sConstructorSignature = new Class[]{
             Context.class};
 
-    private RVInflater() {
+    // for running render task
+    private static HandlerThread mProcessThread = new HandlerThread("RVRenderThread");
+    private static Handler mProcessHandler;
+
+    static void init() {
+        mProcessThread.start();
+        mProcessHandler = new Handler(mProcessThread.getLooper());
     }
 
-    public static RVInflater get() {
-        return new RVInflater();
+    static void quit() {
+        mProcessThread.quit();
+    }
+
+    static void runRenderTask(Runnable r) {
+        mProcessHandler.post(r);
+    }
+
+    private RVRenderer() {
+    }
+
+    public static RVRenderer get() {
+        return new RVRenderer();
     }
 
     public View inflate(Context context, RVModule rvModule, ViewGroup root, boolean attachToRoot,
                         ViewGroup.LayoutParams params) throws RemoteInflateException {
+
+        PerformanceWatcher pWatcher = Performance.newWatcher();
         FrameLayout frameLayout = new FrameLayout(context);
         ViewContext viewContext = ViewContext.initViewContext(frameLayout, rvModule, context);
+        pWatcher.check("[step 1] create ViewContext");
 
         viewContext.onViewCreate();
+        pWatcher.check("[step 2] call onViewCreate");
 
         View v = inflate(context, viewContext, rvModule.mRootTree, rvModule.mAttrs, root,
                 attachToRoot, params);
+        pWatcher.check("[step 3] rendering view");
 
         if (v == null)
             return null;
-
         frameLayout.addView(v, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
-
         viewContext.onViewLoaded();
+        pWatcher.checkDone("finally done");
 
         if (DEBUG) {
             Log.d(TAG, viewContext.mViewSelector.toString());
@@ -88,7 +116,7 @@ public final class RVInflater {
                     viewGroup.addView(v, layoutParams);
                 }
             } else {
-                Log.w(TAG, "View inflate from RVInflater is not an viewGroup" +
+                Log.w(TAG, "View inflate from RVRenderer is not an viewGroup" +
                         view.getClass().getSimpleName() +
                         ", but related RVDomTree has children. Will ignore its children!");
             }
@@ -110,6 +138,8 @@ public final class RVInflater {
     private View createViewFromTag(RVDomTree tree, ViewContext viewContext, String name,
                                    String prefix, Context context, AttrsSet attrsSet,
                                    ViewGroup.LayoutParams params) {
+
+        long time1 = SystemClock.currentThreadTimeMillis();
 
         Constructor<? extends View> constructor = sConstructorMap.get(name);
 
@@ -136,6 +166,8 @@ public final class RVInflater {
             } catch (AttrsSet.AttrApplyException e) {
                 e.printStackTrace();
             }
+
+            Log.d(TAG, "create view " + prefix + name + " spend " + (SystemClock.currentThreadTimeMillis() - time1) + " ms");
             return view;
         } catch (ClassNotFoundException e) {
             e.printStackTrace();

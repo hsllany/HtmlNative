@@ -3,7 +3,7 @@ package com.mozz.remoteview.code;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.mozz.remoteview.MainHandler;
+import com.mozz.remoteview.common.MainHandler;
 
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.OneArgFunction;

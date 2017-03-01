@@ -3,11 +3,12 @@ package com.mozz.remoteview;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.mozz.remoteview.common.Performance;
+import com.mozz.remoteview.common.PerformanceWatcher;
 import com.mozz.remoteview.reader.StringCodeReader;
 
 import java.io.IOException;
@@ -53,15 +54,18 @@ public class RemoteViewLoader implements Runnable {
             String code = r.body().string();
             Log.d("TestDemo", code);
 
-            long time1 = SystemClock.uptimeMillis();
+            PerformanceWatcher clock = Performance.newWatcher();
 
             Parser p = new Parser(new StringCodeReader(code));
             RVModule rvModule = p.process();
 
+            clock.check("Loader_Parser");
+
             final View view;
             try {
                 ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                view = RVInflater.get().inflate(mContext, rvModule, null, false, layoutParams);
+                view = RVRenderer.get().inflate(mContext, rvModule, null, false, layoutParams);
+                clock.check("Loader_RVInflater");
                 mMainHandler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -69,8 +73,8 @@ public class RemoteViewLoader implements Runnable {
                             mCallback.onViewLoaded(view);
                     }
                 });
-                Log.d("TestDemo", "RVInflater========>spend " + (SystemClock.uptimeMillis() - time1));
-            } catch (RVInflater.RemoteInflateException e) {
+                clock.checkDone("Loader_RenderViewFinished");
+            } catch (RVRenderer.RemoteInflateException e) {
                 e.printStackTrace();
             }
 

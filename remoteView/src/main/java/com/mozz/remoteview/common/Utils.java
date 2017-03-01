@@ -1,4 +1,4 @@
-package com.mozz.remoteview;
+package com.mozz.remoteview.common;
 
 import java.io.Closeable;
 import java.io.IOException;

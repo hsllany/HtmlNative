@@ -8,7 +8,7 @@ import java.util.Map;
  * @author Yang Tao, 17/2/27.
  */
 
-public class VariablePool {
+final class VariablePool {
     private Map<String, Object> mPool;
 
     public VariablePool() {
