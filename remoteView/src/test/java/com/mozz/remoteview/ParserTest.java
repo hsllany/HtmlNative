@@ -1,16 +1,13 @@
-package com.mozz.remoteview.parser;
+package com.mozz.remoteview;
 
-import com.mozz.remoteview.Parser;
-import com.mozz.remoteview.RVModule;
-import com.mozz.remoteview.RVSyntaxError;
 import com.mozz.remoteview.reader.StringCodeReader;
 
 import org.junit.Test;
 
-import static com.mozz.remoteview.parser.CodeToTest.codeScriptFirst;
-import static com.mozz.remoteview.parser.CodeToTest.codeScriptOnly;
-import static com.mozz.remoteview.parser.CodeToTest.codeTemplateFirst;
-import static com.mozz.remoteview.parser.CodeToTest.codeTemplateOnly;
+import static com.mozz.remoteview.CodeToTest.codeScriptFirst;
+import static com.mozz.remoteview.CodeToTest.codeScriptOnly;
+import static com.mozz.remoteview.CodeToTest.codeTemplateFirst;
+import static com.mozz.remoteview.CodeToTest.codeTemplateOnly;
 
 public class ParserTest {
 

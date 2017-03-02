@@ -1,4 +1,4 @@
-package com.mozz.remoteview.parser;
+package com.mozz.remoteview;
 
 /**
  * Created by Yang Tao on 17/2/27.

@@ -5,10 +5,13 @@ import android.graphics.Color;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.SystemClock;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsoluteLayout;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.mozz.remoteview.common.Performance;
 import com.mozz.remoteview.common.PerformanceWatcher;
@@ -16,16 +19,30 @@ import com.mozz.remoteview.common.PerformanceWatcher;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.Map;
 
 
 final class RVRenderer {
+
+    private final static Map<String, String> sTagMap = new ArrayMap<>();
+
+    static {
+        sTagMap.put("text", "android.widget.TextView");
+        sTagMap.put("image", "android.widget.ImageView");
+        sTagMap.put("input", "android.widget.EditText");
+        sTagMap.put("button", "android.widget.Button");
+        sTagMap.put("linearbox", "android.widget.LinearLayout");
+        sTagMap.put("flexbox", "android.widget.LinearLayout");
+        sTagMap.put("scroller", "android.widget.ScrollView");
+        sTagMap.put("box", "android.widget.AbsoluteLayout");
+    }
 
     private static final String TAG = RVRenderer.class.getSimpleName();
 
     static boolean DEBUG = false;
 
     private static final HashMap<String, Constructor<? extends View>> sConstructorMap =
-            new HashMap<String, Constructor<? extends View>>();
+            new HashMap<>();
 
     private final Object[] mConstructorArgs = new Object[1];
 
@@ -56,8 +73,8 @@ final class RVRenderer {
         return new RVRenderer();
     }
 
-    public View inflate(Context context, RVModule rvModule, ViewGroup root, boolean attachToRoot,
-                        ViewGroup.LayoutParams params) throws RemoteInflateException {
+    View inflate(Context context, RVModule rvModule, ViewGroup root, boolean attachToRoot,
+                 ViewGroup.LayoutParams params) throws RemoteInflateException {
 
         PerformanceWatcher pWatcher = Performance.newWatcher();
         FrameLayout frameLayout = new FrameLayout(context);
@@ -92,10 +109,10 @@ final class RVRenderer {
         View result = root;
 
         if (tree.isLeaf()) {
-            return createViewFromTag(tree, viewContext, tree.getNodeName(), ANDROID_VIEW_PREFIX,
+            return createViewFromTag(tree, viewContext, tree.getNodeName(),
                     context, attrsSet, params);
         } else {
-            View view = createViewFromTag(tree, viewContext, tree.getNodeName(), ANDROID_VIEW_PREFIX,
+            View view = createViewFromTag(tree, viewContext, tree.getNodeName(),
                     context, attrsSet, params);
 
             if (view == null && attachToRoot) {
@@ -104,14 +121,24 @@ final class RVRenderer {
                 return null;
             }
 
+
             if (view instanceof ViewGroup) {
-
-                ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
                 ViewGroup viewGroup = (ViewGroup) view;
 
                 for (RVDomTree child : tree.mChildren) {
+
+                    ViewGroup.LayoutParams layoutParams;
+                    if (view instanceof AbsoluteLayout) {
+                        layoutParams = new AbsoluteLayout.LayoutParams(
+                                ViewGroup.LayoutParams.WRAP_CONTENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT, 0, 0);
+                    } else {
+                        layoutParams = new ViewGroup.MarginLayoutParams(
+                                ViewGroup.LayoutParams.WRAP_CONTENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT);
+                    }
+
+
                     View v = inflate(context, viewContext, child, attrsSet, null, false,
                             layoutParams);
                     viewGroup.addView(v, layoutParams);
@@ -134,23 +161,22 @@ final class RVRenderer {
         }
     }
 
-    private static final String ANDROID_VIEW_PREFIX = "android.widget.";
-
     private View createViewFromTag(RVDomTree tree, ViewContext viewContext, String name,
-                                   String prefix, Context context, AttrsSet attrsSet,
-                                   ViewGroup.LayoutParams params) {
+                                   Context context, AttrsSet attrsSet,
+                                   ViewGroup.LayoutParams params) throws RemoteInflateException {
 
-        long time1 = SystemClock.currentThreadTimeMillis();
-
+        PerformanceWatcher watcher = Performance.newWatcher();
         Constructor<? extends View> constructor = sConstructorMap.get(name);
 
         try {
             Class<? extends View> clazz;
             if (constructor == null) {
                 // Class not found in the cache, see if it's real, and try to add it
-                clazz = context.getClassLoader().loadClass(
-                        prefix != null ? (prefix + name) : name).asSubclass(View.class);
+                String viewClassName = sTagMap.get(name);
+                if (viewClassName == null)
+                    throw new ClassNotFoundException("can't find related widget " + name);
 
+                clazz = context.getClassLoader().loadClass(viewClassName).asSubclass(View.class);
 
                 constructor = clazz.getConstructor(sConstructorSignature);
                 constructor.setAccessible(true);
@@ -168,23 +194,23 @@ final class RVRenderer {
                 e.printStackTrace();
             }
 
-            Log.d(TAG, "create view " + prefix + name + " spend " + (SystemClock.currentThreadTimeMillis() - time1) + " ms");
+            watcher.checkDone("create view " + view.toString());
             return view;
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-            return null;
+            throw new RemoteInflateException("class not found " + name);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
-            return null;
+            throw new RemoteInflateException("class's constructor is missing " + name);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
-            return null;
+            throw new RemoteInflateException("class's constructor can not be accessed " + name);
         } catch (InstantiationException e) {
             e.printStackTrace();
-            return null;
+            throw new RemoteInflateException("class's constructor can not be invoked " + name);
         } catch (InvocationTargetException e) {
             e.printStackTrace();
-            return null;
+            throw new RemoteInflateException("class's method has something wrong " + name);
         }
 
     }
@@ -206,10 +232,6 @@ final class RVRenderer {
         public RemoteInflateException(Throwable throwable) {
             super(throwable);
         }
-    }
-
-    interface RVViewInflateListener {
-        void onViewLoaded();
     }
 
 }

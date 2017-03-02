@@ -1,6 +1,6 @@
 package com.mozz.remoteview.reader;
 
-import com.mozz.remoteview.parser.CodeToTest;
+import com.mozz.remoteview.CodeToTest;
 
 import org.junit.Test;
 

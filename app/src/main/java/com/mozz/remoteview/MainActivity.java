@@ -5,9 +5,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.URLUtil;
+import android.widget.AbsoluteLayout;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -31,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mLoader = new RemoteViewLoader(this);
 
-        mSearch.setText("http://10.58.107.21/testLayout.xml");
+        mSearch.setText("http://10.58.107.21/detail.layout");
     }
 
     @Override

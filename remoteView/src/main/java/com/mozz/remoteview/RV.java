@@ -39,7 +39,7 @@ public class RV {
         return sInstance;
     }
 
-    public void start() {
+    public void init(Context context) {
 
     }
 
@@ -62,8 +62,8 @@ public class RV {
                                 onRViewLoaded.onViewLoaded(v);
                         }
                     });
-                } catch (RVSyntaxError rvSyntaxError) {
-                    rvSyntaxError.printStackTrace();
+                } catch (RVSyntaxError e) {
+                    e.printStackTrace();
                 } catch (RVRenderer.RemoteInflateException e) {
                     e.printStackTrace();
                 }
@@ -96,11 +96,11 @@ public class RV {
     }
 
     public static String version() {
-        return Version.v;
+        return RVEnvironment.v;
     }
 
     public static int versionCode() {
-        return Version.versionCode;
+        return RVEnvironment.versionCode;
     }
 
     public void onDestory() {

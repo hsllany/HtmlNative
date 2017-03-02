@@ -1,7 +1,5 @@
-package com.mozz.remoteview.parser;
+package com.mozz.remoteview;
 
-import com.mozz.remoteview.Lexer;
-import com.mozz.remoteview.RVSyntaxError;
 import com.mozz.remoteview.reader.StringCodeReader;
 import com.mozz.remoteview.token.Token;
 
@@ -10,7 +8,7 @@ import org.junit.Test;
 import java.io.EOFException;
 import java.io.IOException;
 
-import static com.mozz.remoteview.parser.CodeToTest.codeScriptFirst;
+import static com.mozz.remoteview.CodeToTest.codeScriptFirst;
 
 public class LexerTest {
 

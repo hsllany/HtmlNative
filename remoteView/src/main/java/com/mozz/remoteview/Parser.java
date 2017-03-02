@@ -13,7 +13,7 @@ import static com.mozz.remoteview.token.Type.Script;
 import static com.mozz.remoteview.token.Type.Slash;
 import static com.mozz.remoteview.token.Type.Template;
 
-public final class Parser {
+final class Parser {
 
     private static final String TAG = Parser.class.getSimpleName();
 
@@ -121,7 +121,7 @@ public final class Parser {
 
 
             } else {
-                throw new RVSyntaxError("must start with <template> or <script>", mLexer.line(), mLexer.column());
+                throw new RVSyntaxError("must init with <template> or <script>", mLexer.line(), mLexer.column());
             }
 
         } catch (EOFException e) {
@@ -171,7 +171,7 @@ public final class Parser {
      * @throws RVSyntaxError
      */
     private void processInternal(RVDomTree tree) throws RVSyntaxError {
-        log("start to parse tree " + tree.getNodeName());
+        log("init to parse tree " + tree.getNodeName());
         int index = 0;
 
         lookFor(LK_ID | LK_RightArrowBracket | LK_SLASH);

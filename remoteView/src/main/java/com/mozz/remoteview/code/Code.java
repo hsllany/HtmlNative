@@ -3,12 +3,13 @@ package com.mozz.remoteview.code;
 import android.os.SystemClock;
 import android.util.Log;
 
+import com.mozz.remoteview.RVEnvironment;
 import com.mozz.remoteview.ViewContext;
 
 
-public class Code {
+public final class Code {
     private static final String TAG = Code.class.getSimpleName();
-    static final boolean DEBUG = false;
+    public static final boolean DEBUG = RVEnvironment.DEBUG;
     private String mCode;
     private String mFunctionName;
 

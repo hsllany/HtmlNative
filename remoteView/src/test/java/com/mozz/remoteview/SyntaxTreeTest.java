@@ -1,4 +1,4 @@
-package com.mozz.remoteview.parser;
+package com.mozz.remoteview;
 
 import com.mozz.remoteview.RVDomTree;
 import com.mozz.remoteview.RVModule;

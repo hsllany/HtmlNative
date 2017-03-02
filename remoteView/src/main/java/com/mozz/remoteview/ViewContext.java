@@ -8,6 +8,7 @@ import android.util.ArrayMap;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.mozz.remoteview.code.Code;
 import com.mozz.remoteview.code.LuaRunner;
@@ -15,10 +16,12 @@ import com.mozz.remoteview.code.logcat;
 import com.mozz.remoteview.code.properties;
 import com.mozz.remoteview.code.setParams;
 import com.mozz.remoteview.code.toast;
+import com.mozz.remoteview.common.MainHandler;
 import com.mozz.remoteview.common.StrRunnable;
 import com.mozz.remoteview.common.WefRunnable;
 
 import org.luaj.vm2.Globals;
+import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaValue;
 
 import java.lang.ref.WeakReference;
@@ -29,6 +32,8 @@ import java.util.Map;
  */
 
 public final class ViewContext {
+
+    private static boolean DEBUG = false;
 
     private static final String TAG = ViewContext.class.getSimpleName();
 
@@ -121,12 +126,12 @@ public final class ViewContext {
                 if (viewContext == null) return;
                 long time1 = SystemClock.currentThreadTimeMillis();
                 mGlobals = LuaRunner.newGlobals();
-                mGlobals.set("params", new setParams(viewContext));
+                mGlobals.set("view", new setParams(viewContext));
                 mGlobals.set("toast", new toast(viewContext.getAndroidContext()));
                 mGlobals.set("property", new properties.property(viewContext));
                 mGlobals.set("setProperty", new properties.setProperty(viewContext));
                 mGlobals.set("getProperty", new properties.getProperty(viewContext));
-                mGlobals.set("logcat", new logcat());
+                mGlobals.set("log", new logcat());
                 Log.i(TAG, "init Lua module spend " + (SystemClock.currentThreadTimeMillis() - time1) + " ms");
             }
         });
@@ -160,9 +165,23 @@ public final class ViewContext {
         });
     }
 
-    private final void executeCode(String s) {
-        LuaValue l = mGlobals.load(s);
-        l.call();
+    private void executeCode(String s) {
+        try {
+            LuaValue l = mGlobals.load(s);
+            l.call();
+        } catch (final LuaError e) {
+            // make sure that lua script dose not crash the whole app
+            e.printStackTrace();
+            Log.e(TAG, "LuaScriptRun");
+            if (DEBUG)
+                MainHandler.instance().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getAndroidContext(), "LuaScript Wrong:\n" + e.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+        }
     }
 
     static ViewContext initViewContext(FrameLayout layout, RVModule module, Context context) {

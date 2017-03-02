@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.AbsoluteLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -39,9 +39,12 @@ final class AttrsSet {
     private static final String ATTR_PADDING_RIGHT = "paddingRight";
     private static final String ATTR_PADDING_TOP = "paddingTop";
     private static final String ATTR_PADDING_BOTTOM = "paddingBottom";
+    private static final String ATTR_LEFT = "left";
+    private static final String ATTR_TOP = "top";
     private static final String ATTR_ALPHA = "alpha";
     private static final String ATTR_ID = "id";
     private static final String ATTR_ONCLICK = "onClick";
+    private static final String ATTR_VISIBLE = "visible";
 
     private Object[] mAttrs;
     private int[] mLength;
@@ -139,7 +142,9 @@ final class AttrsSet {
         return Arrays.toString(objects);
     }
 
-    public void apply(Context context, final ViewContext viewContext, View v, RVDomTree tree, ViewGroup.LayoutParams layoutParams) throws AttrApplyException {
+    public void apply(Context context, final ViewContext viewContext, View v, RVDomTree tree,
+                      ViewGroup.LayoutParams layoutParams) throws AttrApplyException {
+
         int startPosition = tree.mAttrIndex;
         int treeAttrLength = mLength[startPosition];
 
@@ -150,6 +155,9 @@ final class AttrsSet {
         int width = ViewGroup.LayoutParams.WRAP_CONTENT;
         int height = ViewGroup.LayoutParams.WRAP_CONTENT;
 
+        int left = 0;
+        int top = 0;
+
         for (int i = startPosition; i < startPosition + treeAttrLength; i++) {
 
             String params = (String) mAttrs[i << 1];
@@ -159,102 +167,140 @@ final class AttrsSet {
                 Log.i(TAG, "ready to parse attribute " + params + " with value " + value + ", for view " + v);
             }
 
-            if (params.equals(ATTR_WIDTH)) {
-                if (value instanceof Integer) {
-                    width = (Integer) value;
-                } else if (value.toString().equalsIgnoreCase("MATCH_PARENT")) {
-                    width = ViewGroup.LayoutParams.MATCH_PARENT;
-                } else {
-                    throw new AttrApplyException("Width must be an int or 'WRAP_CONTENT'");
-                }
-
-            } else if (params.equals(ATTR_HEIGHT)) {
-                if (value instanceof Integer) {
-                    height = (Integer) value;
-                } else if (value.toString().equalsIgnoreCase("MATCH_PARENT")) {
-                    height = ViewGroup.LayoutParams.MATCH_PARENT;
-                } else {
-                    throw new AttrApplyException("Height must be an int or 'WRAP_CONTENT'");
-                }
-
-            } else if (params.equals(ATTR_BACKGROUND)) {
-                try {
-                    int backgroundColor = Color.parseColor(value.toString());
-                    v.setBackgroundColor(backgroundColor);
-                } catch (IllegalArgumentException e) {
-                    AttrApplyException eThrow = new AttrApplyException("color parse wrong!");
-                    eThrow.initCause(e);
-                    throw eThrow;
-                }
-
-            } else if (params.equals(ATTR_PADDING)) {
-                if (value instanceof Integer) {
-                    int padding = (int) value;
-
-                    v.setPadding(padding, padding, padding, padding);
-                }
-
-            } else if (params.equals(ATTR_PADDING_LEFT)) {
-                if (value instanceof Integer) {
-                    v.setPadding((int) value, v.getPaddingTop(), v.getPaddingRight(), v.getPaddingBottom());
-                }
-
-            } else if (params.equals(ATTR_PADDING_RIGHT)) {
-                if (value instanceof Integer) {
-                    v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), (int) value, v.getPaddingBottom());
-                }
-
-            } else if (params.equals(ATTR_PADDING_TOP)) {
-                if (value instanceof Integer) {
-                    v.setPadding(v.getPaddingLeft(), (int) value, v.getPaddingRight(), v.getPaddingBottom());
-                }
-
-            } else if (params.equals(ATTR_PADDING_BOTTOM)) {
-                if (value instanceof Integer) {
-                    v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(), (int) value);
-                }
-
-            } else if (params.equals(ATTR_ALPHA)) {
-                if (value instanceof Double) {
-                    double d = (double) value;
-                    v.setAlpha((float) d);
-                }
-            } else if (params.equals(ATTR_ID)) {
-                if (value instanceof String) {
-                    viewContext.put((String) value, v);
-                } else {
-                    throw new AttrApplyException("id must be a string.");
-                }
-            } else if (params.equals(ATTR_ONCLICK)) {
-
-                if (value instanceof String) {
-                    final String functionName = (String) value;
-                    final Code code = mModule.retrieveCode(functionName);
-
-                    if (code != null) {
-                        v.setOnClickListener(new View.OnClickListener() {
-
-                            @Override
-                            public void onClick(View v) {
-                                code.execute(viewContext);
-                            }
-                        });
+            switch (params) {
+                case ATTR_WIDTH:
+                    if (value instanceof Integer) {
+                        width = (Integer) value;
+                    } else if (value.toString().equalsIgnoreCase("MATCH_PARENT")) {
+                        width = ViewGroup.LayoutParams.MATCH_PARENT;
                     } else {
-                        Log.w(TAG, "Can't find related function " + functionName);
+                        throw new AttrApplyException("Width must be an int or 'WRAP_CONTENT'");
                     }
-                }
-            } else {
-                Attr attr = sCachedAttrs.get(v.getClass());
-                if (attr == null) {
-                    attr = getAttrFromView(v.getClass());
-                    if (attr != null) {
-                        sCachedAttrs.put(v.getClass(), attr);
-                    }
-                }
 
-                if (attr != null) {
-                    attr.apply(context, v, params, value);
-                }
+                    break;
+
+                case ATTR_HEIGHT:
+                    if (value instanceof Integer) {
+                        height = (Integer) value;
+                    } else if (value.toString().equalsIgnoreCase("MATCH_PARENT")) {
+                        height = ViewGroup.LayoutParams.MATCH_PARENT;
+                    } else {
+                        throw new AttrApplyException("Height must be an int or 'WRAP_CONTENT'");
+                    }
+
+                    break;
+
+                case ATTR_BACKGROUND:
+                    try {
+                        int backgroundColor = Color.parseColor(value.toString());
+                        v.setBackgroundColor(backgroundColor);
+                    } catch (IllegalArgumentException e) {
+                        AttrApplyException eThrow = new AttrApplyException("color parse wrong!");
+                        eThrow.initCause(e);
+                        throw eThrow;
+                    }
+
+                    break;
+
+                case ATTR_PADDING:
+                    if (value instanceof Integer) {
+                        int padding = (int) value;
+
+                        v.setPadding(padding, padding, padding, padding);
+                    }
+
+                    break;
+                case ATTR_PADDING_LEFT:
+                    if (value instanceof Integer) {
+                        v.setPadding((int) value, v.getPaddingTop(), v.getPaddingRight(), v.getPaddingBottom());
+                    }
+
+                    break;
+                case ATTR_PADDING_RIGHT:
+                    if (value instanceof Integer) {
+                        v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), (int) value, v.getPaddingBottom());
+                    }
+
+                    break;
+                case ATTR_PADDING_TOP:
+                    if (value instanceof Integer) {
+                        v.setPadding(v.getPaddingLeft(), (int) value, v.getPaddingRight(), v.getPaddingBottom());
+                    }
+
+                    break;
+                case ATTR_PADDING_BOTTOM:
+                    if (value instanceof Integer) {
+                        v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(), (int) value);
+                    }
+
+                    break;
+
+                case ATTR_LEFT:
+                    if (value instanceof Integer) {
+                        left = (int) value;
+                    }
+                    break;
+
+                case ATTR_TOP:
+                    if (value instanceof Integer) {
+                        top = (int) value;
+                    }
+                    break;
+                case ATTR_ALPHA:
+                    if (value instanceof Double) {
+                        double d = (double) value;
+                        v.setAlpha((float) d);
+                    }
+                    break;
+
+                case ATTR_ID:
+                    if (value instanceof String) {
+                        viewContext.put((String) value, v);
+                    } else {
+                        throw new AttrApplyException("id must be a string.");
+                    }
+                    break;
+
+                case ATTR_VISIBLE:
+                    if (value instanceof Boolean) {
+                        v.setVisibility((boolean) value ? View.VISIBLE : View.GONE);
+                    } else {
+                        throw new AttrApplyException("visible must be a boolean");
+                    }
+
+                case ATTR_ONCLICK:
+
+                    if (value instanceof String) {
+                        final String functionName = (String) value;
+                        final Code code = mModule.retrieveCode(functionName);
+
+                        if (code != null) {
+                            v.setOnClickListener(new View.OnClickListener() {
+
+                                @Override
+                                public void onClick(View v) {
+                                    code.execute(viewContext);
+                                }
+                            });
+                        } else {
+                            Log.w(TAG, "Can't find related function " + functionName);
+                        }
+                    }
+                    break;
+
+                default:
+                    Attr attr = sCachedAttrs.get(v.getClass());
+                    if (attr == null) {
+                        attr = getAttrFromView(v.getClass());
+                        if (attr != null) {
+                            sCachedAttrs.put(v.getClass(), attr);
+                        }
+                    }
+
+                    if (attr != null) {
+                        attr.apply(context, v, params, value);
+                    }
+                    break;
             }
 
 
@@ -262,6 +308,11 @@ final class AttrsSet {
 
         layoutParams.height = height;
         layoutParams.width = width;
+
+        if (layoutParams instanceof AbsoluteLayout.LayoutParams) {
+            ((AbsoluteLayout.LayoutParams) layoutParams).x = left;
+            ((AbsoluteLayout.LayoutParams) layoutParams).y = top;
+        }
     }
 
     public static void toggleDebug(boolean debug) {
@@ -270,8 +321,10 @@ final class AttrsSet {
 
     //TODO there is much can be done when dealing with the Attr
     private static Attr getAttrFromView(Class<? extends View> clazz) {
-        if (clazz.equals(TextView.class) || clazz.equals(Button.class)) {
-            return new TextViewAttr();
+        // cover all TextView sub classes
+        if (TextView.class.isAssignableFrom(clazz)) {
+            return TextViewAttr.getInstance();
+
         } else if (clazz.equals(ImageView.class)) {
             return new ImageViewAttr();
         } else if (clazz.equals(LinearLayout.class)) {

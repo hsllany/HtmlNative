@@ -12,6 +12,10 @@ public class CodeTest {
 
     @Test
     public void execute() throws Exception {
+
+        String a = "hello world";
+
+        System.out.println(CharSequence.class.isAssignableFrom(String.class));
     }
 
 

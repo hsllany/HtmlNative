@@ -3,7 +3,7 @@ package com.mozz.remoteview.code;
 import android.os.Handler;
 import android.os.HandlerThread;
 
-import com.mozz.remoteview.Version;
+import com.mozz.remoteview.RVEnvironment;
 
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaValue;
@@ -55,7 +55,7 @@ public final class LuaRunner {
 
         @Override
         public LuaValue call() {
-            return LuaValue.valueOf(Version.v);
+            return LuaValue.valueOf(RVEnvironment.v);
         }
     }
 
