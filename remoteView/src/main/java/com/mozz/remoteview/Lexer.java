@@ -175,7 +175,19 @@ final class Lexer {
         do {
             mBuffer.append(peek());
             next();
-        } while (peek() != '"');
+
+            // handling the '\"' case
+            if (peek() == '\\') {
+                next();
+                if (peek() == '"') {
+                    continue;
+                } else {
+                    mBuffer.append('\\');
+                }
+            } else if (peek() == '"') {
+                break;
+            }
+        } while (true);
 
         next();
 
