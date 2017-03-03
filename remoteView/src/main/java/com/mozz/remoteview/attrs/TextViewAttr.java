@@ -1,10 +1,12 @@
 package com.mozz.remoteview.attrs;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
+
+import com.mozz.remoteview.AttrApplyException;
+import com.mozz.remoteview.common.Utils;
 
 public class TextViewAttr implements Attr {
 
@@ -15,15 +17,11 @@ public class TextViewAttr implements Attr {
     }
 
     @Override
-    public void apply(Context context, View v, String params, Object value) {
+    public void apply(Context context, View v, String params, Object value)
+            throws AttrApplyException {
         TextView textView = (TextView) v;
         if (params.equals("color")) {
-            try {
-                int color = Color.parseColor(value.toString());
-                textView.setTextColor(color);
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            }
+            textView.setTextColor(Utils.color(value));
         } else if (params.equals("text")) {
             textView.setText(value.toString());
         } else if (params.equals("fontSize") && value instanceof Number) {

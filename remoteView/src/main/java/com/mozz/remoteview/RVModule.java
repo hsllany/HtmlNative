@@ -2,7 +2,7 @@ package com.mozz.remoteview;
 
 import android.util.ArrayMap;
 
-import com.mozz.remoteview.code.Code;
+import com.mozz.remoteview.script.Code;
 import com.mozz.remoteview.reader.FileCodeReader;
 
 import java.io.InputStream;

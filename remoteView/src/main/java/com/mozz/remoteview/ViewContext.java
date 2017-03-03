@@ -10,12 +10,12 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.mozz.remoteview.code.Code;
-import com.mozz.remoteview.code.LuaRunner;
-import com.mozz.remoteview.code.logcat;
-import com.mozz.remoteview.code.properties;
-import com.mozz.remoteview.code.setParams;
-import com.mozz.remoteview.code.toast;
+import com.mozz.remoteview.script.Code;
+import com.mozz.remoteview.script.LuaRunner;
+import com.mozz.remoteview.script.logcat;
+import com.mozz.remoteview.script.properties;
+import com.mozz.remoteview.script.setParams;
+import com.mozz.remoteview.script.toast;
 import com.mozz.remoteview.common.MainHandler;
 import com.mozz.remoteview.common.StrRunnable;
 import com.mozz.remoteview.common.WefRunnable;
@@ -30,14 +30,28 @@ import java.util.Map;
 /**
  * @author Yang Tao, 17/2/24.
  */
-
 public interface ViewContext {
+    /**
+     * get Android Context
+     *
+     * @return context, see {@link android.content.Context}
+     */
     Context getAndroidContext();
 
-    void execute(String code);
+    /**
+     * to execute script
+     *
+     * @param script to run
+     */
+    void execute(String script);
 
-    void executeNowWithoutException(String code);
-
+    /**
+     * Looking for View by Id set in .layout file
+     *
+     * @param id {@link java.lang.String}
+     * @return View {@link android.view.View} ,or null if not found
+     */
+    @Nullable
     View findViewById(@NonNull String id);
 
     void onViewLoaded();
@@ -183,11 +197,11 @@ final class ViewContextImpl implements ViewContext {
     }
 
     @Override
-    public void execute(final String code) {
-        LuaRunner.getInstance().runLuaScript(new StrRunnableContext(this, code) {
+    public void execute(final String script) {
+        LuaRunner.getInstance().runLuaScript(new StrRunnableContext(this, script) {
             @Override
             protected void runOverride(String s) {
-                ViewContext context = mContextRef.get();
+                ViewContextImpl context = mContextRef.get();
                 if (context == null) return;
 
                 context.executeNowWithoutException(s);
@@ -195,8 +209,12 @@ final class ViewContextImpl implements ViewContext {
         });
     }
 
-    @Override
-    public void executeNowWithoutException(String s) {
+    /**
+     * Actual method to run script, which swallow the exception to prevent app crash
+     *
+     * @param s, script to run
+     */
+    private void executeNowWithoutException(String s) {
         try {
             LuaValue l = mGlobals.load(s);
             l.call();
@@ -223,9 +241,9 @@ final class ViewContextImpl implements ViewContext {
 
     private static abstract class StrRunnableContext extends StrRunnable<String> {
 
-        WeakReference<ViewContext> mContextRef;
+        WeakReference<ViewContextImpl> mContextRef;
 
-        StrRunnableContext(ViewContext context, String s) {
+        StrRunnableContext(ViewContextImpl context, String s) {
             super(s);
 
             mContextRef = new WeakReference<>(context);

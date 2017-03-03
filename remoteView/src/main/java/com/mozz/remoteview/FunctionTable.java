@@ -1,6 +1,6 @@
 package com.mozz.remoteview;
 
-import com.mozz.remoteview.code.Code;
+import com.mozz.remoteview.script.Code;
 
 import java.util.HashMap;
 import java.util.Map;

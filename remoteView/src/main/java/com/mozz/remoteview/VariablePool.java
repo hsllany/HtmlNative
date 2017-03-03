@@ -11,19 +11,19 @@ import java.util.Map;
 final class VariablePool {
     private Map<String, Object> mPool;
 
-    public VariablePool() {
+    VariablePool() {
         mPool = new ArrayMap<>();
     }
 
-    public void addVariable(String string, Object object) {
+    void addVariable(String string, Object object) {
         mPool.put(string, object);
     }
 
-    public void updateVariable(String string, Object newValue) {
+    void updateVariable(String string, Object newValue) {
         mPool.put(string, newValue);
     }
 
-    public Object getVariable(String string) {
+    Object getVariable(String string) {
         return mPool.get(string);
     }
 }

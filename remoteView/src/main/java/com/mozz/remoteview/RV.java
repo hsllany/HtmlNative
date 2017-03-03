@@ -5,7 +5,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.mozz.remoteview.code.LuaRunner;
+import com.mozz.remoteview.script.LuaRunner;
 import com.mozz.remoteview.common.MainHandler;
 import com.mozz.remoteview.common.WefRunnable;
 

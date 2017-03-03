@@ -5,12 +5,14 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.mozz.remoteview.AttrApplyException;
 import com.mozz.remoteview.common.MainHandler;
 
 public class ImageViewAttr implements Attr {
 
     @Override
-    public void apply(final Context context, final View v, String params, final Object value) {
+    public void apply(final Context context, final View v, String params, final Object value)
+            throws AttrApplyException {
         if (params.equals("src")) {
             MainHandler.instance().post(new Runnable() {
                 @Override

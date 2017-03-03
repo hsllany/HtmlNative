@@ -1,5 +1,7 @@
 package com.mozz.remoteview;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.ArrayMap;
 
 import com.mozz.remoteview.attrs.Attr;
@@ -28,11 +30,20 @@ final class ViewRegistry {
         sReservedTagClassTable.put("input", "android.widget.EditText");
         sReservedTagClassTable.put("button", "android.widget.Button");
         sReservedTagClassTable.put("linearbox", "android.widget.LinearLayout");
-        sReservedTagClassTable.put("flexbox", "android.widget.LinearLayout");
+        sReservedTagClassTable.put("flexbox", "com.google.android.flexbox.FlexboxLayout");
         sReservedTagClassTable.put("scroller", "android.widget.ScrollView");
         sReservedTagClassTable.put("box", "android.widget.AbsoluteLayout");
     }
 
+    /**
+     * Looking for related class name via tag. ViewRegistry will first look in
+     * {@link ViewRegistry#sReservedTagClassTable}, if not found, will continuously look in
+     * {@link ViewRegistry#sExtraTagClassTable}
+     *
+     * @param tag tag name found in .layout file
+     * @return corresponding class name, or null if not found
+     */
+    @Nullable
     static String findClassByTag(String tag) {
         String viewClassName = sReservedTagClassTable.get(tag);
 
@@ -49,11 +60,15 @@ final class ViewRegistry {
         return null;
     }
 
+    @Nullable
     static Attr findAttrFromExtraByTag(String tag) {
+        if (sExtraTagClassTable == null)
+            sExtraTagClassTable = new ArrayMap<>();
+
         return sExtraTagClassTable.get(tag);
     }
 
-    static void registerExtraView(String tag, RView rView) {
+    static void registerExtraView(String tag, @NonNull RView rView) {
         if (sExtraTagClassTable == null)
             sExtraTagClassTable = new ArrayMap<>();
 

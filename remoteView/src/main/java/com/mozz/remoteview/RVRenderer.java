@@ -66,7 +66,7 @@ final class RVRenderer {
         viewContext.onViewCreate();
         pWatcher.check("[step 2] call onViewCreate");
 
-        View v = inflate(context, viewContext, rvModule.mRootTree, rvModule.mAttrs,
+        View v = inflate(context, viewContext, rvModule.mRootTree, frameLayout, rvModule.mAttrs,
                 params);
         pWatcher.check("[step 3] rendering view");
 
@@ -86,15 +86,15 @@ final class RVRenderer {
     }
 
     private View inflate(Context context, ViewContext viewContext, RVDomTree tree,
-                         AttrsSet attrsSet, ViewGroup.LayoutParams params)
+                         ViewGroup parent, AttrsSet attrsSet, ViewGroup.LayoutParams params)
             throws RemoteInflateException {
 
 
         if (tree.isLeaf()) {
-            return createViewFromTag(tree, viewContext, tree.getNodeName(),
+            return createViewFromTag(tree, viewContext, tree.getNodeName(), parent,
                     context, attrsSet, params);
         } else {
-            View view = createViewFromTag(tree, viewContext, tree.getNodeName(),
+            View view = createViewFromTag(tree, viewContext, tree.getNodeName(), parent,
                     context, attrsSet, params);
 
             if (view == null) {
@@ -119,7 +119,7 @@ final class RVRenderer {
                     }
 
 
-                    View v = inflate(context, viewContext, child, attrsSet,
+                    View v = inflate(context, viewContext, child, viewGroup, attrsSet,
                             layoutParams);
                     viewGroup.addView(v, layoutParams);
                 }
@@ -135,7 +135,7 @@ final class RVRenderer {
 
 
     private View createViewFromTag(RVDomTree tree, ViewContext viewContext, String name,
-                                   Context context, AttrsSet attrsSet,
+                                   ViewGroup parent, Context context, AttrsSet attrsSet,
                                    ViewGroup.LayoutParams params) throws RemoteInflateException {
 
         PerformanceWatcher watcher = Performance.newWatcher();
@@ -163,8 +163,8 @@ final class RVRenderer {
                 Log.d(TAG, "create view " + view.toString());
             }
             try {
-                attrsSet.apply(context, viewContext, view, tree, params);
-            } catch (AttrsSet.AttrApplyException e) {
+                attrsSet.apply(context, viewContext, view, tree, parent, params);
+            } catch (AttrApplyException e) {
                 e.printStackTrace();
             }
 

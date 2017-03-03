@@ -1,8 +1,8 @@
 package com.mozz.remoteview;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +11,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.mozz.remoteview.attrs.Attr;
+import com.mozz.remoteview.attrs.FlexboxLayoutAttr;
 import com.mozz.remoteview.attrs.ImageViewAttr;
+import com.mozz.remoteview.attrs.LayoutAttr;
 import com.mozz.remoteview.attrs.LinearLayoutAttr;
 import com.mozz.remoteview.attrs.TextViewAttr;
-import com.mozz.remoteview.code.Code;
+import com.mozz.remoteview.common.Utils;
+import com.mozz.remoteview.script.Code;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -143,8 +147,10 @@ final class AttrsSet {
         return Arrays.toString(objects);
     }
 
+    @SuppressWarnings("ConstantConditions")
     public void apply(Context context, final ViewContext viewContext, View v, RVDomTree tree,
-                      ViewGroup.LayoutParams layoutParams) throws AttrApplyException {
+                      ViewGroup parent, ViewGroup.LayoutParams layoutParams)
+            throws AttrApplyException {
 
         int startPosition = tree.mAttrIndex;
         int treeAttrLength = mLength[startPosition];
@@ -192,66 +198,45 @@ final class AttrsSet {
                     break;
 
                 case ATTR_BACKGROUND:
-                    try {
-                        int backgroundColor = Color.parseColor(value.toString());
-                        v.setBackgroundColor(backgroundColor);
-                    } catch (IllegalArgumentException e) {
-                        AttrApplyException eThrow = new AttrApplyException("color parse wrong!");
-                        eThrow.initCause(e);
-                        throw eThrow;
-                    }
-
+                    v.setBackgroundColor(Utils.color(value));
                     break;
 
                 case ATTR_PADDING:
-                    if (value instanceof Integer) {
-                        int padding = (int) value;
-
-                        v.setPadding(padding, padding, padding, padding);
-                    }
-
+                    int padding = Utils.toInt(value);
+                    v.setPadding(padding, padding, padding, padding);
                     break;
+
                 case ATTR_PADDING_LEFT:
-                    if (value instanceof Integer) {
-                        v.setPadding((int) value, v.getPaddingTop(), v.getPaddingRight(), v.getPaddingBottom());
-                    }
-
+                    int paddingLeft = Utils.toInt(value);
+                    v.setPadding(paddingLeft, v.getPaddingTop(), v.getPaddingRight(), v.getPaddingBottom());
                     break;
+
                 case ATTR_PADDING_RIGHT:
-                    if (value instanceof Integer) {
-                        v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), (int) value, v.getPaddingBottom());
-                    }
-
+                    int paddingRight = Utils.toInt(value);
+                    v.setPadding(v.getPaddingTop(), v.getPaddingTop(), paddingRight, v.getPaddingBottom());
                     break;
+
                 case ATTR_PADDING_TOP:
-                    if (value instanceof Integer) {
-                        v.setPadding(v.getPaddingLeft(), (int) value, v.getPaddingRight(), v.getPaddingBottom());
-                    }
-
+                    int paddingTop = Utils.toInt(value);
+                    v.setPadding(v.getPaddingLeft(), paddingTop, v.getPaddingRight(), v.getPaddingBottom());
                     break;
-                case ATTR_PADDING_BOTTOM:
-                    if (value instanceof Integer) {
-                        v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(), (int) value);
-                    }
 
+                case ATTR_PADDING_BOTTOM:
+                    int paddingBottom = Utils.toInt(value);
+                    v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(), paddingBottom);
                     break;
 
                 case ATTR_LEFT:
-                    if (value instanceof Integer) {
-                        left = (int) value;
-                    }
+                    left = Utils.toInt(value);
                     break;
 
                 case ATTR_TOP:
-                    if (value instanceof Integer) {
-                        top = (int) value;
-                    }
+                    top = Utils.toInt(value);
                     break;
+
                 case ATTR_ALPHA:
-                    if (value instanceof Double) {
-                        double d = (double) value;
-                        v.setAlpha((float) d);
-                    }
+                    float alpha = Utils.toFloat(value);
+                    v.setAlpha(alpha);
                     break;
 
                 case ATTR_ID:
@@ -263,11 +248,8 @@ final class AttrsSet {
                     break;
 
                 case ATTR_VISIBLE:
-                    if (value instanceof Boolean) {
-                        v.setVisibility((boolean) value ? View.VISIBLE : View.GONE);
-                    } else {
-                        throw new AttrApplyException("visible must be a boolean");
-                    }
+                    boolean visible = Utils.toBoolean(value);
+                    v.setVisibility(visible ? View.VISIBLE : View.GONE);
 
                 case ATTR_ONCLICK:
 
@@ -290,13 +272,7 @@ final class AttrsSet {
                     break;
 
                 default:
-                    Attr attr = sCachedAttrs.get(v.getClass());
-                    if (attr == null) {
-                        attr = getAttrFromView(v.getClass());
-                        if (attr != null) {
-                            sCachedAttrs.put(v.getClass(), attr);
-                        }
-                    }
+                    Attr attr = getAttr(v.getClass());
 
                     if (attr != null) {
                         attr.apply(context, v, params, value);
@@ -306,6 +282,12 @@ final class AttrsSet {
                     attr = getExtraAttrFromView(v.getClass());
                     if (attr != null) {
                         attr.apply(context, v, params, value);
+                    }
+
+                    // finally apply corresponding parent attr to child
+                    attr = getAttr(parent.getClass());
+                    if (attr != null && attr instanceof LayoutAttr) {
+                        ((LayoutAttr) attr).applyToChild(context, v, params, value);
                     }
                     break;
             }
@@ -322,6 +304,18 @@ final class AttrsSet {
         }
     }
 
+    private Attr getAttr(Class<? extends View> clazz) {
+        Attr attr = sCachedAttrs.get(clazz);
+        if (attr == null) {
+            attr = getAttrFromView(clazz);
+            if (attr != null) {
+                sCachedAttrs.put(clazz, attr);
+            }
+        }
+
+        return attr;
+    }
+
     public static void toggleDebug(boolean debug) {
         DEBUG = debug;
     }
@@ -336,19 +330,16 @@ final class AttrsSet {
             return new ImageViewAttr();
         } else if (clazz.equals(LinearLayout.class)) {
             return new LinearLayoutAttr();
+        } else if (clazz.equals(FlexboxLayout.class)) {
+            return new FlexboxLayoutAttr();
         } else {
             return null;
         }
     }
 
-    private static Attr getExtraAttrFromView(Class<? extends View> clazz) {
+    @Nullable
+    private static Attr getExtraAttrFromView(@NonNull Class<? extends View> clazz) {
         return ViewRegistry.findAttrFromExtraByTag(clazz.getName());
-    }
-
-    static class AttrApplyException extends Exception {
-        AttrApplyException(String msg) {
-            super(msg);
-        }
     }
 
 }
