@@ -1,4 +1,4 @@
-package com.mozz.remoteview.code;
+package com.mozz.remoteview.script;
 
 import android.os.SystemClock;
 import android.util.Log;

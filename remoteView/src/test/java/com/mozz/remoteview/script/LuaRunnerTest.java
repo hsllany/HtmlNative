@@ -1,4 +1,4 @@
-package com.mozz.remoteview.code;
+package com.mozz.remoteview.script;
 
 import org.junit.Test;
 import org.luaj.vm2.Globals;

@@ -1,4 +1,4 @@
-package com.mozz.remoteview.code;
+package com.mozz.remoteview.script;
 
 import android.graphics.Color;
 import android.view.View;

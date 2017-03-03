@@ -1,4 +1,4 @@
-package com.mozz.remoteview.code;
+package com.mozz.remoteview.script;
 
 import android.content.Context;
 import android.widget.Toast;

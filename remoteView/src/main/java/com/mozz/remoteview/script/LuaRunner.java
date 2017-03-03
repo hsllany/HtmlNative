@@ -1,4 +1,4 @@
-package com.mozz.remoteview.code;
+package com.mozz.remoteview.script;
 
 import android.os.Handler;
 import android.os.HandlerThread;
