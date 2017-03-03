@@ -14,10 +14,7 @@ import static com.mozz.remoteview.RV.LUA_TAG;
 public class logcat extends OneArgFunction {
     @Override
     public LuaValue call(LuaValue luaValue) {
-
-        if (luaValue.isstring()) {
-            Log.d(LUA_TAG, luaValue.tojstring());
-        }
+        Log.d(LUA_TAG, luaValue.tojstring());
         return LuaValue.NIL;
     }
 }

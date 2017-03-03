@@ -52,8 +52,12 @@ public class RV {
                         return;
 
                     RVModule module = RVModule.load(inputStream);
-                    ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                    final View v = RVRenderer.get().inflate(innerContext, module, null, false, layoutParams);
+
+                    ViewGroup.LayoutParams layoutParams =
+                            new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                    ViewGroup.LayoutParams.MATCH_PARENT);
+
+                    final View v = RVRenderer.get().inflate(innerContext, module, layoutParams);
 
                     MainHandler.instance().post(new Runnable() {
                         @Override
@@ -101,6 +105,14 @@ public class RV {
 
     public static int versionCode() {
         return RVEnvironment.versionCode;
+    }
+
+    /**
+     * @param tag
+     * @param rView
+     */
+    public static void registerRView(String tag, RView rView) {
+        ViewRegistry.registerExtraView(tag, rView);
     }
 
     public void onDestory() {

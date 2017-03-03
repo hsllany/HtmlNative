@@ -7,6 +7,8 @@ package com.mozz.remoteview;
 
 public final class RVEnvironment {
 
+    public static final String STD_TAG = "RVPrint";
+
     public static boolean DEBUG = false;
 
     private RVEnvironment() {

@@ -1,17 +1,13 @@
 package com.mozz.remoteview;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.SystemClock;
-import android.util.ArrayMap;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsoluteLayout;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
 import com.mozz.remoteview.common.Performance;
 import com.mozz.remoteview.common.PerformanceWatcher;
@@ -19,23 +15,9 @@ import com.mozz.remoteview.common.PerformanceWatcher;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
-import java.util.Map;
 
 
 final class RVRenderer {
-
-    private final static Map<String, String> sTagMap = new ArrayMap<>();
-
-    static {
-        sTagMap.put("text", "android.widget.TextView");
-        sTagMap.put("image", "android.widget.ImageView");
-        sTagMap.put("input", "android.widget.EditText");
-        sTagMap.put("button", "android.widget.Button");
-        sTagMap.put("linearbox", "android.widget.LinearLayout");
-        sTagMap.put("flexbox", "android.widget.LinearLayout");
-        sTagMap.put("scroller", "android.widget.ScrollView");
-        sTagMap.put("box", "android.widget.AbsoluteLayout");
-    }
 
     private static final String TAG = RVRenderer.class.getSimpleName();
 
@@ -73,40 +55,40 @@ final class RVRenderer {
         return new RVRenderer();
     }
 
-    View inflate(Context context, RVModule rvModule, ViewGroup root, boolean attachToRoot,
-                 ViewGroup.LayoutParams params) throws RemoteInflateException {
+    View inflate(Context context, RVModule rvModule, ViewGroup.LayoutParams params)
+            throws RemoteInflateException {
 
         PerformanceWatcher pWatcher = Performance.newWatcher();
         FrameLayout frameLayout = new FrameLayout(context);
-        ViewContext viewContext = ViewContext.initViewContext(frameLayout, rvModule, context);
+        ViewContext viewContext = ViewContextImpl.initViewContext(frameLayout, rvModule, context);
         pWatcher.check("[step 1] create ViewContext");
 
         viewContext.onViewCreate();
         pWatcher.check("[step 2] call onViewCreate");
 
-        View v = inflate(context, viewContext, rvModule.mRootTree, rvModule.mAttrs, root,
-                attachToRoot, params);
+        View v = inflate(context, viewContext, rvModule.mRootTree, rvModule.mAttrs,
+                params);
         pWatcher.check("[step 3] rendering view");
 
         if (v == null)
             return null;
         frameLayout.addView(v, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
+
         viewContext.onViewLoaded();
         pWatcher.checkDone("finally done");
 
         if (DEBUG) {
-            Log.d(TAG, viewContext.mViewSelector.toString());
+            Log.d(TAG, viewContext.allIdTag());
         }
 
         return frameLayout;
     }
 
     private View inflate(Context context, ViewContext viewContext, RVDomTree tree,
-                         AttrsSet attrsSet, ViewGroup root, boolean attachToRoot,
-                         ViewGroup.LayoutParams params) throws RemoteInflateException {
+                         AttrsSet attrsSet, ViewGroup.LayoutParams params)
+            throws RemoteInflateException {
 
-        View result = root;
 
         if (tree.isLeaf()) {
             return createViewFromTag(tree, viewContext, tree.getNodeName(),
@@ -115,9 +97,7 @@ final class RVRenderer {
             View view = createViewFromTag(tree, viewContext, tree.getNodeName(),
                     context, attrsSet, params);
 
-            if (view == null && attachToRoot) {
-                return root;
-            } else if (view == null) {
+            if (view == null) {
                 return null;
             }
 
@@ -139,7 +119,7 @@ final class RVRenderer {
                     }
 
 
-                    View v = inflate(context, viewContext, child, attrsSet, null, false,
+                    View v = inflate(context, viewContext, child, attrsSet,
                             layoutParams);
                     viewGroup.addView(v, layoutParams);
                 }
@@ -149,17 +129,10 @@ final class RVRenderer {
                         ", but related RVDomTree has children. Will ignore its children!");
             }
 
-            if (root != null && attachToRoot) {
-                root.addView(view, params);
-            }
-
-            if (root == null || !attachToRoot) {
-                result = view;
-            }
-
-            return result;
+            return view;
         }
     }
+
 
     private View createViewFromTag(RVDomTree tree, ViewContext viewContext, String name,
                                    Context context, AttrsSet attrsSet,
@@ -172,7 +145,8 @@ final class RVRenderer {
             Class<? extends View> clazz;
             if (constructor == null) {
                 // Class not found in the cache, see if it's real, and try to add it
-                String viewClassName = sTagMap.get(name);
+                String viewClassName = ViewRegistry.findClassByTag(name);
+
                 if (viewClassName == null)
                     throw new ClassNotFoundException("can't find related widget " + name);
 

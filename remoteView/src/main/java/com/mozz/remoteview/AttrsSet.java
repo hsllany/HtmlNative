@@ -47,6 +47,7 @@ final class AttrsSet {
     private static final String ATTR_VISIBLE = "visible";
 
     private Object[] mAttrs;
+
     private int[] mLength;
 
     private int mGrowLength;
@@ -300,6 +301,12 @@ final class AttrsSet {
                     if (attr != null) {
                         attr.apply(context, v, params, value);
                     }
+
+                    // If there extra attr is set, then should be applied also.
+                    attr = getExtraAttrFromView(v.getClass());
+                    if (attr != null) {
+                        attr.apply(context, v, params, value);
+                    }
                     break;
             }
 
@@ -334,11 +341,14 @@ final class AttrsSet {
         }
     }
 
-    public static class AttrApplyException extends Exception {
-        public AttrApplyException(String msg) {
+    private static Attr getExtraAttrFromView(Class<? extends View> clazz) {
+        return ViewRegistry.findAttrFromExtraByTag(clazz.getName());
+    }
+
+    static class AttrApplyException extends Exception {
+        AttrApplyException(String msg) {
             super(msg);
         }
-
     }
 
 }

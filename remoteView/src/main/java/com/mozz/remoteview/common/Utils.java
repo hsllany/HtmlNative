@@ -20,13 +20,4 @@ public final class Utils {
             }
         }
     }
-
-    public static boolean isSubClass(Class<?> subClass, Class<?> compareClass) {
-        if (subClass.equals(compareClass))
-            return true;
-
-        else
-            return false;
-    }
-
 }

@@ -9,7 +9,7 @@ import java.io.Reader;
 
 public class StreamReader implements CodeReader {
 
-    public static final int CACHE_SIZE = 12;
+    public static final int CACHE_SIZE = 1024 * 2;
 
     private char[] temp = new char[CACHE_SIZE];
 

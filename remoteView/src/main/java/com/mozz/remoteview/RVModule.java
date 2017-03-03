@@ -8,7 +8,7 @@ import com.mozz.remoteview.reader.FileCodeReader;
 import java.io.InputStream;
 import java.util.Map;
 
-public final class RVModule {
+final class RVModule {
     RVDomTree mRootTree;
     FunctionTable mFunctionTable;
     AttrsSet mAttrs;

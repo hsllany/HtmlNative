@@ -31,7 +31,8 @@ public class setParams extends ThreeArgFunction {
                     String id = luaValue.tojstring();
 
                     View v = viewContext.findViewById(id);
-                    if (v == null) return;
+                    if (v == null)
+                        throw new ParamsWrongException("can't find related view by id:" + id);
 
                     String property = luaValue2.tojstring();
 

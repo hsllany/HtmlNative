@@ -31,7 +31,32 @@ import java.util.Map;
  * @author Yang Tao, 17/2/24.
  */
 
-public final class ViewContext {
+public interface ViewContext {
+    Context getAndroidContext();
+
+    void execute(String code);
+
+    void executeNowWithoutException(String code);
+
+    View findViewById(@NonNull String id);
+
+    void onViewLoaded();
+
+    void onViewCreate();
+
+    void addVariable(String string, Object object);
+
+    void updateVariable(String string, Object newValue);
+
+    Object getVariable(String string);
+
+    View put(String id, View value);
+
+    String allIdTag();
+
+}
+
+final class ViewContextImpl implements ViewContext {
 
     private static boolean DEBUG = false;
 
@@ -49,7 +74,7 @@ public final class ViewContext {
 
     private final Context mContext;
 
-    private ViewContext(RVModule module, Context context) {
+    private ViewContextImpl(RVModule module, Context context) {
         mModule = module;
         mContext = context;
     }
@@ -71,7 +96,7 @@ public final class ViewContext {
     }
 
     @Nullable
-    View put(String id, View value) {
+    public View put(String id, View value) {
         View before = mViewSelector.put(id, value);
         if (before != null) {
             Log.w(TAG, "Duplicated id " + id + ", before is " + before + ", current is " + value);
@@ -88,13 +113,13 @@ public final class ViewContext {
         return mViewSelector.containsKey(id);
     }
 
-    void onViewLoaded() {
+    public void onViewLoaded() {
 
         callCreated();
 
     }
 
-    void onViewCreate() {
+    public void onViewCreate() {
 
         initLuaRunner();
 
@@ -138,6 +163,10 @@ public final class ViewContext {
 
     }
 
+    public String allIdTag() {
+        return mViewSelector.toString();
+    }
+
     public static ViewContext getViewContext(FrameLayout v) {
         Object object = v.getTag(ViewContextTag);
 
@@ -149,10 +178,11 @@ public final class ViewContext {
     }
 
 
-    public void execute(Code code) {
+    private void execute(Code code) {
         execute(code.toString());
     }
 
+    @Override
     public void execute(final String code) {
         LuaRunner.getInstance().runLuaScript(new StrRunnableContext(this, code) {
             @Override
@@ -160,12 +190,13 @@ public final class ViewContext {
                 ViewContext context = mContextRef.get();
                 if (context == null) return;
 
-                context.executeCode(s);
+                context.executeNowWithoutException(s);
             }
         });
     }
 
-    private void executeCode(String s) {
+    @Override
+    public void executeNowWithoutException(String s) {
         try {
             LuaValue l = mGlobals.load(s);
             l.call();
@@ -185,7 +216,7 @@ public final class ViewContext {
     }
 
     static ViewContext initViewContext(FrameLayout layout, RVModule module, Context context) {
-        ViewContext v = new ViewContext(module, context);
+        ViewContext v = new ViewContextImpl(module, context);
         layout.setTag(ViewContextTag, v);
         return v;
     }
