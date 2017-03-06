@@ -55,7 +55,7 @@ final class RVRenderer {
         return new RVRenderer();
     }
 
-    View inflate(Context context, RVModule rvModule, ViewGroup.LayoutParams params)
+    final View inflate(Context context, RVModule rvModule, ViewGroup.LayoutParams params)
             throws RemoteInflateException {
 
         PerformanceWatcher pWatcher = Performance.newWatcher();
@@ -139,37 +139,30 @@ final class RVRenderer {
                                    ViewGroup.LayoutParams params) throws RemoteInflateException {
 
         PerformanceWatcher watcher = Performance.newWatcher();
-        Constructor<? extends View> constructor = sConstructorMap.get(name);
-
         try {
-            Class<? extends View> clazz;
-            if (constructor == null) {
-                // Class not found in the cache, see if it's real, and try to add it
-                String viewClassName = ViewRegistry.findClassByTag(name);
 
-                if (viewClassName == null)
-                    throw new ClassNotFoundException("can't find related widget " + name);
+            if (needFutureCreate(name)) {
+                View v = attrsSet.createViewViaAttr(this, context, name, tree);
 
-                clazz = context.getClassLoader().loadClass(viewClassName).asSubclass(View.class);
+                try {
+                    attrsSet.apply(context, viewContext, v, tree, parent, params);
+                } catch (AttrApplyException e) {
+                    e.printStackTrace();
+                }
 
-                constructor = clazz.getConstructor(sConstructorSignature);
-                constructor.setAccessible(true);
-                sConstructorMap.put(name, constructor);
+                return v;
+            } else {
+                String viewClazzName = ViewRegistry.findClassByTag(name);
+                View view = createView(context, viewClazzName);
+                try {
+                    attrsSet.apply(context, viewContext, view, tree, parent, params);
+                } catch (AttrApplyException e) {
+                    e.printStackTrace();
+                }
+
+                watcher.checkDone("create view " + view.toString());
+                return view;
             }
-
-            mConstructorArgs[0] = context;
-            final View view = constructor.newInstance(mConstructorArgs);
-            if (DEBUG) {
-                Log.d(TAG, "create view " + view.toString());
-            }
-            try {
-                attrsSet.apply(context, viewContext, view, tree, parent, params);
-            } catch (AttrApplyException e) {
-                e.printStackTrace();
-            }
-
-            watcher.checkDone("create view " + view.toString());
-            return view;
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             throw new RemoteInflateException("class not found " + name);
@@ -187,6 +180,41 @@ final class RVRenderer {
             throw new RemoteInflateException("class's method has something wrong " + name);
         }
 
+    }
+
+    final View createView(Context context, String viewClassName) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        Constructor<? extends View> constructor = sConstructorMap.get(viewClassName);
+        Class<? extends View> clazz;
+        if (constructor == null) {
+            // Class not found in the cache, see if it's real, and try to add it
+
+            if (viewClassName == null)
+                throw new ClassNotFoundException("can't find related widget " + viewClassName);
+
+            clazz = context.getClassLoader().loadClass(viewClassName).asSubclass(View.class);
+
+            constructor = clazz.getConstructor(sConstructorSignature);
+            constructor.setAccessible(true);
+            sConstructorMap.put(viewClassName, constructor);
+        }
+
+        mConstructorArgs[0] = context;
+        final View view = constructor.newInstance(mConstructorArgs);
+        if (DEBUG) {
+            Log.d(TAG, "create view " + view.toString());
+        }
+
+        return view;
+    }
+
+
+
+    private static boolean needFutureCreate(String name) {
+        if (name.equals(HtmlTag.DIV)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 

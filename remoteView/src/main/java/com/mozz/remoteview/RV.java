@@ -2,6 +2,7 @@ package com.mozz.remoteview;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -19,6 +20,8 @@ import java.lang.ref.WeakReference;
 public class RV {
 
     public static final String LUA_TAG = "RVScript";
+
+    private static final String TAG = "RV";
 
 
     private RV() {
@@ -52,6 +55,8 @@ public class RV {
                         return;
 
                     RVModule module = RVModule.load(inputStream);
+
+                    Log.d(TAG, module.mRootTree.wholeTreeToString());
 
                     ViewGroup.LayoutParams layoutParams =
                             new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,

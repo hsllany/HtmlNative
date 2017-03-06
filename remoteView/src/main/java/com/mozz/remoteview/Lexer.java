@@ -15,42 +15,69 @@ final class Lexer {
 
     private StringBuilder mBuffer = new StringBuilder();
 
+    private int mLookFor = 0;
+
+    private static final int LK_NOTHING = 1;
+    private static final int LK_INNER = 1 << 1;
+
+    // Add for recognize code from Inner Element. If < script > is meet, than mLookForScript==3,
+    // otherwise, mLookForScript < 3.
+    private int mLookForScript = 0;
+
     Lexer(CodeReader reader) {
         mReader = reader;
+
+        lookFor(LK_NOTHING);
     }
 
     @Nullable
     Token scan() throws EOFException, RVSyntaxError {
-
         this.skipWhiteSpace();
 
         switch (peek()) {
             case '<':
+                mLookForScript = 1;
+                lookFor(LK_NOTHING);
                 next();
                 return Token.obtainToken(Type.LeftAngleBracket, mReader.line(), mReader.column());
+
             case '"':
                 next();
+                mLookForScript = 0;
                 return scanValue();
             case '>':
+                mLookForScript++;
+                lookFor(LK_INNER);
                 next();
                 return Token.obtainToken(Type.RightAngleBracket, mReader.line(), mReader.column());
+
             case '/':
+                mLookForScript = 0;
                 next();
                 return Token.obtainToken(Type.Slash, mReader.line(), mReader.column());
+
             case '=':
+                mLookForScript = 0;
                 next();
                 return Token.obtainToken(Type.Equal, mReader.line(), mReader.column());
+
             case '{':
                 return scanCode();
         }
 
+        if (isLookingFor(LK_INNER) && mLookForScript < 3 && peek() != '<') {
+            return scanInner();
+        }
+
         if (isDigit(peek()) || peek() == '-') {
+            mLookForScript = 0;
             return scanNumber();
         }
 
         if (isLetter(peek()) || peek() == '_') {
             return scanId();
         }
+
         throw new RVSyntaxError("unknown token " + peek(), line(), column());
     }
 
@@ -159,6 +186,7 @@ final class Lexer {
         if (idStr.equals(Type.Template.toString().toLowerCase())) {
             return Token.obtainToken(Type.Template, line, startColumn);
         } else if (idStr.equals(Type.Script.toString().toLowerCase())) {
+            mLookForScript++;
             return Token.obtainToken(Type.Script, line, startColumn);
         } else {
             return Token.obtainToken(Type.Id, mBuffer.toString(), line, startColumn);
@@ -172,6 +200,11 @@ final class Lexer {
 
         clearBuf();
 
+        if (peek() == '"') {
+            next();
+            return Token.obtainToken(Type.Value, "", line, startColumn);
+        }
+
         do {
             mBuffer.append(peek());
             next();
@@ -179,9 +212,7 @@ final class Lexer {
             // handling the '\"' case
             if (peek() == '\\') {
                 next();
-                if (peek() == '"') {
-                    continue;
-                } else {
+                if (peek() != '"') {
                     mBuffer.append('\\');
                 }
             } else if (peek() == '"') {
@@ -193,6 +224,56 @@ final class Lexer {
 
         return Token.obtainToken(Type.Value, mBuffer.toString(), line, startColumn);
 
+    }
+
+    private Token scanInner() throws EOFException {
+        long startColumn = mReader.column();
+        long line = mReader.line();
+
+        clearBuf();
+
+        do {
+            mBuffer.append(peek());
+            next();
+
+            if (peek() == '\\') {
+                next();
+                if (peek() != '<') {
+                    mBuffer.append('\\');
+                }
+            } else if (peek() == '<') {
+                break;
+            }
+
+            //TODO 考虑其他的情况，这里只会添加一个空格
+            if (skipWhiteSpaceInner()) mBuffer.append(' ');
+
+        } while (peek() != '<');
+
+        lookFor(LK_NOTHING);
+
+        char lastChar = mBuffer.charAt(mBuffer.length() - 1);
+        if (lastChar == '\n' || lastChar == '\r') {
+            mBuffer.deleteCharAt(mBuffer.length() - 1);
+        }
+        return Token.obtainToken(Type.Inner, mBuffer.toString(), line, startColumn);
+    }
+
+
+    private boolean skipWhiteSpaceInner() throws EOFException {
+        boolean meet = false;
+        for (; ; ) {
+            char ch = peek();
+            if (ch == ' ' || ch == '\r' || ch == '\n' || ch == '\t' || ch == '\f' || ch == '\b') {
+                if (!meet)
+                    meet = true;
+                next();
+            } else {
+                break;
+            }
+        }
+
+        return meet;
     }
 
 
@@ -227,6 +308,15 @@ final class Lexer {
 
     private void next() throws EOFException {
         this.mReader.nextCh();
+    }
+
+    private void lookFor(int status) {
+        mLookFor = 0;
+        mLookFor |= status;
+    }
+
+    private boolean isLookingFor(int status) {
+        return (mLookFor & status) != 0;
     }
 
     private static boolean isDigit(char ch) {

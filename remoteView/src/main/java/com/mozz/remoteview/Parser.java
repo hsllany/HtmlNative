@@ -36,7 +36,25 @@ final class Parser {
     private static final int LK_INT = 1 << 6;
     private static final int LK_DOUBLE = 1 << 7;
     private static final int LK_CODE = 1 << 8;
+    private static final int LK_INNER = 1 << 9;
     private static final int LK_NUMBER = LK_INT | LK_DOUBLE;
+
+    /**
+     * If parser met with swallowInnerTag, the inner element of token will become the
+     * attribute of the element instead of creating a new child tree.
+     */
+    private static final String[] sSwallowInnerTag = {HtmlTag.A, HtmlTag.B, HtmlTag.H1, HtmlTag.H2,
+            HtmlTag.INPUT, HtmlTag.P};
+
+    private static boolean isSwallowInnerTag(String tag) {
+        for (String tagToCompare : sSwallowInnerTag) {
+            if (tag.equals(tagToCompare)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     public Parser(CodeReader reader) {
         mLexer = new Lexer(reader);
@@ -77,7 +95,7 @@ final class Parser {
 
                 if (mCurToken.type() == Id) {
                     // consume reserved
-                    scan();
+                    scanFor();
                     rvModule.mRootTree.mNodeName = mCurToken.stringValue();
                     rvModule.mRootTree.mTagPair = 1;
                     rvModule.mRootTree.mBracketPair = 1;
@@ -121,7 +139,8 @@ final class Parser {
 
 
             } else {
-                throw new RVSyntaxError("must init with <template> or <script>", mLexer.line(), mLexer.column());
+                throw new RVSyntaxError("must init with <template> or <script>", mLexer.line(),
+                        mLexer.column());
             }
 
         } catch (EOFException e) {
@@ -179,6 +198,9 @@ final class Parser {
         String attrName = null;
 
         boolean meetEndTag = false;
+
+        int innerCount = 0;
+
         try {
             while (true) {
                 scan();
@@ -233,7 +255,7 @@ final class Parser {
 
                     case RightAngleBracket:
                         checkState(LK_RightArrowBracket);
-                        lookFor(LK_LeftArrowBracket);
+                        lookFor(LK_LeftArrowBracket | LK_INNER);
 
                         tree.mBracketPair--;
                         if (tree.mBracketPair != 0) {
@@ -277,6 +299,17 @@ final class Parser {
                         lookFor(LK_ID | LK_RightArrowBracket);
                         break;
 
+                    case Inner:
+                        checkState(LK_INNER);
+                        if (isSwallowInnerTag(tree.getNodeName())) {
+                            tree.appendText(mCurToken.stringValue());
+                        } else {
+                            RVDomTree innerChild = tree.addChild(RVDomTree.INNER_TREE_TAG, innerCount++);
+                            innerChild.appendText(mCurToken.stringValue());
+                        }
+
+                        lookFor(LK_LeftArrowBracket);
+                        break;
                     // for <a/> case
                     case Slash:
 

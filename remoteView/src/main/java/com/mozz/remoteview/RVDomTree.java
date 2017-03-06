@@ -8,7 +8,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-final class RVDomTree {
+public final class RVDomTree {
+
+    static final String INNER_TREE_TAG = "inner";
 
     private static final String TAG = RVDomTree.class.getSimpleName();
 
@@ -24,7 +26,9 @@ final class RVDomTree {
 
     String mNodeName;
 
-    RVModule mModule;
+    private RVModule mModule;
+
+    private String mText = null;
 
     int mAttrIndex;
 
@@ -50,6 +54,13 @@ final class RVDomTree {
 
     void addAttr(String attrName, Object value) {
         mModule.mAttrs.put(this, attrName, value);
+    }
+
+    void appendText(String text) {
+        if (mText == null)
+            mText = text;
+        else
+            mText += text;
     }
 
     RVDomTree addChild(String nodeName, int index) {
@@ -95,6 +106,10 @@ final class RVDomTree {
         return mNodeName;
     }
 
+    public String getInner() {
+        return mText;
+    }
+
 
     String wholeTreeToString() {
         final StringBuilder sb = new StringBuilder();
@@ -115,7 +130,8 @@ final class RVDomTree {
     @Override
     public String toString() {
         String index = "@" + mIndex + ", ";
-        return "[" + index + mNodeName + ", attrs=" + mModule.mAttrs.toString(this) + "]";
+        String text = (mText == null ? "" : ", text=" + mText);
+        return "[" + index + mNodeName + ", attrs=" + mModule.mAttrs.toString(this) + text + "]";
     }
 
     public RVDomTree getParent() {

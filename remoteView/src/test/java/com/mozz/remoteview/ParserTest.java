@@ -19,16 +19,16 @@ public class ParserTest {
 
     @Test
     public void process() throws Exception {
-        debug("============codeScriptFirst=============");
-        parserDebugger(codeScriptFirst);
-
-        debug("============codeScriptOnly==============");
-        parserDebugger(codeScriptOnly);
-
-        debug("============codeTemplateFirst==============");
-        parserDebugger(codeTemplateFirst);
-
-        debug("=============codeTemplateOnly==============");
+//        debug("============codeScriptFirst=============");
+//        parserDebugger(codeScriptFirst);
+//
+//        debug("============codeScriptOnly==============");
+//        parserDebugger(codeScriptOnly);
+//
+//        debug("============codeTemplateFirst==============");
+//        parserDebugger(codeTemplateFirst);
+//
+//        debug("=============codeTemplateOnly==============");
         parserDebugger(codeTemplateOnly);
     }
 

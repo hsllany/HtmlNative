@@ -1,11 +1,14 @@
 package com.mozz.remoteview.attrs;
 
 import android.content.Context;
+import android.text.TextUtils;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 
 import com.mozz.remoteview.AttrApplyException;
+import com.mozz.remoteview.RVDomTree;
 import com.mozz.remoteview.common.Utils;
 
 public class TextViewAttr implements Attr {
@@ -17,7 +20,7 @@ public class TextViewAttr implements Attr {
     }
 
     @Override
-    public void apply(Context context, View v, String params, Object value)
+    public void apply(Context context, View v, String params, Object value, RVDomTree tree)
             throws AttrApplyException {
         TextView textView = (TextView) v;
         if (params.equals("color")) {
@@ -35,6 +38,11 @@ public class TextViewAttr implements Attr {
                 lineHeight = (float) value;
             }
             textView.setLineSpacing(lineHeight, 0);
+        }
+
+        if (!TextUtils.isEmpty(tree.getInner()) && TextUtils.isEmpty(textView.getText())) {
+            Log.d("TextViewAttr", tree.getInner());
+            textView.setText(tree.getInner());
         }
     }
 }

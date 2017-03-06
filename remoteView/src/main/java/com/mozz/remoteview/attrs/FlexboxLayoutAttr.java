@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.mozz.remoteview.AttrApplyException;
+import com.mozz.remoteview.RVDomTree;
 
 /**
  * @author Yang Tao, 17/3/3.
@@ -12,7 +13,7 @@ import com.mozz.remoteview.AttrApplyException;
 
 public class FlexboxLayoutAttr implements LayoutAttr {
     @Override
-    public void apply(Context context, View v, String params, Object value)
+    public void apply(Context context, View v, String params, Object value, RVDomTree tree)
             throws AttrApplyException {
         FlexboxLayout flexboxLayout = (FlexboxLayout) v;
 

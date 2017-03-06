@@ -21,6 +21,7 @@ import com.mozz.remoteview.attrs.TextViewAttr;
 import com.mozz.remoteview.common.Utils;
 import com.mozz.remoteview.script.Code;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,6 +50,8 @@ final class AttrsSet {
     private static final String ATTR_ID = "id";
     private static final String ATTR_ONCLICK = "onClick";
     private static final String ATTR_VISIBLE = "visible";
+
+    private static final String ATTR_DISPLAY = "display";
 
     private Object[] mAttrs;
 
@@ -275,13 +278,13 @@ final class AttrsSet {
                     Attr attr = getAttr(v.getClass());
 
                     if (attr != null) {
-                        attr.apply(context, v, params, value);
+                        attr.apply(context, v, params, value, tree);
                     }
 
                     // If there extra attr is set, then should be applied also.
                     attr = getExtraAttrFromView(v.getClass());
                     if (attr != null) {
-                        attr.apply(context, v, params, value);
+                        attr.apply(context, v, params, value, tree);
                     }
 
                     // finally apply corresponding parent attr to child
@@ -302,6 +305,36 @@ final class AttrsSet {
             ((AbsoluteLayout.LayoutParams) layoutParams).x = left;
             ((AbsoluteLayout.LayoutParams) layoutParams).y = top;
         }
+    }
+
+    View createViewViaAttr(RVRenderer renderer, Context context, String name, RVDomTree tree)
+            throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException,
+            InstantiationException, IllegalAccessException {
+
+        int startPosition = tree.mAttrIndex;
+        int treeAttrLength = mLength[startPosition];
+
+        for (int i = startPosition; i < startPosition + treeAttrLength; i++) {
+            String params = (String) mAttrs[i << 1];
+            final Object value = mAttrs[(i << 1) + 1];
+
+            switch (params) {
+                case ATTR_DISPLAY:
+                    if (name.equals(HtmlTag.DIV)) {
+                        if (value.equals("flex")) {
+                            return renderer.createView(context, ViewRegistry.findClassByTag("flexbox"));
+                        } else if (value.equals("absolute")) {
+                            return renderer.createView(context, ViewRegistry.findClassByTag("box"));
+                        } else if (value.equals("box")) {
+                            return renderer.createView(context, ViewRegistry.findClassByTag("linearbox"));
+                        }
+                    }
+                    break;
+            }
+        }
+
+        return renderer.createView(context, ViewRegistry.findClassByTag("linearbox"));
+
     }
 
     private Attr getAttr(Class<? extends View> clazz) {

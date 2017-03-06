@@ -25,14 +25,15 @@ final class ViewRegistry {
     private static Map<String, RView> sExtraTagClassTable;
 
     static {
-        sReservedTagClassTable.put("text", "android.widget.TextView");
-        sReservedTagClassTable.put("image", "android.widget.ImageView");
-        sReservedTagClassTable.put("input", "android.widget.EditText");
-        sReservedTagClassTable.put("button", "android.widget.Button");
+        sReservedTagClassTable.put(HtmlTag.P, "android.widget.TextView");
+        sReservedTagClassTable.put(HtmlTag.IMG, "android.widget.ImageView");
+        sReservedTagClassTable.put(HtmlTag.INPUT, "android.widget.EditText");
+        sReservedTagClassTable.put(HtmlTag.BUTTON, "android.widget.Button");
         sReservedTagClassTable.put("linearbox", "android.widget.LinearLayout");
         sReservedTagClassTable.put("flexbox", "com.google.android.flexbox.FlexboxLayout");
-        sReservedTagClassTable.put("scroller", "android.widget.ScrollView");
+        sReservedTagClassTable.put(HtmlTag.SCROLLER, "android.widget.ScrollView");
         sReservedTagClassTable.put("box", "android.widget.AbsoluteLayout");
+        sReservedTagClassTable.put(RVDomTree.INNER_TREE_TAG, "android.widget.TextView");
     }
 
     /**

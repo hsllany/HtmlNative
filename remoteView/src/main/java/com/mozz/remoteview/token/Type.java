@@ -23,6 +23,9 @@ public enum Type {
 
     Code("Code"),
 
+    // Handle the inner text of an element
+    Inner("Inner"),
+
     Template("Template"),
 
     Script("Script");

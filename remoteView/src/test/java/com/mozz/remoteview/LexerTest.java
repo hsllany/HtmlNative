@@ -9,6 +9,7 @@ import java.io.EOFException;
 import java.io.IOException;
 
 import static com.mozz.remoteview.CodeToTest.codeScriptFirst;
+import static com.mozz.remoteview.CodeToTest.codeTemplateOnly;
 
 public class LexerTest {
 
@@ -16,7 +17,7 @@ public class LexerTest {
 
     @Test
     public void testLexerSimple() throws Exception {
-        LexerDebugger(codeScriptFirst);
+        LexerDebugger(codeTemplateOnly);
     }
 
     private void LexerDebugger(String code) throws IOException, RVSyntaxError {
@@ -34,6 +35,7 @@ public class LexerTest {
                break;
             } catch (RVSyntaxError sytaxError) {
                 sytaxError.printStackTrace();
+                break;
 
             }
         }
