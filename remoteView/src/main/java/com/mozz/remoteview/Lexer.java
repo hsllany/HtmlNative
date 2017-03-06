@@ -183,7 +183,7 @@ final class Lexer {
 
         String idStr = mBuffer.toString();
 
-        if (idStr.equals(Type.Template.toString().toLowerCase())) {
+        if (idStr.equals(Type.Template.toString().toLowerCase()) || idStr.equals(Type.Body.toString().toLowerCase())) {
             return Token.obtainToken(Type.Template, line, startColumn);
         } else if (idStr.equals(Type.Script.toString().toLowerCase())) {
             mLookForScript++;

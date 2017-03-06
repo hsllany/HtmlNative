@@ -3,7 +3,15 @@ package com.mozz.remoteview;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.ArrayMap;
+import android.widget.AbsoluteLayout;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.mozz.remoteview.attrs.Attr;
 
 import java.util.Map;
@@ -25,15 +33,15 @@ final class ViewRegistry {
     private static Map<String, RView> sExtraTagClassTable;
 
     static {
-        sReservedTagClassTable.put(HtmlTag.P, "android.widget.TextView");
-        sReservedTagClassTable.put(HtmlTag.IMG, "android.widget.ImageView");
-        sReservedTagClassTable.put(HtmlTag.INPUT, "android.widget.EditText");
-        sReservedTagClassTable.put(HtmlTag.BUTTON, "android.widget.Button");
-        sReservedTagClassTable.put("linearbox", "android.widget.LinearLayout");
-        sReservedTagClassTable.put("flexbox", "com.google.android.flexbox.FlexboxLayout");
-        sReservedTagClassTable.put(HtmlTag.SCROLLER, "android.widget.ScrollView");
-        sReservedTagClassTable.put("box", "android.widget.AbsoluteLayout");
-        sReservedTagClassTable.put(RVDomTree.INNER_TREE_TAG, "android.widget.TextView");
+        sReservedTagClassTable.put(HtmlTag.P, TextView.class.getName());
+        sReservedTagClassTable.put(HtmlTag.IMG, ImageView.class.getName());
+        sReservedTagClassTable.put(HtmlTag.INPUT, EditText.class.getName());
+        sReservedTagClassTable.put(HtmlTag.BUTTON, Button.class.getName());
+        sReservedTagClassTable.put("linearbox", LinearLayout.class.getName());
+        sReservedTagClassTable.put("flexbox", FlexboxLayout.class.getName());
+        sReservedTagClassTable.put(HtmlTag.SCROLLER, ScrollView.class.getName());
+        sReservedTagClassTable.put("box", AbsoluteLayout.class.getName());
+        sReservedTagClassTable.put(RVDomTree.INNER_TREE_TAG, TextView.class.getName());
     }
 
     /**

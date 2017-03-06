@@ -28,6 +28,8 @@ public enum Type {
 
     Template("Template"),
 
+    Body("Body"),
+
     Script("Script");
 
     private String value;

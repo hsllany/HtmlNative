@@ -2,9 +2,12 @@ package com.mozz.remoteview;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 
 import com.mozz.remoteview.script.LuaRunner;
 import com.mozz.remoteview.common.MainHandler;
@@ -17,12 +20,13 @@ import java.lang.ref.WeakReference;
  * @author Yang Tao, 17/2/21.
  */
 
-public class RV {
+public final class RV {
 
     public static final String LUA_TAG = "RVScript";
 
     private static final String TAG = "RV";
 
+    private DisplayMetrics mDefaultMetrics;
 
     private RV() {
         RVRenderer.init();
@@ -43,7 +47,18 @@ public class RV {
     }
 
     public void init(Context context) {
+        initScreenMetrics(context);
+    }
 
+    DisplayMetrics getScreenMetrics() {
+        return mDefaultMetrics;
+    }
+
+    private void initScreenMetrics(Context context) {
+        WindowManager window = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = window.getDefaultDisplay();
+        mDefaultMetrics = new DisplayMetrics();
+        display.getMetrics(mDefaultMetrics);
     }
 
     public void loadView(final Context context, final InputStream inputStream, final OnRViewLoaded onRViewLoaded) {
