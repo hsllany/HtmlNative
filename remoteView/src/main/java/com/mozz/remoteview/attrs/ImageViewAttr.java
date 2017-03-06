@@ -7,7 +7,6 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.mozz.remoteview.AttrApplyException;
 import com.mozz.remoteview.RVDomTree;
-import com.mozz.remoteview.common.MainHandler;
 
 public class ImageViewAttr implements Attr {
 
@@ -16,12 +15,7 @@ public class ImageViewAttr implements Attr {
                       RVDomTree tree)
             throws AttrApplyException {
         if (params.equals("src")) {
-            MainHandler.instance().post(new Runnable() {
-                @Override
-                public void run() {
-                    Glide.with(context).load(value.toString()).into((ImageView) v);
-                }
-            });
+            Glide.with(context).load(value.toString()).into((ImageView) v);
         }
     }
 }

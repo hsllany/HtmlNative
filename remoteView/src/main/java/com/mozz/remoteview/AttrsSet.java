@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.AbsoluteLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -18,6 +19,7 @@ import com.mozz.remoteview.attrs.ImageViewAttr;
 import com.mozz.remoteview.attrs.LayoutAttr;
 import com.mozz.remoteview.attrs.LinearLayoutAttr;
 import com.mozz.remoteview.attrs.TextViewAttr;
+import com.mozz.remoteview.attrs.WebViewAttr;
 import com.mozz.remoteview.common.Utils;
 import com.mozz.remoteview.script.Code;
 
@@ -365,6 +367,8 @@ final class AttrsSet {
             return new LinearLayoutAttr();
         } else if (clazz.equals(FlexboxLayout.class)) {
             return new FlexboxLayoutAttr();
+        } else if (clazz.equals(WebView.class)) {
+            return new WebViewAttr();
         } else {
             return null;
         }

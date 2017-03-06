@@ -3,6 +3,7 @@ package com.mozz.remoteview;
 import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.support.annotation.MainThread;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +56,7 @@ final class RVRenderer {
         return new RVRenderer();
     }
 
+    @MainThread
     final View inflate(Context context, RVModule rvModule, ViewGroup.LayoutParams params)
             throws RemoteInflateException {
 
@@ -103,11 +105,11 @@ final class RVRenderer {
 
 
             if (view instanceof ViewGroup) {
-                ViewGroup viewGroup = (ViewGroup) view;
+                final ViewGroup viewGroup = (ViewGroup) view;
 
                 for (RVDomTree child : tree.mChildren) {
 
-                    ViewGroup.LayoutParams layoutParams;
+                    final ViewGroup.LayoutParams layoutParams;
                     if (view instanceof AbsoluteLayout) {
                         layoutParams = new AbsoluteLayout.LayoutParams(
                                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -119,8 +121,9 @@ final class RVRenderer {
                     }
 
 
-                    View v = inflate(context, viewContext, child, viewGroup, attrsSet,
+                    final View v = inflate(context, viewContext, child, viewGroup, attrsSet,
                             layoutParams);
+
                     viewGroup.addView(v, layoutParams);
                 }
             } else {
@@ -206,7 +209,6 @@ final class RVRenderer {
 
         return view;
     }
-
 
 
     private static boolean needFutureCreate(String name) {

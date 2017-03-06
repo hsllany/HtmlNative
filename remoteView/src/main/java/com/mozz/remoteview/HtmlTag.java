@@ -18,5 +18,7 @@ final class HtmlTag {
     static final String DIV = "div";
     static final String BUTTON = "button";
     static final String SCROLLER = "scroller";
-    
+    static final String IFRAME = "iframe";
+    static final String WEB = "web";
+
 }

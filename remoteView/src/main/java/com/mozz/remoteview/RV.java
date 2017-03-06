@@ -61,34 +61,36 @@ public final class RV {
         display.getMetrics(mDefaultMetrics);
     }
 
-    public void loadView(final Context context, final InputStream inputStream, final OnRViewLoaded onRViewLoaded) {
+    public final void loadView(final Context context, final InputStream inputStream, final OnRViewLoaded onRViewLoaded) {
         RVRenderer.runRenderTask(new WefRunnable<Context>(context) {
             @Override
-            public void runOverride(Context innerContext) {
+            public void runOverride(final Context innerContext) {
                 try {
                     if (innerContext == null)
                         return;
 
-                    RVModule module = RVModule.load(inputStream);
+                    final RVModule module = RVModule.load(inputStream);
 
                     Log.d(TAG, module.mRootTree.wholeTreeToString());
 
-                    ViewGroup.LayoutParams layoutParams =
+                    final ViewGroup.LayoutParams layoutParams =
                             new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                                     ViewGroup.LayoutParams.MATCH_PARENT);
-
-                    final View v = RVRenderer.get().inflate(innerContext, module, layoutParams);
-
                     MainHandler.instance().post(new Runnable() {
                         @Override
                         public void run() {
+                            View v = null;
+                            try {
+                                v = RVRenderer.get().inflate(innerContext, module, layoutParams);
+                            } catch (RVRenderer.RemoteInflateException e) {
+                                e.printStackTrace();
+                            }
+
                             if (onRViewLoaded != null)
                                 onRViewLoaded.onViewLoaded(v);
                         }
                     });
                 } catch (RVSyntaxError e) {
-                    e.printStackTrace();
-                } catch (RVRenderer.RemoteInflateException e) {
                     e.printStackTrace();
                 }
             }

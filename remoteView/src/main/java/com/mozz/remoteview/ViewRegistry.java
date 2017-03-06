@@ -3,6 +3,7 @@ package com.mozz.remoteview;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.ArrayMap;
+import android.webkit.WebView;
 import android.widget.AbsoluteLayout;
 import android.widget.Button;
 import android.widget.EditText;
@@ -42,6 +43,8 @@ final class ViewRegistry {
         sReservedTagClassTable.put(HtmlTag.SCROLLER, ScrollView.class.getName());
         sReservedTagClassTable.put("box", AbsoluteLayout.class.getName());
         sReservedTagClassTable.put(RVDomTree.INNER_TREE_TAG, TextView.class.getName());
+        sReservedTagClassTable.put(HtmlTag.IFRAME, WebView.class.getName());
+        sReservedTagClassTable.put(HtmlTag.WEB, WebView.class.getName());
     }
 
     /**
