@@ -39,7 +39,6 @@ public final class Code {
             Log.d(TAG, mCode);
             Log.i(TAG, "executed " + mFunctionName + " spend " + spend + "ms.");
             Log.d(TAG, "=====");
-
         }
     }
 }

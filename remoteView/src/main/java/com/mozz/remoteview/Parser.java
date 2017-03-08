@@ -13,6 +13,9 @@ import static com.mozz.remoteview.token.Type.Script;
 import static com.mozz.remoteview.token.Type.Slash;
 import static com.mozz.remoteview.token.Type.Template;
 
+/**
+ * @author YangTao7
+ */
 final class Parser {
 
     private static final String TAG = Parser.class.getSimpleName();
