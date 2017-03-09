@@ -21,4 +21,6 @@ final class HtmlTag {
     static final String IFRAME = "iframe";
     static final String WEB = "web";
 
+    static final String ATTR_STYLE = "style";
+
 }

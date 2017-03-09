@@ -1,5 +1,10 @@
 package com.mozz.remoteview;
 
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.view.View;
+
 import com.mozz.remoteview.reader.StringCodeReader;
 
 import org.junit.Test;
@@ -56,6 +61,19 @@ public class ParserTest {
 
     private void debug(String msg) {
         System.out.println(msg);
+    }
+
+
+    @Test
+    public void parseStyleTest() {
+        String style = "a:  1;b:2";
+
+        RVModule rvModule = new RVModule();
+        RVDomTree tree = new RVDomTree(rvModule, null, 0, 0);
+
+        Parser.parseStyle(tree, style);
+
+        System.out.println(rvModule.mAttrs.toString());
     }
 
 }

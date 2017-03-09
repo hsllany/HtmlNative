@@ -1,5 +1,7 @@
 package com.mozz.remoteview;
 
+import android.support.annotation.VisibleForTesting;
+
 import com.mozz.remoteview.reader.CodeReader;
 import com.mozz.remoteview.token.Token;
 import com.mozz.remoteview.token.Type;
@@ -286,7 +288,11 @@ final class Parser {
 
                     case Value:
                         checkState(LK_VALUE);
-                        tree.addAttr(attrName, mCurToken.stringValue());
+                        if (attrName.equals(HtmlTag.ATTR_STYLE)) {
+                            parseStyle(tree, attrName);
+                        } else {
+                            tree.addAttr(attrName, mCurToken.stringValue());
+                        }
                         lookFor(LK_ID | LK_RightArrowBracket);
                         break;
 
@@ -350,6 +356,32 @@ final class Parser {
             if (meetEndTag) {
                 throw new RVSyntaxError("View Tag should ends with </", mLexer.line(), mLexer.column());
             }
+        }
+    }
+
+    @VisibleForTesting
+    public static void parseStyle(RVDomTree tree, String styleString) {
+        StringBuilder sb = new StringBuilder();
+        String key = null;
+        for (int i = 0; i < styleString.length(); i++) {
+            char c = styleString.charAt(i);
+
+            if (c == ';') {
+                tree.addAttr(key, sb.toString());
+                sb.setLength(0);
+            } else if (c == ':') {
+                key = sb.toString();
+                sb.setLength(0);
+            } else {
+                if (c == ' ' || c == '\r' || c == '\n' || c == '\t' || c == '\f' || c == '\b') {
+                    continue;
+                }
+                sb.append(c);
+            }
+        }
+
+        if (key != null) {
+            tree.addAttr(key, sb.toString());
         }
     }
 
