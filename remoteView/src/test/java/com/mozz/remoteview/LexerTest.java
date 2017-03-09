@@ -32,7 +32,7 @@ public class LexerTest {
                 Token t = lexer.scan();
                 debug("---> " + t.toString());
             } catch (EOFException e) {
-               break;
+                break;
             } catch (RVSyntaxError sytaxError) {
                 sytaxError.printStackTrace();
                 break;
