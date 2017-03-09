@@ -137,7 +137,7 @@ public final class RV {
         ViewRegistry.registerExtraView(tag, rView);
     }
 
-    public void onDestory() {
+    public void onDestroy() {
         RVModule.clearCache();
         RVRenderer.quit();
         LuaRunner.getInstance().quit();

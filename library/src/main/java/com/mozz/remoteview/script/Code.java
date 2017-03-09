@@ -4,7 +4,7 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import com.mozz.remoteview.RVEnvironment;
-import com.mozz.remoteview.ViewContext;
+import com.mozz.remoteview.RViewContext;
 
 
 public final class Code {
@@ -27,7 +27,7 @@ public final class Code {
         return mCode;
     }
 
-    public void execute(ViewContext context) {
+    public void execute(RViewContext context) {
         long timeStart = SystemClock.currentThreadTimeMillis();
 
         context.execute(mCode);

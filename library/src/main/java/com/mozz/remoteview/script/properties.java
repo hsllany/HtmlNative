@@ -2,7 +2,7 @@ package com.mozz.remoteview.script;
 
 import android.util.Log;
 
-import com.mozz.remoteview.ViewContext;
+import com.mozz.remoteview.RViewContext;
 
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
@@ -21,10 +21,10 @@ public final class properties {
 
     public static class property extends OneArgFunction {
 
-        private ViewContext viewContext;
+        private RViewContext RViewContext;
 
-        public property(ViewContext context) {
-            viewContext = context;
+        public property(RViewContext context) {
+            RViewContext = context;
         }
 
         @Override
@@ -39,7 +39,7 @@ public final class properties {
                         break;
                     LuaValue v = n.arg(2);
                     Log.d(TAG, k.tojstring() + v.tojstring() + "");
-                    viewContext.addVariable(k.toString(), toObject(v));
+                    RViewContext.addVariable(k.toString(), toObject(v));
                 }
                 return LuaValue.TRUE;
             } else {
@@ -52,16 +52,16 @@ public final class properties {
 
     public static class setProperty extends TwoArgFunction {
 
-        private ViewContext viewContext;
+        private RViewContext RViewContext;
 
-        public setProperty(ViewContext viewContext) {
-            this.viewContext = viewContext;
+        public setProperty(RViewContext RViewContext) {
+            this.RViewContext = RViewContext;
         }
 
         @Override
         public LuaValue call(LuaValue luaValue, LuaValue luaValue1) {
             if (luaValue.isstring()) {
-                viewContext.updateVariable(luaValue.tojstring(), toObject(luaValue1));
+                RViewContext.updateVariable(luaValue.tojstring(), toObject(luaValue1));
                 return LuaValue.TRUE;
             }
             return LuaValue.FALSE;
@@ -70,10 +70,10 @@ public final class properties {
 
     public static class getProperty extends OneArgFunction {
 
-        private ViewContext viewContext;
+        private RViewContext RViewContext;
 
-        public getProperty(ViewContext context) {
-            this.viewContext = context;
+        public getProperty(RViewContext context) {
+            this.RViewContext = context;
         }
 
         @Override
@@ -81,7 +81,7 @@ public final class properties {
             if (luaValue.isstring()) {
                 String key = luaValue.tojstring();
 
-                Object val = viewContext.getVariable(key);
+                Object val = RViewContext.getVariable(key);
                 if (val != null) {
                     return toLuaValue(val);
                 }

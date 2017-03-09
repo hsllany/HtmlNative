@@ -26,6 +26,6 @@ public class DemoApplication extends Application {
     @Override
     public void onTerminate() {
         super.onTerminate();
-        RV.getInstance().onDestory();
+        RV.getInstance().onDestroy();
     }
 }

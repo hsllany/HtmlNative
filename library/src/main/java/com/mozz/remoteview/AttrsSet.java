@@ -153,7 +153,7 @@ final class AttrsSet {
     }
 
     @SuppressWarnings("ConstantConditions")
-    public void apply(Context context, final ViewContext viewContext, View v, RVDomTree tree,
+    public void apply(Context context, final RViewContext RViewContext, View v, RVDomTree tree,
                       ViewGroup parent, ViewGroup.LayoutParams layoutParams)
             throws AttrApplyException {
 
@@ -246,7 +246,7 @@ final class AttrsSet {
 
                 case ATTR_ID:
                     if (value instanceof String) {
-                        viewContext.put((String) value, v);
+                        RViewContext.put((String) value, v);
                     } else {
                         throw new AttrApplyException("id must be a string.");
                     }
@@ -267,7 +267,7 @@ final class AttrsSet {
 
                                 @Override
                                 public void onClick(View v) {
-                                    code.execute(viewContext);
+                                    code.execute(RViewContext);
                                 }
                             });
                         } else {

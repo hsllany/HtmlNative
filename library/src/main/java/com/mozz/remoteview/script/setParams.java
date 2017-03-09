@@ -4,7 +4,7 @@ import android.graphics.Color;
 import android.view.View;
 import android.widget.TextView;
 
-import com.mozz.remoteview.ViewContext;
+import com.mozz.remoteview.RViewContext;
 import com.mozz.remoteview.common.MainHandler;
 
 import org.luaj.vm2.LuaValue;
@@ -15,10 +15,10 @@ import org.luaj.vm2.lib.ThreeArgFunction;
  */
 public class setParams extends ThreeArgFunction {
 
-    private ViewContext viewContext;
+    private RViewContext RViewContext;
 
-    public setParams(ViewContext viewContext) {
-        this.viewContext = viewContext;
+    public setParams(RViewContext RViewContext) {
+        this.RViewContext = RViewContext;
     }
 
     @Override
@@ -30,7 +30,7 @@ public class setParams extends ThreeArgFunction {
                 try {
                     String id = luaValue.tojstring();
 
-                    View v = viewContext.findViewById(id);
+                    View v = RViewContext.findViewById(id);
                     if (v == null)
                         throw new ParamsWrongException("can't find related view by id:" + id);
 

@@ -30,17 +30,17 @@ import java.util.Map;
 /**
  * @author Yang Tao, 17/3/6.
  */
-final class ViewContextImpl implements ViewContext {
+final class ViewContextImpl implements RViewContext {
 
     private static boolean DEBUG = false;
 
-    private static final String TAG = ViewContext.class.getSimpleName();
+    private static final String TAG = RViewContext.class.getSimpleName();
 
     private static final int ViewContextTag = 0x3 << 24;
 
     final Map<String, View> mViewSelector = new ArrayMap<>();
 
-    private final VariablePool mPool = new VariablePool();
+    private final VariablePoolImpl mPool = new VariablePoolImpl();
 
     private Globals mGlobals;
 
@@ -119,17 +119,17 @@ final class ViewContextImpl implements ViewContext {
     }
 
     private void initLuaRunner() {
-        LuaRunner.getInstance().runLuaScript(new WefRunnable<ViewContext>(this) {
+        LuaRunner.getInstance().runLuaScript(new WefRunnable<RViewContext>(this) {
             @Override
-            protected void runOverride(ViewContext viewContext) {
-                if (viewContext == null) return;
+            protected void runOverride(RViewContext RViewContext) {
+                if (RViewContext == null) return;
                 long time1 = SystemClock.currentThreadTimeMillis();
                 mGlobals = LuaRunner.newGlobals();
-                mGlobals.set("view", new setParams(viewContext));
-                mGlobals.set("toast", new toast(viewContext.getAndroidContext()));
-                mGlobals.set("property", new properties.property(viewContext));
-                mGlobals.set("setProperty", new properties.setProperty(viewContext));
-                mGlobals.set("getProperty", new properties.getProperty(viewContext));
+                mGlobals.set("view", new setParams(RViewContext));
+                mGlobals.set("toast", new toast(RViewContext.getAndroidContext()));
+                mGlobals.set("property", new properties.property(RViewContext));
+                mGlobals.set("setProperty", new properties.setProperty(RViewContext));
+                mGlobals.set("getProperty", new properties.getProperty(RViewContext));
                 mGlobals.set("log", new logcat());
                 Log.i(TAG, "init Lua module spend " + (SystemClock.currentThreadTimeMillis() - time1) + " ms");
             }
@@ -141,11 +141,11 @@ final class ViewContextImpl implements ViewContext {
         return mViewSelector.toString();
     }
 
-    public static ViewContext getViewContext(FrameLayout v) {
+    public static RViewContext getViewContext(FrameLayout v) {
         Object object = v.getTag(ViewContextTag);
 
-        if (object != null && object instanceof ViewContext) {
-            return (ViewContext) object;
+        if (object != null && object instanceof RViewContext) {
+            return (RViewContext) object;
         }
 
         return null;
@@ -193,8 +193,8 @@ final class ViewContextImpl implements ViewContext {
         }
     }
 
-    static ViewContext initViewContext(FrameLayout layout, RVModule module, Context context) {
-        ViewContext v = new ViewContextImpl(module, context);
+    static RViewContext initViewContext(FrameLayout layout, RVModule module, Context context) {
+        RViewContext v = new ViewContextImpl(module, context);
         layout.setTag(ViewContextTag, v);
         return v;
     }

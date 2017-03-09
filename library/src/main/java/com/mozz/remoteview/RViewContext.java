@@ -8,7 +8,7 @@ import android.view.View;
 /**
  * @author Yang Tao, 17/2/24.
  */
-public interface ViewContext {
+public interface RViewContext extends VariablePool {
     /**
      * get Android Context
      *
@@ -35,12 +35,6 @@ public interface ViewContext {
     void onViewLoaded();
 
     void onViewCreate();
-
-    void addVariable(String string, Object object);
-
-    void updateVariable(String string, Object newValue);
-
-    Object getVariable(String string);
 
     View put(String id, View value);
 

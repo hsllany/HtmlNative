@@ -8,22 +8,25 @@ import java.util.Map;
  * @author Yang Tao, 17/2/27.
  */
 
-final class VariablePool {
+final class VariablePoolImpl implements VariablePool {
     private Map<String, Object> mPool;
 
-    VariablePool() {
+    VariablePoolImpl() {
         mPool = new ArrayMap<>();
     }
 
-    void addVariable(String string, Object object) {
+    @Override
+    public void addVariable(String string, Object object) {
         mPool.put(string, object);
     }
 
-    void updateVariable(String string, Object newValue) {
+    @Override
+    public void updateVariable(String string, Object newValue) {
         mPool.put(string, newValue);
     }
 
-    Object getVariable(String string) {
+    @Override
+    public Object getVariable(String string) {
         return mPool.get(string);
     }
 }
