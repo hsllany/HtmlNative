@@ -1,5 +1,6 @@
 package com.mozz.remoteview.script;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import org.luaj.vm2.LuaValue;
@@ -13,7 +14,7 @@ import static com.mozz.remoteview.RV.LUA_TAG;
 
 public class logcat extends OneArgFunction {
     @Override
-    public LuaValue call(LuaValue luaValue) {
+    public LuaValue call(@NonNull LuaValue luaValue) {
         Log.d(LUA_TAG, luaValue.tojstring());
         return LuaValue.NIL;
     }

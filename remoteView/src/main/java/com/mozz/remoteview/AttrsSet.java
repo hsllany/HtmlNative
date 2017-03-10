@@ -67,6 +67,7 @@ final class AttrsSet {
 
     private RVModule mModule;
 
+    @NonNull
     private static Map<Class<? extends View>, Attr> sCachedAttrs = new HashMap<>();
 
     AttrsSet(@NonNull RVModule context) {
@@ -81,7 +82,7 @@ final class AttrsSet {
         mCompacity = initCompacity;
     }
 
-    void put(RVDomTree tree, String paramsKey, Object value) {
+    void put(@NonNull RVDomTree tree, String paramsKey, @NonNull Object value) {
         int startPosition = tree.mAttrIndex;
 
         if (DEBUG) {
@@ -120,7 +121,7 @@ final class AttrsSet {
         }
     }
 
-    void newAttr(RVDomTree tree) {
+    void newAttr(@NonNull RVDomTree tree) {
         if (mLastGrowLength == mGrowLength) {
             mGrowLength++;
         }
@@ -142,7 +143,7 @@ final class AttrsSet {
         return Arrays.toString(mAttrs);
     }
 
-    public String toString(RVDomTree tree) {
+    public String toString(@NonNull RVDomTree tree) {
         int startPos = tree.mAttrIndex;
         int length = mLength[startPos];
 
@@ -153,8 +154,8 @@ final class AttrsSet {
     }
 
     @SuppressWarnings("ConstantConditions")
-    public void apply(Context context, String tagName, final RViewContext RViewContext, View v, RVDomTree tree,
-                      ViewGroup parent, ViewGroup.LayoutParams layoutParams)
+    public void apply(Context context, String tagName, @NonNull final RViewContext RViewContext, View v, @NonNull RVDomTree tree,
+                      @NonNull ViewGroup parent, @NonNull ViewGroup.LayoutParams layoutParams)
             throws AttrApplyException {
 
         int startPosition = tree.mAttrIndex;
@@ -309,7 +310,7 @@ final class AttrsSet {
         }
     }
 
-    View createViewViaAttr(RVRenderer renderer, Context context, String name, RVDomTree tree)
+    View createViewViaAttr(@NonNull RVRenderer renderer, Context context, @NonNull String name, @NonNull RVDomTree tree)
             throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException,
             InstantiationException, IllegalAccessException {
 
@@ -339,7 +340,8 @@ final class AttrsSet {
 
     }
 
-    private Attr getAttr(Class<? extends View> clazz) {
+    @Nullable
+    private Attr getAttr(@NonNull Class<? extends View> clazz) {
         Attr attr = sCachedAttrs.get(clazz);
         if (attr == null) {
             attr = getAttrFromView(clazz);
@@ -356,7 +358,7 @@ final class AttrsSet {
     }
 
     //TODO there is much can be done when dealing with the Attr
-    private static Attr getAttrFromView(Class<? extends View> clazz) {
+    private static Attr getAttrFromView(@NonNull Class<? extends View> clazz) {
         // cover all TextView sub classes
         if (TextView.class.isAssignableFrom(clazz)) {
             return TextViewAttr.getInstance();

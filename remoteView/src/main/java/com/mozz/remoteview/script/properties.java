@@ -1,5 +1,7 @@
 package com.mozz.remoteview.script;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.mozz.remoteview.RViewContext;
@@ -28,7 +30,7 @@ public final class properties {
         }
 
         @Override
-        public LuaValue call(LuaValue luaValue) {
+        public LuaValue call(@NonNull LuaValue luaValue) {
             if (luaValue.istable()) {
                 LuaTable table = (LuaTable) luaValue;
 
@@ -59,7 +61,7 @@ public final class properties {
         }
 
         @Override
-        public LuaValue call(LuaValue luaValue, LuaValue luaValue1) {
+        public LuaValue call(@NonNull LuaValue luaValue, @NonNull LuaValue luaValue1) {
             if (luaValue.isstring()) {
                 RViewContext.updateVariable(luaValue.tojstring(), toObject(luaValue1));
                 return LuaValue.TRUE;
@@ -76,8 +78,9 @@ public final class properties {
             this.RViewContext = context;
         }
 
+        @Nullable
         @Override
-        public LuaValue call(LuaValue luaValue) {
+        public LuaValue call(@NonNull LuaValue luaValue) {
             if (luaValue.isstring()) {
                 String key = luaValue.tojstring();
 
@@ -92,7 +95,7 @@ public final class properties {
         }
     }
 
-    private static Object toObject(LuaValue value) {
+    private static Object toObject(@NonNull LuaValue value) {
         if (value.isstring()) {
             return value.tojstring();
         } else if (value.isboolean()) {
@@ -106,6 +109,7 @@ public final class properties {
         }
     }
 
+    @Nullable
     private static LuaValue toLuaValue(Object value) {
         if (value instanceof String) {
             return LuaValue.valueOf((String) value);

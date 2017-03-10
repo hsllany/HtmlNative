@@ -1,6 +1,8 @@
 package com.mozz.remoteview.common;
 
 import android.graphics.Color;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.mozz.remoteview.AttrApplyException;
 
@@ -15,7 +17,7 @@ public final class Utils {
     private Utils() {
     }
 
-    public static void closeQuitely(Closeable closeable) {
+    public static void closeQuitely(@Nullable Closeable closeable) {
         if (closeable != null) {
             try {
                 closeable.close();
@@ -25,7 +27,7 @@ public final class Utils {
         }
     }
 
-    public static int color(Object object) throws AttrApplyException {
+    public static int color(@NonNull Object object) throws AttrApplyException {
         try {
             return Color.parseColor(object.toString());
         } catch (IllegalArgumentException e) {

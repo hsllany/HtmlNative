@@ -1,5 +1,6 @@
 package com.mozz.remoteview;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.mozz.remoteview.reader.CodeReader;
@@ -13,6 +14,7 @@ final class Lexer {
 
     private CodeReader mReader;
 
+    @NonNull
     private StringBuilder mBuffer = new StringBuilder();
 
     private int mLookFor = 0;
@@ -81,6 +83,7 @@ final class Lexer {
         throw new RVSyntaxError("unknown token " + peek(), line(), column());
     }
 
+    @Nullable
     private Token scanCode() throws EOFException {
         long startColumn = mReader.column();
         long line = mReader.line();
@@ -110,6 +113,7 @@ final class Lexer {
         return Token.obtainToken(Type.Code, mBuffer.toString(), line, startColumn);
     }
 
+    @Nullable
     private Token scanNumber() throws EOFException, RVSyntaxError {
         long startColumn = mReader.column();
         long line = mReader.line();
@@ -171,6 +175,7 @@ final class Lexer {
         }
     }
 
+    @Nullable
     private Token scanId() throws EOFException {
         long startColumn = mReader.column();
         long line = mReader.line();
@@ -195,6 +200,7 @@ final class Lexer {
 
     }
 
+    @Nullable
     private Token scanValue() throws EOFException {
         long startColumn = mReader.column();
         long line = mReader.line();
@@ -227,6 +233,7 @@ final class Lexer {
 
     }
 
+    @Nullable
     private Token scanInner() throws EOFException {
         long startColumn = mReader.column();
         long line = mReader.line();

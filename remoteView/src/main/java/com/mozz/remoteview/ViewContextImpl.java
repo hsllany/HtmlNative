@@ -38,7 +38,7 @@ final class ViewContextImpl implements RViewContext {
 
     private static final int ViewContextTag = 0x3 << 24;
 
-    final Map<String, View> mViewSelector = new ArrayMap<>();
+    private final Map<String, View> mViewSelector = new ArrayMap<>();
 
     private final VariablePoolImpl mPool = new VariablePoolImpl();
 
@@ -94,8 +94,10 @@ final class ViewContextImpl implements RViewContext {
     }
 
     public void onViewCreate() {
-
-        initLuaRunner();
+        // if there is script code in layout file, then initLuaRunner
+        if (mModule.mHasScriptEmbed) {
+            initLuaRunner();
+        }
 
         initVariablePool();
 
@@ -107,13 +109,13 @@ final class ViewContextImpl implements RViewContext {
     }
 
     private void callCreate() {
-        Code create = mModule.mFunctionTable.retrieveReserved(FunctionTable.CREATE);
+        Code create = mModule.retrieveReserved(FunctionTable.CREATE);
         if (create == null) return;
         execute(create);
     }
 
     private void callCreated() {
-        Code created = mModule.mFunctionTable.retrieveReserved(FunctionTable.CREATED);
+        Code created = mModule.retrieveReserved(FunctionTable.CREATED);
         if (created == null) return;
         execute(created);
     }
@@ -121,7 +123,7 @@ final class ViewContextImpl implements RViewContext {
     private void initLuaRunner() {
         LuaRunner.getInstance().runLuaScript(new WefRunnable<RViewContext>(this) {
             @Override
-            protected void runOverride(RViewContext RViewContext) {
+            protected void runOverride(@Nullable RViewContext RViewContext) {
                 if (RViewContext == null) return;
                 long time1 = SystemClock.currentThreadTimeMillis();
                 mGlobals = LuaRunner.newGlobals();
@@ -141,7 +143,7 @@ final class ViewContextImpl implements RViewContext {
         return mViewSelector.toString();
     }
 
-    public static RViewContext getViewContext(FrameLayout v) {
+    public static RViewContext getViewContext(@NonNull FrameLayout v) {
         Object object = v.getTag(ViewContextTag);
 
         if (object != null && object instanceof RViewContext) {
@@ -152,12 +154,17 @@ final class ViewContextImpl implements RViewContext {
     }
 
 
-    private void execute(Code code) {
+    private void execute(@NonNull Code code) {
         execute(code.toString());
     }
 
     @Override
     public void execute(final String script) {
+        if (mGlobals == null) {
+            Log.d(TAG, "skip the script \"" + script + "\" because no script in module " + mModule);
+            return;
+        }
+
         LuaRunner.getInstance().runLuaScript(new StrRunnableContext(this, script) {
             @Override
             protected void runOverride(String s) {
@@ -178,7 +185,7 @@ final class ViewContextImpl implements RViewContext {
         try {
             LuaValue l = mGlobals.load(s);
             l.call();
-        } catch (final LuaError e) {
+        } catch (@NonNull final LuaError e) {
             // make sure that lua script dose not crash the whole app
             e.printStackTrace();
             Log.e(TAG, "LuaScriptRun");
@@ -193,7 +200,8 @@ final class ViewContextImpl implements RViewContext {
         }
     }
 
-    static RViewContext initViewContext(FrameLayout layout, RVModule module, Context context) {
+    @NonNull
+    static RViewContext initViewContext(@NonNull FrameLayout layout, RVModule module, Context context) {
         RViewContext v = new ViewContextImpl(module, context);
         layout.setTag(ViewContextTag, v);
         return v;

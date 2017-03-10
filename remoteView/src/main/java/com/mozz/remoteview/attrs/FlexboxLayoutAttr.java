@@ -1,6 +1,7 @@
 package com.mozz.remoteview.attrs;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.google.android.flexbox.FlexboxLayout;
@@ -13,7 +14,7 @@ import com.mozz.remoteview.RVDomTree;
 
 public class FlexboxLayoutAttr implements LayoutAttr {
     @Override
-    public void apply(Context context, String tag, View v, String params, Object value, RVDomTree tree)
+    public void apply(Context context, String tag, View v, @NonNull String params, @NonNull Object value, RVDomTree tree)
             throws AttrApplyException {
         FlexboxLayout flexboxLayout = (FlexboxLayout) v;
 
@@ -28,7 +29,7 @@ public class FlexboxLayoutAttr implements LayoutAttr {
 
     }
 
-    private static int parseFlexDirection(String direction) {
+    private static int parseFlexDirection(@NonNull String direction) {
         if (direction.equals("column_reverse")) {
             return FlexboxLayout.FLEX_DIRECTION_COLUMN_REVERSE;
         } else if (direction.equals("row_reverse")) {

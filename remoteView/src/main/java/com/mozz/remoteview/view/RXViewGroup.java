@@ -1,6 +1,7 @@
 package com.mozz.remoteview.view;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
@@ -17,9 +18,10 @@ public final class RXViewGroup extends FrameLayout {
 
     private static final String TAG = RXViewGroup.class.getSimpleName();
 
+    @NonNull
     private List<WebView> mWebViewList = new LinkedList<>();
 
-    public RXViewGroup(Context context) {
+    public RXViewGroup(@NonNull Context context) {
         super(context);
     }
 

@@ -1,5 +1,7 @@
 package com.mozz.remoteview;
 
+import android.support.annotation.NonNull;
+
 public class RVSyntaxError extends Exception {
 
     private long mLine;
@@ -11,6 +13,7 @@ public class RVSyntaxError extends Exception {
         mColumn = column;
     }
 
+    @NonNull
     @Override
     public String getMessage() {
         return super.getMessage() + " at [" + mLine + "," + mColumn + "]";

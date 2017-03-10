@@ -3,6 +3,8 @@ package com.mozz.remoteview;
 import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +27,7 @@ final class ProcessThread {
     }
 
     // for running render task
+    @NonNull
     private static HandlerThread mRenderThread = new HandlerThread("RVRenderThread");
     private static Handler mRenderHandler;
 
@@ -37,7 +40,7 @@ final class ProcessThread {
         mRenderThread.quit();
     }
 
-    static void runRenderTask(RenderTask r) {
+    static void runRenderTask(@NonNull RenderTask r) {
         mRenderHandler.post(r);
     }
 
@@ -53,7 +56,7 @@ final class ProcessThread {
         }
 
         @Override
-        protected void runOverride(final Context context) {
+        protected void runOverride(@Nullable final Context context) {
             try {
                 if (context == null)
                     return;
@@ -79,7 +82,7 @@ final class ProcessThread {
                             mCallback.onViewLoaded(v);
                     }
                 });
-            } catch (final RVSyntaxError e) {
+            } catch (@NonNull final RVSyntaxError e) {
                 e.printStackTrace();
                 if (mCallback != null) {
                     MainHandler.instance().post(new Runnable() {

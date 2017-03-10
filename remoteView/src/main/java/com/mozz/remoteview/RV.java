@@ -3,16 +3,14 @@ package com.mozz.remoteview;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
 import com.mozz.remoteview.script.LuaRunner;
-import com.mozz.remoteview.common.MainHandler;
-import com.mozz.remoteview.common.WefRunnable;
 
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
@@ -33,8 +31,10 @@ public final class RV {
         ProcessThread.init();
     }
 
+    @Nullable
     private static RV sInstance = null;
 
+    @Nullable
     public static RV getInstance() {
         if (sInstance == null) {
             synchronized (RV.class) {
@@ -47,7 +47,7 @@ public final class RV {
         return sInstance;
     }
 
-    public void init(Context context) {
+    public void init(@NonNull Context context) {
         initScreenMetrics(context);
     }
 
@@ -55,7 +55,7 @@ public final class RV {
         return mDefaultMetrics;
     }
 
-    private void initScreenMetrics(Context context) {
+    private void initScreenMetrics(@NonNull Context context) {
         WindowManager window = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = window.getDefaultDisplay();
         mDefaultMetrics = new DisplayMetrics();
@@ -71,7 +71,7 @@ public final class RV {
     public void loadView(Context context, InputStream inputStream, Activity activity) {
         loadView(context, inputStream, new OnRViewLoadedWeak<Activity>(activity) {
             @Override
-            public void onViewLoaded(View v) {
+            public void onViewLoaded(@Nullable View v) {
                 Activity act = mWeakRef.get();
                 if (act != null && !act.isDestroyed() && v != null) {
                     act.setContentView(v);
@@ -112,7 +112,7 @@ public final class RV {
      * @param tag
      * @param rView
      */
-    public static void registerRView(String tag, RView rView) {
+    public static void registerRView(String tag, @NonNull RView rView) {
         ViewRegistry.registerExtraView(tag, rView);
     }
 
@@ -126,8 +126,8 @@ public final class RV {
         RVRenderer.setImageViewAdapter(adapter);
     }
 
-    public void setWebviewCreator(@NonNull WebViewCreator handler) {
-        RVRenderer.setWebViewHandler(handler);
+    public void setWebviewCreator(@NonNull WebViewCreator creator) {
+        RVRenderer.setWebViewCreator(creator);
     }
 
     public void setHrefLinkHandler(@NonNull HrefLinkHandler handler) {

@@ -62,7 +62,7 @@ final class ViewRegistry {
      * @return corresponding class name, or null if not found
      */
     @Nullable
-    static String findClassByTag(String tag) {
+    static String findClassByTag(@NonNull String tag) {
         String viewClassName = sReservedTagClassTable.get(tag.toLowerCase());
 
         if (viewClassName != null)

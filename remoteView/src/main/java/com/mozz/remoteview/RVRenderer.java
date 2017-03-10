@@ -1,10 +1,9 @@
 package com.mozz.remoteview;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,6 @@ import android.widget.AbsoluteLayout;
 
 import com.mozz.remoteview.common.Performance;
 import com.mozz.remoteview.common.PerformanceWatcher;
-import com.mozz.remoteview.common.WefRunnable;
 import com.mozz.remoteview.view.RXViewGroup;
 
 import java.lang.reflect.Constructor;
@@ -35,18 +33,19 @@ public final class RVRenderer {
     private static final Class<?>[] sConstructorSignature = new Class[]{Context.class};
 
     private static WebViewCreator sWebViewHandler = DefaultWebViewCreator.sInstance;
-    private static ImageViewAdapter sImageViewAdapter = null;
-    private static HrefLinkHandler sHrefLinkHandler = null;
+    private static ImageViewAdapter sImageViewAdapter = DefaultImageAdapter.sInstance;
+    private static HrefLinkHandler sHrefLinkHandler = DefaultHrefLinkHandler.sInstance;
 
     private RVRenderer() {
     }
 
+    @NonNull
     public static RVRenderer get() {
         return new RVRenderer();
     }
 
     @MainThread
-    final View inflate(Context context, RVModule rvModule, ViewGroup.LayoutParams params)
+    final View inflate(@NonNull Context context, @NonNull RVModule rvModule, @NonNull ViewGroup.LayoutParams params)
             throws RemoteInflateException {
 
         PerformanceWatcher pWatcher = Performance.newWatcher();
@@ -76,9 +75,9 @@ public final class RVRenderer {
         return frameLayout;
     }
 
-    private View inflate(Context context, RViewContext RViewContext, RVDomTree tree,
-                         ViewGroup parent, AttrsSet attrsSet, ViewGroup.LayoutParams params,
-                         RXViewGroup root)
+    private View inflate(@NonNull Context context, @NonNull RViewContext RViewContext, @NonNull RVDomTree tree,
+                         @NonNull ViewGroup parent, @NonNull AttrsSet attrsSet, @NonNull ViewGroup.LayoutParams params,
+                         @NonNull RXViewGroup root)
             throws RemoteInflateException {
 
 
@@ -127,9 +126,9 @@ public final class RVRenderer {
     }
 
 
-    private View createViewFromTag(RVDomTree tree, RViewContext RViewContext, String tagName,
-                                   ViewGroup parent, Context context, AttrsSet attrsSet,
-                                   ViewGroup.LayoutParams params, RXViewGroup root) throws RemoteInflateException {
+    private View createViewFromTag(@NonNull RVDomTree tree, @NonNull RViewContext RViewContext, @NonNull String tagName,
+                                   @NonNull ViewGroup parent, @NonNull Context context, @NonNull AttrsSet attrsSet,
+                                   @NonNull ViewGroup.LayoutParams params, @NonNull RXViewGroup root) throws RemoteInflateException {
 
         PerformanceWatcher watcher = Performance.newWatcher();
         try {
@@ -186,7 +185,8 @@ public final class RVRenderer {
 
     }
 
-    final View createView(Context context, String viewClassName) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    @Nullable
+    final View createView(@NonNull Context context, @Nullable String viewClassName) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
 
         // first let viewCreateHandler to create view
         View view = createViewByViewHandler(context, viewClassName);
@@ -218,7 +218,7 @@ public final class RVRenderer {
         return view;
     }
 
-    private View createViewByViewHandler(Context context, String viewClassName) {
+    private View createViewByViewHandler(Context context, @NonNull String viewClassName) {
         if (viewClassName.equals(WebView.class.getName()) && sWebViewHandler != null) {
             return sWebViewHandler.create(context);
         }
@@ -226,7 +226,7 @@ public final class RVRenderer {
         return null;
     }
 
-    static void setWebViewHandler(@NonNull WebViewCreator handler) {
+    static void setWebViewCreator(@NonNull WebViewCreator handler) {
         sWebViewHandler = handler;
     }
 
@@ -243,7 +243,7 @@ public final class RVRenderer {
     }
 
 
-    private static boolean needFutureCreate(String name) {
+    private static boolean needFutureCreate(@NonNull String name) {
         if (name.equals(HtmlTag.DIV)) {
             return true;
         } else {
@@ -273,7 +273,6 @@ public final class RVRenderer {
             super(throwable);
         }
     }
-
 
 
 }

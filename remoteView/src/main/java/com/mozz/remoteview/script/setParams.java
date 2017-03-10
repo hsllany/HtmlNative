@@ -1,6 +1,7 @@
 package com.mozz.remoteview.script;
 
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
 
@@ -22,7 +23,7 @@ public class setParams extends ThreeArgFunction {
     }
 
     @Override
-    public LuaValue call(final LuaValue luaValue, final LuaValue luaValue2, final LuaValue luaValue3) {
+    public LuaValue call(@NonNull final LuaValue luaValue, @NonNull final LuaValue luaValue2, @NonNull final LuaValue luaValue3) {
 
         MainHandler.instance().post(new Runnable() {
             @Override
@@ -50,7 +51,7 @@ public class setParams extends ThreeArgFunction {
         return LuaValue.NIL;
     }
 
-    private static void changeViewProperty(View v, String property, LuaValue value)
+    private static void changeViewProperty(@NonNull View v, @NonNull String property, @NonNull LuaValue value)
             throws ParamsWrongException {
         switch (property) {
             case "visible":

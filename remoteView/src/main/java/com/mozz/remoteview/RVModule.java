@@ -1,5 +1,6 @@
 package com.mozz.remoteview;
 
+import android.support.annotation.NonNull;
 import android.util.ArrayMap;
 
 import com.mozz.remoteview.script.Code;
@@ -10,20 +11,28 @@ import java.util.Map;
 
 final class RVModule {
     RVDomTree mRootTree;
-    FunctionTable mFunctionTable;
+    private FunctionTable mFunctionTable;
     AttrsSet mAttrs;
 
+    boolean mHasScriptEmbed = false;
+
+    @NonNull
     private static Map<String, RVModule> sCache = new ArrayMap<>();
 
     private static final Object sCacheLock = new Object();
 
     RVModule() {
-        mFunctionTable = new FunctionTable();
         mAttrs = new AttrsSet(this);
     }
 
     void putFunction(String functionName, String code) {
+        if (mFunctionTable == null) {
+            mFunctionTable = new FunctionTable();
+        }
+
         mFunctionTable.putFunction(functionName, code);
+        if (!mHasScriptEmbed)
+            mHasScriptEmbed = true;
     }
 
     /**
@@ -34,13 +43,18 @@ final class RVModule {
         return mFunctionTable.retrieveCode(functionName);
     }
 
-    public static RVModule load(InputStream stream) throws RVSyntaxError {
+    public Code retrieveReserved(int reservedCode) {
+        return mFunctionTable.retrieveReserved(reservedCode);
+    }
+
+    @NonNull
+    public static RVModule load(@NonNull InputStream stream) throws RVSyntaxError {
         Parser parser = new Parser(new FileCodeReader(stream));
         return parser.process();
     }
 
     //TODO finish the cache of RVModule
-    public static RVModule load(InputStream stream, String tag) throws RVSyntaxError {
+    public static RVModule load(@NonNull InputStream stream, String tag) throws RVSyntaxError {
         synchronized (sCacheLock) {
             RVModule module = sCache.get(tag);
             if (module != null) {

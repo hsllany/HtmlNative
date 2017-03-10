@@ -1,6 +1,7 @@
 package com.mozz.remoteview.common;
 
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 /**
@@ -17,6 +18,7 @@ public interface PerformanceWatcher {
 final class PerformanceWatcherImpl implements PerformanceWatcher {
     private final long time;
     private long lastTime = -1;
+    @NonNull
     private final StringBuilder mSb;
 
     PerformanceWatcherImpl() {
@@ -73,5 +75,6 @@ final class EmptyPerformanceWatcher implements PerformanceWatcher {
 
     }
 
+    @NonNull
     static PerformanceWatcher instance = new EmptyPerformanceWatcher();
 }

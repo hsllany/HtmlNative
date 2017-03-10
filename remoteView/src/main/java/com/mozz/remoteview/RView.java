@@ -1,5 +1,6 @@
 package com.mozz.remoteview;
 
+import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.mozz.remoteview.attrs.Attr;
@@ -9,5 +10,6 @@ import com.mozz.remoteview.attrs.Attr;
  */
 
 public interface RView extends Attr {
+    @NonNull
     Class<? extends View> onGetViewClassName();
 }

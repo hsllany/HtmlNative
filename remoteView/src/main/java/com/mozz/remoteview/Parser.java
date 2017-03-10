@@ -1,6 +1,7 @@
 package com.mozz.remoteview;
 
-import android.support.annotation.VisibleForTesting;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.mozz.remoteview.reader.CodeReader;
 import com.mozz.remoteview.token.Token;
@@ -24,10 +25,12 @@ final class Parser {
 
     static boolean DEBUG = true;
 
+    @NonNull
     private final Lexer mLexer;
 
     private int mLookFor;
 
+    @Nullable
     private Token mCurToken;
 
     private boolean mReserved = false;
@@ -51,7 +54,7 @@ final class Parser {
     private static final String[] sSwallowInnerTag = {HtmlTag.A, HtmlTag.B, HtmlTag.H1, HtmlTag.H2,
             HtmlTag.INPUT, HtmlTag.P};
 
-    private static boolean isSwallowInnerTag(String tag) {
+    private static boolean isSwallowInnerTag(@NonNull String tag) {
         for (String tagToCompare : sSwallowInnerTag) {
             if (tag.equals(tagToCompare)) {
                 return true;
@@ -65,12 +68,13 @@ final class Parser {
         mLexer = new Lexer(reader);
     }
 
+    @NonNull
     public RVModule process() throws RVSyntaxError {
 
-        RVModule rvModule = new RVModule();
-        rvModule.mRootTree = new RVDomTree(rvModule, null, 0, 0);
-        rvModule.mFunctionTable = new FunctionTable();
+        RVModule module = new RVModule();
+        module.mRootTree = new RVDomTree(module, null, 0, 0);
 
+        RVDomTree currentTree = module.mRootTree;
 
         try {
             scanFor(LeftAngleBracket);
@@ -87,7 +91,7 @@ final class Parser {
 
                 if (mCurToken.type() == Id) {
                     scan();
-                    processCode(mCurToken.stringValue(), rvModule.mFunctionTable);
+                    processCode(mCurToken.stringValue(), module);
                 }
 
                 scanFor(LeftAngleBracket, Slash, Script, RightAngleBracket);
@@ -95,20 +99,20 @@ final class Parser {
                 //scan for <template> tag
                 scanFor(LeftAngleBracket, Template);
 
-                rvModule.mRootTree.mNodeName = mCurToken.stringValue();
-                rvModule.mRootTree.mTagPair = 1;
-                rvModule.mRootTree.mBracketPair = 1;
-                processInternal(rvModule.mRootTree);
+                currentTree.mNodeName = mCurToken.stringValue();
+                currentTree.mTagPair = 1;
+                currentTree.mBracketPair = 1;
+                processInternal(currentTree);
 
                 scan();
 
                 throw new RVSyntaxError("should end", mLexer.line(), mLexer.column());
 
             } else if (mCurToken.type() == Template) {
-                rvModule.mRootTree.mNodeName = mCurToken.stringValue();
-                rvModule.mRootTree.mTagPair = 1;
-                rvModule.mRootTree.mBracketPair = 1;
-                processInternal(rvModule.mRootTree);
+                currentTree.mNodeName = mCurToken.stringValue();
+                currentTree.mTagPair = 1;
+                currentTree.mBracketPair = 1;
+                processInternal(currentTree);
 
                 scanFor(LeftAngleBracket, Script, RightAngleBracket);
                 scan(true);
@@ -116,7 +120,7 @@ final class Parser {
                 if (mCurToken.type() == Id) {
                     scan();
 
-                    processCode(mCurToken.stringValue(), rvModule.mFunctionTable);
+                    processCode(mCurToken.stringValue(), module);
                 }
 
                 scanFor(LeftAngleBracket, Slash, Script, RightAngleBracket);
@@ -131,7 +135,7 @@ final class Parser {
 
         } catch (EOFException e) {
             mLexer.close();
-            return rvModule;
+            return module;
         }
 
     }
@@ -141,7 +145,7 @@ final class Parser {
      *
      * @throws RVSyntaxError
      */
-    private void processCode(String functionName, FunctionTable functionTable) throws RVSyntaxError {
+    private void processCode(String functionName, @NonNull RVModule module) throws RVSyntaxError {
         lookFor(LK_CODE);
         try {
             while (true) {
@@ -155,7 +159,7 @@ final class Parser {
                         break;
                     case Code:
                         checkState(LK_CODE);
-                        functionTable.putFunction(functionName, mCurToken.stringValue());
+                        module.putFunction(functionName, mCurToken.stringValue());
                         lookFor(LK_ID);
                         break;
 
@@ -175,7 +179,7 @@ final class Parser {
      *
      * @throws RVSyntaxError
      */
-    private void processInternal(RVDomTree tree) throws RVSyntaxError {
+    private void processInternal(@NonNull RVDomTree tree) throws RVSyntaxError {
         log("init to parse tree " + tree.getNodeName());
         int index = 0;
 
@@ -352,7 +356,7 @@ final class Parser {
         }
     }
 
-    static void parseStyle(RVDomTree tree, String styleString) {
+    static void parseStyle(@NonNull RVDomTree tree, @NonNull String styleString) {
         StringBuilder sb = new StringBuilder();
         String key = null;
         for (int i = 0; i < styleString.length(); i++) {
@@ -405,7 +409,7 @@ final class Parser {
         mReserved = reserved;
     }
 
-    private void scanFor(Type type) throws EOFException, RVSyntaxError {
+    private void scanFor(@NonNull Type type) throws EOFException, RVSyntaxError {
         scan();
 
         if (mCurToken.type() != type) {
@@ -414,7 +418,7 @@ final class Parser {
         }
     }
 
-    private void scanFor(Type... types) throws EOFException, RVSyntaxError {
+    private void scanFor(@NonNull Type... types) throws EOFException, RVSyntaxError {
         for (Type type : types) {
             scanFor(type);
         }

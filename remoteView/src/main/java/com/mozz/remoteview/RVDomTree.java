@@ -1,6 +1,7 @@
 package com.mozz.remoteview;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.Iterator;
@@ -24,10 +25,12 @@ public final class RVDomTree {
 
     LinkedList<RVDomTree> mChildren;
 
+    @Nullable
     String mNodeName;
 
     private RVModule mModule;
 
+    @Nullable
     private String mText = null;
 
     int mAttrIndex;
@@ -52,7 +55,7 @@ public final class RVDomTree {
         module.mAttrs.newAttr(this);
     }
 
-    void addAttr(String attrName, Object value) {
+    void addAttr(String attrName, @NonNull Object value) {
         mModule.mAttrs.put(this, attrName, value);
     }
 
@@ -63,6 +66,7 @@ public final class RVDomTree {
             mText += text;
     }
 
+    @NonNull
     RVDomTree addChild(String nodeName, int index) {
         RVDomTree child = new RVDomTree(mModule, nodeName, this, this.mDepth + 1, index);
         if (DEBUG) {
@@ -89,7 +93,7 @@ public final class RVDomTree {
         this.walkThroughInternal(action, mDepth);
     }
 
-    private void walkThroughInternal(WalkAction action, int depth) {
+    private void walkThroughInternal(@Nullable WalkAction action, int depth) {
         if (action != null)
             action.act(this, depth);
 
@@ -102,10 +106,12 @@ public final class RVDomTree {
 
     }
 
+    @Nullable
     String getNodeName() {
         return mNodeName;
     }
 
+    @Nullable
     public String getInner() {
         return mText;
     }
@@ -131,6 +137,7 @@ public final class RVDomTree {
         return sb.toString();
     }
 
+    @NonNull
     @Override
     public String toString() {
         String index = "@" + mIndex + ", ";

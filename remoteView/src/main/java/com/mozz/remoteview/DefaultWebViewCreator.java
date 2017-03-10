@@ -1,6 +1,7 @@
 package com.mozz.remoteview;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.webkit.WebView;
 
 /**
@@ -16,6 +17,7 @@ class DefaultWebViewCreator implements WebViewCreator {
     }
 
 
+    @NonNull
     @Override
     public WebView create(Context context) {
         return new WebView(context);

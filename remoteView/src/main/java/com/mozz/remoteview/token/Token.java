@@ -1,6 +1,9 @@
 package com.mozz.remoteview.token;
 
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 public final class Token {
 
     private long startColumn;
@@ -9,11 +12,14 @@ public final class Token {
 
     private Type mType;
 
+    @Nullable
     private Object mValue;
 
+    @Nullable
     private Token next;
 
     // for token pool
+    @Nullable
     private static Token sPool;
     private static int sPoolSize = 0;
     private static final int MAX_POOL_SIZE = 20;
@@ -24,6 +30,7 @@ public final class Token {
         mValue = value;
     }
 
+    @NonNull
     @Override
     public String toString() {
         String value = mValue == null ? "" : ":" + mValue;
@@ -34,6 +41,7 @@ public final class Token {
         return mType;
     }
 
+    @Nullable
     public Object value() {
         return mValue;
     }
@@ -42,6 +50,7 @@ public final class Token {
         mValue = value;
     }
 
+    @Nullable
     public String stringValue() {
         return (String) mValue;
     }
@@ -68,6 +77,7 @@ public final class Token {
         }
     }
 
+    @Nullable
     public static Token obtainToken(Type type, Object value, long line, long column) {
         synchronized (sPoolSync) {
             if (sPool != null) {
@@ -87,6 +97,7 @@ public final class Token {
         }
     }
 
+    @Nullable
     public static Token obtainToken(Type type, long line, long column) {
         return obtainToken(type, null, line, column);
     }

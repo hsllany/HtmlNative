@@ -36,6 +36,7 @@ public interface RViewContext extends VariablePool {
 
     void onViewCreate();
 
+    @Nullable
     View put(String id, View value);
 
     String allIdTag();

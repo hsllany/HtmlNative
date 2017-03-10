@@ -1,6 +1,7 @@
 package com.mozz.remoteview.script;
 
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.mozz.remoteview.RVEnvironment;
@@ -18,6 +19,7 @@ public final class Code {
         mFunctionName = functionName;
     }
 
+    @NonNull
     public static Code toCode(String function, String code) {
         return new Code(code, function);
     }
@@ -27,7 +29,7 @@ public final class Code {
         return mCode;
     }
 
-    public void execute(RViewContext context) {
+    public void execute(@NonNull RViewContext context) {
         long timeStart = SystemClock.currentThreadTimeMillis();
 
         context.execute(mCode);

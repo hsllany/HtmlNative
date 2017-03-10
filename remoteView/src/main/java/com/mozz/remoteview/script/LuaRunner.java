@@ -2,6 +2,8 @@ package com.mozz.remoteview.script;
 
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.mozz.remoteview.RVEnvironment;
 
@@ -15,6 +17,7 @@ import org.luaj.vm2.lib.jse.JsePlatform;
  */
 public final class LuaRunner {
 
+    @NonNull
     private HandlerThread mScriptThread = new HandlerThread("RVLuaScriptThread");
     private Handler mHandler;
 
@@ -33,6 +36,7 @@ public final class LuaRunner {
 
     private static LuaRunner instance = null;
 
+    @NonNull
     public static LuaRunner getInstance() {
         if (instance == null) {
             synchronized (LuaRunner.class) {

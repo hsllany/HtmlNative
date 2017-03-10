@@ -2,12 +2,12 @@ package com.mozz.remoteview.attrs;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.mozz.remoteview.AttrApplyException;
 import com.mozz.remoteview.HtmlTag;
@@ -25,14 +25,16 @@ public class TextViewAttr implements Attr {
     public static final String FONT_WEIGHT = "font-weight";
     public static final String HREF = "href";
 
+    @NonNull
     private static TextViewAttr sInstance = new TextViewAttr();
 
+    @NonNull
     public static TextViewAttr getInstance() {
         return sInstance;
     }
 
     @Override
-    public void apply(final Context context, String tag, View v, String params, final Object value, RVDomTree tree)
+    public void apply(final Context context, @NonNull String tag, View v, @NonNull String params, @NonNull final Object value, @NonNull RVDomTree tree)
             throws AttrApplyException {
         final TextView textView = (TextView) v;
 

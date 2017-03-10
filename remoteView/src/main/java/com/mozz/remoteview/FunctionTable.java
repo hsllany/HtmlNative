@@ -1,5 +1,7 @@
 package com.mozz.remoteview;
 
+import android.support.annotation.NonNull;
+
 import com.mozz.remoteview.script.Code;
 
 import java.util.HashMap;
@@ -13,14 +15,15 @@ final class FunctionTable {
     static final int CREATED = 1;
 
     private Map<String, Code> mFunctions;
+    @NonNull
     private Code[] mReserved = new Code[RESERVED_FUNCTION.length];
 
     FunctionTable() {
         mFunctions = new HashMap<>();
     }
 
-    void putFunction(String functionName, String code) {
-        if (!processReserved(functionName, code)) {
+    void putFunction(@NonNull String functionName, String code) {
+        if (!putReserved(functionName, code)) {
             mFunctions.put(functionName, Code.toCode(functionName, code));
         }
     }
@@ -34,7 +37,7 @@ final class FunctionTable {
         return mFunctions.toString();
     }
 
-    private boolean processReserved(String functionName, String code) {
+    private boolean putReserved(@NonNull String functionName, String code) {
         if (functionName.equals(RESERVED_FUNCTION[CREATED])) {
             mReserved[CREATED] = Code.toCode(functionName, code);
             return true;

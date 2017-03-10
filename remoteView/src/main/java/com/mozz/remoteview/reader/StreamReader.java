@@ -1,5 +1,7 @@
 package com.mozz.remoteview.reader;
 
+import android.support.annotation.NonNull;
+
 import com.mozz.remoteview.common.Utils;
 
 import java.io.EOFException;
@@ -11,6 +13,7 @@ public class StreamReader implements CodeReader {
 
     public static final int CACHE_SIZE = 1024 * 2;
 
+    @NonNull
     private char[] temp = new char[CACHE_SIZE];
 
     private int tempPos = -1;

@@ -1,6 +1,7 @@
 package com.mozz.remoteview.script;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.widget.Toast;
 
 import com.mozz.remoteview.common.MainHandler;
@@ -21,7 +22,7 @@ public class toast extends OneArgFunction {
     }
 
     @Override
-    public LuaValue call(final LuaValue luaValue) {
+    public LuaValue call(@NonNull final LuaValue luaValue) {
         MainHandler.instance().post(new Runnable() {
             @Override
             public void run() {
