@@ -7,6 +7,7 @@ import android.webkit.WebView;
 import android.widget.AbsoluteLayout;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -34,6 +35,10 @@ final class ViewRegistry {
     private static Map<String, RView> sExtraTagClassTable;
 
     static {
+
+        sReservedTagClassTable.put(HtmlTag.BODY, LinearLayout.class.getName());
+        sReservedTagClassTable.put(HtmlTag.TEMPLATE, LinearLayout.class.getName());
+
         sReservedTagClassTable.put(HtmlTag.P, TextView.class.getName());
         sReservedTagClassTable.put(HtmlTag.IMG, ImageView.class.getName());
         sReservedTagClassTable.put(HtmlTag.INPUT, EditText.class.getName());
@@ -57,7 +62,7 @@ final class ViewRegistry {
      */
     @Nullable
     static String findClassByTag(String tag) {
-        String viewClassName = sReservedTagClassTable.get(tag);
+        String viewClassName = sReservedTagClassTable.get(tag.toLowerCase());
 
         if (viewClassName != null)
             return viewClassName;

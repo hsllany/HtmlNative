@@ -18,6 +18,11 @@ public class ParserTest {
 
     private static String TAG = "RV_ParseTest";
 
+    private static String code = "<body>\n" +
+            "\t<p>hello worldnihao</p>\n" +
+            "\t<img src=\"http://www.baidu.com\"/>\n" +
+            "</body>";
+
     static {
         Parser.toggleDebug(true);
     }
@@ -34,7 +39,7 @@ public class ParserTest {
 //        parserDebugger(codeTemplateFirst);
 //
 //        debug("=============codeTemplateOnly==============");
-        parserDebugger(codeTemplateOnly);
+        parserDebugger(code);
     }
 
     private void parserDebugger(String code) throws RVSyntaxError {

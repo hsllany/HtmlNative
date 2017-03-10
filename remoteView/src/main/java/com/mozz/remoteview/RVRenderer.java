@@ -163,6 +163,8 @@ final class RVRenderer {
                 return v;
             } else {
                 String viewClazzName = ViewRegistry.findClassByTag(name);
+                if (viewClazzName == null)
+                    return null;
                 View view = createView(context, viewClazzName);
 
                 if (view instanceof WebView) {
@@ -200,7 +202,7 @@ final class RVRenderer {
     final View createView(Context context, String viewClassName) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
 
         // first let viewCreateHandler to create view
-        View view = CreateViewByViewHandler(context, viewClassName);
+        View view = createViewByViewHandler(context, viewClassName);
         if (view != null) {
             return view;
         }
@@ -229,7 +231,7 @@ final class RVRenderer {
         return view;
     }
 
-    private View CreateViewByViewHandler(Context context, String viewClassName) {
+    private View createViewByViewHandler(Context context, String viewClassName) {
         if (viewClassName.equals(WebView.class.getName()) && mWebViewHandler != null) {
             return mWebViewHandler.create(context);
         }

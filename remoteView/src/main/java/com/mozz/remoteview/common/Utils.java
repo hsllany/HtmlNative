@@ -45,10 +45,32 @@ public final class Utils {
     public static float toFloat(Object object) throws AttrApplyException {
         if (object instanceof Float) {
             return (float) object;
+        } else if (object instanceof String) {
+            try {
+                float f = Float.valueOf((String) object);
+                return f;
+            } catch (NumberFormatException e) {
+                throw new AttrApplyException("can't read float from " + object);
+            }
         } else {
             throw new AttrApplyException("can't read float from " + object);
         }
     }
+
+    public static float px(Object object) throws AttrApplyException {
+        if (object instanceof String) {
+            String s = (String) object;
+
+            if (s.endsWith("px")) {
+                return toFloat(s.substring(0, s.length() - 2));
+            } else {
+                return toFloat(s);
+            }
+        } else {
+            return toFloat(object);
+        }
+    }
+
 
     public static boolean toBoolean(Object object) throws AttrApplyException {
         if (object instanceof Boolean) {

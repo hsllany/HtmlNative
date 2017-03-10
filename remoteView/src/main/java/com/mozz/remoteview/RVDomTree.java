@@ -22,7 +22,7 @@ public final class RVDomTree {
 
     private int mIndex;
 
-    List<RVDomTree> mChildren;
+    LinkedList<RVDomTree> mChildren;
 
     String mNodeName;
 
@@ -108,6 +108,10 @@ public final class RVDomTree {
 
     public String getInner() {
         return mText;
+    }
+
+    RVDomTree last() {
+        return mChildren.getLast();
     }
 
 

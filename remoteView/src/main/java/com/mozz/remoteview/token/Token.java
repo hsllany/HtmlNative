@@ -38,6 +38,10 @@ public final class Token {
         return mValue;
     }
 
+    public void setValue(Object value) {
+        mValue = value;
+    }
+
     public String stringValue() {
         return (String) mValue;
     }

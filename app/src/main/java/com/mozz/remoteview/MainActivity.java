@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -34,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mLoader = new RemoteViewLoader(this);
 
-        mSearch.setText("http://10.58.107.21/detail.layout");
+        mSearch.setText("http://10.58.107.21/test2.layout");
     }
 
     @Override
@@ -48,6 +49,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     mContainer.removeAllViews();
                     mContainer.addView(v, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.MATCH_PARENT));
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
         }

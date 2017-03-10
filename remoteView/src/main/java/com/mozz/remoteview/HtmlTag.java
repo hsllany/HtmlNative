@@ -20,6 +20,9 @@ final class HtmlTag {
     static final String SCROLLER = "scroller";
     static final String IFRAME = "iframe";
     static final String WEB = "web";
+    static final String BR = "br";
+    static final String BODY = "body";
+    static final String TEMPLATE = "template";
 
     static final String ATTR_STYLE = "style";
 

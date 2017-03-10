@@ -90,8 +90,17 @@ public final class RV {
                                 onRViewLoaded.onViewLoaded(v);
                         }
                     });
-                } catch (RVSyntaxError e) {
+                } catch (final RVSyntaxError e) {
                     e.printStackTrace();
+                    if (onRViewLoaded != null) {
+                        MainHandler.instance().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (onRViewLoaded != null)
+                                    onRViewLoaded.onError(e);
+                            }
+                        });
+                    }
                 }
             }
         });
@@ -108,6 +117,11 @@ public final class RV {
                     act.setContentView(v);
                 }
             }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
         });
     }
 
@@ -117,6 +131,11 @@ public final class RV {
             public void onViewLoaded(View v) {
                 ViewGroup vv = mWeakRef.get();
                 vv.addView(v);
+            }
+
+            @Override
+            public void onError(Exception e) {
+
             }
         });
     }
@@ -145,6 +164,8 @@ public final class RV {
 
     public interface OnRViewLoaded {
         void onViewLoaded(View v);
+
+        void onError(Exception e);
     }
 
     private abstract class OnRViewLoadedWeak<T> implements OnRViewLoaded {

@@ -121,7 +121,7 @@ final class Lexer {
         }
 
         if (!Lexer.isDigit(peek())) {
-            throw new Error("Illegal word when reading Number!");
+            throw new RVSyntaxError("Illegal word when reading Number!", line, startColumn);
         }
 
         do {
@@ -179,12 +179,13 @@ final class Lexer {
         do {
             mBuffer.append(peek());
             next();
-        } while (isLetter(peek()) || isDigit(peek()) || peek() == '.');
+        }
+        while (isLetter(peek()) || isDigit(peek()) || peek() == '.' || peek() == '-' || peek() == '_');
 
         String idStr = mBuffer.toString();
 
         if (idStr.equals(Type.Template.toString().toLowerCase()) || idStr.equals(Type.Body.toString().toLowerCase())) {
-            return Token.obtainToken(Type.Template, line, startColumn);
+            return Token.obtainToken(Type.Template, Type.Template.toString(), line, startColumn);
         } else if (idStr.equals(Type.Script.toString().toLowerCase())) {
             mLookForScript++;
             return Token.obtainToken(Type.Script, line, startColumn);

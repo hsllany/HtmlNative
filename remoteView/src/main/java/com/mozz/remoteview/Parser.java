@@ -22,7 +22,7 @@ final class Parser {
 
     private static final String TAG = Parser.class.getSimpleName();
 
-    static boolean DEBUG = false;
+    static boolean DEBUG = true;
 
     private final Lexer mLexer;
 
@@ -93,41 +93,22 @@ final class Parser {
                 scanFor(LeftAngleBracket, Slash, Script, RightAngleBracket);
 
                 //scan for <template> tag
-                scanFor(LeftAngleBracket, Template, RightAngleBracket);
+                scanFor(LeftAngleBracket, Template);
 
-                scanFor(LeftAngleBracket);
-                scan(true);
+                rvModule.mRootTree.mNodeName = mCurToken.stringValue();
+                rvModule.mRootTree.mTagPair = 1;
+                rvModule.mRootTree.mBracketPair = 1;
+                processInternal(rvModule.mRootTree);
 
-                if (mCurToken.type() == Id) {
-                    // consume reserved
-                    scanFor();
-                    rvModule.mRootTree.mNodeName = mCurToken.stringValue();
-                    rvModule.mRootTree.mTagPair = 1;
-                    rvModule.mRootTree.mBracketPair = 1;
-                    processInternal(rvModule.mRootTree);
-                }
-
-                // reach the end of </template>, should contain no more token
-                scanFor(LeftAngleBracket, Slash, Template, RightAngleBracket);
                 scan();
 
                 throw new RVSyntaxError("should end", mLexer.line(), mLexer.column());
 
             } else if (mCurToken.type() == Template) {
-                scanFor(RightAngleBracket);
-
-                scanFor(LeftAngleBracket);
-                scan(true);
-                if (mCurToken.type() == Id) {
-                    // consume reserved
-                    scan();
-                    rvModule.mRootTree.mNodeName = mCurToken.stringValue();
-                    rvModule.mRootTree.mTagPair = 1;
-                    rvModule.mRootTree.mBracketPair = 1;
-                    processInternal(rvModule.mRootTree);
-                }
-
-                scanFor(LeftAngleBracket, Slash, Template, RightAngleBracket);
+                rvModule.mRootTree.mNodeName = mCurToken.stringValue();
+                rvModule.mRootTree.mTagPair = 1;
+                rvModule.mRootTree.mBracketPair = 1;
+                processInternal(rvModule.mRootTree);
 
                 scanFor(LeftAngleBracket, Script, RightAngleBracket);
                 scan(true);
@@ -250,11 +231,23 @@ final class Parser {
 
                             String tag = mCurToken.stringValue();
 
-                            RVDomTree child = tree.addChild(tag, index++);
-                            child.mTagPair = 1;
-                            child.mBracketPair = 1;
-                            processInternal(child);
-                            lookFor(LK_LeftArrowBracket);
+                            // handle the <br/> tag
+                            if (HtmlTag.BR.equalsIgnoreCase(tag)) {
+                                if (isSwallowInnerTag(tree.getNodeName())) {
+                                    tree.appendText("\n");
+                                } else {
+                                    tree.last().appendText("\n");
+                                }
+                                scanFor(Type.Slash, Type.RightAngleBracket);
+                                lookFor(LK_LeftArrowBracket | LK_INNER);
+
+                            } else {
+                                RVDomTree child = tree.addChild(tag, index++);
+                                child.mTagPair = 1;
+                                child.mBracketPair = 1;
+                                processInternal(child);
+                                lookFor(LK_LeftArrowBracket);
+                            }
                         }
                         break;
 
@@ -289,7 +282,7 @@ final class Parser {
                     case Value:
                         checkState(LK_VALUE);
                         if (attrName.equals(HtmlTag.ATTR_STYLE)) {
-                            parseStyle(tree, attrName);
+                            parseStyle(tree, mCurToken.stringValue());
                         } else {
                             tree.addAttr(attrName, mCurToken.stringValue());
                         }
@@ -359,8 +352,7 @@ final class Parser {
         }
     }
 
-    @VisibleForTesting
-    public static void parseStyle(RVDomTree tree, String styleString) {
+    static void parseStyle(RVDomTree tree, String styleString) {
         StringBuilder sb = new StringBuilder();
         String key = null;
         for (int i = 0; i < styleString.length(); i++) {
