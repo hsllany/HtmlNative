@@ -7,12 +7,12 @@ import android.webkit.WebView;
  * @author Yang Tao, 17/3/8.
  */
 
-class DefaultWebViewCreateHandler implements WebViewCreateHandler {
+class DefaultWebViewCreator implements WebViewCreator {
 
-    static DefaultWebViewCreateHandler sInstance;
+    static DefaultWebViewCreator sInstance;
 
     static {
-        sInstance = new DefaultWebViewCreateHandler();
+        sInstance = new DefaultWebViewCreator();
     }
 
 

@@ -10,6 +10,6 @@ import com.mozz.remoteview.AttrApplyException;
  */
 
 public interface LayoutAttr extends Attr {
-    void applyToChild(Context context, View v, String params, Object value)
+    void applyToChild(Context context, String tag, View v, String params, Object value)
             throws AttrApplyException;
 }

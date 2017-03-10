@@ -50,6 +50,7 @@ final class ViewRegistry {
         sReservedTagClassTable.put(RVDomTree.INNER_TREE_TAG, TextView.class.getName());
         sReservedTagClassTable.put(HtmlTag.IFRAME, WebView.class.getName());
         sReservedTagClassTable.put(HtmlTag.WEB, WebView.class.getName());
+        sReservedTagClassTable.put(HtmlTag.A, TextView.class.getName());
     }
 
     /**

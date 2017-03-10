@@ -7,6 +7,6 @@ import android.webkit.WebView;
  * @author Yang Tao, 17/3/8.
  */
 
-public interface WebViewCreateHandler extends ViewCreateHandler<WebView> {
+public interface WebViewCreator extends ViewCreator<WebView> {
     WebView create(Context context);
 }

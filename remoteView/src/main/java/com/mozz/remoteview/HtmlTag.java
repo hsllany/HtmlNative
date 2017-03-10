@@ -4,26 +4,26 @@ package com.mozz.remoteview;
  * @author Yang Tao, 17/3/6.
  */
 
-final class HtmlTag {
+public final class HtmlTag {
     private HtmlTag() {
     }
 
-    static final String A = "a";
-    static final String P = "p";
-    static final String H1 = "h1";
-    static final String H2 = "h2";
-    static final String B = "b";
-    static final String INPUT = "input";
-    static final String IMG = "img";
-    static final String DIV = "div";
-    static final String BUTTON = "button";
-    static final String SCROLLER = "scroller";
-    static final String IFRAME = "iframe";
-    static final String WEB = "web";
-    static final String BR = "br";
-    static final String BODY = "body";
-    static final String TEMPLATE = "template";
+    public static final String A = "a";
+    public static final String P = "p";
+    public static final String H1 = "h1";
+    public static final String H2 = "h2";
+    public static final String B = "b";
+    public static final String INPUT = "input";
+    public static final String IMG = "img";
+    public static final String DIV = "div";
+    public static final String BUTTON = "button";
+    public static final String SCROLLER = "scroller";
+    public static final String IFRAME = "iframe";
+    public static final String WEB = "web";
+    public static final String BR = "br";
+    public static final String BODY = "body";
+    public static final String TEMPLATE = "template";
 
-    static final String ATTR_STYLE = "style";
+    public static final String ATTR_STYLE = "style";
 
 }

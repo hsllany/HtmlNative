@@ -11,5 +11,6 @@ import com.mozz.remoteview.RVDomTree;
  */
 
 public interface Attr {
-    void apply(Context context, View v, String params, Object value, RVDomTree tree) throws AttrApplyException;
+    void apply(Context context, String tag, View v, String params, Object value,
+               RVDomTree tree) throws AttrApplyException;
 }

@@ -13,7 +13,7 @@ import com.mozz.remoteview.RVDomTree;
 
 public class FlexboxLayoutAttr implements LayoutAttr {
     @Override
-    public void apply(Context context, View v, String params, Object value, RVDomTree tree)
+    public void apply(Context context, String tag, View v, String params, Object value, RVDomTree tree)
             throws AttrApplyException {
         FlexboxLayout flexboxLayout = (FlexboxLayout) v;
 
@@ -24,7 +24,7 @@ public class FlexboxLayoutAttr implements LayoutAttr {
     }
 
     @Override
-    public void applyToChild(Context context, View v, String params, Object value) {
+    public void applyToChild(Context context, String tag, View v, String params, Object value) {
 
     }
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.MainThread;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.AbsoluteLayout;
 
 import com.mozz.remoteview.common.Performance;
 import com.mozz.remoteview.common.PerformanceWatcher;
+import com.mozz.remoteview.common.WefRunnable;
 import com.mozz.remoteview.view.RXViewGroup;
 
 import java.lang.reflect.Constructor;
@@ -19,7 +21,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 
-final class RVRenderer {
+public final class RVRenderer {
 
     private static final String TAG = RVRenderer.class.getSimpleName();
 
@@ -32,24 +34,9 @@ final class RVRenderer {
 
     private static final Class<?>[] sConstructorSignature = new Class[]{Context.class};
 
-    private WebViewCreateHandler mWebViewHandler = DefaultWebViewCreateHandler.sInstance;
-
-    // for running render task
-    private static HandlerThread mProcessThread = new HandlerThread("RVRenderThread");
-    private static Handler mProcessHandler;
-
-    static void init() {
-        mProcessThread.start();
-        mProcessHandler = new Handler(mProcessThread.getLooper());
-    }
-
-    static void quit() {
-        mProcessThread.quit();
-    }
-
-    static void runRenderTask(Runnable r) {
-        mProcessHandler.post(r);
-    }
+    private static WebViewCreator sWebViewHandler = DefaultWebViewCreator.sInstance;
+    private static ImageViewAdapter sImageViewAdapter = null;
+    private static HrefLinkHandler sHrefLinkHandler = null;
 
     private RVRenderer() {
     }
@@ -140,29 +127,29 @@ final class RVRenderer {
     }
 
 
-    private View createViewFromTag(RVDomTree tree, RViewContext RViewContext, String name,
+    private View createViewFromTag(RVDomTree tree, RViewContext RViewContext, String tagName,
                                    ViewGroup parent, Context context, AttrsSet attrsSet,
                                    ViewGroup.LayoutParams params, RXViewGroup root) throws RemoteInflateException {
 
         PerformanceWatcher watcher = Performance.newWatcher();
         try {
 
-            if (needFutureCreate(name)) {
-                View v = attrsSet.createViewViaAttr(this, context, name, tree);
+            if (needFutureCreate(tagName)) {
+                View v = attrsSet.createViewViaAttr(this, context, tagName, tree);
 
                 if (v instanceof WebView) {
                     root.addWebView((WebView) v);
                 }
 
                 try {
-                    attrsSet.apply(context, RViewContext, v, tree, parent, params);
+                    attrsSet.apply(context, tagName, RViewContext, v, tree, parent, params);
                 } catch (AttrApplyException e) {
                     e.printStackTrace();
                 }
 
                 return v;
             } else {
-                String viewClazzName = ViewRegistry.findClassByTag(name);
+                String viewClazzName = ViewRegistry.findClassByTag(tagName);
                 if (viewClazzName == null)
                     return null;
                 View view = createView(context, viewClazzName);
@@ -172,7 +159,7 @@ final class RVRenderer {
                 }
 
                 try {
-                    attrsSet.apply(context, RViewContext, view, tree, parent, params);
+                    attrsSet.apply(context, tagName, RViewContext, view, tree, parent, params);
                 } catch (AttrApplyException e) {
                     e.printStackTrace();
                 }
@@ -182,19 +169,19 @@ final class RVRenderer {
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-            throw new RemoteInflateException("class not found " + name);
+            throw new RemoteInflateException("class not found " + tagName);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
-            throw new RemoteInflateException("class's constructor is missing " + name);
+            throw new RemoteInflateException("class's constructor is missing " + tagName);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
-            throw new RemoteInflateException("class's constructor can not be accessed " + name);
+            throw new RemoteInflateException("class's constructor can not be accessed " + tagName);
         } catch (InstantiationException e) {
             e.printStackTrace();
-            throw new RemoteInflateException("class's constructor can not be invoked " + name);
+            throw new RemoteInflateException("class's constructor can not be invoked " + tagName);
         } catch (InvocationTargetException e) {
             e.printStackTrace();
-            throw new RemoteInflateException("class's method has something wrong " + name);
+            throw new RemoteInflateException("class's method has something wrong " + tagName);
         }
 
     }
@@ -232,11 +219,27 @@ final class RVRenderer {
     }
 
     private View createViewByViewHandler(Context context, String viewClassName) {
-        if (viewClassName.equals(WebView.class.getName()) && mWebViewHandler != null) {
-            return mWebViewHandler.create(context);
+        if (viewClassName.equals(WebView.class.getName()) && sWebViewHandler != null) {
+            return sWebViewHandler.create(context);
         }
 
         return null;
+    }
+
+    static void setWebViewHandler(@NonNull WebViewCreator handler) {
+        sWebViewHandler = handler;
+    }
+
+    static void setImageViewAdapter(@NonNull ImageViewAdapter adapter) {
+        sImageViewAdapter = adapter;
+    }
+
+    static void setHrefLinkHandler(HrefLinkHandler handler) {
+        sHrefLinkHandler = handler;
+    }
+
+    public static HrefLinkHandler getHrefLinkHandler() {
+        return sHrefLinkHandler;
     }
 
 
@@ -246,6 +249,10 @@ final class RVRenderer {
         } else {
             return false;
         }
+    }
+
+    public static ImageViewAdapter getImageViewAdpater() {
+        return sImageViewAdapter;
     }
 
 
@@ -266,5 +273,7 @@ final class RVRenderer {
             super(throwable);
         }
     }
+
+
 
 }

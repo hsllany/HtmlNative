@@ -9,8 +9,8 @@ import java.util.Map;
 final class FunctionTable {
 
     private static final String[] RESERVED_FUNCTION = {"create", "created"};
-    public static final int CREATE = 0;
-    public static final int CREATED = 1;
+    static final int CREATE = 0;
+    static final int CREATED = 1;
 
     private Map<String, Code> mFunctions;
     private Code[] mReserved = new Code[RESERVED_FUNCTION.length];

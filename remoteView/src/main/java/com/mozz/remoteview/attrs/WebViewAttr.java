@@ -13,7 +13,7 @@ import com.mozz.remoteview.RVDomTree;
 
 public class WebViewAttr implements Attr {
     @Override
-    public void apply(Context context, View v, String params, final Object value, RVDomTree tree)
+    public void apply(Context context, String tag, View v, String params, final Object value, RVDomTree tree)
             throws AttrApplyException {
         final WebView webView = (WebView) v;
 

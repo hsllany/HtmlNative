@@ -2,6 +2,7 @@ package com.mozz.remoteview;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -29,7 +30,7 @@ public final class RV {
     private DisplayMetrics mDefaultMetrics;
 
     private RV() {
-        RVRenderer.init();
+        ProcessThread.init();
     }
 
     private static RV sInstance = null;
@@ -61,51 +62,10 @@ public final class RV {
         display.getMetrics(mDefaultMetrics);
     }
 
-    public final void loadView(final Context context, final InputStream inputStream, final OnRViewLoaded onRViewLoaded) {
-        RVRenderer.runRenderTask(new WefRunnable<Context>(context) {
-            @Override
-            public void runOverride(final Context innerContext) {
-                try {
-                    if (innerContext == null)
-                        return;
-
-                    final RVModule module = RVModule.load(inputStream);
-
-                    Log.d(TAG, module.mRootTree.wholeTreeToString());
-
-                    final ViewGroup.LayoutParams layoutParams =
-                            new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                                    ViewGroup.LayoutParams.MATCH_PARENT);
-                    MainHandler.instance().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            View v = null;
-                            try {
-                                v = RVRenderer.get().inflate(innerContext, module, layoutParams);
-                            } catch (RVRenderer.RemoteInflateException e) {
-                                e.printStackTrace();
-                            }
-
-                            if (onRViewLoaded != null)
-                                onRViewLoaded.onViewLoaded(v);
-                        }
-                    });
-                } catch (final RVSyntaxError e) {
-                    e.printStackTrace();
-                    if (onRViewLoaded != null) {
-                        MainHandler.instance().post(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (onRViewLoaded != null)
-                                    onRViewLoaded.onError(e);
-                            }
-                        });
-                    }
-                }
-            }
-        });
-
-
+    public final void loadView(final Context context, final InputStream inputStream,
+                               final OnRViewLoaded onRViewLoaded) {
+        ProcessThread.runRenderTask(new ProcessThread.RenderTask(context, inputStream,
+                onRViewLoaded));
     }
 
     public void loadView(Context context, InputStream inputStream, Activity activity) {
@@ -158,8 +118,20 @@ public final class RV {
 
     public void onDestroy() {
         RVModule.clearCache();
-        RVRenderer.quit();
+        ProcessThread.quit();
         LuaRunner.getInstance().quit();
+    }
+
+    public void setImageViewAdapter(@NonNull ImageViewAdapter adapter) {
+        RVRenderer.setImageViewAdapter(adapter);
+    }
+
+    public void setWebviewCreator(@NonNull WebViewCreator handler) {
+        RVRenderer.setWebViewHandler(handler);
+    }
+
+    public void setHrefLinkHandler(@NonNull HrefLinkHandler handler) {
+        RVRenderer.setHrefLinkHandler(handler);
     }
 
     public interface OnRViewLoaded {

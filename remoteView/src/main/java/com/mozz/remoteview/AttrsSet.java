@@ -153,7 +153,7 @@ final class AttrsSet {
     }
 
     @SuppressWarnings("ConstantConditions")
-    public void apply(Context context, final RViewContext RViewContext, View v, RVDomTree tree,
+    public void apply(Context context, String tagName, final RViewContext RViewContext, View v, RVDomTree tree,
                       ViewGroup parent, ViewGroup.LayoutParams layoutParams)
             throws AttrApplyException {
 
@@ -280,19 +280,19 @@ final class AttrsSet {
                     Attr attr = getAttr(v.getClass());
 
                     if (attr != null) {
-                        attr.apply(context, v, params, value, tree);
+                        attr.apply(context, tagName, v, params, value, tree);
                     }
 
                     // If there extra attr is set, then should be applied also.
                     attr = getExtraAttrFromView(v.getClass());
                     if (attr != null) {
-                        attr.apply(context, v, params, value, tree);
+                        attr.apply(context, tagName, v, params, value, tree);
                     }
 
                     // finally apply corresponding parent attr to child
                     attr = getAttr(parent.getClass());
                     if (attr != null && attr instanceof LayoutAttr) {
-                        ((LayoutAttr) attr).applyToChild(context, v, params, value);
+                        ((LayoutAttr) attr).applyToChild(context, tagName, v, params, value);
                     }
                     break;
             }

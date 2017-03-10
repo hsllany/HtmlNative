@@ -7,9 +7,12 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mozz.remoteview.AttrApplyException;
+import com.mozz.remoteview.HtmlTag;
 import com.mozz.remoteview.RVDomTree;
+import com.mozz.remoteview.RVRenderer;
 import com.mozz.remoteview.common.Utils;
 
 public class TextViewAttr implements Attr {
@@ -20,6 +23,7 @@ public class TextViewAttr implements Attr {
     public static final String LINE_HEIGHT = "line-height";
     public static final String FONT_STYLE = "font-style";
     public static final String FONT_WEIGHT = "font-weight";
+    public static final String HREF = "href";
 
     private static TextViewAttr sInstance = new TextViewAttr();
 
@@ -28,9 +32,9 @@ public class TextViewAttr implements Attr {
     }
 
     @Override
-    public void apply(Context context, View v, String params, Object value, RVDomTree tree)
+    public void apply(final Context context, String tag, View v, String params, final Object value, RVDomTree tree)
             throws AttrApplyException {
-        TextView textView = (TextView) v;
+        final TextView textView = (TextView) v;
 
         switch (params) {
             case COLOR:
@@ -81,6 +85,18 @@ public class TextViewAttr implements Attr {
                     textView.setTypeface(Typeface.DEFAULT, style);
                 }
 
+                break;
+
+            case HREF:
+                if (tag.equals(HtmlTag.A)) {
+                    textView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (RVRenderer.getHrefLinkHandler() != null)
+                                RVRenderer.getHrefLinkHandler().onHref(value.toString(), textView);
+                        }
+                    });
+                }
                 break;
         }
 

@@ -8,7 +8,7 @@ import com.mozz.remoteview.RVDomTree;
 
 public class LinearLayoutAttr implements Attr {
     @Override
-    public void apply(Context context, View v, String params, Object value, RVDomTree tree)
+    public void apply(Context context, String tag, View v, String params, Object value, RVDomTree tree)
             throws AttrApplyException {
 
     }
