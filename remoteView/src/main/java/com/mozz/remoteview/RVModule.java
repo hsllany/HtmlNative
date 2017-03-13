@@ -7,6 +7,7 @@ import com.mozz.remoteview.script.Code;
 import com.mozz.remoteview.reader.FileCodeReader;
 
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 
 final class RVModule {
@@ -23,13 +24,10 @@ final class RVModule {
 
     RVModule() {
         mAttrs = new AttrsSet(this);
+        mFunctionTable = new FunctionTable();
     }
 
     void putFunction(String functionName, String code) {
-        if (mFunctionTable == null) {
-            mFunctionTable = new FunctionTable();
-        }
-
         mFunctionTable.putFunction(functionName, code);
         if (!mHasScriptEmbed)
             mHasScriptEmbed = true;

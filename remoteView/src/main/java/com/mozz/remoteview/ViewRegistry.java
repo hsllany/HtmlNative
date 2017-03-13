@@ -40,6 +40,7 @@ final class ViewRegistry {
         sReservedTagClassTable.put(HtmlTag.TEMPLATE, LinearLayout.class.getName());
 
         sReservedTagClassTable.put(HtmlTag.P, TextView.class.getName());
+        sReservedTagClassTable.put(HtmlTag.TEXT, TextView.class.getName());
         sReservedTagClassTable.put(HtmlTag.IMG, ImageView.class.getName());
         sReservedTagClassTable.put(HtmlTag.INPUT, EditText.class.getName());
         sReservedTagClassTable.put(HtmlTag.BUTTON, Button.class.getName());

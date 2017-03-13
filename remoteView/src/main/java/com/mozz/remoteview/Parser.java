@@ -16,6 +16,8 @@ import static com.mozz.remoteview.token.Type.Script;
 import static com.mozz.remoteview.token.Type.Slash;
 import static com.mozz.remoteview.token.Type.Template;
 
+import static com.mozz.remoteview.HtmlTag.isSwallowInnerTag;
+
 /**
  * @author YangTao7
  */
@@ -47,22 +49,6 @@ final class Parser {
     private static final int LK_INNER = 1 << 9;
     private static final int LK_NUMBER = LK_INT | LK_DOUBLE;
 
-    /**
-     * If parser met with swallowInnerTag, the inner element of token will become the
-     * attribute of the element instead of creating a new child tree.
-     */
-    private static final String[] sSwallowInnerTag = {HtmlTag.A, HtmlTag.B, HtmlTag.H1, HtmlTag.H2,
-            HtmlTag.INPUT, HtmlTag.P};
-
-    private static boolean isSwallowInnerTag(@NonNull String tag) {
-        for (String tagToCompare : sSwallowInnerTag) {
-            if (tag.equals(tagToCompare)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 
     public Parser(CodeReader reader) {
         mLexer = new Lexer(reader);
@@ -174,12 +160,16 @@ final class Parser {
         }
     }
 
+    private void processInternal(@NonNull RVDomTree tree) throws RVSyntaxError {
+        processInternal(tree, tree);
+    }
+
     /**
      * parse the tree recursively
      *
      * @throws RVSyntaxError
      */
-    private void processInternal(@NonNull RVDomTree tree) throws RVSyntaxError {
+    private void processInternal(@NonNull RVDomTree tree, @NonNull ParseCallback callback) throws RVSyntaxError {
         log("init to parse tree " + tree.getNodeName());
         int index = 0;
 
@@ -190,6 +180,8 @@ final class Parser {
         boolean meetEndTag = false;
 
         int innerCount = 0;
+
+        callback.onStartParse();
 
         try {
             while (true) {
@@ -227,6 +219,7 @@ final class Parser {
                             }
 
                             // here reach the end of the view tree, just return.
+                            callback.onLeaveParse();
                             return;
 
                         } else if (mCurToken.type() == Id) {
@@ -339,6 +332,7 @@ final class Parser {
                                     + ", current bracket pair is " + tree.mBracketPair,
                                     mLexer.line(), mLexer.column());
                         }
+                        callback.onLeaveParse();
                         return;
 
                     default:
@@ -438,5 +432,11 @@ final class Parser {
             throw new RVSyntaxError(" Looking for " + status + ", but currently is " + mLookFor
                     , mLexer.line(), mLexer.column());
         }
+    }
+
+    interface ParseCallback {
+        void onStartParse();
+
+        void onLeaveParse();
     }
 }

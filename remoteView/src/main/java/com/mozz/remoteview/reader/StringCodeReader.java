@@ -12,7 +12,6 @@ public class StringCodeReader extends StreamReader {
 
     public StringCodeReader(String str) {
         super();
-        str = str + ' ';
         inputStream = new ByteArrayInputStream(str.getBytes());
         setInputStream(new InputStreamReader(inputStream));
     }

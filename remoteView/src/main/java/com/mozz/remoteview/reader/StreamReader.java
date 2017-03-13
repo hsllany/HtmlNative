@@ -28,6 +28,8 @@ public class StreamReader implements CodeReader {
 
     private Reader mInputStream;
 
+    boolean meetEof = false;
+
     public StreamReader() {
 
     }
@@ -44,6 +46,8 @@ public class StreamReader implements CodeReader {
     public char nextCh() throws EOFException {
         try {
             if (tempPos == tempCount - 1) {
+                if (meetEof)
+                    throw new EOFException("Reach the end of stream!");
                 fillInCache();
             }
             ch = temp[tempPos + 1];
@@ -74,7 +78,13 @@ public class StreamReader implements CodeReader {
         int count = mInputStream.read(temp);
 
         if (count == -1) {
-            throw new EOFException();
+            // If reach the end of stream, will add an ' ' to the end of the stream for lexer to
+            // handle, then on the next round of nextCh(), an EOFException will be thrown.
+            temp[0] = ' ';
+            tempCount = 1;
+            tempPos = -1;
+            meetEof = true;
+            return;
         }
         tempCount = count;
         tempPos = -1;

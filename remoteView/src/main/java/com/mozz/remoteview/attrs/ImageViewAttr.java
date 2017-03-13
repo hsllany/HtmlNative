@@ -17,7 +17,6 @@ public class ImageViewAttr implements Attr {
             throws AttrApplyException {
         if (params.equals("src") && RVRenderer.getImageViewAdpater() != null) {
             RVRenderer.getImageViewAdpater().setImage(value.toString(), (ImageView) v);
-
         }
     }
 }

@@ -14,10 +14,17 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".LayoutExampleActivity"
+            android:label="RV Example" />
+
+        <activity
+            android:name=".ExampleListActivity"
+            android:label="RV Example List" />
     </application>
 
 </manifest>

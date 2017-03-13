@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-public final class RVDomTree {
+public final class RVDomTree implements Parser.ParseCallback {
 
     static final String INNER_TREE_TAG = "inner";
 
@@ -135,6 +135,18 @@ public final class RVDomTree {
         });
 
         return sb.toString();
+    }
+
+    @Override
+    public void onStartParse() {
+
+    }
+
+    @Override
+    public void onLeaveParse() {
+        if (mText != null) {
+            mModule.mAttrs.put(this, "text", mText);
+        }
     }
 
     @NonNull

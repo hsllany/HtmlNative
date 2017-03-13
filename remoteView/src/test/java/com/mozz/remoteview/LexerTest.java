@@ -15,9 +15,13 @@ public class LexerTest {
 
     private static final String TAG = "RV_LexerTest";
 
+    private static final String testCode = "<body>\n" +
+            "    <iframe/>\n" +
+            "</body>";
+
     @Test
     public void testLexerSimple() throws Exception {
-        LexerDebugger(codeTemplateOnly);
+        LexerDebugger(testCode);
     }
 
     private void LexerDebugger(String code) throws IOException, RVSyntaxError {

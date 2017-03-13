@@ -3,6 +3,7 @@ package com.mozz.remoteview;
 import android.app.Application;
 import android.content.Context;
 import android.hardware.display.DisplayManager;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -25,15 +26,14 @@ public class DemoApplication extends Application {
         super.onCreate();
         RV.getInstance().init(this);
 
-        DisplayManager displayManager = (DisplayManager) this.getSystemService(Context.DISPLAY_SERVICE);
-        Display[] displays = displayManager.getDisplays();
-
-        Log.d("LALALA", Arrays.toString(displays));
 
         RV.getInstance().setImageViewAdapter(new ImageViewAdapter() {
             @Override
             public void setImage(String src, ImageView imageView) {
+                long time1 = SystemClock.currentThreadTimeMillis();
                 Glide.with(DemoApplication.this).load(src).into(imageView);
+
+                Log.d("PerformanceWatcher", "---->Glide spend" + (SystemClock.currentThreadTimeMillis() - time1));
             }
         });
 

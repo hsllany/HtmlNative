@@ -20,8 +20,7 @@ public class ParserTest {
 
     private static String code = "<body>\n" +
             "\t<p>hello worldnihao</p>\n" +
-            "\t<img src=\"http://www.baidu.com\"/>\n" +
-            "</body>";
+            "\t<img src=\"http://www.baidu.com\"/></body>";
 
     static {
         Parser.toggleDebug(true);
@@ -55,7 +54,7 @@ public class ParserTest {
             debug(rootTree.mRootTree.wholeTreeToString());
 
             debug("\nfunction is :");
-            debug(rootTree.mFunctionTable.toString());
+            debug(rootTree.toString());
 
         } catch (RVSyntaxError sytaxError) {
             sytaxError.printStackTrace();

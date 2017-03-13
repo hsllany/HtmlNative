@@ -1,16 +1,17 @@
 package com.mozz.remoteview;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.URLUtil;
-import android.widget.AbsoluteLayout;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -34,8 +35,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mGo.setOnClickListener(this);
 
         mLoader = new RemoteViewLoader(this);
-
         mSearch.setText("http://10.58.107.21/test2.layout");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main_actionbar, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.layout_example:
+                Intent i = new Intent(this, ExampleListActivity.class);
+                startActivity(i);
+                break;
+
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

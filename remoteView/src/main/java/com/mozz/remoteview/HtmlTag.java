@@ -1,5 +1,10 @@
 package com.mozz.remoteview;
 
+import android.support.annotation.NonNull;
+
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * @author Yang Tao, 17/3/6.
  */
@@ -23,7 +28,30 @@ public final class HtmlTag {
     public static final String BR = "br";
     public static final String BODY = "body";
     public static final String TEMPLATE = "template";
+    public static final String TEXT = "text";
 
     public static final String ATTR_STYLE = "style";
+
+    /**
+     * If parser met with swallowInnerTag, the inner element of token will become the
+     * attribute of the element instead of creating a new child tree.
+     */
+    private static final Set<String> sSwallowInnerTag = new HashSet<>(7);
+
+    static {
+        sSwallowInnerTag.add(HtmlTag.A);
+        sSwallowInnerTag.add(HtmlTag.B);
+        sSwallowInnerTag.add(HtmlTag.H1);
+        sSwallowInnerTag.add(HtmlTag.H2);
+        sSwallowInnerTag.add(HtmlTag.INPUT);
+        sSwallowInnerTag.add(HtmlTag.P);
+        sSwallowInnerTag.add(HtmlTag.TEXT);
+    }
+
+    ;
+
+    static boolean isSwallowInnerTag(@NonNull String tag) {
+        return sSwallowInnerTag.contains(tag);
+    }
 
 }

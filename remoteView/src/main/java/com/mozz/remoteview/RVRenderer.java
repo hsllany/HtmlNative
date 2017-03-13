@@ -113,7 +113,11 @@ public final class RVRenderer {
                     final View v = inflate(context, RViewContext, child, viewGroup, attrsSet,
                             layoutParams, root);
 
-                    viewGroup.addView(v, layoutParams);
+                    if (v != null) {
+                        viewGroup.addView(v, layoutParams);
+                    } else {
+                        Log.e(TAG, "error when inflating " + child.getNodeName());
+                    }
                 }
             } else {
                 Log.w(TAG, "View inflate from RVRenderer is not an viewGroup" +
@@ -153,6 +157,8 @@ public final class RVRenderer {
                     return null;
                 View view = createView(context, viewClazzName);
 
+                watcher.check("create view" + view.toString());
+
                 if (view instanceof WebView) {
                     root.addWebView((WebView) view);
                 }
@@ -163,7 +169,7 @@ public final class RVRenderer {
                     e.printStackTrace();
                 }
 
-                watcher.checkDone("create view " + view.toString());
+                watcher.checkDone("create view " + view.toString() + ", and give it attrs.");
                 return view;
             }
         } catch (ClassNotFoundException e) {
@@ -251,6 +257,7 @@ public final class RVRenderer {
         }
     }
 
+    @NonNull
     public static ImageViewAdapter getImageViewAdpater() {
         return sImageViewAdapter;
     }

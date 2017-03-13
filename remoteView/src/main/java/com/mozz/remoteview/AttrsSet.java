@@ -55,6 +55,8 @@ final class AttrsSet {
 
     private static final String ATTR_DISPLAY = "display";
 
+    private static final String VAL_FILL_PARENT = "100%";
+
     private Object[] mAttrs;
 
     private int[] mLength;
@@ -184,7 +186,7 @@ final class AttrsSet {
                 case ATTR_WIDTH:
                     if (value instanceof Integer) {
                         width = (Integer) value;
-                    } else if (value.toString().equalsIgnoreCase("MATCH_PARENT")) {
+                    } else if (value.toString().equalsIgnoreCase(VAL_FILL_PARENT)) {
                         width = ViewGroup.LayoutParams.MATCH_PARENT;
                     } else {
                         throw new AttrApplyException("Width must be an int or 'WRAP_CONTENT'");
@@ -195,7 +197,7 @@ final class AttrsSet {
                 case ATTR_HEIGHT:
                     if (value instanceof Integer) {
                         height = (Integer) value;
-                    } else if (value.toString().equalsIgnoreCase("MATCH_PARENT")) {
+                    } else if (value.toString().equalsIgnoreCase(VAL_FILL_PARENT)) {
                         height = ViewGroup.LayoutParams.MATCH_PARENT;
                     } else {
                         throw new AttrApplyException("Height must be an int or 'WRAP_CONTENT'");

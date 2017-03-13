@@ -8,6 +8,7 @@ import com.mozz.remoteview.AttrApplyException;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Locale;
 
 /**
  * @author Yang Tao, 17/2/24.
@@ -24,15 +25,6 @@ public final class Utils {
             } catch (IOException ignored) {
                 // do nothing
             }
-        }
-    }
-
-    public static int color(@NonNull Object object) throws AttrApplyException {
-        try {
-            return Color.parseColor(object.toString());
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            throw new AttrApplyException("can't read color from " + object);
         }
     }
 
@@ -79,6 +71,46 @@ public final class Utils {
             return (boolean) object;
         } else {
             throw new AttrApplyException("can't read boolean from " + object);
+        }
+    }
+
+    public static int color(@NonNull Object colorObj) throws AttrApplyException {
+        String colorString = colorObj.toString();
+        if (colorString.charAt(0) == '#') {
+            if (colorString.length() > 4) {
+                try {
+                    return Color.parseColor(colorString);
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                    throw new AttrApplyException("can't read color from " + colorString);
+                }
+            } else if (colorString.length() == 4) {
+                long color = 0;
+                for (int i = 0; i < 3; i++) {
+                    char c = colorString.charAt(i + 1);
+                    int cI = 0;
+                    if (c >= 'a' && c <= 'z') {
+                        cI = c - 'a' + 10;
+                    } else if (c >= 'A' && c <= 'Z') {
+                        cI = c - 'A' + 10;
+                    } else if (c >= '0' && c <= '9') {
+                        cI = c - '0';
+                    }
+
+                    color |= (cI * 16 + cI) << (3 - i - 1) * 8;
+                }
+
+                return (int) (color | 0x00000000ff000000);
+            } else {
+                throw new AttrApplyException("error when parsing color " + colorString);
+            }
+        } else {
+            try {
+                return Color.parseColor(colorString);
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+                throw new AttrApplyException("can't read color from " + colorString);
+            }
         }
     }
 }
