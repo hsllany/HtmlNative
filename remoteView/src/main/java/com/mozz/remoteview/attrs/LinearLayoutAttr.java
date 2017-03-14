@@ -4,11 +4,11 @@ import android.content.Context;
 import android.view.View;
 
 import com.mozz.remoteview.AttrApplyException;
-import com.mozz.remoteview.RVDomTree;
+import com.mozz.remoteview.RVDomElement;
 
 public class LinearLayoutAttr implements Attr {
     @Override
-    public void apply(Context context, String tag, View v, String params, Object value, RVDomTree tree)
+    public void apply(Context context, String tag, View v, String params, Object value, RVDomElement tree)
             throws AttrApplyException {
 
     }

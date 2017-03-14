@@ -6,7 +6,7 @@ import android.view.View;
 import android.webkit.WebView;
 
 import com.mozz.remoteview.AttrApplyException;
-import com.mozz.remoteview.RVDomTree;
+import com.mozz.remoteview.RVDomElement;
 
 /**
  * @author Yang Tao, 17/3/6.
@@ -14,7 +14,7 @@ import com.mozz.remoteview.RVDomTree;
 
 public class WebViewAttr implements Attr {
     @Override
-    public void apply(Context context, String tag, View v, @NonNull String params, @NonNull final Object value, RVDomTree tree)
+    public void apply(Context context, String tag, View v, @NonNull String params, @NonNull final Object value, RVDomElement tree)
             throws AttrApplyException {
         final WebView webView = (WebView) v;
 

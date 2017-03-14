@@ -13,7 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-public final class RVDomTree implements Parser.ParseCallback {
+final class RVDomTree implements RVDomElement, Parser.ParseCallback {
 
     static final String INNER_TREE_TAG = "inner";
 
@@ -161,13 +161,20 @@ public final class RVDomTree implements Parser.ParseCallback {
     }
 
     @Nullable
-    String getNodeName() {
+    @Override
+    public String getNodeName() {
         return mNodeName;
     }
 
     @Nullable
+    @Override
     public String getInner() {
         return mText;
+    }
+
+    @Override
+    public int getDepth() {
+        return mDepth;
     }
 
     RVDomTree last() {
@@ -211,6 +218,7 @@ public final class RVDomTree implements Parser.ParseCallback {
         return "[" + index + mNodeName + ", attrs=" + mModule.mAttrs.toString(this) + text + "]";
     }
 
+    @Override
     public RVDomTree getParent() {
         return mParent;
     }

@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.mozz.remoteview.AttrApplyException;
-import com.mozz.remoteview.RVDomTree;
+import com.mozz.remoteview.RVDomElement;
 
 /**
  * @author Yang Tao, 17/3/3.
@@ -15,7 +15,7 @@ import com.mozz.remoteview.RVDomTree;
 
 public class FlexBoxLayoutAttr implements LayoutAttr {
     @Override
-    public void apply(Context context, String tag, View v, @NonNull String params, @NonNull Object value, RVDomTree tree)
+    public void apply(Context context, String tag, View v, @NonNull String params, @NonNull Object value, RVDomElement tree)
             throws AttrApplyException {
         FlexboxLayout flexboxLayout = (FlexboxLayout) v;
 

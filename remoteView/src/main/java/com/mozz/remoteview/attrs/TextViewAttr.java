@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.mozz.remoteview.AttrApplyException;
 import com.mozz.remoteview.HtmlTag;
-import com.mozz.remoteview.RVDomTree;
+import com.mozz.remoteview.RVDomElement;
 import com.mozz.remoteview.RVRenderer;
 import com.mozz.remoteview.common.Utils;
 
@@ -36,7 +36,7 @@ public class TextViewAttr implements Attr {
     }
 
     @Override
-    public void apply(final Context context, @NonNull String tag, View v, @NonNull String params, @NonNull final Object value, @NonNull RVDomTree tree)
+    public void apply(final Context context, @NonNull String tag, View v, @NonNull String params, @NonNull final Object value, @NonNull RVDomElement tree)
             throws AttrApplyException {
         final TextView textView = (TextView) v;
 

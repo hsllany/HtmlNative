@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.View;
 
 import com.mozz.remoteview.AttrApplyException;
-import com.mozz.remoteview.RVDomTree;
+import com.mozz.remoteview.RVDomElement;
 
 /**
  * @author Yang Tao, 17/2/22.
@@ -12,5 +12,5 @@ import com.mozz.remoteview.RVDomTree;
 
 public interface Attr {
     void apply(Context context, String tag, View v, String params, Object value,
-               RVDomTree tree) throws AttrApplyException;
+               RVDomElement tree) throws AttrApplyException;
 }
