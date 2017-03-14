@@ -172,7 +172,6 @@ final class RVDomTree implements RVDomElement, Parser.ParseCallback {
         return mText;
     }
 
-    @Override
     public int getDepth() {
         return mDepth;
     }
@@ -218,7 +217,6 @@ final class RVDomTree implements RVDomElement, Parser.ParseCallback {
         return "[" + index + mNodeName + ", attrs=" + mModule.mAttrs.toString(this) + text + "]";
     }
 
-    @Override
     public RVDomTree getParent() {
         return mParent;
     }

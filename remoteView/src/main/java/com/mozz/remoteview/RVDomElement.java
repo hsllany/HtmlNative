@@ -9,8 +9,4 @@ public interface RVDomElement {
     String getNodeName();
 
     String getInner();
-
-    int getDepth();
-
-    RVDomElement getParent();
 }
