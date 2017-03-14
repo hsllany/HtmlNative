@@ -1,0 +1,24 @@
+<body>
+    <p style="color:#f00; background:#fff">Hello world</p>
+    <p style="color:#fff; background:#f00;padding:30">hello world with padding</p>
+    <p style="color:#fff; background:#0f0;font-size:25">hello world</p>
+    <p style="color:#000; font-weight:bold; font-size: 30">hello world</p>
+
+    <p style="color:#000; text-align:left; width:100%">Hello world left</p>
+    <p style="color:#000; text-align:center; width:100%">Hello world center</p>
+    <p style="color:#000; text-align:right; width:100%">Hello world right</p>
+
+    <p style="color:#555; width:100%;padding:30; background:#eee">
+        Ms Sturgeon said she wanted a vote to be held between the autumn of 2018 and the spring of
+        the following year.
+        <br />
+        <br />
+        The prime minister could theoretically invoke Article 50, which formally starts the Brexit
+        process, as early as Tuesday.
+        <br />
+        <br />
+        However, Downing Street sources have said this will not happen this week and the PM is
+        expected to wait until the end of the month to officially notify the EU of the UK's
+        intention to leave, thus beginning what is expected to be a two-year process.
+    </p>
+</body>

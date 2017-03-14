@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 
@@ -23,6 +24,7 @@ public class TextViewAttr implements Attr {
     public static final String LINE_HEIGHT = "line-height";
     public static final String FONT_STYLE = "font-style";
     public static final String FONT_WEIGHT = "font-weight";
+    public static final String FONT_ALIGN = "text-align";
     public static final String HREF = "href";
 
     @NonNull
@@ -99,6 +101,18 @@ public class TextViewAttr implements Attr {
                         }
                     });
                 }
+                break;
+
+            case FONT_ALIGN:
+                String val = value.toString();
+                if (val.equals("center")) {
+                    textView.setGravity(Gravity.CENTER);
+                } else if (val.equals("left")) {
+                    textView.setGravity(Gravity.LEFT);
+                } else if (val.equals("right")) {
+                    textView.setGravity(Gravity.RIGHT);
+                }
+
                 break;
         }
 

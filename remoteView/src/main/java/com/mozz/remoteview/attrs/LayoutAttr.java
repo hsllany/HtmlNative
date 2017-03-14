@@ -2,6 +2,7 @@ package com.mozz.remoteview.attrs;
 
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.mozz.remoteview.AttrApplyException;
 
@@ -10,6 +11,6 @@ import com.mozz.remoteview.AttrApplyException;
  */
 
 public interface LayoutAttr extends Attr {
-    void applyToChild(Context context, String tag, View v, String params, Object value)
+    void applyToChild(Context context, String tag, View v, ViewGroup parent, String params, Object value)
             throws AttrApplyException;
 }

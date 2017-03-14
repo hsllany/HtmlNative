@@ -8,7 +8,6 @@ import com.mozz.remoteview.AttrApplyException;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.Locale;
 
 /**
  * @author Yang Tao, 17/2/24.
@@ -32,22 +31,25 @@ public final class Utils {
         if (object instanceof Integer) {
             return (int) object;
         } else {
-            throw new AttrApplyException("can't read int from " + object);
+            try {
+                int i = Integer.parseInt(object.toString());
+                return i;
+            } catch (NumberFormatException e) {
+                throw new AttrApplyException("can't read int from " + object);
+            }
         }
     }
 
     public static float toFloat(Object object) throws AttrApplyException {
         if (object instanceof Float) {
             return (float) object;
-        } else if (object instanceof String) {
+        } else {
             try {
-                float f = Float.valueOf((String) object);
+                float f = Float.valueOf(object.toString());
                 return f;
             } catch (NumberFormatException e) {
                 throw new AttrApplyException("can't read float from " + object);
             }
-        } else {
-            throw new AttrApplyException("can't read float from " + object);
         }
     }
 

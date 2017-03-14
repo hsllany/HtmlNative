@@ -295,7 +295,7 @@ final class AttrsSet {
                     // finally apply corresponding parent attr to child
                     attr = getAttr(parent.getClass());
                     if (attr != null && attr instanceof LayoutAttr) {
-                        ((LayoutAttr) attr).applyToChild(context, tagName, v, params, value);
+                        ((LayoutAttr) attr).applyToChild(context, tagName, v, parent, params, value);
                     }
                     break;
             }

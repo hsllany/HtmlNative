@@ -1,0 +1,13 @@
+<body>
+    <div style="display:flex; flex-direction:row:width:100%">
+        <p style="background:red; padding:30">row-1</p>
+        <p style="background:blue; padding:30">row-2</p>
+        <p style="background:green; padding:30">row-3</p>
+    </div>
+
+    <div style="display:flex; flex-direction:column;width:100%">
+        <p style="background:red; padding:30">column-1</p>
+        <p style="background:blue; padding:30">column-2</p>
+        <p style="background:green; padding:30">column-3</p>
+    </div>
+</body>
