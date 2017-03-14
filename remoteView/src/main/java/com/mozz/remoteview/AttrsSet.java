@@ -326,31 +326,19 @@ final class AttrsSet {
 
             switch (params) {
                 case ATTR_DISPLAY:
-                    if (name.equals(HtmlTag.DIV)) {
-                        if (value.equals("flex")) {
-
-                            String viewName = ViewRegistry.findClassByTag("flexbox");
-                            EventLog.writeEvent(EventLog.TAG_ATTR, "create view" + viewName + " with tag" + name);
-                            return renderer.createView(context, viewName);
-
-                        } else if (value.equals("absolute")) {
-
-                            String viewName = ViewRegistry.findClassByTag("box");
-                            EventLog.writeEvent(EventLog.TAG_ATTR, "create view" + viewName + " with tag" + name);
-                            return renderer.createView(context, viewName);
-
-                        } else if (value.equals("box")) {
-
-                            String viewName = ViewRegistry.findClassByTag("linearbox");
-                            EventLog.writeEvent(EventLog.TAG_ATTR, "create view" + viewName + " with tag" + name);
-                            return renderer.createView(context, viewName);
-                        }
+                    if (value.equals("flex")) {
+                        return renderer.createView(context, "flexbox");
+                    } else if (value.equals("absolute")) {
+                        return renderer.createView(context, "box");
+                    } else if (value.equals("box")) {
+                        return renderer.createView(context, "linearbox");
                     }
+
                     break;
             }
         }
 
-        return renderer.createView(context, ViewRegistry.findClassByTag("linearbox"));
+        return renderer.createView(context, "linearbox");
 
     }
 

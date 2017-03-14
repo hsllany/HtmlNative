@@ -17,6 +17,7 @@ import com.mozz.remoteview.view.RXViewGroup;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.List;
 
 
 public final class RVRenderer {
@@ -93,7 +94,8 @@ public final class RVRenderer {
             if (view instanceof ViewGroup) {
                 final ViewGroup viewGroup = (ViewGroup) view;
 
-                for (RVDomTree child : tree.mChildren) {
+                List<RVDomTree> children = tree.children();
+                for (RVDomTree child : children) {
 
                     final ViewGroup.LayoutParams layoutParams;
                     if (view instanceof AbsoluteLayout) {

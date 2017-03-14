@@ -4,6 +4,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.mozz.remoteview.common.Utils;
+
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,6 +17,8 @@ public final class RVDomTree implements Parser.ParseCallback {
 
     static final String INNER_TREE_TAG = "inner";
 
+    private static final String TREE_ORDER_PARAMETER = "order";
+
     private static final String TAG = RVDomTree.class.getSimpleName();
 
     static boolean DEBUG = false;
@@ -21,6 +27,10 @@ public final class RVDomTree implements Parser.ParseCallback {
 
     private RVDomTree mParent;
 
+    /**
+     * Represent the appearance position in RV file.
+     * Notice this is not the actual position in tree's children. See {@link RVDomTree#mOrder}
+     */
     private int mIndex;
 
     LinkedList<RVDomTree> mChildren;
@@ -40,6 +50,10 @@ public final class RVDomTree implements Parser.ParseCallback {
 
     int mTagPair;
 
+    private int mOrder = -1;
+
+    private boolean mIsInOrder = false;
+
     RVDomTree(@NonNull RVModule context, RVDomTree parent, int depth, int index) {
         this(context, null, parent, depth, index);
     }
@@ -56,6 +70,14 @@ public final class RVDomTree implements Parser.ParseCallback {
     }
 
     void addAttr(String attrName, @NonNull Object value) {
+        if (TREE_ORDER_PARAMETER.equalsIgnoreCase(attrName)) {
+            try {
+                mOrder = Utils.toInt(value);
+            } catch (AttrApplyException e) {
+                Log.i(TAG, "Wrong when read order, expecting integer while actual is " + value
+                        + ", " + value.getClass().toString());
+            }
+        }
         mModule.mAttrs.put(this, attrName, value);
     }
 
@@ -68,11 +90,17 @@ public final class RVDomTree implements Parser.ParseCallback {
 
     @NonNull
     RVDomTree addChild(String nodeName, int index) {
+        mIsInOrder = false;
         RVDomTree child = new RVDomTree(mModule, nodeName, this, this.mDepth + 1, index);
         if (DEBUG) {
             Log.d(TAG, "add child " + child.toString() + " to " + this.toString() + ".");
         }
-        mChildren.add(child);
+
+        if (child.mOrder == -1) {
+            mChildren.add(child);
+        } else {
+            mChildren.add(child.mOrder, child);
+        }
         return child;
     }
 
@@ -102,6 +130,19 @@ public final class RVDomTree implements Parser.ParseCallback {
         while (itr.hasNext()) {
             RVDomTree child = itr.next();
             child.walkThroughInternal(action, this.mDepth + 1);
+        }
+
+    }
+
+    List<RVDomTree> children() {
+        sortChildrenIfNecessary();
+        return mChildren;
+    }
+
+    private void sortChildrenIfNecessary() {
+        if (!mIsInOrder) {
+            Collections.sort(mChildren, DEFAULT_RVTREE_COMPARATOR);
+            mIsInOrder = true;
         }
 
     }
@@ -152,7 +193,7 @@ public final class RVDomTree implements Parser.ParseCallback {
     @NonNull
     @Override
     public String toString() {
-        String index = "@" + mIndex + ", ";
+        String index = "@" + mIndex + ":" + mOrder + ", ";
         String text = (mText == null ? "" : ", text=" + mText);
         return "[" + index + mNodeName + ", attrs=" + mModule.mAttrs.toString(this) + text + "]";
     }
@@ -168,4 +209,14 @@ public final class RVDomTree implements Parser.ParseCallback {
     interface WalkAction {
         void act(RVDomTree node, int depth);
     }
+
+    private static class RVDomTreeComparator implements Comparator<RVDomTree> {
+
+        @Override
+        public int compare(RVDomTree o1, RVDomTree o2) {
+            return o1.mOrder - o2.mOrder;
+        }
+    }
+
+    private final static RVDomTreeComparator DEFAULT_RVTREE_COMPARATOR = new RVDomTreeComparator();
 }

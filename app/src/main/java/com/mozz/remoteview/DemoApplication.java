@@ -26,6 +26,8 @@ public class DemoApplication extends Application {
         super.onCreate();
         RV.getInstance().init(this);
 
+        EventLog.setDebugLevel(EventLog.TAG_PARSER);
+
 
         RV.getInstance().setImageViewAdapter(new ImageViewAdapter() {
             @Override
