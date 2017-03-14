@@ -33,7 +33,7 @@ public final class RVDomTree implements Parser.ParseCallback {
      */
     private int mIndex;
 
-    LinkedList<RVDomTree> mChildren;
+    private LinkedList<RVDomTree> mChildren;
 
     @Nullable
     String mNodeName;
@@ -52,7 +52,11 @@ public final class RVDomTree implements Parser.ParseCallback {
 
     private int mOrder = -1;
 
-    private boolean mIsInOrder = false;
+    /**
+     * Mark whether a tree's children are in order. Set default true, being set to false only when
+     * a tree with mOrder!=-1 has been added as child. {@link RVDomTree#addChild(RVDomTree)}
+     */
+    private boolean mIsInOrder = true;
 
     RVDomTree(@NonNull RVModule context, RVDomTree parent, int depth, int index) {
         this(context, null, parent, depth, index);
@@ -69,16 +73,29 @@ public final class RVDomTree implements Parser.ParseCallback {
         module.mAttrs.newAttr(this);
     }
 
+    RVDomTree(@NonNull RVDomTree parent, String nodeName, int index) {
+        this(parent.mModule, nodeName, parent, parent.mDepth + 1, index);
+    }
+
     void addAttr(String attrName, @NonNull Object value) {
         if (TREE_ORDER_PARAMETER.equalsIgnoreCase(attrName)) {
             try {
                 mOrder = Utils.toInt(value);
+                if (mParent != null && mOrder != -1) {
+                    mParent.onChangeChildOrder();
+                }
             } catch (AttrApplyException e) {
                 Log.i(TAG, "Wrong when read order, expecting integer while actual is " + value
                         + ", " + value.getClass().toString());
             }
         }
         mModule.mAttrs.put(this, attrName, value);
+    }
+
+    private void onChangeChildOrder() {
+        if (mIsInOrder) {
+            mIsInOrder = false;
+        }
     }
 
     void appendText(String text) {
@@ -88,20 +105,20 @@ public final class RVDomTree implements Parser.ParseCallback {
             mText += text;
     }
 
-    @NonNull
-    RVDomTree addChild(String nodeName, int index) {
-        mIsInOrder = false;
-        RVDomTree child = new RVDomTree(mModule, nodeName, this, this.mDepth + 1, index);
+    void addChild(RVDomTree child) {
         if (DEBUG) {
             Log.d(TAG, "add child " + child.toString() + " to " + this.toString() + ".");
         }
-
         if (child.mOrder == -1) {
             mChildren.add(child);
         } else {
             mChildren.add(child.mOrder, child);
+
+            // Set mIsInOrder to false.
+            if (mIsInOrder) {
+                mIsInOrder = false;
+            }
         }
-        return child;
     }
 
     boolean isLeaf() {
