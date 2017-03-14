@@ -182,6 +182,7 @@ final class ViewContextImpl implements RViewContext {
      * @param s, script to run
      */
     private void executeNowWithoutException(String s) {
+        EventLog.writeEvent(EventLog.TAG_VIEW_CONTEXT, "Execute script \"" + s + "\".");
         try {
             LuaValue l = mGlobals.load(s);
             l.call();

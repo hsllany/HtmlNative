@@ -31,7 +31,6 @@ public class LayoutExampleActivity extends AppCompatActivity {
         String fileName = getIntent().getStringExtra(EXTRA_KEY_RV_FILE);
         mLoader.load(fileName);
 
-
     }
 
     @Override

@@ -2,6 +2,8 @@ package com.mozz.remoteview;
 
 import android.support.annotation.NonNull;
 
+import com.mozz.remoteview.token.Type;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,7 +29,7 @@ public final class HtmlTag {
     public static final String WEB = "web";
     public static final String BR = "br";
     public static final String BODY = "body";
-    public static final String TEMPLATE = "template";
+    static final String TEMPLATE = Type.Template.toString();
     public static final String TEXT = "text";
 
     public static final String ATTR_STYLE = "style";
@@ -51,7 +53,11 @@ public final class HtmlTag {
     ;
 
     static boolean isSwallowInnerTag(@NonNull String tag) {
-        return sSwallowInnerTag.contains(tag);
+        return sSwallowInnerTag.contains(tag.toLowerCase());
+    }
+
+    static boolean isDivOrTemplate(@NonNull String tag) {
+        return tag.equalsIgnoreCase(HtmlTag.DIV) || tag.equalsIgnoreCase(HtmlTag.TEMPLATE);
     }
 
 }

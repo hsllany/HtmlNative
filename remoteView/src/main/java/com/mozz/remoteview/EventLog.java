@@ -1,0 +1,52 @@
+package com.mozz.remoteview;
+
+import android.support.annotation.IntDef;
+import android.util.Log;
+
+import java.lang.annotation.Retention;
+
+import static java.lang.annotation.RetentionPolicy.SOURCE;
+
+/**
+ * @author Yang Tao, 17/3/14.
+ */
+
+public final class EventLog {
+
+    private static final String TAG = "RVEvent";
+
+    public static final int TAG_RENDER = 0;
+    public static final int TAG_PARSER = 1;
+    public static final int TAG_ATTR = 2;
+    public static final int TAG_VIEW_CONTEXT = 3;
+    public static final int TAG_LEXER = 4;
+    public static final int TAG_SCRIPT = 5;
+
+    @Retention(SOURCE)
+    @IntDef({TAG_RENDER, TAG_PARSER, TAG_ATTR, TAG_VIEW_CONTEXT, TAG_LEXER})
+    @interface EventType {
+    }
+
+    private static final String[] TAG_NAME = {"RVRender", "RVParser", "RV_AttrsSet",
+            "RV_ViewContext", "RV_Lexer", "RV_Script"};
+
+    private static int sDebuLevel = 0;
+
+    private EventLog() {
+    }
+
+    public static void writeEvent(@EventType int tag, String msg) {
+        if (((1 << tag) & sDebuLevel) != 0)
+            Log.i(TAG, "[" + TAG_NAME[tag] + "] " + msg);
+    }
+
+    public static void writeError(@EventType int tag, String error) {
+        if (((1 << tag) & sDebuLevel) != 0)
+            Log.e(TAG, "[" + TAG_NAME[tag] + "] " + error);
+    }
+
+    public static void setDebugLevel(@EventType int tag) {
+        sDebuLevel |= (1 << tag);
+    }
+
+}

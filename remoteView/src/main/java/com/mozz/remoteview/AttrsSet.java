@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.mozz.remoteview.attrs.Attr;
-import com.mozz.remoteview.attrs.FlexboxLayoutAttr;
+import com.mozz.remoteview.attrs.FlexBoxLayoutAttr;
 import com.mozz.remoteview.attrs.ImageViewAttr;
 import com.mozz.remoteview.attrs.LayoutAttr;
 import com.mozz.remoteview.attrs.LinearLayoutAttr;
@@ -316,6 +316,7 @@ final class AttrsSet {
             throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException,
             InstantiationException, IllegalAccessException {
 
+
         int startPosition = tree.mAttrIndex;
         int treeAttrLength = mLength[startPosition];
 
@@ -327,11 +328,22 @@ final class AttrsSet {
                 case ATTR_DISPLAY:
                     if (name.equals(HtmlTag.DIV)) {
                         if (value.equals("flex")) {
-                            return renderer.createView(context, ViewRegistry.findClassByTag("flexbox"));
+
+                            String viewName = ViewRegistry.findClassByTag("flexbox");
+                            EventLog.writeEvent(EventLog.TAG_ATTR, "create view" + viewName + " with tag" + name);
+                            return renderer.createView(context, viewName);
+
                         } else if (value.equals("absolute")) {
-                            return renderer.createView(context, ViewRegistry.findClassByTag("box"));
+
+                            String viewName = ViewRegistry.findClassByTag("box");
+                            EventLog.writeEvent(EventLog.TAG_ATTR, "create view" + viewName + " with tag" + name);
+                            return renderer.createView(context, viewName);
+
                         } else if (value.equals("box")) {
-                            return renderer.createView(context, ViewRegistry.findClassByTag("linearbox"));
+
+                            String viewName = ViewRegistry.findClassByTag("linearbox");
+                            EventLog.writeEvent(EventLog.TAG_ATTR, "create view" + viewName + " with tag" + name);
+                            return renderer.createView(context, viewName);
                         }
                     }
                     break;
@@ -370,7 +382,7 @@ final class AttrsSet {
         } else if (clazz.equals(LinearLayout.class)) {
             return new LinearLayoutAttr();
         } else if (clazz.equals(FlexboxLayout.class)) {
-            return new FlexboxLayoutAttr();
+            return new FlexBoxLayoutAttr();
         } else if (clazz.equals(WebView.class)) {
             return new WebViewAttr();
         } else {

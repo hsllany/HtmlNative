@@ -13,7 +13,7 @@ import com.mozz.remoteview.RVDomTree;
  * @author Yang Tao, 17/3/3.
  */
 
-public class FlexboxLayoutAttr implements LayoutAttr {
+public class FlexBoxLayoutAttr implements LayoutAttr {
     @Override
     public void apply(Context context, String tag, View v, @NonNull String params, @NonNull Object value, RVDomTree tree)
             throws AttrApplyException {
@@ -36,41 +36,45 @@ public class FlexboxLayoutAttr implements LayoutAttr {
     }
 
     private static int flexDirection(@NonNull String direction) {
-        if (direction.equals("column-reverse")) {
-            return FlexboxLayout.FLEX_DIRECTION_COLUMN_REVERSE;
-        } else if (direction.equals("row-reverse")) {
-            return FlexboxLayout.FLEX_DIRECTION_ROW_REVERSE;
-        } else if (direction.equals("column")) {
-            return FlexboxLayout.FLEX_DIRECTION_COLUMN;
-        } else {
-            return FlexboxLayout.FLEX_DIRECTION_ROW;
+        switch (direction) {
+            case "column-reverse":
+                return FlexboxLayout.FLEX_DIRECTION_COLUMN_REVERSE;
+            case "row-reverse":
+                return FlexboxLayout.FLEX_DIRECTION_ROW_REVERSE;
+            case "column":
+                return FlexboxLayout.FLEX_DIRECTION_COLUMN;
+            default:
+                return FlexboxLayout.FLEX_DIRECTION_ROW;
         }
     }
 
     private static int flexWrap(String wrap) {
-        if (wrap.equals("nowrap")) {
-            return FlexboxLayout.FLEX_WRAP_NOWRAP;
-        } else if (wrap.equals("wrap")) {
-            return FlexboxLayout.FLEX_WRAP_WRAP;
-        } else if (wrap.equals("wrap-reverse")) {
-            return FlexboxLayout.FLEX_WRAP_WRAP_REVERSE;
-        } else {
-            return FlexboxLayout.FLEX_WRAP_NOWRAP;
+        switch (wrap) {
+            case "nowrap":
+                return FlexboxLayout.FLEX_WRAP_NOWRAP;
+            case "wrap":
+                return FlexboxLayout.FLEX_WRAP_WRAP;
+            case "wrap-reverse":
+                return FlexboxLayout.FLEX_WRAP_WRAP_REVERSE;
+            default:
+                return FlexboxLayout.FLEX_WRAP_NOWRAP;
         }
     }
 
     private static int justContent(String content) {
-        if (content.equals("flex-start")) {
-            return FlexboxLayout.JUSTIFY_CONTENT_FLEX_START;
-        } else if (content.equals("flex-end")) {
-            return FlexboxLayout.JUSTIFY_CONTENT_FLEX_END;
-        } else if (content.equals("center")) {
-            return FlexboxLayout.JUSTIFY_CONTENT_CENTER;
-        } else if (content.equals("space-between")) {
-            return FlexboxLayout.JUSTIFY_CONTENT_SPACE_BETWEEN;
-        } else if (content.equals("space-around")) {
-            return FlexboxLayout.JUSTIFY_CONTENT_SPACE_AROUND;
-        } else
-            return FlexboxLayout.JUSTIFY_CONTENT_FLEX_START;
+        switch (content) {
+            case "flex-start":
+                return FlexboxLayout.JUSTIFY_CONTENT_FLEX_START;
+            case "flex-end":
+                return FlexboxLayout.JUSTIFY_CONTENT_FLEX_END;
+            case "center":
+                return FlexboxLayout.JUSTIFY_CONTENT_CENTER;
+            case "space-between":
+                return FlexboxLayout.JUSTIFY_CONTENT_SPACE_BETWEEN;
+            case "space-around":
+                return FlexboxLayout.JUSTIFY_CONTENT_SPACE_AROUND;
+            default:
+                return FlexboxLayout.JUSTIFY_CONTENT_FLEX_START;
+        }
     }
 }

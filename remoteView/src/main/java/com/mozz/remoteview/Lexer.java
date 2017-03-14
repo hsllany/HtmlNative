@@ -316,6 +316,7 @@ final class Lexer {
 
     private void next() throws EOFException {
         this.mReader.nextCh();
+        EventLog.writeEvent(EventLog.TAG_LEXER, "next to " + peek());
     }
 
     private void lookFor(int status) {

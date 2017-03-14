@@ -23,9 +23,6 @@ import static com.mozz.remoteview.HtmlTag.isSwallowInnerTag;
  */
 final class Parser {
 
-    private static final String TAG = Parser.class.getSimpleName();
-
-    static boolean DEBUG = true;
 
     @NonNull
     private final Lexer mLexer;
@@ -170,7 +167,7 @@ final class Parser {
      * @throws RVSyntaxError
      */
     private void processInternal(@NonNull RVDomTree tree, @NonNull ParseCallback callback) throws RVSyntaxError {
-        log("init to parse tree " + tree.getNodeName());
+        EventLog.writeEvent(EventLog.TAG_PARSER, "init to parse tree " + tree.getNodeName());
         int index = 0;
 
         lookFor(LK_ID | LK_RightArrowBracket | LK_SLASH);
@@ -385,7 +382,7 @@ final class Parser {
 
     private void scan() throws EOFException, RVSyntaxError {
         if (mReserved) {
-            log("re-process token ->" + mCurToken);
+            EventLog.writeEvent(EventLog.TAG_PARSER, "Reprocess token ->" + mCurToken);
             mReserved = false;
             return;
         }
@@ -394,7 +391,7 @@ final class Parser {
         mCurToken = mLexer.scan();
 
 
-        log("process token ->" + mCurToken);
+        EventLog.writeEvent(EventLog.TAG_PARSER, "Process token ->" + mCurToken);
 
     }
 
@@ -416,15 +413,6 @@ final class Parser {
         for (Type type : types) {
             scanFor(type);
         }
-    }
-
-    private static void log(String msg) {
-        if (DEBUG)
-            System.out.println(msg);
-    }
-
-    public static void toggleDebug(boolean debug) {
-        DEBUG = debug;
     }
 
     private void checkState(int status) throws RVSyntaxError {

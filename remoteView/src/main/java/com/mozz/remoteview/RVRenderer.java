@@ -21,10 +21,6 @@ import java.util.HashMap;
 
 public final class RVRenderer {
 
-    private static final String TAG = RVRenderer.class.getSimpleName();
-
-    static boolean DEBUG = false;
-
     private static final HashMap<String, Constructor<? extends View>> sConstructorMap =
             new HashMap<>();
 
@@ -48,6 +44,9 @@ public final class RVRenderer {
     final View inflate(@NonNull Context context, @NonNull RVModule rvModule, @NonNull ViewGroup.LayoutParams params)
             throws RemoteInflateException {
 
+        EventLog.writeEvent(EventLog.TAG_RENDER, "start to inflate " +
+                rvModule.toString());
+
         PerformanceWatcher pWatcher = Performance.newWatcher();
         RXViewGroup frameLayout = new RXViewGroup(context);
         RViewContext RViewContext = ViewContextImpl.initViewContext(frameLayout, rvModule, context);
@@ -68,9 +67,7 @@ public final class RVRenderer {
         RViewContext.onViewLoaded();
         pWatcher.checkDone("finally done");
 
-        if (DEBUG) {
-            Log.d(TAG, RViewContext.allIdTag());
-        }
+        EventLog.writeEvent(EventLog.TAG_RENDER, RViewContext.allIdTag());
 
         return frameLayout;
     }
@@ -116,11 +113,11 @@ public final class RVRenderer {
                     if (v != null) {
                         viewGroup.addView(v, layoutParams);
                     } else {
-                        Log.e(TAG, "error when inflating " + child.getNodeName());
+                        EventLog.writeError(EventLog.TAG_RENDER, "error when inflating " + child.getNodeName());
                     }
                 }
             } else {
-                Log.w(TAG, "View inflate from RVRenderer is not an viewGroup" +
+                EventLog.writeError(EventLog.TAG_RENDER, "View inflate from RVRenderer is not an viewGroup" +
                         view.getClass().getSimpleName() +
                         ", but related RVDomTree has children. Will ignore its children!");
             }
@@ -137,7 +134,7 @@ public final class RVRenderer {
         PerformanceWatcher watcher = Performance.newWatcher();
         try {
 
-            if (needFutureCreate(tagName)) {
+            if (HtmlTag.isDivOrTemplate(tagName)) {
                 View v = attrsSet.createViewViaAttr(this, context, tagName, tree);
 
                 if (v instanceof WebView) {
@@ -152,10 +149,8 @@ public final class RVRenderer {
 
                 return v;
             } else {
-                String viewClazzName = ViewRegistry.findClassByTag(tagName);
-                if (viewClazzName == null)
-                    return null;
-                View view = createView(context, viewClazzName);
+
+                View view = createView(context, tagName);
 
                 watcher.check("create view" + view.toString());
 
@@ -192,7 +187,13 @@ public final class RVRenderer {
     }
 
     @Nullable
-    final View createView(@NonNull Context context, @Nullable String viewClassName) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    final View createView(@NonNull Context context, @Nullable String tagName) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+
+        String viewClassName = ViewRegistry.findClassByTag(tagName);
+        if (viewClassName == null)
+            return null;
+
+        EventLog.writeEvent(EventLog.TAG_ATTR, "create view" + viewClassName + " with tag" + tagName);
 
         // first let viewCreateHandler to create view
         View view = createViewByViewHandler(context, viewClassName);
@@ -217,9 +218,6 @@ public final class RVRenderer {
 
         mConstructorArgs[0] = context;
         view = constructor.newInstance(mConstructorArgs);
-        if (DEBUG) {
-            Log.d(TAG, "create view " + view.toString());
-        }
 
         return view;
     }
@@ -246,15 +244,6 @@ public final class RVRenderer {
 
     public static HrefLinkHandler getHrefLinkHandler() {
         return sHrefLinkHandler;
-    }
-
-
-    private static boolean needFutureCreate(@NonNull String name) {
-        if (name.equals(HtmlTag.DIV)) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     @NonNull
