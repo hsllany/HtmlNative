@@ -236,7 +236,8 @@ final class Parser {
                                 lookFor(LK_LeftArrowBracket | LK_INNER);
 
                             } else {
-                                RVDomTree child = tree.addChild(tag, index++);
+                                RVDomTree child = new RVDomTree(tree, tag, index++);
+                                tree.addChild(child);
                                 child.mTagPair = 1;
                                 child.mBracketPair = 1;
                                 processInternal(child);
@@ -300,7 +301,8 @@ final class Parser {
                         if (isSwallowInnerTag(tree.getNodeName())) {
                             tree.appendText(mCurToken.stringValue());
                         } else {
-                            RVDomTree innerChild = tree.addChild(RVDomTree.INNER_TREE_TAG, innerCount++);
+                            RVDomTree innerChild = new RVDomTree(tree, RVDomTree.INNER_TREE_TAG, innerCount++);
+                            tree.addChild(innerChild);
                             innerChild.appendText(mCurToken.stringValue());
                         }
 
