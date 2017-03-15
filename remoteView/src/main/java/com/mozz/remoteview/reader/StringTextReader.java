@@ -6,11 +6,11 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public class StringCodeReader extends StreamReader {
+public class StringTextReader extends StreamReader {
 
     private InputStream inputStream;
 
-    public StringCodeReader(String str) {
+    public StringTextReader(String str) {
         super();
         inputStream = new ByteArrayInputStream(str.getBytes());
         setInputStream(new InputStreamReader(inputStream));

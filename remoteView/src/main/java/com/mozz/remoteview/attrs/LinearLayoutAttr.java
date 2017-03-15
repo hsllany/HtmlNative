@@ -8,8 +8,8 @@ import com.mozz.remoteview.RVDomElement;
 
 public class LinearLayoutAttr implements Attr {
     @Override
-    public void apply(Context context, String tag, View v, String params, Object value, RVDomElement tree)
-            throws AttrApplyException {
+    public void apply(Context context, String tag, View v, String params, Object value,
+                      RVDomElement tree) throws AttrApplyException {
 
     }
 }

@@ -8,7 +8,7 @@ import android.view.View;
 /**
  * @author Yang Tao, 17/2/24.
  */
-public interface RViewContext extends VariablePool {
+public interface RVSandBoxContext extends VariablePool {
     /**
      * get Android Context
      *

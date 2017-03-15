@@ -1,27 +1,24 @@
-package com.mozz.remoteview.script;
+package com.mozz.remoteview;
 
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.mozz.remoteview.RVEnvironment;
-import com.mozz.remoteview.RViewContext;
 
-
-public final class Code {
-    private static final String TAG = Code.class.getSimpleName();
+public final class Script {
+    private static final String TAG = Script.class.getSimpleName();
     public static final boolean DEBUG = RVEnvironment.DEBUG;
     private String mCode;
     private String mFunctionName;
 
-    private Code(String code, String functionName) {
+    private Script(String code, String functionName) {
         mCode = code;
         mFunctionName = functionName;
     }
 
     @NonNull
-    public static Code toCode(String function, String code) {
-        return new Code(code, function);
+    public static Script toCode(String function, String code) {
+        return new Script(code, function);
     }
 
     @Override
@@ -29,7 +26,7 @@ public final class Code {
         return mCode;
     }
 
-    public void execute(@NonNull RViewContext context) {
+    public void execute(@NonNull RVSandBoxContext context) {
         long timeStart = SystemClock.currentThreadTimeMillis();
 
         context.execute(mCode);

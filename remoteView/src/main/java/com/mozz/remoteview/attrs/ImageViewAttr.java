@@ -12,9 +12,8 @@ import com.mozz.remoteview.RVRenderer;
 public class ImageViewAttr implements Attr {
 
     @Override
-    public void apply(final Context context, String tag, final View v, @NonNull String params, @NonNull final Object value,
-                      RVDomElement tree)
-            throws AttrApplyException {
+    public void apply(final Context context, String tag, final View v, @NonNull String params,
+                      @NonNull final Object value, RVDomElement tree) throws AttrApplyException {
         if (params.equals("src") && RVRenderer.getImageViewAdpater() != null) {
             RVRenderer.getImageViewAdpater().setImage(value.toString(), (ImageView) v);
         }

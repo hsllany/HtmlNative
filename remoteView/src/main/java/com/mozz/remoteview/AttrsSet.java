@@ -21,7 +21,6 @@ import com.mozz.remoteview.attrs.LinearLayoutAttr;
 import com.mozz.remoteview.attrs.TextViewAttr;
 import com.mozz.remoteview.attrs.WebViewAttr;
 import com.mozz.remoteview.common.Utils;
-import com.mozz.remoteview.script.Code;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -67,16 +66,16 @@ final class AttrsSet {
 
     private int mCompacity;
 
-    private RVModule mModule;
+    private RVSegment mModule;
 
     @NonNull
     private static Map<Class<? extends View>, Attr> sCachedAttrs = new HashMap<>();
 
-    AttrsSet(@NonNull RVModule context) {
+    AttrsSet(@NonNull RVSegment context) {
         this(context, 10);
     }
 
-    AttrsSet(RVModule module, int initCompacity) {
+    AttrsSet(RVSegment module, int initCompacity) {
         mModule = module;
         mAttrs = new Object[initCompacity << 1];
         mLength = new int[initCompacity];
@@ -88,7 +87,8 @@ final class AttrsSet {
         int startPosition = tree.mAttrIndex;
 
         if (DEBUG) {
-            Log.d(TAG, "put " + paramsKey + ", " + value.toString() + " in attrs at " + (startPosition + mLength[startPosition]));
+            Log.d(TAG, "put " + paramsKey + ", " + value.toString() + " in attrs at " +
+                    (startPosition + mLength[startPosition]));
         }
 
         putInternal(startPosition + mLength[startPosition], paramsKey, value);
@@ -156,15 +156,16 @@ final class AttrsSet {
     }
 
     @SuppressWarnings("ConstantConditions")
-    public void apply(Context context, String tagName, @NonNull final RViewContext RViewContext, View v, @NonNull RVDomTree tree,
-                      @NonNull ViewGroup parent, @NonNull ViewGroup.LayoutParams layoutParams)
-            throws AttrApplyException {
+    public void apply(Context context, String tagName, @NonNull final RVSandBoxContext
+            sandBoxContext, View v, @NonNull RVDomTree tree, @NonNull ViewGroup parent,
+                      @NonNull ViewGroup.LayoutParams layoutParams) throws AttrApplyException {
 
         int startPosition = tree.mAttrIndex;
         int treeAttrLength = mLength[startPosition];
 
-        if (v instanceof LinearLayout)
+        if (v instanceof LinearLayout) {
             ((LinearLayout) v).setOrientation(LinearLayout.VERTICAL);
+        }
 
 
         int width = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -179,7 +180,8 @@ final class AttrsSet {
             final Object value = mAttrs[(i << 1) + 1];
 
             if (DEBUG) {
-                Log.i(TAG, "ready to parse attribute " + params + " with value " + value + ", for view " + v);
+                Log.i(TAG, "ready to parse attribute " + params + " with value " + value + ", for" +
+                        " view " + v);
             }
 
             switch (params) {
@@ -216,22 +218,26 @@ final class AttrsSet {
 
                 case ATTR_PADDING_LEFT:
                     int paddingLeft = Utils.toInt(value);
-                    v.setPadding(paddingLeft, v.getPaddingTop(), v.getPaddingRight(), v.getPaddingBottom());
+                    v.setPadding(paddingLeft, v.getPaddingTop(), v.getPaddingRight(), v
+                            .getPaddingBottom());
                     break;
 
                 case ATTR_PADDING_RIGHT:
                     int paddingRight = Utils.toInt(value);
-                    v.setPadding(v.getPaddingTop(), v.getPaddingTop(), paddingRight, v.getPaddingBottom());
+                    v.setPadding(v.getPaddingTop(), v.getPaddingTop(), paddingRight, v
+                            .getPaddingBottom());
                     break;
 
                 case ATTR_PADDING_TOP:
                     int paddingTop = Utils.toInt(value);
-                    v.setPadding(v.getPaddingLeft(), paddingTop, v.getPaddingRight(), v.getPaddingBottom());
+                    v.setPadding(v.getPaddingLeft(), paddingTop, v.getPaddingRight(), v
+                            .getPaddingBottom());
                     break;
 
                 case ATTR_PADDING_BOTTOM:
                     int paddingBottom = Utils.toInt(value);
-                    v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(), paddingBottom);
+                    v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(),
+                            paddingBottom);
                     break;
 
                 case ATTR_LEFT:
@@ -249,7 +255,7 @@ final class AttrsSet {
 
                 case ATTR_ID:
                     if (value instanceof String) {
-                        RViewContext.put((String) value, v);
+                        sandBoxContext.put((String) value, v);
                     } else {
                         throw new AttrApplyException("id must be a string.");
                     }
@@ -263,14 +269,14 @@ final class AttrsSet {
 
                     if (value instanceof String) {
                         final String functionName = (String) value;
-                        final Code code = mModule.retrieveCode(functionName);
+                        final Script script = mModule.retrieveCode(functionName);
 
-                        if (code != null) {
+                        if (script != null) {
                             v.setOnClickListener(new View.OnClickListener() {
 
                                 @Override
                                 public void onClick(View v) {
-                                    code.execute(RViewContext);
+                                    script.execute(sandBoxContext);
                                 }
                             });
                         } else {
@@ -295,7 +301,8 @@ final class AttrsSet {
                     // finally apply corresponding parent attr to child
                     attr = getAttr(parent.getClass());
                     if (attr != null && attr instanceof LayoutAttr) {
-                        ((LayoutAttr) attr).applyToChild(context, tagName, v, parent, params, value);
+                        ((LayoutAttr) attr).applyToChild(context, tagName, v, parent, params,
+                                value);
                     }
                     break;
             }
@@ -312,9 +319,10 @@ final class AttrsSet {
         }
     }
 
-    View createViewViaAttr(@NonNull RVRenderer renderer, Context context, @NonNull String name, @NonNull RVDomTree tree)
-            throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException,
-            InstantiationException, IllegalAccessException {
+    View createViewViaAttr(@NonNull RVRenderer renderer, Context context, @NonNull String name,
+                           @NonNull RVDomTree tree) throws ClassNotFoundException,
+            NoSuchMethodException, InvocationTargetException, InstantiationException,
+            IllegalAccessException {
 
 
         int startPosition = tree.mAttrIndex;
@@ -380,7 +388,7 @@ final class AttrsSet {
 
     @Nullable
     private static Attr getExtraAttrFromView(@NonNull Class<? extends View> clazz) {
-        return ViewRegistry.findAttrFromExtraByTag(clazz.getName());
+        return ViewTagLookupTable.findAttrFromExtraByTag(clazz.getName());
     }
 
 }

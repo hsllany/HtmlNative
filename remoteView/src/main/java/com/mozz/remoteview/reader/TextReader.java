@@ -6,7 +6,7 @@ import java.io.EOFException;
  * Created by Yang Tao on 17/2/21.
  */
 
-public interface CodeReader {
+public interface TextReader {
     char nextCh() throws EOFException;
 
     long line();

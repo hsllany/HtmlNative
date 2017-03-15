@@ -18,8 +18,9 @@ public final class Performance {
     }
 
     private static PerformanceWatcher newWatcher(boolean ignored) {
-        if (ignored)
+        if (ignored) {
             return EmptyPerformanceWatcher.instance;
+        }
 
         return new PerformanceWatcherImpl();
     }

@@ -1,6 +1,6 @@
 package com.mozz.remoteview.token;
 
-public enum Type {
+public enum TokenType {
 
     Unknown("Unknown"),
 
@@ -21,7 +21,7 @@ public enum Type {
     // for value in quot
     Value("Value"),
 
-    Code("Code"),
+    Code("Script"),
 
     // Handle the inner text of an element
     Inner("Inner"),
@@ -34,7 +34,7 @@ public enum Type {
 
     private String value;
 
-    Type(String string) {
+    TokenType(String string) {
         this.value = string;
     }
 

@@ -38,7 +38,7 @@ final class RVDomTree implements RVDomElement, Parser.ParseCallback {
     @Nullable
     String mNodeName;
 
-    private RVModule mModule;
+    private RVSegment mModule;
 
     @Nullable
     private String mText = null;
@@ -58,11 +58,12 @@ final class RVDomTree implements RVDomElement, Parser.ParseCallback {
      */
     private boolean mIsInOrder = true;
 
-    RVDomTree(@NonNull RVModule context, RVDomTree parent, int depth, int index) {
+    RVDomTree(@NonNull RVSegment context, RVDomTree parent, int depth, int index) {
         this(context, null, parent, depth, index);
     }
 
-    private RVDomTree(@NonNull RVModule module, String nodeName, RVDomTree parent, int depth, int index) {
+    private RVDomTree(@NonNull RVSegment module, String nodeName, RVDomTree parent, int depth, int
+            index) {
         mModule = module;
         mNodeName = nodeName;
         mDepth = depth;
@@ -85,8 +86,8 @@ final class RVDomTree implements RVDomElement, Parser.ParseCallback {
                     mParent.onChangeChildOrder();
                 }
             } catch (AttrApplyException e) {
-                Log.i(TAG, "Wrong when read order, expecting integer while actual is " + value
-                        + ", " + value.getClass().toString());
+                Log.i(TAG, "Wrong when read order, expecting integer while actual is " + value +
+                        ", " + value.getClass().toString());
             }
         }
         mModule.mAttrs.put(this, attrName, value);
@@ -99,10 +100,11 @@ final class RVDomTree implements RVDomElement, Parser.ParseCallback {
     }
 
     void appendText(String text) {
-        if (mText == null)
+        if (mText == null) {
             mText = text;
-        else
+        } else {
             mText += text;
+        }
     }
 
     void addChild(RVDomTree child) {
@@ -135,8 +137,9 @@ final class RVDomTree implements RVDomElement, Parser.ParseCallback {
     }
 
     private void walkThroughInternal(@Nullable WalkAction action, int depth) {
-        if (action != null)
+        if (action != null) {
             action.act(this, depth);
+        }
 
         Iterator<RVDomTree> itr = mChildren.iterator();
 

@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.Reader;
 
 
-public class StreamReader implements CodeReader {
+public class StreamReader implements TextReader {
 
     public static final int CACHE_SIZE = 1024 * 2;
 
@@ -46,8 +46,9 @@ public class StreamReader implements CodeReader {
     public char nextCh() throws EOFException {
         try {
             if (tempPos == tempCount - 1) {
-                if (meetEof)
+                if (meetEof) {
                     throw new EOFException("Reach the end of stream!");
+                }
                 fillInCache();
             }
             ch = temp[tempPos + 1];
@@ -72,8 +73,9 @@ public class StreamReader implements CodeReader {
     }
 
     private void fillInCache() throws IOException {
-        if (mInputStream == null)
+        if (mInputStream == null) {
             throw new EOFException("input stream is null");
+        }
 
         int count = mInputStream.read(temp);
 

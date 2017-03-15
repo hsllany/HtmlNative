@@ -3,14 +3,6 @@ package com.mozz.remoteview;
 import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.Looper;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.mozz.remoteview.common.Performance;
-import com.mozz.remoteview.common.PerformanceWatcher;
-import com.mozz.remoteview.reader.StringCodeReader;
 
 import java.io.IOException;
 

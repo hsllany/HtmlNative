@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
 
-import com.mozz.remoteview.RViewContext;
+import com.mozz.remoteview.RVSandBoxContext;
 import com.mozz.remoteview.common.MainHandler;
 
 import org.luaj.vm2.LuaValue;
@@ -16,14 +16,15 @@ import org.luaj.vm2.lib.ThreeArgFunction;
  */
 public class setParams extends ThreeArgFunction {
 
-    private RViewContext RViewContext;
+    private RVSandBoxContext RVSandBoxContext;
 
-    public setParams(RViewContext RViewContext) {
-        this.RViewContext = RViewContext;
+    public setParams(RVSandBoxContext RVSandBoxContext) {
+        this.RVSandBoxContext = RVSandBoxContext;
     }
 
     @Override
-    public LuaValue call(@NonNull final LuaValue luaValue, @NonNull final LuaValue luaValue2, @NonNull final LuaValue luaValue3) {
+    public LuaValue call(@NonNull final LuaValue luaValue, @NonNull final LuaValue luaValue2,
+                         @NonNull final LuaValue luaValue3) {
 
         MainHandler.instance().post(new Runnable() {
             @Override
@@ -31,9 +32,10 @@ public class setParams extends ThreeArgFunction {
                 try {
                     String id = luaValue.tojstring();
 
-                    View v = RViewContext.findViewById(id);
-                    if (v == null)
+                    View v = RVSandBoxContext.findViewById(id);
+                    if (v == null) {
                         throw new ParamsWrongException("can't find related view by id:" + id);
+                    }
 
                     String property = luaValue2.tojstring();
 
@@ -51,8 +53,8 @@ public class setParams extends ThreeArgFunction {
         return LuaValue.NIL;
     }
 
-    private static void changeViewProperty(@NonNull View v, @NonNull String property, @NonNull LuaValue value)
-            throws ParamsWrongException {
+    private static void changeViewProperty(@NonNull View v, @NonNull String property, @NonNull
+            LuaValue value) throws ParamsWrongException {
         switch (property) {
             case "visible":
                 boolean visible = value.toboolean();
@@ -74,8 +76,8 @@ public class setParams extends ThreeArgFunction {
                     int color = Color.parseColor(colorStr);
                     v.setBackgroundColor(color);
                 } catch (Exception e) {
-                    ParamsWrongException paramsWrongException =
-                            new ParamsWrongException("wrong with color parsing");
+                    ParamsWrongException paramsWrongException = new ParamsWrongException("wrong " +
+                            "with color parsing");
                     paramsWrongException.initCause(e);
                     throw paramsWrongException;
 

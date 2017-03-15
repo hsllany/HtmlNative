@@ -2,7 +2,7 @@ package com.mozz.remoteview;
 
 import android.support.annotation.NonNull;
 
-import com.mozz.remoteview.token.Type;
+import com.mozz.remoteview.token.TokenType;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -29,7 +29,7 @@ public final class HtmlTag {
     public static final String WEB = "web";
     public static final String BR = "br";
     public static final String BODY = "body";
-    static final String TEMPLATE = Type.Template.toString();
+    static final String TEMPLATE = TokenType.Template.toString();
     public static final String TEXT = "text";
 
     public static final String ATTR_STYLE = "style";

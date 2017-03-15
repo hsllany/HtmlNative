@@ -7,7 +7,6 @@ import android.webkit.WebView;
 import android.widget.AbsoluteLayout;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -22,7 +21,7 @@ import java.util.Map;
  * @author Yang Tao, 17/3/3.
  */
 
-final class ViewRegistry {
+final class ViewTagLookupTable {
 
     /**
      * Relate the tag and class.
@@ -32,7 +31,7 @@ final class ViewRegistry {
     /**
      * For extra tag, lazy initialize later.
      */
-    private static Map<String, RView> sExtraTagClassTable;
+    private static Map<String, RViewItem> sExtraTagClassTable;
 
     static {
 
@@ -55,9 +54,9 @@ final class ViewRegistry {
     }
 
     /**
-     * Looking for related class name via tag. ViewRegistry will first look in
-     * {@link ViewRegistry#sReservedTagClassTable}, if not found, will continuously look in
-     * {@link ViewRegistry#sExtraTagClassTable}
+     * Looking for related class name via tag. ViewTagLookupTable will first look in
+     * {@link ViewTagLookupTable#sReservedTagClassTable}, if not found, will continuously look in
+     * {@link ViewTagLookupTable#sExtraTagClassTable}
      *
      * @param tag tag name found in .layout file
      * @return corresponding class name, or null if not found
@@ -66,31 +65,36 @@ final class ViewRegistry {
     static String findClassByTag(@NonNull String tag) {
         String viewClassName = sReservedTagClassTable.get(tag.toLowerCase());
 
-        if (viewClassName != null)
+        if (viewClassName != null) {
             return viewClassName;
+        }
 
-        if (sExtraTagClassTable == null)
+        if (sExtraTagClassTable == null) {
             return null;
+        }
 
-        RView rView = sExtraTagClassTable.get(tag);
-        if (rView != null)
-            return rView.onGetViewClassName().getName();
+        RViewItem rViewItem = sExtraTagClassTable.get(tag);
+        if (rViewItem != null) {
+            return rViewItem.onGetViewClassName().getName();
+        }
 
         return null;
     }
 
     @Nullable
     static Attr findAttrFromExtraByTag(String tag) {
-        if (sExtraTagClassTable == null)
+        if (sExtraTagClassTable == null) {
             sExtraTagClassTable = new ArrayMap<>();
+        }
 
         return sExtraTagClassTable.get(tag);
     }
 
-    static void registerExtraView(String tag, @NonNull RView rView) {
-        if (sExtraTagClassTable == null)
+    static void registerExtraView(String tag, @NonNull RViewItem rViewItem) {
+        if (sExtraTagClassTable == null) {
             sExtraTagClassTable = new ArrayMap<>();
+        }
 
-        sExtraTagClassTable.put(tag, rView);
+        sExtraTagClassTable.put(tag, rViewItem);
     }
 }

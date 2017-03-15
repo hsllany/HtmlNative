@@ -27,7 +27,7 @@ public final class EventLog {
     @interface EventType {
     }
 
-    private static final String[] TAG_NAME = {"RVRender", "RVParser", "RV_AttrsSet",
+    private static final String[] TAG_NAME = {"RV_Render", "RV_Parser", "RV_AttrsSet",
             "RV_ViewContext", "RV_Lexer", "RV_Script"};
 
     private static int sDebuLevel = 0;
@@ -36,13 +36,15 @@ public final class EventLog {
     }
 
     public static void writeEvent(@EventType int tag, String msg) {
-        if (((1 << tag) & sDebuLevel) != 0)
+        if (((1 << tag) & sDebuLevel) != 0) {
             Log.i(TAG, "[" + TAG_NAME[tag] + "] " + msg);
+        }
     }
 
     public static void writeError(@EventType int tag, String error) {
-        if (((1 << tag) & sDebuLevel) != 0)
+        if (((1 << tag) & sDebuLevel) != 0) {
             Log.e(TAG, "[" + TAG_NAME[tag] + "] " + error);
+        }
     }
 
     public static void setDebugLevel(@EventType int tag) {

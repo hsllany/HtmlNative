@@ -62,8 +62,8 @@ public final class RV {
         display.getMetrics(mDefaultMetrics);
     }
 
-    public final void loadView(final Context context, final InputStream inputStream,
-                               final OnRViewLoaded onRViewLoaded) {
+    public final void loadView(final Context context, final InputStream inputStream, final
+    OnRViewLoaded onRViewLoaded) {
         ProcessThread.runRenderTask(new ProcessThread.RenderTask(context, inputStream,
                 onRViewLoaded));
     }
@@ -110,14 +110,14 @@ public final class RV {
 
     /**
      * @param tag
-     * @param rView
+     * @param rViewItem
      */
-    public static void registerRView(String tag, @NonNull RView rView) {
-        ViewRegistry.registerExtraView(tag, rView);
+    public static void registerRView(String tag, @NonNull RViewItem rViewItem) {
+        ViewTagLookupTable.registerExtraView(tag, rViewItem);
     }
 
     public void onDestroy() {
-        RVModule.clearCache();
+        RVSegment.clearCache();
         ProcessThread.quit();
         LuaRunner.getInstance().quit();
     }

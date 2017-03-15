@@ -15,8 +15,8 @@ import com.mozz.remoteview.RVDomElement;
 
 public class FlexBoxLayoutAttr implements LayoutAttr {
     @Override
-    public void apply(Context context, String tag, View v, @NonNull String params, @NonNull Object value, RVDomElement tree)
-            throws AttrApplyException {
+    public void apply(Context context, String tag, View v, @NonNull String params, @NonNull
+            Object value, RVDomElement tree) throws AttrApplyException {
         FlexboxLayout flexboxLayout = (FlexboxLayout) v;
 
         if (params.equals("flex-direction")) {
@@ -32,7 +32,8 @@ public class FlexBoxLayoutAttr implements LayoutAttr {
     }
 
     @Override
-    public void applyToChild(Context context, String tag, View v, ViewGroup parent, String params, Object value) {
+    public void applyToChild(Context context, String tag, View v, ViewGroup parent, String
+            params, Object value) {
 
     }
 

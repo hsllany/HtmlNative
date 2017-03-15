@@ -3,16 +3,16 @@ package com.mozz.remoteview;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.mozz.remoteview.reader.CodeReader;
+import com.mozz.remoteview.reader.TextReader;
 import com.mozz.remoteview.token.Token;
-import com.mozz.remoteview.token.Type;
+import com.mozz.remoteview.token.TokenType;
 
 import java.io.EOFException;
 
 
 final class Lexer {
 
-    private CodeReader mReader;
+    private TextReader mReader;
 
     @NonNull
     private StringBuilder mBuffer = new StringBuilder();
@@ -26,7 +26,7 @@ final class Lexer {
     // otherwise, mLookForScript < 3.
     private int mLookForScript = 0;
 
-    Lexer(CodeReader reader) {
+    Lexer(TextReader reader) {
         mReader = reader;
 
         lookFor(LK_NOTHING);
@@ -41,7 +41,7 @@ final class Lexer {
                 mLookForScript = 1;
                 lookFor(LK_NOTHING);
                 next();
-                return Token.obtainToken(Type.LeftAngleBracket, mReader.line(), mReader.column());
+                return Token.obtainToken(TokenType.LeftAngleBracket, mReader.line(), mReader.column());
 
             case '"':
                 next();
@@ -51,17 +51,17 @@ final class Lexer {
                 mLookForScript++;
                 lookFor(LK_INNER);
                 next();
-                return Token.obtainToken(Type.RightAngleBracket, mReader.line(), mReader.column());
+                return Token.obtainToken(TokenType.RightAngleBracket, mReader.line(), mReader.column());
 
             case '/':
                 mLookForScript = 0;
                 next();
-                return Token.obtainToken(Type.Slash, mReader.line(), mReader.column());
+                return Token.obtainToken(TokenType.Slash, mReader.line(), mReader.column());
 
             case '=':
                 mLookForScript = 0;
                 next();
-                return Token.obtainToken(Type.Equal, mReader.line(), mReader.column());
+                return Token.obtainToken(TokenType.Equal, mReader.line(), mReader.column());
 
             case '{':
                 return scanCode();
@@ -110,7 +110,7 @@ final class Lexer {
         }
 
         next();
-        return Token.obtainToken(Type.Code, mBuffer.toString(), line, startColumn);
+        return Token.obtainToken(TokenType.Code, mBuffer.toString(), line, startColumn);
     }
 
     @Nullable
@@ -133,14 +133,17 @@ final class Lexer {
             next();
         } while (isDigit(peek()));
 
-        if (peek() != '.' && peek() != 'E' && peek() != 'e')
-            return Token.obtainToken(Type.Int, negative ? -v : v, line, startColumn);
+        if (peek() != '.' && peek() != 'E' && peek() != 'e') {
+            return Token.obtainToken(TokenType.Int, negative ? -v : v, line, startColumn);
+        }
 
         double x = v, d = 10;
         if (peek() == '.') {
             for (; ; ) {
                 next();
-                if (!Lexer.isDigit(peek())) break;
+                if (!Lexer.isDigit(peek())) {
+                    break;
+                }
 
                 x = x + (peek() - '0') / d;
                 d = d * 10;
@@ -168,10 +171,11 @@ final class Lexer {
             n = expIsNegative ? -n : n;
 
             double exp = Math.pow(10, n);
-            return Token.obtainToken(Type.Double, negative ? (-x * exp) : (x * exp), line, startColumn);
+            return Token.obtainToken(TokenType.Double, negative ? (-x * exp) : (x * exp), line,
+                    startColumn);
 
         } else {
-            return Token.obtainToken(Type.Double, negative ? -x : x, line, startColumn);
+            return Token.obtainToken(TokenType.Double, negative ? -x : x, line, startColumn);
         }
     }
 
@@ -185,17 +189,19 @@ final class Lexer {
             mBuffer.append(peek());
             next();
         }
-        while (isLetter(peek()) || isDigit(peek()) || peek() == '.' || peek() == '-' || peek() == '_');
+        while (isLetter(peek()) || isDigit(peek()) || peek() == '.' || peek() == '-' || peek() ==
+                '_');
 
         String idStr = mBuffer.toString();
 
-        if (idStr.equals(Type.Template.toString().toLowerCase()) || idStr.equals(Type.Body.toString().toLowerCase())) {
-            return Token.obtainToken(Type.Template, Type.Template.toString(), line, startColumn);
-        } else if (idStr.equals(Type.Script.toString().toLowerCase())) {
+        if (idStr.equals(TokenType.Template.toString().toLowerCase()) || idStr.equals(TokenType.Body
+                .toString().toLowerCase())) {
+            return Token.obtainToken(TokenType.Template, TokenType.Template.toString(), line, startColumn);
+        } else if (idStr.equals(TokenType.Script.toString().toLowerCase())) {
             mLookForScript++;
-            return Token.obtainToken(Type.Script, line, startColumn);
+            return Token.obtainToken(TokenType.Script, line, startColumn);
         } else {
-            return Token.obtainToken(Type.Id, mBuffer.toString(), line, startColumn);
+            return Token.obtainToken(TokenType.Id, mBuffer.toString(), line, startColumn);
         }
 
     }
@@ -209,7 +215,7 @@ final class Lexer {
 
         if (peek() == '"') {
             next();
-            return Token.obtainToken(Type.Value, "", line, startColumn);
+            return Token.obtainToken(TokenType.Value, "", line, startColumn);
         }
 
         do {
@@ -229,7 +235,7 @@ final class Lexer {
 
         next();
 
-        return Token.obtainToken(Type.Value, mBuffer.toString(), line, startColumn);
+        return Token.obtainToken(TokenType.Value, mBuffer.toString(), line, startColumn);
 
     }
 
@@ -254,7 +260,9 @@ final class Lexer {
             }
 
             //TODO 考虑其他的情况，这里只会添加一个空格
-            if (skipWhiteSpaceInner()) mBuffer.append(' ');
+            if (skipWhiteSpaceInner()) {
+                mBuffer.append(' ');
+            }
 
         } while (peek() != '<');
 
@@ -264,7 +272,7 @@ final class Lexer {
         if (lastChar == '\n' || lastChar == '\r') {
             mBuffer.deleteCharAt(mBuffer.length() - 1);
         }
-        return Token.obtainToken(Type.Inner, mBuffer.toString(), line, startColumn);
+        return Token.obtainToken(TokenType.Inner, mBuffer.toString(), line, startColumn);
     }
 
 
@@ -273,8 +281,9 @@ final class Lexer {
         for (; ; ) {
             char ch = peek();
             if (ch == ' ' || ch == '\r' || ch == '\n' || ch == '\t' || ch == '\f' || ch == '\b') {
-                if (!meet)
+                if (!meet) {
                     meet = true;
+                }
                 next();
             } else {
                 break;

@@ -9,7 +9,7 @@ import android.view.View;
  * @author Yang Tao, 17/3/11.
  */
 
-class DefaultHrefLinkHandler implements HrefLinkHandler {
+final class DefaultHrefLinkHandler implements HrefLinkHandler {
 
     @NonNull
     static final DefaultHrefLinkHandler sInstance;

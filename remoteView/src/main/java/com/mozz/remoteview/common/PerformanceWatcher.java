@@ -28,8 +28,9 @@ final class PerformanceWatcherImpl implements PerformanceWatcher {
 
     @Override
     public void check(String tag) {
-        if (lastTime == -1)
+        if (lastTime == -1) {
             lastTime = SystemClock.currentThreadTimeMillis();
+        }
 
         String currentMethod = Thread.currentThread().getStackTrace()[3].toString();
 
@@ -47,8 +48,9 @@ final class PerformanceWatcherImpl implements PerformanceWatcher {
 
     @Override
     public void checkDone(String tag) {
-        if (lastTime == -1)
+        if (lastTime == -1) {
             lastTime = SystemClock.currentThreadTimeMillis();
+        }
 
         String currentMethod = Thread.currentThread().getStackTrace()[3].toString();
 

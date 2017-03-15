@@ -1,15 +1,12 @@
 package com.mozz.remoteview;
 
-import com.mozz.remoteview.reader.StringCodeReader;
+import com.mozz.remoteview.reader.StringTextReader;
 import com.mozz.remoteview.token.Token;
 
 import org.junit.Test;
 
 import java.io.EOFException;
 import java.io.IOException;
-
-import static com.mozz.remoteview.CodeToTest.codeScriptFirst;
-import static com.mozz.remoteview.CodeToTest.codeTemplateOnly;
 
 public class LexerTest {
 
@@ -29,7 +26,7 @@ public class LexerTest {
         debug("code:");
         debug(code + "\n\ntoken list is:\n");
 
-        Lexer lexer = new Lexer(new StringCodeReader(code));
+        Lexer lexer = new Lexer(new StringTextReader(code));
 
         while (true) {
             try {

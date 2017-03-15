@@ -14,8 +14,8 @@ import com.mozz.remoteview.RVDomElement;
 
 public class WebViewAttr implements Attr {
     @Override
-    public void apply(Context context, String tag, View v, @NonNull String params, @NonNull final Object value, RVDomElement tree)
-            throws AttrApplyException {
+    public void apply(Context context, String tag, View v, @NonNull String params, @NonNull final
+    Object value, RVDomElement tree) throws AttrApplyException {
         final WebView webView = (WebView) v;
 
         if (params.equals("src")) {

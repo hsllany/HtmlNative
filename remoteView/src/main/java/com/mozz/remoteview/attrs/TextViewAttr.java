@@ -36,8 +36,9 @@ public class TextViewAttr implements Attr {
     }
 
     @Override
-    public void apply(final Context context, @NonNull String tag, View v, @NonNull String params, @NonNull final Object value, @NonNull RVDomElement tree)
-            throws AttrApplyException {
+    public void apply(final Context context, @NonNull String tag, View v, @NonNull String params,
+                      @NonNull final Object value, @NonNull RVDomElement tree) throws
+            AttrApplyException {
         final TextView textView = (TextView) v;
 
         switch (params) {
@@ -81,10 +82,11 @@ public class TextViewAttr implements Attr {
                 if (s2.equals("italic")) {
                     int style = textView.getTypeface().getStyle();
 
-                    if (style == Typeface.BOLD)
+                    if (style == Typeface.BOLD) {
                         style = Typeface.BOLD_ITALIC;
-                    else
+                    } else {
                         style = Typeface.ITALIC;
+                    }
 
                     textView.setTypeface(Typeface.DEFAULT, style);
                 }
@@ -96,8 +98,9 @@ public class TextViewAttr implements Attr {
                     textView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (RVRenderer.getHrefLinkHandler() != null)
+                            if (RVRenderer.getHrefLinkHandler() != null) {
                                 RVRenderer.getHrefLinkHandler().onHref(value.toString(), textView);
+                            }
                         }
                     });
                 }

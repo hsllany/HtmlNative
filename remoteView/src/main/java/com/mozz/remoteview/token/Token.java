@@ -10,7 +10,7 @@ public final class Token {
 
     private long line;
 
-    private Type mType;
+    private TokenType mTokenType;
 
     @Nullable
     private Object mValue;
@@ -25,8 +25,8 @@ public final class Token {
     private static final int MAX_POOL_SIZE = 20;
     private static final Object sPoolSync = new Object();
 
-    private Token(Type type, Object value) {
-        mType = type;
+    private Token(TokenType tokenType, Object value) {
+        mTokenType = tokenType;
         mValue = value;
     }
 
@@ -34,11 +34,11 @@ public final class Token {
     @Override
     public String toString() {
         String value = mValue == null ? "" : ":" + mValue;
-        return "[" + mType.toString() + "]" + value;
+        return "[" + mTokenType.toString() + "]" + value;
     }
 
-    public Type type() {
-        return mType;
+    public TokenType type() {
+        return mTokenType;
     }
 
     @Nullable
@@ -56,17 +56,19 @@ public final class Token {
     }
 
     public int intValue() {
-        if (mValue instanceof Integer)
+        if (mValue instanceof Integer) {
             return (int) mValue;
-        else
+        } else {
             return 0;
+        }
     }
 
     public double doubleValue() {
-        if (mValue instanceof Double || mValue instanceof Float)
+        if (mValue instanceof Double || mValue instanceof Float) {
             return (double) mValue;
-        else
+        } else {
             return 0d;
+        }
     }
 
     public boolean booleanValue() {
@@ -78,7 +80,7 @@ public final class Token {
     }
 
     @Nullable
-    public static Token obtainToken(Type type, Object value, long line, long column) {
+    public static Token obtainToken(TokenType tokenType, Object value, long line, long column) {
         synchronized (sPoolSync) {
             if (sPool != null) {
                 Token t = sPool;
@@ -86,20 +88,20 @@ public final class Token {
                 t.next = null;
                 sPoolSize--;
 
-                t.mType = type;
+                t.mTokenType = tokenType;
                 t.mValue = value;
                 t.line = line;
                 t.startColumn = column;
                 return t;
             }
 
-            return new Token(type, value);
+            return new Token(tokenType, value);
         }
     }
 
     @Nullable
-    public static Token obtainToken(Type type, long line, long column) {
-        return obtainToken(type, null, line, column);
+    public static Token obtainToken(TokenType tokenType, long line, long column) {
+        return obtainToken(tokenType, null, line, column);
     }
 
     static void recycleAll() {
@@ -114,7 +116,7 @@ public final class Token {
     }
 
     private void recycleUnchecked() {
-        mType = Type.Unknown;
+        mTokenType = TokenType.Unknown;
         mValue = null;
         startColumn = -1;
         line = -1;
@@ -133,7 +135,7 @@ public final class Token {
         if (obj instanceof Token) {
             Token compare = (Token) obj;
 
-            return compare.mValue.equals(mValue) && compare.mType.equals(mType) &&
+            return compare.mValue.equals(mValue) && compare.mTokenType.equals(mTokenType) &&
                     compare.line == line && compare.startColumn == startColumn;
         }
         return false;
@@ -145,7 +147,7 @@ public final class Token {
         r = 31 * r + (int) startColumn;
         r = 31 * r + (int) line;
         r = 31 * r + mValue.hashCode();
-        r = 31 * r + mType.hashCode();
+        r = 31 * r + mTokenType.hashCode();
         return r;
     }
 

@@ -9,14 +9,14 @@ import java.io.EOFException;
 /**
  * Created by Yang Tao on 17/2/21.
  */
-public class StringCodeReaderTest {
+public class StringScriptReaderTest {
 
     private static final String TAG = "RV_StringCodeReaderTest";
 
 
     @Test
     public void testStringReader() throws Exception {
-        StringCodeReader reader = new StringCodeReader(CodeToTest.codeScriptFirst);
+        StringTextReader reader = new StringTextReader(CodeToTest.codeScriptFirst);
 
         StringBuilder sb = new StringBuilder();
 

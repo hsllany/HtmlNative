@@ -3,7 +3,6 @@ package com.mozz.remoteview.script;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.mozz.remoteview.RVEnvironment;
 
@@ -40,8 +39,9 @@ public final class LuaRunner {
     public static LuaRunner getInstance() {
         if (instance == null) {
             synchronized (LuaRunner.class) {
-                if (instance == null)
+                if (instance == null) {
                     instance = new LuaRunner();
+                }
             }
         }
 

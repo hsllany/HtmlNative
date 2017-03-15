@@ -58,28 +58,29 @@ final class ProcessThread {
         @Override
         protected void runOverride(@Nullable final Context context) {
             try {
-                if (context == null)
+                if (context == null) {
                     return;
+                }
 
-                final RVModule module = RVModule.load(mFileSource);
+                final RVSegment module = RVSegment.load(mFileSource);
 
                 Log.d(TAG, module.mRootTree.wholeTreeToString());
 
-                final ViewGroup.LayoutParams layoutParams =
-                        new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.MATCH_PARENT);
+                final ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup
+                        .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 MainHandler.instance().post(new Runnable() {
                     @Override
                     public void run() {
                         View v = null;
                         try {
-                            v = RVRenderer.get().inflate(context, module, layoutParams);
+                            v = RVRenderer.get().render(context, module, layoutParams);
                         } catch (RVRenderer.RemoteInflateException e) {
                             e.printStackTrace();
                         }
 
-                        if (mCallback != null)
+                        if (mCallback != null) {
                             mCallback.onViewLoaded(v);
+                        }
                     }
                 });
             } catch (@NonNull final RVSyntaxError e) {
@@ -88,8 +89,9 @@ final class ProcessThread {
                     MainHandler.instance().post(new Runnable() {
                         @Override
                         public void run() {
-                            if (mCallback != null)
+                            if (mCallback != null) {
                                 mCallback.onError(e);
+                            }
                         }
                     });
                 }

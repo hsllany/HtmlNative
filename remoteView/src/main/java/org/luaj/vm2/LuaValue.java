@@ -111,40 +111,40 @@ import org.luaj.vm2.Varargs;
 abstract
 public class LuaValue extends Varargs {
 	
-	/** Type enumeration constant for lua numbers that are ints, for compatibility with lua 5.1 number patch only */
+	/** TokenType enumeration constant for lua numbers that are ints, for compatibility with lua 5.1 number patch only */
 	public static final int TINT            = (-2);
 	
-	/** Type enumeration constant for lua values that have no type, for example weak table entries */
+	/** TokenType enumeration constant for lua values that have no type, for example weak table entries */
 	public static final int TNONE			= (-1);
 	
-	/** Type enumeration constant for lua nil */
+	/** TokenType enumeration constant for lua nil */
 	public static final int TNIL			= 0;
 	
-	/** Type enumeration constant for lua booleans */
+	/** TokenType enumeration constant for lua booleans */
 	public static final int TBOOLEAN		= 1;
 	
-	/** Type enumeration constant for lua light userdata, for compatibility with C-based lua only */
+	/** TokenType enumeration constant for lua light userdata, for compatibility with C-based lua only */
 	public static final int TLIGHTUSERDATA	= 2;
 	
-	/** Type enumeration constant for lua numbers */
+	/** TokenType enumeration constant for lua numbers */
 	public static final int TNUMBER			= 3;
 	
-	/** Type enumeration constant for lua strings */
+	/** TokenType enumeration constant for lua strings */
 	public static final int TSTRING			= 4;
 	
-	/** Type enumeration constant for lua tables */
+	/** TokenType enumeration constant for lua tables */
 	public static final int TTABLE			= 5;
 	
-	/** Type enumeration constant for lua functions */
+	/** TokenType enumeration constant for lua functions */
 	public static final int TFUNCTION		= 6;
 	
-	/** Type enumeration constant for lua userdatas */
+	/** TokenType enumeration constant for lua userdatas */
 	public static final int TUSERDATA		= 7;
 	
-	/** Type enumeration constant for lua threads */
+	/** TokenType enumeration constant for lua threads */
 	public static final int TTHREAD			= 8;
 	
-	/** Type enumeration constant for unknown values, for compatibility with C-based lua only */
+	/** TokenType enumeration constant for unknown values, for compatibility with C-based lua only */
 	public static final int TVALUE          = 9;
 
 	/** String array constant containing names of each of the lua value types

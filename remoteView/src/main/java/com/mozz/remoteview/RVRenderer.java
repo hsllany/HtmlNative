@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -20,10 +19,10 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public final class RVRenderer {
+final class RVRenderer {
 
-    private static final HashMap<String, Constructor<? extends View>> sConstructorMap =
-            new HashMap<>();
+    private static final HashMap<String, Constructor<? extends View>> sConstructorMap = new
+            HashMap<>();
 
     private final Object[] mConstructorArgs = new Object[1];
 
@@ -42,48 +41,52 @@ public final class RVRenderer {
     }
 
     @MainThread
-    final View inflate(@NonNull Context context, @NonNull RVModule rvModule, @NonNull ViewGroup.LayoutParams params)
-            throws RemoteInflateException {
+    final View render(@NonNull Context context, @NonNull RVSegment segment, @NonNull ViewGroup
+            .LayoutParams params) throws RemoteInflateException {
 
-        EventLog.writeEvent(EventLog.TAG_RENDER, "start to inflate " +
-                rvModule.toString());
+        EventLog.writeEvent(EventLog.TAG_RENDER, "start to render " + segment.toString());
 
         PerformanceWatcher pWatcher = Performance.newWatcher();
-        RXViewGroup frameLayout = new RXViewGroup(context);
-        RViewContext RViewContext = ViewContextImpl.initViewContext(frameLayout, rvModule, context);
-        pWatcher.check("[step 1] create RViewContext");
 
-        RViewContext.onViewCreate();
+        RXViewGroup rootViewGroup = new RXViewGroup(context);
+
+        RVSandBoxContext RVSandBoxContext = SandBoxContextImpl.create(rootViewGroup, segment,
+                context);
+
+        pWatcher.check("[step 1] create RVSandBoxContext");
+
+        RVSandBoxContext.onViewCreate();
         pWatcher.check("[step 2] call onViewCreate");
 
-        View v = inflate(context, RViewContext, rvModule.mRootTree, frameLayout, rvModule.mAttrs,
-                params, frameLayout);
+        View v = renderInternal(context, RVSandBoxContext, segment.mRootTree, rootViewGroup,
+                segment.mAttrs, params, rootViewGroup);
         pWatcher.check("[step 3] rendering view");
 
-        if (v == null)
+        if (v == null) {
             return null;
-        frameLayout.addView(v, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+        }
+        rootViewGroup.addView(v, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
 
-        RViewContext.onViewLoaded();
+        RVSandBoxContext.onViewLoaded();
         pWatcher.checkDone("finally done");
 
-        EventLog.writeEvent(EventLog.TAG_RENDER, RViewContext.allIdTag());
+        EventLog.writeEvent(EventLog.TAG_RENDER, RVSandBoxContext.allIdTag());
 
-        return frameLayout;
+        return rootViewGroup;
     }
 
-    private View inflate(@NonNull Context context, @NonNull RViewContext RViewContext, @NonNull RVDomTree tree,
-                         @NonNull ViewGroup parent, @NonNull AttrsSet attrsSet, @NonNull ViewGroup.LayoutParams params,
-                         @NonNull RXViewGroup root)
-            throws RemoteInflateException {
+    private View renderInternal(@NonNull Context context, @NonNull RVSandBoxContext
+            sandBoxContext, @NonNull RVDomTree tree, @NonNull ViewGroup parent, @NonNull AttrsSet
+            attrsSet, @NonNull ViewGroup.LayoutParams params, @NonNull RXViewGroup root) throws
+            RemoteInflateException {
 
 
         if (tree.isLeaf()) {
-            return createViewFromTag(tree, RViewContext, tree.getNodeName(), parent,
+            return createViewFromNodeName(tree, sandBoxContext, tree.getNodeName(), parent,
                     context, attrsSet, params, root);
         } else {
-            View view = createViewFromTag(tree, RViewContext, tree.getNodeName(), parent,
+            View view = createViewFromNodeName(tree, sandBoxContext, tree.getNodeName(), parent,
                     context, attrsSet, params, root);
 
             if (view == null) {
@@ -99,27 +102,27 @@ public final class RVRenderer {
 
                     final ViewGroup.LayoutParams layoutParams;
                     if (view instanceof AbsoluteLayout) {
-                        layoutParams = new AbsoluteLayout.LayoutParams(
-                                ViewGroup.LayoutParams.WRAP_CONTENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT, 0, 0);
+                        layoutParams = new AbsoluteLayout.LayoutParams(ViewGroup.LayoutParams
+                                .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0, 0);
                     } else {
-                        layoutParams = new ViewGroup.MarginLayoutParams(
-                                ViewGroup.LayoutParams.WRAP_CONTENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT);
+                        layoutParams = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams
+                                .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     }
 
 
-                    final View v = inflate(context, RViewContext, child, viewGroup, attrsSet,
-                            layoutParams, root);
+                    final View v = renderInternal(context, sandBoxContext, child, viewGroup,
+                            attrsSet, layoutParams, root);
 
                     if (v != null) {
                         viewGroup.addView(v, layoutParams);
                     } else {
-                        EventLog.writeError(EventLog.TAG_RENDER, "error when inflating " + child.getNodeName());
+                        EventLog.writeError(EventLog.TAG_RENDER, "error when inflating " + child
+                                .getNodeName());
                     }
                 }
             } else {
-                EventLog.writeError(EventLog.TAG_RENDER, "View inflate from RVRenderer is not an viewGroup" +
+                EventLog.writeError(EventLog.TAG_RENDER, "View render from RVRenderer is not an " +
+                        "viewGroup" +
                         view.getClass().getSimpleName() +
                         ", but related RVDomTree has children. Will ignore its children!");
             }
@@ -129,22 +132,23 @@ public final class RVRenderer {
     }
 
 
-    private View createViewFromTag(@NonNull RVDomTree tree, @NonNull RViewContext RViewContext, @NonNull String tagName,
-                                   @NonNull ViewGroup parent, @NonNull Context context, @NonNull AttrsSet attrsSet,
-                                   @NonNull ViewGroup.LayoutParams params, @NonNull RXViewGroup root) throws RemoteInflateException {
+    private View createViewFromNodeName(@NonNull RVDomTree tree, @NonNull RVSandBoxContext
+            sandBoxContext, @NonNull String nodeName, @NonNull ViewGroup parent, @NonNull Context
+            context, @NonNull AttrsSet attrsSet, @NonNull ViewGroup.LayoutParams params, @NonNull
+            RXViewGroup root) throws RemoteInflateException {
 
         PerformanceWatcher watcher = Performance.newWatcher();
         try {
 
-            if (HtmlTag.isDivOrTemplate(tagName)) {
-                View v = attrsSet.createViewViaAttr(this, context, tagName, tree);
+            if (HtmlTag.isDivOrTemplate(nodeName)) {
+                View v = attrsSet.createViewViaAttr(this, context, nodeName, tree);
 
                 if (v instanceof WebView) {
                     root.addWebView((WebView) v);
                 }
 
                 try {
-                    attrsSet.apply(context, tagName, RViewContext, v, tree, parent, params);
+                    attrsSet.apply(context, nodeName, sandBoxContext, v, tree, parent, params);
                 } catch (AttrApplyException e) {
                     e.printStackTrace();
                 }
@@ -152,7 +156,7 @@ public final class RVRenderer {
                 return v;
             } else {
 
-                View view = createView(context, tagName);
+                View view = createView(context, nodeName);
 
                 watcher.check("create view" + view.toString());
 
@@ -161,7 +165,7 @@ public final class RVRenderer {
                 }
 
                 try {
-                    attrsSet.apply(context, tagName, RViewContext, view, tree, parent, params);
+                    attrsSet.apply(context, nodeName, sandBoxContext, view, tree, parent, params);
                 } catch (AttrApplyException e) {
                     e.printStackTrace();
                 }
@@ -171,31 +175,35 @@ public final class RVRenderer {
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-            throw new RemoteInflateException("class not found " + tagName);
+            throw new RemoteInflateException("class not found " + nodeName);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
-            throw new RemoteInflateException("class's constructor is missing " + tagName);
+            throw new RemoteInflateException("class's constructor is missing " + nodeName);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
-            throw new RemoteInflateException("class's constructor can not be accessed " + tagName);
+            throw new RemoteInflateException("class's constructor can not be accessed " + nodeName);
         } catch (InstantiationException e) {
             e.printStackTrace();
-            throw new RemoteInflateException("class's constructor can not be invoked " + tagName);
+            throw new RemoteInflateException("class's constructor can not be invoked " + nodeName);
         } catch (InvocationTargetException e) {
             e.printStackTrace();
-            throw new RemoteInflateException("class's method has something wrong " + tagName);
+            throw new RemoteInflateException("class's method has something wrong " + nodeName);
         }
 
     }
 
     @Nullable
-    final View createView(@NonNull Context context, @Nullable String tagName) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    final View createView(@NonNull Context context, @Nullable String tagName) throws
+            ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
+            InvocationTargetException, InstantiationException {
 
-        String viewClassName = ViewRegistry.findClassByTag(tagName);
-        if (viewClassName == null)
+        String viewClassName = ViewTagLookupTable.findClassByTag(tagName);
+        if (viewClassName == null) {
             return null;
+        }
 
-        EventLog.writeEvent(EventLog.TAG_ATTR, "create view" + viewClassName + " with tag" + tagName);
+        EventLog.writeEvent(EventLog.TAG_ATTR, "create view" + viewClassName + " with tag" +
+                tagName);
 
         // first let viewCreateHandler to create view
         View view = createViewByViewHandler(context, viewClassName);
@@ -208,8 +216,9 @@ public final class RVRenderer {
         if (constructor == null) {
             // Class not found in the cache, see if it's real, and try to add it
 
-            if (viewClassName == null)
+            if (viewClassName == null) {
                 throw new ClassNotFoundException("can't find related widget " + viewClassName);
+            }
 
             clazz = context.getClassLoader().loadClass(viewClassName).asSubclass(View.class);
 

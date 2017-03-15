@@ -1,8 +1,5 @@
 package com.mozz.remoteview;
 
-import com.mozz.remoteview.RVDomTree;
-import com.mozz.remoteview.RVModule;
-
 import org.junit.Test;
 
 /**
@@ -11,19 +8,19 @@ import org.junit.Test;
 public class SyntaxTreeTest {
     @Test
     public void addChild() throws Exception {
-        RVModule rvModule = new RVModule();
+        //        RVSegment rvSegment = new RVSegment();
+        //
+        //        RVDomTree syntaxTree = new RVDomTree(rvSegment, null, 0, 0);
+        //        RVDomTree tree1 = syntaxTree.addChild("1", 0);
+        //        RVDomTree tree11 = tree1.addChild("1-1", 0);
+        //        tree11.addChild("1-1-1", 0);
+        //        syntaxTree.addChild("2", 1);
+        //
+        //        RVDomTree tree3 = syntaxTree.addChild("3", 2);
+        //        tree3.addChild("3-1", 0);
+        //        tree3.addChild("3-2", 1);
 
-        RVDomTree syntaxTree = new RVDomTree(rvModule, null, 0, 0);
-        RVDomTree tree1 = syntaxTree.addChild("1", 0);
-        RVDomTree tree11 = tree1.addChild("1-1", 0);
-        tree11.addChild("1-1-1", 0);
-        syntaxTree.addChild("2", 1);
-
-        RVDomTree tree3 = syntaxTree.addChild("3", 2);
-        tree3.addChild("3-1", 0);
-        tree3.addChild("3-2", 1);
-
-        syntaxTree.wholeTreeToString();
+        //        syntaxTree.wholeTreeToString();
     }
 
 }

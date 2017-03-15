@@ -12,13 +12,13 @@ import java.io.InputStreamReader;
  * Created by Yang Tao on 17/2/21.
  */
 
-public class FileCodeReader extends StreamReader {
+public class FileTextReader extends StreamReader {
 
-    public FileCodeReader(@NonNull File file) throws FileNotFoundException {
+    public FileTextReader(@NonNull File file) throws FileNotFoundException {
         super(new FileReader(file));
     }
 
-    public FileCodeReader(@NonNull InputStream stream) {
+    public FileTextReader(@NonNull InputStream stream) {
         super(new InputStreamReader(stream));
     }
 }

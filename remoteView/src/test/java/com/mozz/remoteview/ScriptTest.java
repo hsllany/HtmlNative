@@ -5,7 +5,7 @@ import org.junit.Test;
 /**
  * Created by Yang Tao on 17/2/24.
  */
-public class CodeTest {
+public class ScriptTest {
 
     private static String luaScript = " print(LuaViewVersion())";
     private static String helloWorldScript = "print('hello world', LuaViewVersion())";

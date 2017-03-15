@@ -54,7 +54,7 @@ import org.luaj.vm2.lib.ResourceFinder;
  * globals.load( new BaseLib() ); 
  * } </pre>
  * 
- * <h3>Loading and Executing Lua Code</h3>
+ * <h3>Loading and Executing Lua Script</h3>
  * Globals contains convenience functions to load and execute lua source code given a Reader. 
  * A simple example is:
  * <pre> {@code
