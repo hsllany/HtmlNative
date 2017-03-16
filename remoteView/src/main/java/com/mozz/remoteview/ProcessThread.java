@@ -65,6 +65,7 @@ final class ProcessThread {
                 final RVSegment module = RVSegment.load(mFileSource);
 
                 Log.d(TAG, module.mRootTree.wholeTreeToString());
+                Log.d(TAG, module.toString());
 
                 final ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup
                         .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);

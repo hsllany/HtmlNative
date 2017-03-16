@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-final class RVRenderer {
+public final class RVRenderer {
 
     private static final HashMap<String, Constructor<? extends View>> sConstructorMap = new
             HashMap<>();

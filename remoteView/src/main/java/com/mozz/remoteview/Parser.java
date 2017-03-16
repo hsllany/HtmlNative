@@ -10,18 +10,23 @@ import com.mozz.remoteview.token.TokenType;
 import java.io.EOFException;
 
 import static com.mozz.remoteview.HtmlTag.isSwallowInnerTag;
+import static com.mozz.remoteview.token.TokenType.EndAngleBracket;
+import static com.mozz.remoteview.token.TokenType.Equal;
+import static com.mozz.remoteview.token.TokenType.Head;
+import static com.mozz.remoteview.token.TokenType.Html;
 import static com.mozz.remoteview.token.TokenType.Id;
-import static com.mozz.remoteview.token.TokenType.LeftAngleBracket;
-import static com.mozz.remoteview.token.TokenType.RightAngleBracket;
+import static com.mozz.remoteview.token.TokenType.Inner;
+import static com.mozz.remoteview.token.TokenType.Meta;
 import static com.mozz.remoteview.token.TokenType.Script;
 import static com.mozz.remoteview.token.TokenType.Slash;
+import static com.mozz.remoteview.token.TokenType.StartAngleBracket;
 import static com.mozz.remoteview.token.TokenType.Template;
+import static com.mozz.remoteview.token.TokenType.Title;
 
 /**
  * @author YangTao7
  */
 final class Parser {
-
 
     @NonNull
     private final Lexer mLexer;
@@ -33,8 +38,9 @@ final class Parser {
 
     private boolean mReserved = false;
 
-    private static final int LK_LeftArrowBracket = 1;
-    private static final int LK_RightArrowBracket = 1 << 1;
+    private static final int LK_StartArrowBracket = 1;
+    private static final int LK_EndArrowBracket = 1 << 1;
+
     private static final int LK_ID = 1 << 2;
     private static final int LK_VALUE = 1 << 3;
     private static final int LK_SLASH = 1 << 4;
@@ -50,76 +56,187 @@ final class Parser {
         mLexer = new Lexer(reader);
     }
 
-    @NonNull
     public RVSegment process() throws RVSyntaxError {
-
-        RVSegment module = new RVSegment();
-        module.mRootTree = new RVDomTree(module, null, 0, 0);
-
-        RVDomTree currentTree = module.mRootTree;
+        RVSegment segment = new RVSegment();
+        segment.mRootTree = new RVDomTree(segment, null, 0, 0);
 
         try {
-            scanFor(LeftAngleBracket);
+            scanFor(StartAngleBracket);
 
-            // Look ahead to determine whether current is script or template
-            scan();
+            scan(true);
 
-            // Script situation
-            if (mCurToken.type() == Script) {
-                scanFor(RightAngleBracket);
-
-                // scan for code
-                scan(true);
-
-                if (mCurToken.type() == Id) {
-                    scan();
-                    processCode(mCurToken.stringValue(), module);
-                }
-
-                scanFor(LeftAngleBracket, Slash, Script, RightAngleBracket);
-
-                //scan for <template> tag
-                scanFor(LeftAngleBracket, Template);
-
-                currentTree.mNodeName = mCurToken.stringValue();
-                currentTree.mTagPair = 1;
-                currentTree.mBracketPair = 1;
-                processInternal(currentTree);
-
+            if (mCurToken.type() == Html) {
                 scan();
-
-                throw new RVSyntaxError("should end", mLexer.line(), mLexer.column());
-
-            } else if (mCurToken.type() == Template) {
-                currentTree.mNodeName = mCurToken.stringValue();
-                currentTree.mTagPair = 1;
-                currentTree.mBracketPair = 1;
-                processInternal(currentTree);
-
-                scanFor(LeftAngleBracket, Script, RightAngleBracket);
-                scan(true);
-
-                if (mCurToken.type() == Id) {
-                    scan();
-
-                    processCode(mCurToken.stringValue(), module);
-                }
-
-                scanFor(LeftAngleBracket, Slash, Script, RightAngleBracket);
-                scan();
-                throw new RVSyntaxError("should end", mLexer.line(), mLexer.column());
-
-
+                scanFor(EndAngleBracket, StartAngleBracket);
+                processHtmlInside(segment);
             } else {
-                throw new RVSyntaxError("must init with <template> or <script>", mLexer.line(),
-                        mLexer.column());
+                processHtmlInside(segment);
             }
 
+            scanFor(StartAngleBracket, Slash, Html, EndAngleBracket);
         } catch (EOFException e) {
+            e.printStackTrace();
+
+        } finally {
             mLexer.close();
-            return module;
+            return segment;
+        }
+    }
+
+    @NonNull
+    private void processHtmlInside(RVSegment segment) throws RVSyntaxError, EOFException {
+
+        RVDomTree currentTree = segment.mRootTree;
+
+        // Look ahead to determine whether current is script or template
+        scan();
+
+        switch (mCurToken.type()) {
+            case Template:
+                processTemplateThenScript(currentTree, segment);
+                return;
+
+            case Head:
+                processHead(segment);
+                scanFor(StartAngleBracket, Template);
+                processTemplateThenScript(currentTree, segment);
+                return;
+
+            default:
+                throw new RVSyntaxError("must init with <template> or <script>", mLexer.line(),
+                        mLexer.column());
+
+        }
+    }
+
+    private void processTemplateThenScript(RVDomTree tree, RVSegment segment) throws
+            EOFException, RVSyntaxError {
+        processTemplate(tree);
+        scanFor(StartAngleBracket, Script);
+        processScript(segment);
+        scan();
+    }
+
+    private void processScript(RVSegment segment) throws RVSyntaxError, EOFException {
+        if (mCurToken.type() != Script) {
+            throw new RVSyntaxError("Look for script, but " + mCurToken.toString(), mLexer.line()
+                    , mLexer.column());
         }
 
+        scanFor(EndAngleBracket);
+
+        // scan for code
+        scan(true);
+
+        if (mCurToken.type() == Id) {
+            scan();
+            processCode(mCurToken.stringValue(), segment);
+        }
+
+        scanFor(StartAngleBracket, Slash, Script, EndAngleBracket);
+    }
+
+    private void processHead(RVSegment segment) throws RVSyntaxError, EOFException {
+        if (mCurToken.type() != TokenType.Head) {
+            throw new RVSyntaxError("Look for \"head\", but " + mCurToken.toString(), mLexer.line
+                    (), mLexer.column());
+        }
+
+        while (true) {
+            scan();
+
+            if (mCurToken.type() == Slash) {
+                scanFor(EndAngleBracket);
+                return;
+            } else if (mCurToken.type() == Title) {
+                processTitle(segment);
+            } else if (mCurToken.type() == Meta) {
+                processMeta(segment);
+            } else if (mCurToken.type() == StartAngleBracket) {
+                scan(true);
+
+                if (mCurToken.type() == Slash) {
+                    scanFor(Slash, Head, EndAngleBracket);
+                    return;
+                }
+            }
+        }
+    }
+
+    private void processTitle(RVSegment segment) throws RVSyntaxError, EOFException {
+        if (mCurToken.type() != Title) {
+            throw new RVSyntaxError("Look for head, but " + mCurToken.toString(), mLexer.line(),
+                    mLexer.column());
+        }
+
+        scanFor(EndAngleBracket);
+        scanFor(Inner);
+
+        String title = mCurToken.stringValue();
+        segment.setTitle(title);
+
+        scanFor(StartAngleBracket, Slash, Title, EndAngleBracket);
+    }
+
+    private void processMeta(RVSegment segment) throws RVSyntaxError, EOFException {
+        if (mCurToken.type() != Meta) {
+            throw new RVSyntaxError("Look for meta, but " + mCurToken.toString(), mLexer.line(),
+                    mLexer.column());
+        }
+
+        Meta meta = new Meta();
+
+        String idCache = null;
+
+        lookFor(LK_ID | LK_SLASH);
+
+        while (true) {
+            scan();
+
+            switch (mCurToken.type()) {
+                case Id:
+                    check(LK_ID);
+                    idCache = mCurToken.stringValue();
+                    scanFor(Equal);
+                    lookFor(LK_VALUE);
+                    break;
+
+                case Value:
+                    check(LK_VALUE);
+                    if (com.mozz.remoteview.Meta.ID_NAME.equalsIgnoreCase(idCache)) {
+                        meta.name = mCurToken.stringValue();
+                    } else if (com.mozz.remoteview.Meta.ID_CONTENT.equals(idCache)) {
+                        meta.content = mCurToken.stringValue();
+                    }
+
+                    lookFor(LK_ID | LK_SLASH);
+                    break;
+                case Slash:
+                    segment.putMeta(meta);
+                    check(LK_SLASH);
+                    scanFor(EndAngleBracket);
+                    return;
+
+                default:
+                    throw new RVSyntaxError("Unknown token " + mCurToken.toString() + " when " +
+                            "parsing <meta>" + mCurToken.toString(), mLexer.line(), mLexer.column
+                            ());
+            }
+        }
+
+
+    }
+
+    private void processTemplate(RVDomTree tree) throws RVSyntaxError {
+        if (mCurToken.type() != Template) {
+            throw new RVSyntaxError("Look for Template, but " + mCurToken.toString(), mLexer.line
+                    (), mLexer.column());
+        }
+
+        tree.mNodeName = mCurToken.stringValue();
+        tree.mTagPair = 1;
+        tree.mBracketPair = 1;
+        processInternal(tree);
     }
 
     /**
@@ -127,33 +244,32 @@ final class Parser {
      *
      * @throws RVSyntaxError
      */
-    private void processCode(String functionName, @NonNull RVSegment module) throws RVSyntaxError {
+    private void processCode(String functionName, @NonNull RVSegment module) throws
+            RVSyntaxError, EOFException {
         lookFor(LK_CODE);
-        try {
-            while (true) {
-                scan();
 
-                switch (mCurToken.type()) {
-                    case Id:
-                        checkState(LK_ID);
-                        functionName = mCurToken.stringValue();
-                        lookFor(LK_CODE);
-                        break;
-                    case Code:
-                        checkState(LK_CODE);
-                        module.putFunction(functionName, mCurToken.stringValue());
-                        lookFor(LK_ID);
-                        break;
+        while (true) {
+            scan();
 
-                    // if meet other token, just return
-                    default:
-                        mReserved = true;
-                        return;
-                }
+            switch (mCurToken.type()) {
+                case Id:
+                    check(LK_ID);
+                    functionName = mCurToken.stringValue();
+                    lookFor(LK_CODE);
+                    break;
+                case Code:
+                    check(LK_CODE);
+                    module.putFunction(functionName, mCurToken.stringValue());
+                    lookFor(LK_ID);
+                    break;
+
+                // if meet other token, just return
+                default:
+                    mReserved = true;
+                    return;
             }
-        } catch (EOFException e) {
-
         }
+
     }
 
     private void processInternal(@NonNull RVDomTree tree) throws RVSyntaxError {
@@ -170,7 +286,7 @@ final class Parser {
         EventLog.writeEvent(EventLog.TAG_PARSER, "init to parse tree " + tree.getNodeName());
         int index = 0;
 
-        lookFor(LK_ID | LK_RightArrowBracket | LK_SLASH);
+        lookFor(LK_ID | LK_EndArrowBracket | LK_SLASH);
 
         String attrName = null;
 
@@ -185,9 +301,9 @@ final class Parser {
                 scan();
 
                 switch (mCurToken.type()) {
-                    case LeftAngleBracket:
+                    case StartAngleBracket:
 
-                        checkState(LK_LeftArrowBracket);
+                        check(LK_StartArrowBracket);
 
                         lookFor(LK_SLASH | LK_ID);
 
@@ -198,7 +314,7 @@ final class Parser {
                             meetEndTag = true;
 
                             tree.mBracketPair++;
-                            checkState(LK_SLASH);
+                            check(LK_SLASH);
                             scan();
 
                             // compare the tag string with tree.nodeName
@@ -210,7 +326,7 @@ final class Parser {
 
                             scan();
 
-                            if (mCurToken.type() != RightAngleBracket) {
+                            if (mCurToken.type() != EndAngleBracket) {
                                 throw new RVSyntaxError("View tag must be end with >", mLexer
                                         .line(), mLexer.column());
                             }
@@ -221,7 +337,7 @@ final class Parser {
 
                         } else if (mCurToken.type() == Id) {
 
-                            checkState(LK_ID);
+                            check(LK_ID);
 
                             String tag = mCurToken.stringValue();
 
@@ -232,8 +348,8 @@ final class Parser {
                                 } else {
                                     tree.last().appendText("\n");
                                 }
-                                scanFor(TokenType.Slash, TokenType.RightAngleBracket);
-                                lookFor(LK_LeftArrowBracket | LK_INNER);
+                                scanFor(TokenType.Slash, TokenType.EndAngleBracket);
+                                lookFor(LK_StartArrowBracket | LK_INNER);
 
                             } else {
                                 RVDomTree child = new RVDomTree(tree, tag, index++);
@@ -241,14 +357,14 @@ final class Parser {
                                 child.mTagPair = 1;
                                 child.mBracketPair = 1;
                                 processInternal(child);
-                                lookFor(LK_LeftArrowBracket);
+                                lookFor(LK_StartArrowBracket);
                             }
                         }
                         break;
 
-                    case RightAngleBracket:
-                        checkState(LK_RightArrowBracket);
-                        lookFor(LK_LeftArrowBracket | LK_INNER);
+                    case EndAngleBracket:
+                        check(LK_EndArrowBracket);
+                        lookFor(LK_StartArrowBracket | LK_INNER);
 
                         tree.mBracketPair--;
                         if (tree.mBracketPair != 0) {
@@ -260,13 +376,13 @@ final class Parser {
                         break;
 
                     case Id:
-                        checkState(LK_ID);
+                        check(LK_ID);
                         attrName = mCurToken.stringValue();
                         lookFor(LK_EQUAL);
                         break;
 
                     case Equal:
-                        checkState(LK_EQUAL);
+                        check(LK_EQUAL);
                         if (attrName == null) {
                             throw new RVSyntaxError("attrName is null, please check the state",
                                     mLexer.line(), mLexer.column());
@@ -275,29 +391,29 @@ final class Parser {
                         break;
 
                     case Value:
-                        checkState(LK_VALUE);
+                        check(LK_VALUE);
                         if (attrName.equals(HtmlTag.ATTR_STYLE)) {
                             parseStyle(tree, mCurToken.stringValue());
                         } else {
                             tree.addAttr(attrName, mCurToken.stringValue());
                         }
-                        lookFor(LK_ID | LK_RightArrowBracket);
+                        lookFor(LK_ID | LK_EndArrowBracket | LK_SLASH);
                         break;
 
                     case Int:
-                        checkState(LK_INT);
+                        check(LK_INT);
                         tree.addAttr(attrName, mCurToken.intValue());
-                        lookFor(LK_ID | LK_RightArrowBracket);
+                        lookFor(LK_ID | LK_EndArrowBracket);
                         break;
 
                     case Double:
-                        checkState(LK_DOUBLE);
+                        check(LK_DOUBLE);
                         tree.addAttr(attrName, mCurToken.doubleValue());
-                        lookFor(LK_ID | LK_RightArrowBracket);
+                        lookFor(LK_ID | LK_EndArrowBracket);
                         break;
 
                     case Inner:
-                        checkState(LK_INNER);
+                        check(LK_INNER);
                         if (isSwallowInnerTag(tree.getNodeName())) {
                             tree.appendText(mCurToken.stringValue());
                         } else {
@@ -307,20 +423,20 @@ final class Parser {
                             innerChild.appendText(mCurToken.stringValue());
                         }
 
-                        lookFor(LK_LeftArrowBracket);
+                        lookFor(LK_StartArrowBracket);
                         break;
                     // for <a/> case
                     case Slash:
 
                         tree.mTagPair--;
 
-                        checkState(LK_SLASH);
+                        check(LK_SLASH);
 
-                        lookFor(LK_RightArrowBracket);
+                        lookFor(LK_EndArrowBracket);
 
                         scan();
 
-                        if (mCurToken.type() != RightAngleBracket) {
+                        if (mCurToken.type() != EndAngleBracket) {
                             throw new RVSyntaxError("unknown state, slash should be followed by " +
                                     ">, " +
                                     "but currently " + mCurToken.type(), mLexer.line(), mLexer
@@ -382,6 +498,7 @@ final class Parser {
     }
 
     private void lookFor(int status) {
+        mLookFor = 0;
         mLookFor |= status;
     }
 
@@ -421,11 +538,57 @@ final class Parser {
         }
     }
 
-    private void checkState(int status) throws RVSyntaxError {
+    private void check(int status) throws RVSyntaxError {
         if (!isLookingFor(status)) {
-            throw new RVSyntaxError(" Looking for " + status + ", but currently is " + mLookFor,
-                    mLexer.line(), mLexer.column());
+            throw new RVSyntaxError(" Looking for " + lookForToString(status) + ", but " +
+                    "currently is " +
+                    lookForToString(mLookFor), mLexer.line(), mLexer.column());
         }
+    }
+
+    private static String lookForToString(int lookFor) {
+        StringBuilder sb = new StringBuilder("[");
+
+        if ((lookFor & LK_EndArrowBracket) != 0) {
+            sb.append("> ");
+        }
+
+        if ((lookFor & LK_StartArrowBracket) != 0) {
+            sb.append("< ");
+        }
+
+        if ((lookFor & LK_ID) != 0) {
+            sb.append("id ");
+        }
+
+        if ((lookFor & LK_VALUE) != 0) {
+            sb.append("value ");
+        }
+
+        if ((lookFor & LK_SLASH) != 0) {
+            sb.append("/ ");
+        }
+
+        if ((lookFor & LK_EQUAL) != 0) {
+            sb.append("= ");
+        }
+
+        if ((lookFor & LK_NUMBER) != 0) {
+            sb.append("number ");
+        }
+
+        if ((lookFor & LK_CODE) != 0) {
+            sb.append("code ");
+        }
+
+        if ((lookFor & LK_INNER) != 0) {
+            sb.append("innerElement ");
+        }
+
+        sb.append("]");
+
+        return sb.toString();
+
     }
 
     interface ParseCallback {

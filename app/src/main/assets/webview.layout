@@ -1,4 +1,11 @@
-<body>
-    <text style="color:#f00; background:#fff">This is an demo of iframe</text>
-    <iframe style="width:100%; height:100%; color:#000000" src="http://www.w3school.com.cn/" />
-</body>
+<html>
+    <head>
+        <title>你好啊</title>
+        <meta name="nihao" content="world" />
+    </head>
+
+    <body>
+        <text style="color:#f00; background:#fff">This is an demo of iframe</text>
+        <iframe style="width:100%; height:100%; color:#000000" src="http://www.w3school.com.cn/" />
+    </body>
+</html>

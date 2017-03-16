@@ -25,7 +25,7 @@ public final class Token {
     private static final int MAX_POOL_SIZE = 20;
     private static final Object sPoolSync = new Object();
 
-    private Token(TokenType tokenType, Object value) {
+    private Token(@NonNull TokenType tokenType, Object value) {
         mTokenType = tokenType;
         mValue = value;
     }
@@ -37,6 +37,7 @@ public final class Token {
         return "[" + mTokenType.toString() + "]" + value;
     }
 
+    @NonNull
     public TokenType type() {
         return mTokenType;
     }

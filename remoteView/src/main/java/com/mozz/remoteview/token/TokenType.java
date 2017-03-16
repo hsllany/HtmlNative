@@ -4,9 +4,9 @@ public enum TokenType {
 
     Unknown("Unknown"),
 
-    LeftAngleBracket("<"),
+    StartAngleBracket("<"),
 
-    RightAngleBracket(">"),
+    EndAngleBracket(">"),
 
     Slash("/"),
 
@@ -30,7 +30,17 @@ public enum TokenType {
 
     Body("Body"),
 
-    Script("Script");
+    Script("Script"),
+
+    Head("Head"),
+
+    Meta("Meta"),
+
+    Link("Link"),
+
+    Title("Title"),
+
+    Html("Html");
 
     private String value;
 

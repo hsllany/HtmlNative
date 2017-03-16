@@ -62,8 +62,8 @@ final class RVDomTree implements RVDomElement, Parser.ParseCallback {
         this(context, null, parent, depth, index);
     }
 
-    private RVDomTree(@NonNull RVSegment module, String nodeName, RVDomTree parent, int depth, int
-            index) {
+    private RVDomTree(@NonNull RVSegment module, String nodeName, RVDomTree parent, int depth,
+                      int index) {
         mModule = module;
         mNodeName = nodeName;
         mDepth = depth;
@@ -157,7 +157,7 @@ final class RVDomTree implements RVDomElement, Parser.ParseCallback {
 
     private void sortChildrenIfNecessary() {
         if (!mIsInOrder) {
-            Collections.sort(mChildren, DEFAULT_RVTREE_COMPARATOR);
+            Collections.sort(mChildren, DEFAULT_TREE_COMPARATOR);
             mIsInOrder = true;
         }
 
@@ -240,5 +240,5 @@ final class RVDomTree implements RVDomElement, Parser.ParseCallback {
         }
     }
 
-    private final static RVDomTreeComparator DEFAULT_RVTREE_COMPARATOR = new RVDomTreeComparator();
+    private final static RVDomTreeComparator DEFAULT_TREE_COMPARATOR = new RVDomTreeComparator();
 }

@@ -41,7 +41,8 @@ final class Lexer {
                 mLookForScript = 1;
                 lookFor(LK_NOTHING);
                 next();
-                return Token.obtainToken(TokenType.LeftAngleBracket, mReader.line(), mReader.column());
+                return Token.obtainToken(TokenType.StartAngleBracket, mReader.line(), mReader
+                        .column());
 
             case '"':
                 next();
@@ -51,7 +52,8 @@ final class Lexer {
                 mLookForScript++;
                 lookFor(LK_INNER);
                 next();
-                return Token.obtainToken(TokenType.RightAngleBracket, mReader.line(), mReader.column());
+                return Token.obtainToken(TokenType.EndAngleBracket, mReader.line(), mReader
+                        .column());
 
             case '/':
                 mLookForScript = 0;
@@ -194,15 +196,49 @@ final class Lexer {
 
         String idStr = mBuffer.toString();
 
-        if (idStr.equals(TokenType.Template.toString().toLowerCase()) || idStr.equals(TokenType.Body
-                .toString().toLowerCase())) {
-            return Token.obtainToken(TokenType.Template, TokenType.Template.toString(), line, startColumn);
-        } else if (idStr.equals(TokenType.Script.toString().toLowerCase())) {
+        TokenType type = TokenType.Id;
+        String tokenContent;
+
+        if (idStr.equalsIgnoreCase(TokenType.Template.toString()) || idStr.equalsIgnoreCase
+                (TokenType.Body.toString())) {
+
+            type = TokenType.Template;
+            tokenContent = type.toString();
+
+        } else if (idStr.equalsIgnoreCase(TokenType.Script.toString())) {
             mLookForScript++;
-            return Token.obtainToken(TokenType.Script, line, startColumn);
+
+            type = TokenType.Script;
+            tokenContent = type.toString();
+
+        } else if (idStr.equalsIgnoreCase(TokenType.Head.toString())) {
+
+            type = TokenType.Head;
+            tokenContent = type.toString();
+
+        } else if (idStr.equalsIgnoreCase(TokenType.Meta.toString())) {
+
+            type = TokenType.Meta;
+            tokenContent = type.toString();
+
+        } else if (idStr.equalsIgnoreCase(TokenType.Link.toString())) {
+
+            type = TokenType.Link;
+            tokenContent = type.toString();
+        } else if (idStr.equalsIgnoreCase(TokenType.Html.toString())) {
+
+            type = TokenType.Html;
+            tokenContent = type.toString();
+
+        } else if (idStr.equalsIgnoreCase(TokenType.Title.toString())) {
+
+            type = TokenType.Title;
+            tokenContent = type.toString();
         } else {
-            return Token.obtainToken(TokenType.Id, mBuffer.toString(), line, startColumn);
+            tokenContent = idStr;
         }
+
+        return Token.obtainToken(type, tokenContent, line, startColumn);
 
     }
 

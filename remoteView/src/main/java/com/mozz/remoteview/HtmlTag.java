@@ -34,6 +34,10 @@ public final class HtmlTag {
 
     public static final String ATTR_STYLE = "style";
 
+    public static final String HEAD = "head";
+    public static final String META = "meta";
+    public static final String LINK = "link";
+
     /**
      * If parser met with swallowInnerTag, the inner element of token will become the
      * attribute of the element instead of creating a new child tree.
