@@ -47,9 +47,9 @@ final class ProcessThread {
     static final class RenderTask extends WefRunnable<Context> {
 
         private InputStream mFileSource;
-        private RV.OnRViewLoaded mCallback;
+        private HNative.OnRViewLoaded mCallback;
 
-        RenderTask(Context context, InputStream fileSource, RV.OnRViewLoaded callback) {
+        RenderTask(Context context, InputStream fileSource, HNative.OnRViewLoaded callback) {
             super(context);
             mFileSource = fileSource;
             mCallback = callback;
@@ -62,11 +62,13 @@ final class ProcessThread {
                     return;
                 }
 
-                final RVSegment module = RVSegment.load(mFileSource);
+                final HNSegment module = HNSegment.load(mFileSource);
 
                 Log.d(TAG, module.mRootTree.wholeTreeToString());
                 Log.d(TAG, module.toString());
-                Log.d(TAG, module.mScriptInfo.toString());
+                if (module.mScriptInfo != null) {
+                    Log.d(TAG, module.mScriptInfo.toString());
+                }
 
                 final ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup
                         .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -75,8 +77,8 @@ final class ProcessThread {
                     public void run() {
                         View v = null;
                         try {
-                            v = RVRenderer.get().render(context, module, layoutParams);
-                        } catch (RVRenderer.RemoteInflateException e) {
+                            v = HNRenderer.get().render(context, module, layoutParams);
+                        } catch (HNRenderer.RemoteInflateException e) {
                             e.printStackTrace();
                         }
 
@@ -85,7 +87,7 @@ final class ProcessThread {
                         }
                     }
                 });
-            } catch (@NonNull final RVSyntaxError e) {
+            } catch (@NonNull final HNSyntaxError e) {
                 e.printStackTrace();
                 if (mCallback != null) {
                     MainHandler.instance().post(new Runnable() {

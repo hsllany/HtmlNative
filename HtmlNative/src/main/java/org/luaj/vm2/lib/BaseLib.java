@@ -23,7 +23,7 @@ package org.luaj.vm2.lib;
 
 import android.util.Log;
 
-import com.mozz.htmlnative.RVEnvironment;
+import com.mozz.htmlnative.HNEnvironment;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -259,11 +259,11 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
             LuaValue tostring = globals.get("tostring");
 
             for (int i = 1, n = args.narg(); i <= n; i++) {
-                if (i > 1) Log.d(RVEnvironment.STD_TAG, "\t");
+                if (i > 1) Log.d(HNEnvironment.STD_TAG, "\t");
                 LuaString s = tostring.call(args.arg(i)).strvalue();
-                Log.d(RVEnvironment.STD_TAG, s.tojstring());
+                Log.d(HNEnvironment.STD_TAG, s.tojstring());
             }
-            Log.d(RVEnvironment.STD_TAG, "\n");
+            Log.d(HNEnvironment.STD_TAG, "\n");
             return NONE;
         }
     }

@@ -9,8 +9,8 @@ import com.mozz.htmlnative.script.ScriptInfo;
 import java.io.InputStream;
 import java.util.Map;
 
-final class RVSegment {
-    RVDomTree mRootTree;
+final class HNSegment {
+    HNDomTree mRootTree;
 
     private ScriptTable mScriptTable;
 
@@ -21,7 +21,7 @@ final class RVSegment {
     ScriptInfo mScriptInfo;
 
     @NonNull
-    private static Map<String, RVSegment> sCache = new ArrayMap<>();
+    private static Map<String, HNSegment> sCache = new ArrayMap<>();
 
     private static final Object sCacheLock = new Object();
 
@@ -29,7 +29,7 @@ final class RVSegment {
 
     private String mTitle = null;
 
-    RVSegment() {
+    HNSegment() {
         mAttrs = new AttrsSet(this);
         mScriptTable = new ScriptTable();
     }
@@ -54,15 +54,15 @@ final class RVSegment {
     }
 
     @NonNull
-    public static RVSegment load(@NonNull InputStream stream) throws RVSyntaxError {
+    public static HNSegment load(@NonNull InputStream stream) throws HNSyntaxError {
         Parser parser = new Parser(new FileTextReader(stream));
         return parser.process();
     }
 
-    //TODO finish the cache of RVSegment
-    public static RVSegment load(@NonNull InputStream stream, String tag) throws RVSyntaxError {
+    //TODO finish the cache of HNSegment
+    public static HNSegment load(@NonNull InputStream stream, String tag) throws HNSyntaxError {
         synchronized (sCacheLock) {
-            RVSegment module = sCache.get(tag);
+            HNSegment module = sCache.get(tag);
             if (module != null) {
                 return module;
             } else {
@@ -125,6 +125,6 @@ final class RVSegment {
         if (mMeta != null) {
             metaStr = mMeta.toString();
         }
-        return "[RVSegment: title=" + mTitle + ", meta=" + metaStr + "]";
+        return "[HNSegment: title=" + mTitle + ", meta=" + metaStr + "]";
     }
 }

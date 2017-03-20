@@ -42,7 +42,7 @@ final class Lexer {
     }
 
     @Nullable
-    Token scan() throws EOFException, RVSyntaxError {
+    Token scan() throws EOFException, HNSyntaxError {
         this.skipWhiteSpace();
 
         switch (peek()) {
@@ -88,11 +88,11 @@ final class Lexer {
             return scanId();
         }
 
-        throw new RVSyntaxError("unknown token " + peek(), line(), column());
+        throw new HNSyntaxError("unknown token " + peek(), line(), column());
     }
 
     @Nullable
-    private Token scanNumber() throws EOFException, RVSyntaxError {
+    private Token scanNumber() throws EOFException, HNSyntaxError {
         long startColumn = mReader.column();
         long line = mReader.line();
         int v = 0;
@@ -103,7 +103,7 @@ final class Lexer {
         }
 
         if (!Lexer.isDigit(peek())) {
-            throw new RVSyntaxError("Illegal word when reading Number!", line, startColumn);
+            throw new HNSyntaxError("Illegal word when reading Number!", line, startColumn);
         }
 
         do {
@@ -132,7 +132,7 @@ final class Lexer {
             next();
 
             if (!Lexer.isDigit(peek()) && peek() != '-') {
-                throw new RVSyntaxError("Illegal word when reading Number!", line, startColumn);
+                throw new HNSyntaxError("Illegal word when reading Number!", line, startColumn);
             }
             boolean expIsNegative = false;
             if (peek() == '-') {
@@ -288,7 +288,7 @@ final class Lexer {
     }
 
     /**
-     * Called by {@link Parser#processScript(RVSegment)}, not by Lexer, the structure may ugly
+     * Called by {@link Parser#processScript(HNSegment)}, not by Lexer, the structure may ugly
      * but simple to implement.  Because Lexer
      * can't tell whether it's an script or not, only parser has such ability.
      * <br/>
@@ -298,14 +298,14 @@ final class Lexer {
      *
      * @return ScriptInfo string
      * @throws EOFException
-     * @throws RVSyntaxError
+     * @throws HNSyntaxError
      */
-    Token scanScript() throws EOFException, RVSyntaxError {
+    Token scanScript() throws EOFException, HNSyntaxError {
         long startColumn = mReader.column();
         long line = mReader.line();
 
         if (currentPositionInFile() < CACHE_SIZE) {
-            throw new RVSyntaxError("wrong status, too early for script.", line, startColumn);
+            throw new HNSyntaxError("wrong status, too early for script.", line, startColumn);
         }
 
 

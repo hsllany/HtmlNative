@@ -8,15 +8,15 @@ import org.junit.Test;
 public class SyntaxTreeTest {
     @Test
     public void addChild() throws Exception {
-        //        RVSegment rvSegment = new RVSegment();
+        //        HNSegment rvSegment = new HNSegment();
         //
-        //        RVDomTree syntaxTree = new RVDomTree(rvSegment, null, 0, 0);
-        //        RVDomTree tree1 = syntaxTree.addChild("1", 0);
-        //        RVDomTree tree11 = tree1.addChild("1-1", 0);
+        //        HNDomTree syntaxTree = new HNDomTree(rvSegment, null, 0, 0);
+        //        HNDomTree tree1 = syntaxTree.addChild("1", 0);
+        //        HNDomTree tree11 = tree1.addChild("1-1", 0);
         //        tree11.addChild("1-1-1", 0);
         //        syntaxTree.addChild("2", 1);
         //
-        //        RVDomTree tree3 = syntaxTree.addChild("3", 2);
+        //        HNDomTree tree3 = syntaxTree.addChild("3", 2);
         //        tree3.addChild("3-1", 0);
         //        tree3.addChild("3-2", 1);
 

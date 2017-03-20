@@ -60,9 +60,9 @@ final class Parser {
         mLexer = new Lexer(reader);
     }
 
-    public RVSegment process() throws RVSyntaxError {
-        RVSegment segment = new RVSegment();
-        segment.mRootTree = new RVDomTree(segment, null, 0, 0);
+    public HNSegment process() throws HNSyntaxError {
+        HNSegment segment = new HNSegment();
+        segment.mRootTree = new HNDomTree(segment, null, 0, 0);
 
         try {
             scanFor(StartAngleBracket);
@@ -88,9 +88,9 @@ final class Parser {
     }
 
     @NonNull
-    private void processHtmlInside(RVSegment segment) throws RVSyntaxError, EOFException {
+    private void processHtmlInside(HNSegment segment) throws HNSyntaxError, EOFException {
 
-        RVDomTree currentTree = segment.mRootTree;
+        HNDomTree currentTree = segment.mRootTree;
 
         // Look ahead to determine whether current is script or template
         scan();
@@ -107,23 +107,23 @@ final class Parser {
                 return;
 
             default:
-                throw new RVSyntaxError("must init with <template> or <script>", mLexer.line(),
+                throw new HNSyntaxError("must init with <template> or <script>", mLexer.line(),
                         mLexer.column());
 
         }
     }
 
-    private void processTemplateThenScript(RVDomTree tree, RVSegment segment) throws
-            EOFException, RVSyntaxError {
+    private void processTemplateThenScript(HNDomTree tree, HNSegment segment) throws
+            EOFException, HNSyntaxError {
         processTemplate(tree);
         scanFor(StartAngleBracket, Script);
         processScript(segment);
         scan();
     }
 
-    private void processScript(RVSegment segment) throws RVSyntaxError, EOFException {
+    private void processScript(HNSegment segment) throws HNSyntaxError, EOFException {
         if (mCurToken.type() != Script) {
-            throw new RVSyntaxError("Look for script, but " + mCurToken.toString(), mLexer.line()
+            throw new HNSyntaxError("Look for script, but " + mCurToken.toString(), mLexer.line()
                     , mLexer.column());
         }
 
@@ -170,9 +170,9 @@ final class Parser {
         }
     }
 
-    private void processHead(RVSegment segment) throws RVSyntaxError, EOFException {
+    private void processHead(HNSegment segment) throws HNSyntaxError, EOFException {
         if (mCurToken.type() != TokenType.Head) {
-            throw new RVSyntaxError("Look for \"head\", but " + mCurToken.toString(), mLexer.line
+            throw new HNSyntaxError("Look for \"head\", but " + mCurToken.toString(), mLexer.line
                     (), mLexer.column());
         }
 
@@ -197,9 +197,9 @@ final class Parser {
         }
     }
 
-    private void processTitle(RVSegment segment) throws RVSyntaxError, EOFException {
+    private void processTitle(HNSegment segment) throws HNSyntaxError, EOFException {
         if (mCurToken.type() != Title) {
-            throw new RVSyntaxError("Look for head, but " + mCurToken.toString(), mLexer.line(),
+            throw new HNSyntaxError("Look for head, but " + mCurToken.toString(), mLexer.line(),
                     mLexer.column());
         }
 
@@ -212,9 +212,9 @@ final class Parser {
         scanFor(StartAngleBracket, Slash, Title, EndAngleBracket);
     }
 
-    private void processMeta(RVSegment segment) throws RVSyntaxError, EOFException {
+    private void processMeta(HNSegment segment) throws HNSyntaxError, EOFException {
         if (mCurToken.type() != Meta) {
-            throw new RVSyntaxError("Look for meta, but " + mCurToken.toString(), mLexer.line(),
+            throw new HNSyntaxError("Look for meta, but " + mCurToken.toString(), mLexer.line(),
                     mLexer.column());
         }
 
@@ -252,7 +252,7 @@ final class Parser {
                     return;
 
                 default:
-                    throw new RVSyntaxError("Unknown token " + mCurToken.toString() + " when " +
+                    throw new HNSyntaxError("Unknown token " + mCurToken.toString() + " when " +
                             "parsing <meta>" + mCurToken.toString(), mLexer.line(), mLexer.column
                             ());
             }
@@ -261,9 +261,9 @@ final class Parser {
 
     }
 
-    private void processTemplate(RVDomTree tree) throws RVSyntaxError {
+    private void processTemplate(HNDomTree tree) throws HNSyntaxError {
         if (mCurToken.type() != Template) {
-            throw new RVSyntaxError("Look for Template, but " + mCurToken.toString(), mLexer.line
+            throw new HNSyntaxError("Look for Template, but " + mCurToken.toString(), mLexer.line
                     (), mLexer.column());
         }
 
@@ -273,17 +273,16 @@ final class Parser {
         processInternal(tree);
     }
 
-    private void processInternal(@NonNull RVDomTree tree) throws RVSyntaxError {
+    private void processInternal(@NonNull HNDomTree tree) throws HNSyntaxError {
         processInternal(tree, tree);
     }
 
     /**
      * parse the tree recursively
      *
-     * @throws RVSyntaxError
+     * @throws HNSyntaxError
      */
-    private void processInternal(@NonNull RVDomTree tree, @NonNull ParseCallback callback) throws
-            RVSyntaxError {
+    private void processInternal(@NonNull HNDomTree tree, @NonNull ParseCallback callback) throws HNSyntaxError {
         EventLog.writeEvent(EventLog.TAG_PARSER, "init to parse tree " + tree.getNodeName());
         int index = 0;
 
@@ -320,7 +319,7 @@ final class Parser {
 
                             // compare the tag string with tree.nodeName
                             if (!tree.getNodeName().equals(mCurToken.value())) {
-                                throw new RVSyntaxError("View tag should be in pairs, current " +
+                                throw new HNSyntaxError("View tag should be in pairs, current " +
                                         "is<" + tree.getNodeName() + "></" + mCurToken.value() +
                                         ">", mLexer.line(), mLexer.column());
                             }
@@ -328,7 +327,7 @@ final class Parser {
                             scan();
 
                             if (mCurToken.type() != EndAngleBracket) {
-                                throw new RVSyntaxError("View tag must be end with >", mLexer
+                                throw new HNSyntaxError("View tag must be end with >", mLexer
                                         .line(), mLexer.column());
                             }
 
@@ -353,7 +352,7 @@ final class Parser {
                                 lookFor(LK_StartArrowBracket | LK_INNER);
 
                             } else {
-                                RVDomTree child = new RVDomTree(tree, tag, index++);
+                                HNDomTree child = new HNDomTree(tree, tag, index++);
                                 tree.addChild(child);
                                 child.mTagPair = 1;
                                 child.mBracketPair = 1;
@@ -369,7 +368,7 @@ final class Parser {
 
                         tree.mBracketPair--;
                         if (tree.mBracketPair != 0) {
-                            throw new RVSyntaxError("< > must be in pairs, " + ", current bracket" +
+                            throw new HNSyntaxError("< > must be in pairs, " + ", current bracket" +
                                     " pair is " + tree.mBracketPair, mLexer.line(), mLexer.column
                                     ());
                         }
@@ -385,7 +384,7 @@ final class Parser {
                     case Equal:
                         check(LK_EQUAL);
                         if (attrName == null) {
-                            throw new RVSyntaxError("attrName is null, please check the state",
+                            throw new HNSyntaxError("attrName is null, please check the state",
                                     mLexer.line(), mLexer.column());
                         }
                         lookFor(LK_VALUE | LK_NUMBER);
@@ -418,7 +417,7 @@ final class Parser {
                         if (isSwallowInnerTag(tree.getNodeName())) {
                             tree.appendText(mCurToken.stringValue());
                         } else {
-                            RVDomTree innerChild = new RVDomTree(tree, RVDomTree.INNER_TREE_TAG,
+                            HNDomTree innerChild = new HNDomTree(tree, HNDomTree.INNER_TREE_TAG,
                                     innerCount++);
                             tree.addChild(innerChild);
                             innerChild.appendText(mCurToken.stringValue());
@@ -438,7 +437,7 @@ final class Parser {
                         scan();
 
                         if (mCurToken.type() != EndAngleBracket) {
-                            throw new RVSyntaxError("unknown state, slash should be followed by " +
+                            throw new HNSyntaxError("unknown state, slash should be followed by " +
                                     ">, " +
                                     "but currently " + mCurToken.type(), mLexer.line(), mLexer
                                     .column());
@@ -446,7 +445,7 @@ final class Parser {
 
                         tree.mBracketPair--;
                         if (tree.mBracketPair != 0) {
-                            throw new RVSyntaxError("< > must be in pairs, " + ", current bracket" +
+                            throw new HNSyntaxError("< > must be in pairs, " + ", current bracket" +
                                     " pair is " + tree.mBracketPair, mLexer.line(), mLexer.column
                                     ());
                         }
@@ -454,7 +453,7 @@ final class Parser {
                         return;
 
                     default:
-                        throw new RVSyntaxError("unknown token " + mCurToken.toString(), mLexer
+                        throw new HNSyntaxError("unknown token " + mCurToken.toString(), mLexer
                                 .line(), mLexer.column());
 
 
@@ -463,13 +462,13 @@ final class Parser {
             }
         } catch (EOFException e) {
             if (meetEndTag) {
-                throw new RVSyntaxError("View Tag should ends with </", mLexer.line(), mLexer
+                throw new HNSyntaxError("View Tag should ends with </", mLexer.line(), mLexer
                         .column());
             }
         }
     }
 
-    static void parseStyle(@NonNull RVDomTree tree, @NonNull String styleString) {
+    static void parseStyle(@NonNull HNDomTree tree, @NonNull String styleString) {
         StringBuilder sb = new StringBuilder();
         String key = null;
         for (int i = 0; i < styleString.length(); i++) {
@@ -503,7 +502,7 @@ final class Parser {
         mLookFor |= status;
     }
 
-    private void scan() throws EOFException, RVSyntaxError {
+    private void scan() throws EOFException, HNSyntaxError {
         if (mReserved) {
             EventLog.writeEvent(EventLog.TAG_PARSER, "Reprocess token ->" + mCurToken);
             mReserved = false;
@@ -519,29 +518,29 @@ final class Parser {
 
     }
 
-    private void scan(boolean reserved) throws EOFException, RVSyntaxError {
+    private void scan(boolean reserved) throws EOFException, HNSyntaxError {
         scan();
         mReserved = reserved;
     }
 
-    private void scanFor(@NonNull TokenType tokenType) throws EOFException, RVSyntaxError {
+    private void scanFor(@NonNull TokenType tokenType) throws EOFException, HNSyntaxError {
         scan();
 
         if (mCurToken.type() != tokenType) {
-            throw new RVSyntaxError("syntax error, should be " + tokenType.toString() +
+            throw new HNSyntaxError("syntax error, should be " + tokenType.toString() +
                     "， but current is " + mCurToken.toString(), mLexer.line(), mLexer.column());
         }
     }
 
-    private void scanFor(@NonNull TokenType... tokenTypes) throws EOFException, RVSyntaxError {
+    private void scanFor(@NonNull TokenType... tokenTypes) throws EOFException, HNSyntaxError {
         for (TokenType tokenType : tokenTypes) {
             scanFor(tokenType);
         }
     }
 
-    private void check(int status) throws RVSyntaxError {
+    private void check(int status) throws HNSyntaxError {
         if (!isLookingFor(status)) {
-            throw new RVSyntaxError(" Looking for " + lookForToString(status) + ", but " +
+            throw new HNSyntaxError(" Looking for " + lookForToString(status) + ", but " +
                     "currently is " +
                     lookForToString(mLookFor), mLexer.line(), mLexer.column());
         }

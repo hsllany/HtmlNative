@@ -7,7 +7,7 @@ import android.util.Log;
 
 public final class Script {
     private static final String TAG = Script.class.getSimpleName();
-    public static final boolean DEBUG = RVEnvironment.DEBUG;
+    public static final boolean DEBUG = HNEnvironment.DEBUG;
     private String mCode;
     private String mFunctionName;
 
@@ -26,7 +26,7 @@ public final class Script {
         return mCode;
     }
 
-    public void execute(@NonNull RVSandBoxContext context) {
+    public void execute(@NonNull HNSandBoxContext context) {
         long timeStart = SystemClock.currentThreadTimeMillis();
 
         context.execute(mCode);

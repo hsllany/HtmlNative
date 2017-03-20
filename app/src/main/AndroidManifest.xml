@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.mozz.htmlnative">
+          package="com.mozz.htmlnativedemo">
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:name="com.mozz.htmlnative.DemoApplication"
+        android:name="com.mozz.htmlnativedemo.DemoApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.mozz.htmlnative.MainActivity">
+        <activity android:name="com.mozz.htmlnativedemo.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -19,11 +19,11 @@
         </activity>
 
         <activity
-            android:name="com.mozz.htmlnative.LayoutExampleActivity"
+            android:name="com.mozz.htmlnativedemo.LayoutExampleActivity"
             android:label="RV Example"/>
 
         <activity
-            android:name="com.mozz.htmlnative.ExampleListActivity"
+            android:name="com.mozz.htmlnativedemo.ExampleListActivity"
             android:label="RV Example List"/>
     </application>
 

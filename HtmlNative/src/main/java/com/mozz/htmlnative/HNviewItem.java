@@ -9,7 +9,7 @@ import com.mozz.htmlnative.attrs.Attr;
  * @author Yang Tao, 17/3/3.
  */
 
-public interface RViewItem extends Attr {
+public interface HNviewItem extends Attr {
     @NonNull
     Class<? extends View> onGetViewClassName();
 }

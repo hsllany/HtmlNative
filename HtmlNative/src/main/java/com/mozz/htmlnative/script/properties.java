@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.mozz.htmlnative.RVSandBoxContext;
+import com.mozz.htmlnative.HNSandBoxContext;
 
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
@@ -23,10 +23,10 @@ public final class properties {
 
     public static class property extends OneArgFunction {
 
-        private RVSandBoxContext RVSandBoxContext;
+        private HNSandBoxContext HNSandBoxContext;
 
-        public property(RVSandBoxContext context) {
-            RVSandBoxContext = context;
+        public property(HNSandBoxContext context) {
+            HNSandBoxContext = context;
         }
 
         @Override
@@ -42,7 +42,7 @@ public final class properties {
                     }
                     LuaValue v = n.arg(2);
                     Log.d(TAG, k.tojstring() + v.tojstring() + "");
-                    RVSandBoxContext.addVariable(k.toString(), toObject(v));
+                    HNSandBoxContext.addVariable(k.toString(), toObject(v));
                 }
                 return LuaValue.TRUE;
             } else {
@@ -55,16 +55,16 @@ public final class properties {
 
     public static class setProperty extends TwoArgFunction {
 
-        private RVSandBoxContext RVSandBoxContext;
+        private HNSandBoxContext HNSandBoxContext;
 
-        public setProperty(RVSandBoxContext RVSandBoxContext) {
-            this.RVSandBoxContext = RVSandBoxContext;
+        public setProperty(HNSandBoxContext HNSandBoxContext) {
+            this.HNSandBoxContext = HNSandBoxContext;
         }
 
         @Override
         public LuaValue call(@NonNull LuaValue luaValue, @NonNull LuaValue luaValue1) {
             if (luaValue.isstring()) {
-                RVSandBoxContext.updateVariable(luaValue.tojstring(), toObject(luaValue1));
+                HNSandBoxContext.updateVariable(luaValue.tojstring(), toObject(luaValue1));
                 return LuaValue.TRUE;
             }
             return LuaValue.FALSE;
@@ -73,10 +73,10 @@ public final class properties {
 
     public static class getProperty extends OneArgFunction {
 
-        private RVSandBoxContext RVSandBoxContext;
+        private HNSandBoxContext HNSandBoxContext;
 
-        public getProperty(RVSandBoxContext context) {
-            this.RVSandBoxContext = context;
+        public getProperty(HNSandBoxContext context) {
+            this.HNSandBoxContext = context;
         }
 
         @Nullable
@@ -85,7 +85,7 @@ public final class properties {
             if (luaValue.isstring()) {
                 String key = luaValue.tojstring();
 
-                Object val = RVSandBoxContext.getVariable(key);
+                Object val = HNSandBoxContext.getVariable(key);
                 if (val != null) {
                     return toLuaValue(val);
                 }

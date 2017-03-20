@@ -4,7 +4,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 
-import com.mozz.htmlnative.RVEnvironment;
+import com.mozz.htmlnative.HNEnvironment;
 
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaValue;
@@ -59,7 +59,7 @@ public final class LuaRunner {
 
         @Override
         public LuaValue call() {
-            return LuaValue.valueOf(RVEnvironment.v);
+            return LuaValue.valueOf(HNEnvironment.v);
         }
     }
 

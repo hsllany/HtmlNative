@@ -1,7 +1,9 @@
-package com.mozz.htmlnative;
+package com.mozz.htmlnativedemo;
 
 import android.app.Activity;
 import android.widget.Toast;
+
+import com.mozz.htmlnative.HNative;
 
 import java.io.IOException;
 
@@ -18,7 +20,7 @@ public class AssetsViewLoader {
 
     public void load(final String fileName) {
         try {
-            RV.getInstance().loadView(mActivity, mActivity.getAssets().open(fileName), mActivity);
+            HNative.getInstance().loadView(mActivity, mActivity.getAssets().open(fileName), mActivity);
         } catch (IOException e) {
             Toast.makeText(mActivity, "load file failed", Toast.LENGTH_SHORT).show();
         }

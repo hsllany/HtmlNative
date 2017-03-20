@@ -30,7 +30,7 @@ public class ParserTest {
         parserDebugger(code);
     }
 
-    private void parserDebugger(String code) throws RVSyntaxError {
+    private void parserDebugger(String code) throws HNSyntaxError {
 
         debug("code is \n" + code);
 
@@ -38,14 +38,14 @@ public class ParserTest {
         Parser parser = new Parser(reader);
 
         try {
-            RVSegment rootTree = parser.process();
+            HNSegment rootTree = parser.process();
             debug("\ntree is :");
             debug(rootTree.mRootTree.wholeTreeToString());
 
             debug("\nfunction is :");
             debug(rootTree.toString());
 
-        } catch (RVSyntaxError sytaxError) {
+        } catch (HNSyntaxError sytaxError) {
             sytaxError.printStackTrace();
             throw sytaxError;
         }
@@ -61,12 +61,12 @@ public class ParserTest {
     public void parseStyleTest() {
         String style = "a:  1;b:2";
 
-        RVSegment rvSegment = new RVSegment();
-        RVDomTree tree = new RVDomTree(rvSegment, null, 0, 0);
+        HNSegment HNSegment = new HNSegment();
+        HNDomTree tree = new HNDomTree(HNSegment, null, 0, 0);
 
         Parser.parseStyle(tree, style);
 
-        System.out.println(rvSegment.mAttrs.toString());
+        System.out.println(HNSegment.mAttrs.toString());
     }
 
 }

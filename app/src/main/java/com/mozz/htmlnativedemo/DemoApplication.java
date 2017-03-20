@@ -1,4 +1,4 @@
-package com.mozz.htmlnative;
+package com.mozz.htmlnativedemo;
 
 import android.app.Application;
 import android.os.SystemClock;
@@ -8,6 +8,10 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.mozz.htmlnative.EventLog;
+import com.mozz.htmlnative.HNative;
+import com.mozz.htmlnative.HrefLinkHandler;
+import com.mozz.htmlnative.ImageViewAdapter;
 import com.squareup.leakcanary.LeakCanary;
 
 /**
@@ -19,12 +23,12 @@ public class DemoApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        RV.getInstance().init(this);
+        HNative.getInstance().init(this);
 
         EventLog.setDebugLevel(EventLog.TAG_PARSER);
 
 
-        RV.getInstance().setImageViewAdapter(new ImageViewAdapter() {
+        HNative.getInstance().setImageViewAdapter(new ImageViewAdapter() {
             @Override
             public void setImage(String src, ImageView imageView) {
                 long time1 = SystemClock.currentThreadTimeMillis();
@@ -34,7 +38,7 @@ public class DemoApplication extends Application {
             }
         });
 
-        RV.getInstance().setHrefLinkHandler(new HrefLinkHandler() {
+        HNative.getInstance().setHrefLinkHandler(new HrefLinkHandler() {
             @Override
             public void onHref(String url, View view) {
                 Toast.makeText(DemoApplication.this, url, Toast.LENGTH_SHORT).show();
@@ -52,6 +56,6 @@ public class DemoApplication extends Application {
     @Override
     public void onTerminate() {
         super.onTerminate();
-        RV.getInstance().onDestroy();
+        HNative.getInstance().onDestroy();
     }
 }

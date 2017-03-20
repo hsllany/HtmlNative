@@ -1,8 +1,11 @@
-package com.mozz.htmlnative;
+package com.mozz.htmlnativedemo;
 
 import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.view.View;
+
+import com.mozz.htmlnative.HNative;
 
 import java.io.IOException;
 
@@ -28,7 +31,7 @@ public class RemoteViewLoader {
         mHandler = new Handler(mThread.getLooper());
     }
 
-    public void load(final String url, final RV.OnRViewLoaded callback) {
+    public void load(final String url, final HNative.OnRViewLoaded callback) {
         Runnable r = new Runnable() {
             @Override
             public void run() {
@@ -40,7 +43,19 @@ public class RemoteViewLoader {
                 Response r = null;
                 try {
                     r = okHttpClient.newCall(request).execute();
-                    RV.getInstance().loadView(mContext, r.body().byteStream(), callback);
+                    HNative.getInstance().loadView(mContext, r.body().byteStream(), callback);
+                    HNative.getInstance().loadView(mContext, r.body().byteStream(), new HNative.OnRViewLoaded() {
+
+                        @Override
+                        public void onViewLoaded(View v) {
+
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+
+                        }
+                    });
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

@@ -21,7 +21,7 @@ public class LexerTest {
         LexerDebugger(testCode);
     }
 
-    private void LexerDebugger(String code) throws IOException, RVSyntaxError {
+    private void LexerDebugger(String code) throws IOException, HNSyntaxError {
 
         debug("code:");
         debug(code + "\n\ntoken list is:\n");
@@ -34,7 +34,7 @@ public class LexerTest {
                 debug("---> " + t.toString());
             } catch (EOFException e) {
                 break;
-            } catch (RVSyntaxError sytaxError) {
+            } catch (HNSyntaxError sytaxError) {
                 sytaxError.printStackTrace();
                 break;
 

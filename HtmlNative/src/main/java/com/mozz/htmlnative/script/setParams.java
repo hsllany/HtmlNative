@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
 
-import com.mozz.htmlnative.RVSandBoxContext;
+import com.mozz.htmlnative.HNSandBoxContext;
 import com.mozz.htmlnative.common.MainHandler;
 
 import org.luaj.vm2.LuaValue;
@@ -16,10 +16,10 @@ import org.luaj.vm2.lib.ThreeArgFunction;
  */
 public class setParams extends ThreeArgFunction {
 
-    private RVSandBoxContext RVSandBoxContext;
+    private HNSandBoxContext HNSandBoxContext;
 
-    public setParams(RVSandBoxContext RVSandBoxContext) {
-        this.RVSandBoxContext = RVSandBoxContext;
+    public setParams(HNSandBoxContext HNSandBoxContext) {
+        this.HNSandBoxContext = HNSandBoxContext;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class setParams extends ThreeArgFunction {
                 try {
                     String id = luaValue.tojstring();
 
-                    View v = RVSandBoxContext.findViewById(id);
+                    View v = HNSandBoxContext.findViewById(id);
                     if (v == null) {
                         throw new ParamsWrongException("can't find related view by id:" + id);
                     }

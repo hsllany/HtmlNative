@@ -31,7 +31,7 @@ final class ViewTagLookupTable {
     /**
      * For extra tag, lazy initialize later.
      */
-    private static Map<String, RViewItem> sExtraTagClassTable;
+    private static Map<String, HNviewItem> sExtraTagClassTable;
 
     static {
 
@@ -47,7 +47,7 @@ final class ViewTagLookupTable {
         sReservedTagClassTable.put("flexbox", FlexboxLayout.class.getName());
         sReservedTagClassTable.put(HtmlTag.SCROLLER, ScrollView.class.getName());
         sReservedTagClassTable.put("box", AbsoluteLayout.class.getName());
-        sReservedTagClassTable.put(RVDomTree.INNER_TREE_TAG, TextView.class.getName());
+        sReservedTagClassTable.put(HNDomTree.INNER_TREE_TAG, TextView.class.getName());
         sReservedTagClassTable.put(HtmlTag.IFRAME, WebView.class.getName());
         sReservedTagClassTable.put(HtmlTag.WEB, WebView.class.getName());
         sReservedTagClassTable.put(HtmlTag.A, TextView.class.getName());
@@ -73,9 +73,9 @@ final class ViewTagLookupTable {
             return null;
         }
 
-        RViewItem rViewItem = sExtraTagClassTable.get(tag);
-        if (rViewItem != null) {
-            return rViewItem.onGetViewClassName().getName();
+        HNviewItem HNviewItem = sExtraTagClassTable.get(tag);
+        if (HNviewItem != null) {
+            return HNviewItem.onGetViewClassName().getName();
         }
 
         return null;
@@ -90,11 +90,11 @@ final class ViewTagLookupTable {
         return sExtraTagClassTable.get(tag);
     }
 
-    static void registerExtraView(String tag, @NonNull RViewItem rViewItem) {
+    static void registerExtraView(String tag, @NonNull HNviewItem HNviewItem) {
         if (sExtraTagClassTable == null) {
             sExtraTagClassTable = new ArrayMap<>();
         }
 
-        sExtraTagClassTable.put(tag, rViewItem);
+        sExtraTagClassTable.put(tag, HNviewItem);
     }
 }

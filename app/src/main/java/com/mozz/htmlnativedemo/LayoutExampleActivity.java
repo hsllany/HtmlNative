@@ -1,4 +1,4 @@
-package com.mozz.htmlnative;
+package com.mozz.htmlnativedemo;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

@@ -66,16 +66,16 @@ final class AttrsSet {
 
     private int mCompacity;
 
-    private RVSegment mModule;
+    private HNSegment mModule;
 
     @NonNull
     private static Map<Class<? extends View>, Attr> sCachedAttrs = new HashMap<>();
 
-    AttrsSet(@NonNull RVSegment context) {
+    AttrsSet(@NonNull HNSegment context) {
         this(context, 10);
     }
 
-    AttrsSet(RVSegment module, int initCompacity) {
+    AttrsSet(HNSegment module, int initCompacity) {
         mModule = module;
         mAttrs = new Object[initCompacity << 1];
         mLength = new int[initCompacity];
@@ -83,7 +83,7 @@ final class AttrsSet {
         mCompacity = initCompacity;
     }
 
-    void put(@NonNull RVDomTree tree, String paramsKey, @NonNull Object value) {
+    void put(@NonNull HNDomTree tree, String paramsKey, @NonNull Object value) {
         int startPosition = tree.mAttrIndex;
 
         if (DEBUG) {
@@ -123,7 +123,7 @@ final class AttrsSet {
         }
     }
 
-    void newAttr(@NonNull RVDomTree tree) {
+    void newAttr(@NonNull HNDomTree tree) {
         if (mLastGrowLength == mGrowLength) {
             mGrowLength++;
         }
@@ -145,7 +145,7 @@ final class AttrsSet {
         return Arrays.toString(mAttrs);
     }
 
-    public String toString(@NonNull RVDomTree tree) {
+    public String toString(@NonNull HNDomTree tree) {
         int startPos = tree.mAttrIndex;
         int length = mLength[startPos];
 
@@ -156,8 +156,8 @@ final class AttrsSet {
     }
 
     @SuppressWarnings("ConstantConditions")
-    public void apply(Context context, String tagName, @NonNull final RVSandBoxContext
-            sandBoxContext, View v, @NonNull RVDomTree tree, @NonNull ViewGroup parent,
+    public void apply(Context context, String tagName, @NonNull final HNSandBoxContext
+            sandBoxContext, View v, @NonNull HNDomTree tree, @NonNull ViewGroup parent,
                       @NonNull ViewGroup.LayoutParams layoutParams) throws AttrApplyException {
 
         int startPosition = tree.mAttrIndex;
@@ -319,8 +319,8 @@ final class AttrsSet {
         }
     }
 
-    View createViewViaAttr(@NonNull RVRenderer renderer, Context context, @NonNull String name,
-                           @NonNull RVDomTree tree) throws ClassNotFoundException,
+    View createViewViaAttr(@NonNull HNRenderer renderer, Context context, @NonNull String name,
+                           @NonNull HNDomTree tree) throws ClassNotFoundException,
             NoSuchMethodException, InvocationTargetException, InstantiationException,
             IllegalAccessException {
 

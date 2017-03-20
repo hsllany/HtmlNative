@@ -11,9 +11,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.mozz.htmlnative.AttrApplyException;
+import com.mozz.htmlnative.HNRenderer;
 import com.mozz.htmlnative.HtmlTag;
-import com.mozz.htmlnative.RVDomElement;
-import com.mozz.htmlnative.RVRenderer;
+import com.mozz.htmlnative.HNDomElement;
 import com.mozz.htmlnative.common.Utils;
 
 public class TextViewAttr implements Attr {
@@ -37,7 +37,7 @@ public class TextViewAttr implements Attr {
 
     @Override
     public void apply(final Context context, @NonNull String tag, View v, @NonNull String params,
-                      @NonNull final Object value, @NonNull RVDomElement tree) throws
+                      @NonNull final Object value, @NonNull HNDomElement tree) throws
             AttrApplyException {
         final TextView textView = (TextView) v;
 
@@ -98,8 +98,8 @@ public class TextViewAttr implements Attr {
                     textView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (RVRenderer.getHrefLinkHandler() != null) {
-                                RVRenderer.getHrefLinkHandler().onHref(value.toString(), textView);
+                            if (HNRenderer.getHrefLinkHandler() != null) {
+                                HNRenderer.getHrefLinkHandler().onHref(value.toString(), textView);
                             }
                         }
                     });

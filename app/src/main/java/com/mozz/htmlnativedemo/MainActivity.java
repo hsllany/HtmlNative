@@ -1,4 +1,4 @@
-package com.mozz.htmlnative;
+package com.mozz.htmlnativedemo;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import com.mozz.htmlnative.HNative;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -62,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String url = mSearch.getText().toString();
 
         if (URLUtil.isValidUrl(url)) {
-            mLoader.load(url, new RV.OnRViewLoaded() {
+            mLoader.load(url, new HNative.OnRViewLoaded() {
                 @Override
                 public void onViewLoaded(View v) {
                     mContainer.removeAllViews();

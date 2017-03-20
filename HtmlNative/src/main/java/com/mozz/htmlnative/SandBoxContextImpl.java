@@ -29,11 +29,11 @@ import java.util.Map;
 /**
  * @author Yang Tao, 17/3/6.
  */
-final class SandBoxContextImpl implements RVSandBoxContext {
+final class SandBoxContextImpl implements HNSandBoxContext {
 
     private static boolean DEBUG = false;
 
-    private static final String TAG = RVSandBoxContext.class.getSimpleName();
+    private static final String TAG = HNSandBoxContext.class.getSimpleName();
 
     private static final int ViewContextTag = 0x3 << 24;
 
@@ -43,11 +43,11 @@ final class SandBoxContextImpl implements RVSandBoxContext {
 
     private Globals mGlobals;
 
-    private final RVSegment mSegment;
+    private final HNSegment mSegment;
 
     private final Context mContext;
 
-    private SandBoxContextImpl(RVSegment segment, Context context) {
+    private SandBoxContextImpl(HNSegment segment, Context context) {
         mSegment = segment;
         mContext = context;
     }
@@ -124,19 +124,19 @@ final class SandBoxContextImpl implements RVSandBoxContext {
     }
 
     private void initLuaRunner() {
-        LuaRunner.getInstance().runLuaScript(new WefRunnable<RVSandBoxContext>(this) {
+        LuaRunner.getInstance().runLuaScript(new WefRunnable<HNSandBoxContext>(this) {
             @Override
-            protected void runOverride(@Nullable RVSandBoxContext RVSandBoxContext) {
-                if (RVSandBoxContext == null) {
+            protected void runOverride(@Nullable HNSandBoxContext HNSandBoxContext) {
+                if (HNSandBoxContext == null) {
                     return;
                 }
                 long time1 = SystemClock.currentThreadTimeMillis();
                 mGlobals = LuaRunner.newGlobals();
-                mGlobals.set("view", new setParams(RVSandBoxContext));
-                mGlobals.set("toast", new toast(RVSandBoxContext.getAndroidContext()));
-                mGlobals.set("property", new properties.property(RVSandBoxContext));
-                mGlobals.set("setProperty", new properties.setProperty(RVSandBoxContext));
-                mGlobals.set("getProperty", new properties.getProperty(RVSandBoxContext));
+                mGlobals.set("view", new setParams(HNSandBoxContext));
+                mGlobals.set("toast", new toast(HNSandBoxContext.getAndroidContext()));
+                mGlobals.set("property", new properties.property(HNSandBoxContext));
+                mGlobals.set("setProperty", new properties.setProperty(HNSandBoxContext));
+                mGlobals.set("getProperty", new properties.getProperty(HNSandBoxContext));
                 mGlobals.set("log", new logcat());
                 Log.i(TAG, "init Lua module spend " + (SystemClock.currentThreadTimeMillis() -
                         time1) + " ms");
@@ -149,11 +149,11 @@ final class SandBoxContextImpl implements RVSandBoxContext {
         return mViewWithId.toString();
     }
 
-    public static RVSandBoxContext getViewContext(@NonNull FrameLayout v) {
+    public static HNSandBoxContext getViewContext(@NonNull FrameLayout v) {
         Object object = v.getTag(ViewContextTag);
 
-        if (object != null && object instanceof RVSandBoxContext) {
-            return (RVSandBoxContext) object;
+        if (object != null && object instanceof HNSandBoxContext) {
+            return (HNSandBoxContext) object;
         }
 
         return null;
@@ -211,8 +211,8 @@ final class SandBoxContextImpl implements RVSandBoxContext {
     }
 
     @NonNull
-    static RVSandBoxContext create(@NonNull FrameLayout layout, RVSegment module, Context context) {
-        RVSandBoxContext v = new SandBoxContextImpl(module, context);
+    static HNSandBoxContext create(@NonNull FrameLayout layout, HNSegment module, Context context) {
+        HNSandBoxContext v = new SandBoxContextImpl(module, context);
         layout.setTag(ViewContextTag, v);
         return v;
     }

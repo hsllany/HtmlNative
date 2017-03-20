@@ -19,27 +19,27 @@ import java.lang.ref.WeakReference;
  * @author Yang Tao, 17/2/21.
  */
 
-public final class RV {
+public final class HNative {
 
     public static final String LUA_TAG = "RVScript";
 
-    private static final String TAG = "RV";
+    private static final String TAG = "HNative";
 
     private DisplayMetrics mDefaultMetrics;
 
-    private RV() {
+    private HNative() {
         ProcessThread.init();
     }
 
     @Nullable
-    private static RV sInstance = null;
+    private static HNative sInstance = null;
 
     @Nullable
-    public static RV getInstance() {
+    public static HNative getInstance() {
         if (sInstance == null) {
-            synchronized (RV.class) {
+            synchronized (HNative.class) {
                 if (sInstance == null) {
-                    sInstance = new RV();
+                    sInstance = new HNative();
                 }
             }
         }
@@ -101,37 +101,37 @@ public final class RV {
     }
 
     public static String version() {
-        return RVEnvironment.v;
+        return HNEnvironment.v;
     }
 
     public static int versionCode() {
-        return RVEnvironment.versionCode;
+        return HNEnvironment.versionCode;
     }
 
     /**
      * @param tag
-     * @param rViewItem
+     * @param HNviewItem
      */
-    public static void registerRView(String tag, @NonNull RViewItem rViewItem) {
-        ViewTagLookupTable.registerExtraView(tag, rViewItem);
+    public static void registerRView(String tag, @NonNull HNviewItem HNviewItem) {
+        ViewTagLookupTable.registerExtraView(tag, HNviewItem);
     }
 
     public void onDestroy() {
-        RVSegment.clearCache();
+        HNSegment.clearCache();
         ProcessThread.quit();
         LuaRunner.getInstance().quit();
     }
 
     public void setImageViewAdapter(@NonNull ImageViewAdapter adapter) {
-        RVRenderer.setImageViewAdapter(adapter);
+        HNRenderer.setImageViewAdapter(adapter);
     }
 
     public void setWebviewCreator(@NonNull WebViewCreator creator) {
-        RVRenderer.setWebViewCreator(creator);
+        HNRenderer.setWebViewCreator(creator);
     }
 
     public void setHrefLinkHandler(@NonNull HrefLinkHandler handler) {
-        RVRenderer.setHrefLinkHandler(handler);
+        HNRenderer.setHrefLinkHandler(handler);
     }
 
     public interface OnRViewLoaded {

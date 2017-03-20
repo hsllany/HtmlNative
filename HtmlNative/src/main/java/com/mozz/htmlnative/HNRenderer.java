@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public final class RVRenderer {
+public final class HNRenderer {
 
     private static final HashMap<String, Constructor<? extends View>> sConstructorMap = new
             HashMap<>();
@@ -32,16 +32,16 @@ public final class RVRenderer {
     private static ImageViewAdapter sImageViewAdapter = DefaultImageAdapter.sInstance;
     private static HrefLinkHandler sHrefLinkHandler = DefaultHrefLinkHandler.sInstance;
 
-    private RVRenderer() {
+    private HNRenderer() {
     }
 
     @NonNull
-    public static RVRenderer get() {
-        return new RVRenderer();
+    public static HNRenderer get() {
+        return new HNRenderer();
     }
 
     @MainThread
-    final View render(@NonNull Context context, @NonNull RVSegment segment, @NonNull ViewGroup
+    final View render(@NonNull Context context, @NonNull HNSegment segment, @NonNull ViewGroup
             .LayoutParams params) throws RemoteInflateException {
 
         EventLog.writeEvent(EventLog.TAG_RENDER, "start to render " + segment.toString());
@@ -50,15 +50,15 @@ public final class RVRenderer {
 
         RXViewGroup rootViewGroup = new RXViewGroup(context);
 
-        RVSandBoxContext RVSandBoxContext = SandBoxContextImpl.create(rootViewGroup, segment,
+        HNSandBoxContext HNSandBoxContext = SandBoxContextImpl.create(rootViewGroup, segment,
                 context);
 
-        pWatcher.check("[step 1] create RVSandBoxContext");
+        pWatcher.check("[step 1] create HNSandBoxContext");
 
-        RVSandBoxContext.onViewCreate();
+        HNSandBoxContext.onViewCreate();
         pWatcher.check("[step 2] call onViewCreate");
 
-        View v = renderInternal(context, RVSandBoxContext, segment.mRootTree, rootViewGroup,
+        View v = renderInternal(context, HNSandBoxContext, segment.mRootTree, rootViewGroup,
                 segment.mAttrs, params, rootViewGroup);
         pWatcher.check("[step 3] rendering view");
 
@@ -68,16 +68,16 @@ public final class RVRenderer {
         rootViewGroup.addView(v, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
 
-        RVSandBoxContext.onViewLoaded();
+        HNSandBoxContext.onViewLoaded();
         pWatcher.checkDone("finally done");
 
-        EventLog.writeEvent(EventLog.TAG_RENDER, RVSandBoxContext.allIdTag());
+        EventLog.writeEvent(EventLog.TAG_RENDER, HNSandBoxContext.allIdTag());
 
         return rootViewGroup;
     }
 
-    private View renderInternal(@NonNull Context context, @NonNull RVSandBoxContext
-            sandBoxContext, @NonNull RVDomTree tree, @NonNull ViewGroup parent, @NonNull AttrsSet
+    private View renderInternal(@NonNull Context context, @NonNull HNSandBoxContext
+            sandBoxContext, @NonNull HNDomTree tree, @NonNull ViewGroup parent, @NonNull AttrsSet
             attrsSet, @NonNull ViewGroup.LayoutParams params, @NonNull RXViewGroup root) throws
             RemoteInflateException {
 
@@ -97,8 +97,8 @@ public final class RVRenderer {
             if (view instanceof ViewGroup) {
                 final ViewGroup viewGroup = (ViewGroup) view;
 
-                List<RVDomTree> children = tree.children();
-                for (RVDomTree child : children) {
+                List<HNDomTree> children = tree.children();
+                for (HNDomTree child : children) {
 
                     final ViewGroup.LayoutParams layoutParams;
                     if (view instanceof AbsoluteLayout) {
@@ -121,10 +121,10 @@ public final class RVRenderer {
                     }
                 }
             } else {
-                EventLog.writeError(EventLog.TAG_RENDER, "View render from RVRenderer is not an " +
+                EventLog.writeError(EventLog.TAG_RENDER, "View render from HNRenderer is not an " +
                         "viewGroup" +
                         view.getClass().getSimpleName() +
-                        ", but related RVDomTree has children. Will ignore its children!");
+                        ", but related HNDomTree has children. Will ignore its children!");
             }
 
             return view;
@@ -132,7 +132,7 @@ public final class RVRenderer {
     }
 
 
-    private View createViewFromNodeName(@NonNull RVDomTree tree, @NonNull RVSandBoxContext
+    private View createViewFromNodeName(@NonNull HNDomTree tree, @NonNull HNSandBoxContext
             sandBoxContext, @NonNull String nodeName, @NonNull ViewGroup parent, @NonNull Context
             context, @NonNull AttrsSet attrsSet, @NonNull ViewGroup.LayoutParams params, @NonNull
             RXViewGroup root) throws RemoteInflateException {

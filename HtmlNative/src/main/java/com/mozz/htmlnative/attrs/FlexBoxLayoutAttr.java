@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.mozz.htmlnative.AttrApplyException;
-import com.mozz.htmlnative.RVDomElement;
+import com.mozz.htmlnative.HNDomElement;
 
 /**
  * @author Yang Tao, 17/3/3.
@@ -16,7 +16,7 @@ import com.mozz.htmlnative.RVDomElement;
 public class FlexBoxLayoutAttr implements LayoutAttr {
     @Override
     public void apply(Context context, String tag, View v, @NonNull String params, @NonNull
-            Object value, RVDomElement tree) throws AttrApplyException {
+            Object value, HNDomElement tree) throws AttrApplyException {
         FlexboxLayout flexboxLayout = (FlexboxLayout) v;
 
         if (params.equals("flex-direction")) {
