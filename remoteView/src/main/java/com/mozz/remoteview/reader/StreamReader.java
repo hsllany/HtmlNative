@@ -30,6 +30,8 @@ public class StreamReader implements TextReader {
 
     boolean meetEof = false;
 
+    private long countOfRead = 0;
+
     public StreamReader() {
 
     }
@@ -60,6 +62,7 @@ public class StreamReader implements TextReader {
                 column = 1;
             }
 
+            countOfRead++;
             return ch;
 
         } catch (IOException e) {
@@ -68,7 +71,6 @@ public class StreamReader implements TextReader {
             eofException.initCause(e);
             close();
             throw eofException;
-
         }
     }
 
@@ -110,5 +112,10 @@ public class StreamReader implements TextReader {
     @Override
     public void close() {
         Utils.closeQuitely(mInputStream);
+    }
+
+    @Override
+    public long countOfRead() {
+        return countOfRead;
     }
 }

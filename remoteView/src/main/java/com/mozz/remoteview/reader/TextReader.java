@@ -16,4 +16,8 @@ public interface TextReader {
     char current();
 
     void close();
+
+    long countOfRead();
+
+    static char INIT_CHAR = ' ';
 }

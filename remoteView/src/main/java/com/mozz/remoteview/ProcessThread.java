@@ -66,6 +66,7 @@ final class ProcessThread {
 
                 Log.d(TAG, module.mRootTree.wholeTreeToString());
                 Log.d(TAG, module.toString());
+                Log.d(TAG, module.mScriptInfo.toString());
 
                 final ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup
                         .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);

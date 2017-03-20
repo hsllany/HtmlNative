@@ -2,8 +2,10 @@ package com.mozz.remoteview;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.mozz.remoteview.reader.TextReader;
+import com.mozz.remoteview.script.ScriptInfo;
 import com.mozz.remoteview.token.Token;
 import com.mozz.remoteview.token.TokenType;
 
@@ -27,6 +29,8 @@ import static com.mozz.remoteview.token.TokenType.Title;
  * @author YangTao7
  */
 final class Parser {
+
+    private static final String TAG = "Parser";
 
     @NonNull
     private final Lexer mLexer;
@@ -75,7 +79,7 @@ final class Parser {
 
             scanFor(StartAngleBracket, Slash, Html, EndAngleBracket);
         } catch (EOFException e) {
-            e.printStackTrace();
+            Log.d(TAG, "Reach the end of stream");
 
         } finally {
             mLexer.close();
@@ -123,17 +127,47 @@ final class Parser {
                     , mLexer.column());
         }
 
-        scanFor(EndAngleBracket);
+        String attrName = null;
 
-        // scan for code
-        scan(true);
+        lookFor(LK_ID | LK_EndArrowBracket);
 
-        if (mCurToken.type() == Id) {
+        String type = null;
+
+        while (true) {
             scan();
-            processCode(mCurToken.stringValue(), segment);
-        }
 
-        scanFor(StartAngleBracket, Slash, Script, EndAngleBracket);
+            switch (mCurToken.type()) {
+                case EndAngleBracket: {
+                    check(LK_EndArrowBracket);
+
+                    Token scriptToken = mLexer.scanScript();
+                    System.out.println("script = " + scriptToken);
+
+                    segment.mScriptInfo = new ScriptInfo(scriptToken, type);
+                    scanFor(StartAngleBracket, Slash, Script, EndAngleBracket);
+                    return;
+                }
+                case Id:
+                    check(LK_ID);
+                    attrName = mCurToken.stringValue();
+                    lookFor(LK_EQUAL);
+                    break;
+
+                case Equal:
+                    check(LK_EQUAL);
+                    lookFor(LK_VALUE);
+                    break;
+
+                case Value:
+                    check(LK_VALUE);
+                    if (attrName.equals("type")) {
+                        type = mCurToken.stringValue();
+                    }
+
+                    lookFor(LK_EndArrowBracket | LK_ID);
+                    break;
+            }
+        }
     }
 
     private void processHead(RVSegment segment) throws RVSyntaxError, EOFException {
@@ -237,39 +271,6 @@ final class Parser {
         tree.mTagPair = 1;
         tree.mBracketPair = 1;
         processInternal(tree);
-    }
-
-    /**
-     * parse the lua code block
-     *
-     * @throws RVSyntaxError
-     */
-    private void processCode(String functionName, @NonNull RVSegment module) throws
-            RVSyntaxError, EOFException {
-        lookFor(LK_CODE);
-
-        while (true) {
-            scan();
-
-            switch (mCurToken.type()) {
-                case Id:
-                    check(LK_ID);
-                    functionName = mCurToken.stringValue();
-                    lookFor(LK_CODE);
-                    break;
-                case Code:
-                    check(LK_CODE);
-                    module.putFunction(functionName, mCurToken.stringValue());
-                    lookFor(LK_ID);
-                    break;
-
-                // if meet other token, just return
-                default:
-                    mReserved = true;
-                    return;
-            }
-        }
-
     }
 
     private void processInternal(@NonNull RVDomTree tree) throws RVSyntaxError {

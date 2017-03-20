@@ -22,12 +22,21 @@ final class Lexer {
     private static final int LK_NOTHING = 1;
     private static final int LK_INNER = 1 << 1;
 
+    private CharQueue mCacheQueue;
+    private static final int CACHE_SIZE = 5;
+
+    private int mReserved = 0;
+
+    private char mCurrent = TextReader.INIT_CHAR;
+
     // Add for recognize code from Inner Element. If < script > is meet, than mLookForScript==3,
     // otherwise, mLookForScript < 3.
     private int mLookForScript = 0;
 
     Lexer(TextReader reader) {
         mReader = reader;
+
+        mCacheQueue = new CharQueue(CACHE_SIZE);
 
         lookFor(LK_NOTHING);
     }
@@ -64,9 +73,6 @@ final class Lexer {
                 mLookForScript = 0;
                 next();
                 return Token.obtainToken(TokenType.Equal, mReader.line(), mReader.column());
-
-            case '{':
-                return scanCode();
         }
 
         if (isLookingFor(LK_INNER) && mLookForScript < 3 && peek() != '<') {
@@ -83,36 +89,6 @@ final class Lexer {
         }
 
         throw new RVSyntaxError("unknown token " + peek(), line(), column());
-    }
-
-    @Nullable
-    private Token scanCode() throws EOFException {
-        long startColumn = mReader.column();
-        long line = mReader.line();
-        clearBuf();
-
-        // Handle the inner bracket of lua script.
-        // Such that: a = {}
-        int scriptBracket = 0;
-
-        next();
-        while (true) {
-
-            if (peek() == '{') {
-                scriptBracket++;
-            } else if (peek() == '}') {
-                scriptBracket--;
-                if (scriptBracket == -1) {
-                    break;
-                }
-            }
-
-            mBuffer.append(peek());
-            next();
-        }
-
-        next();
-        return Token.obtainToken(TokenType.Code, mBuffer.toString(), line, startColumn);
     }
 
     @Nullable
@@ -311,6 +287,67 @@ final class Lexer {
         return Token.obtainToken(TokenType.Inner, mBuffer.toString(), line, startColumn);
     }
 
+    /**
+     * Called by {@link Parser#processScript(RVSegment)}, not by Lexer, the structure may ugly
+     * but simple to implement.  Because Lexer
+     * can't tell whether it's an script or not, only parser has such ability.
+     * <br/>
+     * This function read the script inside "script" tag, no matter it's JavaScript or Lua or
+     * Other language. It detect the end of script by reading '<' and '/' continuously outside the
+     * quotation;
+     *
+     * @return ScriptInfo string
+     * @throws EOFException
+     * @throws RVSyntaxError
+     */
+    Token scanScript() throws EOFException, RVSyntaxError {
+        long startColumn = mReader.column();
+        long line = mReader.line();
+
+        if (currentPositionInFile() < CACHE_SIZE) {
+            throw new RVSyntaxError("wrong status, too early for script.", line, startColumn);
+        }
+
+
+        clearBuf();
+
+        next();
+        next();
+
+        // 0 no in any quota, 1 for quotation, 2 for single quotation
+        byte inQuotation = 0;
+        while (true) {
+            if (inQuotation == 0 && peekHistory(0) == '/' && peekHistory(1) == '<') {
+                mReserved = 2;
+                break;
+            }
+            char ch = peekHistory(2);
+
+            if (inQuotation == 0) {
+                if (ch == '"') {
+                    inQuotation = 1;
+                } else if (ch == '\'') {
+                    inQuotation = 2;
+                }
+            } else {
+                if (inQuotation == 1) {
+                    if (ch == '"' && peekHistory(4) != '\\') {
+                        inQuotation = 0;
+                    }
+                } else if (inQuotation == 2) {
+                    if (ch == '\'' && peekHistory(4) != '\\') {
+                        inQuotation = 0;
+                    }
+                }
+            }
+
+            mBuffer.append(ch);
+            next();
+        }
+
+        return Token.obtainToken(TokenType.Script, mBuffer.toString(), line, startColumn);
+    }
+
 
     private boolean skipWhiteSpaceInner() throws EOFException {
         boolean meet = false;
@@ -356,11 +393,36 @@ final class Lexer {
     }
 
     private char peek() {
-        return mReader.current();
+        return mCurrent;
+    }
+
+    private long currentPositionInFile() {
+        return mReader.countOfRead();
+    }
+
+
+    /**
+     * @param historyBackCount must be smaller than {@link Lexer#CACHE_SIZE}
+     * @return history char saved in {@link Lexer#mCacheQueue}
+     */
+    private char peekHistory(int historyBackCount) {
+        if (historyBackCount > CACHE_SIZE) {
+            throw new IllegalArgumentException("HistoryBackCount must be smaller than CACHE_SIZE " +
+                    "(" + CACHE_SIZE + ")");
+        }
+
+        return mCacheQueue.peek(CACHE_SIZE - historyBackCount - 1);
     }
 
     private void next() throws EOFException {
+        if (mReserved > 0) {
+            mCurrent = mCacheQueue.peek(CACHE_SIZE - mReserved - 1);
+            mReserved--;
+            return;
+        }
         this.mReader.nextCh();
+        mCurrent = this.mReader.current();
+        mCacheQueue.push(peek());
         EventLog.writeEvent(EventLog.TAG_LEXER, "next to " + peek());
     }
 

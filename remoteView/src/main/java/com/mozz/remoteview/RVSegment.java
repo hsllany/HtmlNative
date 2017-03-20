@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.util.ArrayMap;
 
 import com.mozz.remoteview.reader.FileTextReader;
+import com.mozz.remoteview.script.ScriptInfo;
 
 import java.io.InputStream;
 import java.util.Map;
@@ -16,6 +17,8 @@ final class RVSegment {
     AttrsSet mAttrs;
 
     boolean mHasScriptEmbed = false;
+
+    ScriptInfo mScriptInfo;
 
     @NonNull
     private static Map<String, RVSegment> sCache = new ArrayMap<>();

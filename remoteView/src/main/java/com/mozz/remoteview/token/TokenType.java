@@ -21,8 +21,6 @@ public enum TokenType {
     // for value in quot
     Value("Value"),
 
-    Code("Script"),
-
     // Handle the inner text of an element
     Inner("Inner"),
 
