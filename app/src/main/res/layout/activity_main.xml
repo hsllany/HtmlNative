@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.mozz.remoteview.MainActivity">
+    tools:context="com.mozz.htmlnative.MainActivity">
 
     <LinearLayout
         android:id="@+id/search_bar"
