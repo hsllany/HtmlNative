@@ -43,6 +43,23 @@ HNative.getInstance().loadView(mContext, htmlStr, new HNative.OnRViewLoaded() {
 
 ```
 
+### Supported Tag and features:
+
+| Tag        | Native Widget           | Html Properties  |
+| ------------- |:-------------:|-----|
+| p      | TextView | inner element, color, background |
+| img      | ImageView      |   src |
+| iframe | WebView      |    src |
+| input | EditText      |  |
+| div | LinearLayout, FlexBoxLayout | background |
+| a | TextView with click event      | href, same as p |
+| br | \n in textview      |  |
+
+### Roadmap
+
+1. Currently HtmlNative dose not support css link, will or will not support in future, under consideration.
+2. Working on Lua script, may support js via using V8 engine.
+
 ### License
 
 Copyright 2016 Aspsine. All rights reserved.
