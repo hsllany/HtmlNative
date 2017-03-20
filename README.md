@@ -45,6 +45,10 @@ HNative.getInstance().loadView(mContext, htmlStr, new HNative.OnRViewLoaded() {
 
 ### Supported Tag and features:
 
+Common property supported:
+
+inner style: width, height, background, padding, left, top, alpha, visible
+
 | Tag        | Native Widget           | Html Properties  |
 | ------------- |:-------------:|-----|
 | p      | TextView | inner element, color, background |
