@@ -47,9 +47,9 @@ final class ProcessThread {
     static final class RenderTask extends WefRunnable<Context> {
 
         private InputStream mFileSource;
-        private HNative.OnRViewLoaded mCallback;
+        private final HNative.OnHNViewLoaded mCallback;
 
-        RenderTask(Context context, InputStream fileSource, HNative.OnRViewLoaded callback) {
+        RenderTask(Context context, InputStream fileSource, HNative.OnHNViewLoaded callback) {
             super(context);
             mFileSource = fileSource;
             mCallback = callback;
@@ -58,17 +58,24 @@ final class ProcessThread {
         @Override
         protected void runOverride(@Nullable final Context context) {
             try {
-                if (context == null) {
+                if (context == null || mCallback == null) {
                     return;
                 }
 
-                final HNSegment module = HNSegment.load(mFileSource);
+                final HNSegment segment = HNSegment.load(mFileSource);
 
-                Log.d(TAG, module.mRootTree.wholeTreeToString());
-                Log.d(TAG, module.toString());
-                if (module.mScriptInfo != null) {
-                    Log.d(TAG, module.mScriptInfo.toString());
+                Log.d(TAG, segment.mRootTree.wholeTreeToString());
+                Log.d(TAG, segment.toString());
+                if (segment.mScriptInfo != null) {
+                    Log.d(TAG, segment.mScriptInfo.toString());
                 }
+
+                MainHandler.instance().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mCallback.onHead(segment.mHead);
+                    }
+                });
 
                 final ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup
                         .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -77,14 +84,12 @@ final class ProcessThread {
                     public void run() {
                         View v = null;
                         try {
-                            v = HNRenderer.get().render(context, module, layoutParams);
+                            v = HNRenderer.get().render(context, segment, layoutParams);
                         } catch (HNRenderer.RemoteInflateException e) {
                             e.printStackTrace();
                         }
 
-                        if (mCallback != null) {
-                            mCallback.onViewLoaded(v);
-                        }
+                        mCallback.onViewLoaded(v);
                     }
                 });
             } catch (@NonNull final HNSyntaxError e) {

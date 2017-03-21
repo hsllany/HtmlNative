@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.mozz.htmlnative.HNHead;
 import com.mozz.htmlnative.HNative;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -64,17 +65,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String url = mSearch.getText().toString();
 
         if (URLUtil.isValidUrl(url)) {
-            mLoader.load(url, new HNative.OnRViewLoaded() {
+            mLoader.load(url, new HNative.OnHNViewLoaded() {
                 @Override
                 public void onViewLoaded(View v) {
                     mContainer.removeAllViews();
-                    mContainer.addView(v, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.MATCH_PARENT));
+                    mContainer.addView(v, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
+                            .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                 }
 
                 @Override
                 public void onError(Exception e) {
                     Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onHead(HNHead head) {
+
                 }
             });
         }

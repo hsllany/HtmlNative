@@ -63,13 +63,13 @@ public final class HNative {
     }
 
     public final void loadView(final Context context, final InputStream inputStream, final
-    OnRViewLoaded onRViewLoaded) {
+    OnHNViewLoaded onHNViewLoaded) {
         ProcessThread.runRenderTask(new ProcessThread.RenderTask(context, inputStream,
-                onRViewLoaded));
+                onHNViewLoaded));
     }
 
-    public void loadView(Context context, InputStream inputStream, Activity activity) {
-        loadView(context, inputStream, new OnRViewLoadedWeak<Activity>(activity) {
+    public void loadView(Context context, InputStream inputStream, final Activity activity) {
+        loadView(context, inputStream, new OnHNViewLoadedWeak<Activity>(activity) {
             @Override
             public void onViewLoaded(@Nullable View v) {
                 Activity act = mWeakRef.get();
@@ -82,11 +82,15 @@ public final class HNative {
             public void onError(Exception e) {
 
             }
+
+            @Override
+            public void onHead(HNHead head) {
+            }
         });
     }
 
     public void loadView(Context context, InputStream inputStream, final ViewGroup viewGroup) {
-        loadView(context, inputStream, new OnRViewLoadedWeak<ViewGroup>(viewGroup) {
+        loadView(context, inputStream, new OnHNViewLoadedWeak<ViewGroup>(viewGroup) {
             @Override
             public void onViewLoaded(View v) {
                 ViewGroup vv = mWeakRef.get();
@@ -95,6 +99,11 @@ public final class HNative {
 
             @Override
             public void onError(Exception e) {
+
+            }
+
+            @Override
+            public void onHead(HNHead head) {
 
             }
         });
@@ -134,16 +143,18 @@ public final class HNative {
         HNRenderer.setHrefLinkHandler(handler);
     }
 
-    public interface OnRViewLoaded {
+    public interface OnHNViewLoaded {
         void onViewLoaded(View v);
 
         void onError(Exception e);
+
+        void onHead(HNHead head);
     }
 
-    private abstract class OnRViewLoadedWeak<T> implements OnRViewLoaded {
+    private abstract class OnHNViewLoadedWeak<T> implements OnHNViewLoaded {
         protected WeakReference<T> mWeakRef;
 
-        public OnRViewLoadedWeak(T tt) {
+        public OnHNViewLoadedWeak(T tt) {
             this.mWeakRef = new WeakReference<>(tt);
         }
     }

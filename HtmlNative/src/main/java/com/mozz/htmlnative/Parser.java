@@ -207,7 +207,7 @@ final class Parser {
         scanFor(Inner);
 
         String title = mCurToken.stringValue();
-        segment.setTitle(title);
+        segment.mHead.setTitle(title);
 
         scanFor(StartAngleBracket, Slash, Title, EndAngleBracket);
     }
@@ -246,7 +246,7 @@ final class Parser {
                     lookFor(LK_ID | LK_SLASH);
                     break;
                 case Slash:
-                    segment.putMeta(meta);
+                    segment.mHead.putMeta(meta);
                     check(LK_SLASH);
                     scanFor(EndAngleBracket);
                     return;
@@ -282,7 +282,8 @@ final class Parser {
      *
      * @throws HNSyntaxError
      */
-    private void processInternal(@NonNull HNDomTree tree, @NonNull ParseCallback callback) throws HNSyntaxError {
+    private void processInternal(@NonNull HNDomTree tree, @NonNull ParseCallback callback) throws
+            HNSyntaxError {
         EventLog.writeEvent(EventLog.TAG_PARSER, "init to parse tree " + tree.getNodeName());
         int index = 0;
 
