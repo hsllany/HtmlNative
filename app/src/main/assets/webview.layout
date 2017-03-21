@@ -5,11 +5,17 @@
     </head>
 
     <body>
-        <text style="color:#f00; background:#fff">This is an demo of iframe</text>
+        <text style="color:#f00; background:#fff" onClick="nihao">This is an demo of iframe</text>
         <iframe style="width:100%; height:100%; color:#000000" src="http://www.w3school.com.cn/" />
     </body>
 
     <script type="text/lua">
         toast("hello world")
+
+        function nihao()
+            print("nihao")
+        end
+
+        callback('nihao', nihao)
     </script>
 </html>

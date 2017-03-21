@@ -1,8 +1,21 @@
-<body>
-    <p style="color: #000; font-size: 16; padding: 10">
-        This is an example of ImageView
-        <br />2 Images are shown.
-    </p>
-    <img src="http://n.sinaimg.cn/news/crawl/20170302/18ey-fycaahm6004808.jpg" />
-    <img src="http://n.sinaimg.cn/news/crawl/20170312/VUL1-fychhvn8494769.jpg" />
-</body>
+<html>
+    <head>
+        <title>ImageView Example</title>
+    </head>
+    <body>
+        <p style="color: #000; font-size: 16; padding: 10">
+            This is an example of ImageView
+            <br/>2 Images are shown.
+        </p>
+        <img onClick="clickme" src="http://n.sinaimg.cn/news/crawl/20170302/18ey-fycaahm6004808.jpg"/>
+        <img src="http://n.sinaimg.cn/news/crawl/20170312/VUL1-fychhvn8494769.jpg"/>
+    </body>
+
+    <script type="text/lua">
+        function nihao()
+            toast("click on img")
+        end
+
+        callback("clickme", nihao)
+    </script>
+</html>

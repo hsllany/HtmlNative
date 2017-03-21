@@ -157,8 +157,8 @@ final class AttrsSet {
 
     @SuppressWarnings("ConstantConditions")
     public void apply(Context context, String tagName, @NonNull final HNSandBoxContext
-            sandBoxContext, View v, @NonNull HNDomTree tree, @NonNull ViewGroup parent,
-                      @NonNull ViewGroup.LayoutParams layoutParams) throws AttrApplyException {
+            sandBoxContext, View v, @NonNull HNDomTree tree, @NonNull ViewGroup parent, @NonNull
+            ViewGroup.LayoutParams layoutParams) throws AttrApplyException {
 
         int startPosition = tree.mAttrIndex;
         int treeAttrLength = mLength[startPosition];
@@ -269,21 +269,16 @@ final class AttrsSet {
 
                     if (value instanceof String) {
 
-                        //TODO
-//                        final String functionName = (String) value;
-//                        final Script script = mModule.retrieveCode(functionName);
-//
-//                        if (script != null) {
-//                            v.setOnClickListener(new View.OnClickListener() {
-//
-//                                @Override
-//                                public void onClick(View v) {
-//                                    script.execute(sandBoxContext);
-//                                }
-//                            });
-//                        } else {
-//                            Log.w(TAG, "Can't find related function " + functionName);
-//                        }
+                        final String functionName = (String) value;
+
+                        v.setOnClickListener(new View.OnClickListener() {
+
+                            @Override
+                            public void onClick(View v) {
+                                sandBoxContext.executeFun(functionName);
+                            }
+                        });
+
                     }
                     break;
 

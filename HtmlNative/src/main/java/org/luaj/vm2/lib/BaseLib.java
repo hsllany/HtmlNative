@@ -21,13 +21,6 @@
  ******************************************************************************/
 package org.luaj.vm2.lib;
 
-import android.util.Log;
-
-import com.mozz.htmlnative.HNEnvironment;
-
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.Lua;
 import org.luaj.vm2.LuaError;
@@ -36,6 +29,9 @@ import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaThread;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Subclass of {@link LibFunction} which implements the lua basic library functions.
@@ -139,8 +135,10 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
     // "assert", // ( v [,message] ) -> v, message | ERR
     static final class _assert extends VarArgFunction {
         public Varargs invoke(Varargs args) {
-            if (!args.arg1().toboolean())
-                error(args.narg() > 1 ? args.optjstring(2, "assertion failed!") : "assertion failed!");
+            if (!args.arg1().toboolean()) {
+                error(args.narg() > 1 ? args.optjstring(2, "assertion failed!") : "assertion " +
+                        "failed!");
+            }
             return args;
         }
     }
@@ -171,8 +169,7 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
         public Varargs invoke(Varargs args) {
             args.argcheck(args.isstring(1) || args.isnil(1), 1, "filename must be string or nil");
             String filename = args.isstring(1) ? args.tojstring(1) : null;
-            Varargs v = filename == null ?
-                    loadStream(globals.STDIN, "=stdin", "bt", globals) :
+            Varargs v = filename == null ? loadStream(globals.STDIN, "=stdin", "bt", globals) :
                     loadFile(args.checkjstring(1), "bt", globals);
             return v.isnil(1) ? error(v.tojstring(2)) : v.arg1().invoke();
         }
@@ -181,9 +178,8 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
     // "error", // ( message [,level] ) -> ERR
     static final class error extends TwoArgFunction {
         public LuaValue call(LuaValue arg1, LuaValue arg2) {
-            throw arg1.isnil() ? new LuaError(null, arg2.optint(1)) :
-                    arg1.isstring() ? new LuaError(arg1.tojstring(), arg2.optint(1)) :
-                            new LuaError(arg1);
+            throw arg1.isnil() ? new LuaError(null, arg2.optint(1)) : arg1.isstring() ? new
+                    LuaError(arg1.tojstring(), arg2.optint(1)) : new LuaError(arg1);
         }
     }
 
@@ -207,8 +203,8 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
             String source = args.optjstring(2, ld.isstring() ? ld.tojstring() : "=(load)");
             String mode = args.optjstring(3, "bt");
             LuaValue env = args.optvalue(4, globals);
-            return loadStream(ld.isstring() ? ld.strvalue().toInputStream() :
-                    new StringInputStream(ld.checkfunction()), source, mode, env);
+            return loadStream(ld.isstring() ? ld.strvalue().toInputStream() : new
+                    StringInputStream(ld.checkfunction()), source, mode, env);
         }
     }
 
@@ -219,9 +215,8 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
             String filename = args.isstring(1) ? args.tojstring(1) : null;
             String mode = args.optjstring(2, "bt");
             LuaValue env = args.optvalue(3, globals);
-            return filename == null ?
-                    loadStream(globals.STDIN, "=stdin", mode, env) :
-                    loadFile(filename, mode, env);
+            return filename == null ? loadStream(globals.STDIN, "=stdin", mode, env) : loadFile
+                    (filename, mode, env);
         }
     }
 
@@ -229,8 +224,9 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
     final class pcall extends VarArgFunction {
         public Varargs invoke(Varargs args) {
             LuaValue func = args.checkvalue(1);
-            if (globals != null && globals.debuglib != null)
+            if (globals != null && globals.debuglib != null) {
                 globals.debuglib.onCall(this);
+            }
             try {
                 return varargsOf(TRUE, func.invoke(args.subargs(2)));
             } catch (LuaError le) {
@@ -240,8 +236,9 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
                 final String m = e.getMessage();
                 return varargsOf(FALSE, valueOf(m != null ? m : e.toString()));
             } finally {
-                if (globals != null && globals.debuglib != null)
+                if (globals != null && globals.debuglib != null) {
                     globals.debuglib.onReturn();
+                }
             }
         }
     }
@@ -258,12 +255,17 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
         public Varargs invoke(Varargs args) {
             LuaValue tostring = globals.get("tostring");
 
+            StringBuilder sb = new StringBuilder();
+
             for (int i = 1, n = args.narg(); i <= n; i++) {
-                if (i > 1) Log.d(HNEnvironment.STD_TAG, "\t");
+                if (i > 1) {
+                    sb.append('\t');
+                }
                 LuaString s = tostring.call(args.arg(i)).strvalue();
-                Log.d(HNEnvironment.STD_TAG, s.tojstring());
+                sb.append(s.tojstring());
             }
-            Log.d(HNEnvironment.STD_TAG, "\n");
+            System.out.println(sb.toString());
+            //            Log.d(HNEnvironment.STD_TAG, "\n");
             return NONE;
         }
     }
@@ -328,11 +330,13 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
     static final class select extends VarArgFunction {
         public Varargs invoke(Varargs args) {
             int n = args.narg() - 1;
-            if (args.arg1().equals(valueOf("#")))
+            if (args.arg1().equals(valueOf("#"))) {
                 return valueOf(n);
+            }
             int i = args.checkint(1);
-            if (i == 0 || i < -n)
+            if (i == 0 || i < -n) {
                 argerror(1, "index out of range");
+            }
             return args.subargs(i < 0 ? n + i + 2 : i + 1);
         }
     }
@@ -345,8 +349,9 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
 
         public LuaValue call(LuaValue table, LuaValue metatable) {
             final LuaValue mt0 = table.checktable().getmetatable();
-            if (mt0 != null && !mt0.rawget(METATABLE).isnil())
+            if (mt0 != null && !mt0.rawget(METATABLE).isnil()) {
                 error("cannot change a protected metatable");
+            }
             return table.setmetatable(metatable.isnil() ? null : metatable.checktable());
         }
     }
@@ -358,11 +363,13 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
         }
 
         public LuaValue call(LuaValue e, LuaValue base) {
-            if (base.isnil())
+            if (base.isnil()) {
                 return e.tonumber();
+            }
             final int b = base.checkint();
-            if (b < 2 || b > 36)
+            if (b < 2 || b > 36) {
                 argerror(2, "base out of range");
+            }
             return e.checkstring().tonumber(b);
         }
     }
@@ -371,11 +378,13 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
     static final class tostring extends LibFunction {
         public LuaValue call(LuaValue arg) {
             LuaValue h = arg.metatag(TOSTRING);
-            if (!h.isnil())
+            if (!h.isnil()) {
                 return h.call(arg);
+            }
             LuaValue v = arg.tostring();
-            if (!v.isnil())
+            if (!v.isnil()) {
                 return v;
+            }
             return valueOf(arg.tojstring());
         }
     }
@@ -394,8 +403,9 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
             final LuaValue preverror = t.errorfunc;
             t.errorfunc = args.checkvalue(2);
             try {
-                if (globals != null && globals.debuglib != null)
+                if (globals != null && globals.debuglib != null) {
                     globals.debuglib.onCall(this);
+                }
                 try {
                     return varargsOf(TRUE, args.arg1().invoke(args.subargs(3)));
                 } catch (LuaError le) {
@@ -405,8 +415,9 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
                     final String m = e.getMessage();
                     return varargsOf(FALSE, valueOf(m != null ? m : e.toString()));
                 } finally {
-                    if (globals != null && globals.debuglib != null)
+                    if (globals != null && globals.debuglib != null) {
                         globals.debuglib.onReturn();
+                    }
                 }
             } finally {
                 t.errorfunc = preverror;
@@ -459,8 +470,10 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
      */
     public Varargs loadFile(String filename, String mode, LuaValue env) {
         InputStream is = globals.finder.findResource(filename);
-        if (is == null)
-            return varargsOf(NIL, valueOf("cannot open " + filename + ": No such file or directory"));
+        if (is == null) {
+            return varargsOf(NIL, valueOf("cannot open " + filename + ": No such file or " +
+                    "directory"));
+        }
         try {
             return loadStream(is, "@" + filename, mode, env);
         } finally {
@@ -474,8 +487,9 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
 
     public Varargs loadStream(InputStream is, String chunkname, String mode, LuaValue env) {
         try {
-            if (is == null)
+            if (is == null) {
                 return varargsOf(NIL, valueOf("not found: " + chunkname));
+            }
             return globals.load(is, chunkname, mode, env);
         } catch (Exception e) {
             return varargsOf(NIL, valueOf(e.getMessage()));
@@ -495,14 +509,16 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
         public int read() throws IOException {
             if (remaining <= 0) {
                 LuaValue s = func.call();
-                if (s.isnil())
+                if (s.isnil()) {
                     return -1;
+                }
                 LuaString ls = s.strvalue();
                 bytes = ls.m_bytes;
                 offset = ls.m_offset;
                 remaining = ls.m_length;
-                if (remaining <= 0)
+                if (remaining <= 0) {
                     return -1;
+                }
             }
             --remaining;
             return bytes[offset++];

@@ -1,6 +1,9 @@
 package com.mozz.htmlnative;
 
 import org.junit.Test;
+import org.luaj.vm2.Globals;
+import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.lib.jse.JsePlatform;
 
 /**
  * Created by Yang Tao on 17/2/24.
@@ -8,14 +11,19 @@ import org.junit.Test;
 public class ScriptTest {
 
     private static String luaScript = " print(LuaViewVersion())";
-    private static String helloWorldScript = "print('hello world', LuaViewVersion())";
+    private static String helloWorldScript = "myfunction = function()\n" +
+            "print(\"hello world\")\n" +
+            "end\n" +
+            "\n" +
+            "";
 
     @Test
     public void execute() throws Exception {
+        Globals globals = JsePlatform.standardGlobals();
+//        globals.set("callback", new callback());
 
-        String a = "hello world";
-
-        System.out.println(CharSequence.class.isAssignableFrom(String.class));
+        LuaValue value = globals.load(helloWorldScript);
+        value.call();
     }
 
 

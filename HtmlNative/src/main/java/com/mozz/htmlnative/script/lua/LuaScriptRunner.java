@@ -14,6 +14,9 @@ import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Yang Tao, 17/3/21.
  */
@@ -22,6 +25,8 @@ public class LuaScriptRunner extends ScriptRunner {
     private Globals mGlobals;
 
     private static final String TAG = LuaScriptRunner.class.getSimpleName();
+
+    private Map<String, LuaValue> mFunctionTable = new HashMap<>();
 
     public LuaScriptRunner(HNSandBoxContext sandBoxContext) {
         super(sandBoxContext);
@@ -32,6 +37,7 @@ public class LuaScriptRunner extends ScriptRunner {
         mGlobals.set("property", new properties.property(sandBoxContext));
         mGlobals.set("setProperty", new properties.setProperty(sandBoxContext));
         mGlobals.set("getProperty", new properties.getProperty(sandBoxContext));
+        mGlobals.set("callback", new callback(this));
         mGlobals.set("log", new logcat());
         Log.i(TAG, "init Lua module spend " + (SystemClock.currentThreadTimeMillis() - time1) + "" +
                 " ms");
@@ -57,6 +63,18 @@ public class LuaScriptRunner extends ScriptRunner {
             });
 
         }
+    }
+
+    @Override
+    public void runFunction(String functionName) {
+        LuaValue v = mFunctionTable.get(functionName);
+        if (v != null) {
+            v.call();
+        }
+    }
+
+    public void putFunction(String functionName, LuaValue l) {
+        mFunctionTable.put(functionName, l);
     }
 
 }

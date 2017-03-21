@@ -14,4 +14,7 @@ public abstract class ScriptRunner {
     }
 
     public abstract void run(String script);
+
+    public abstract void runFunction(String functionName);
+
 }

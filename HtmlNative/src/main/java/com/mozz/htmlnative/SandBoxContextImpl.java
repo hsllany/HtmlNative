@@ -135,6 +135,11 @@ final class SandBoxContextImpl implements HNSandBoxContext {
         ScriptRunnerThread.getInstance().runScript(this, this.mRunner, script);
     }
 
+    @Override
+    public void executeFun(String funName) {
+        mRunner.runFunction(funName);
+    }
+
     @NonNull
     static HNSandBoxContext create(@NonNull FrameLayout layout, HNSegment module, Context context) {
         HNSandBoxContext v = new SandBoxContextImpl(module, context);
