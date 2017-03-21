@@ -141,7 +141,7 @@ final class Parser {
                     check(LK_EndArrowBracket);
 
                     Token scriptToken = mLexer.scanScript();
-                    System.out.println("script = " + scriptToken);
+                    segment.mHasScriptEmbed = true;
 
                     segment.mScriptInfo = new ScriptInfo(scriptToken, type);
                     scanFor(StartAngleBracket, Slash, Script, EndAngleBracket);

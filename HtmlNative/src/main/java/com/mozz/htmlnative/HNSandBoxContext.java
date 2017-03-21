@@ -32,6 +32,8 @@ public interface HNSandBoxContext extends VariablePool {
     @Nullable
     View findViewById(@NonNull String id);
 
+    boolean containsView(String id);
+
     void onViewLoaded();
 
     void onViewCreate();

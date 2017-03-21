@@ -19,6 +19,15 @@ public class ScriptInfo {
         this.type = parseType(type);
     }
 
+    public int type() {
+        return type;
+    }
+
+    public String code() {
+        return token.stringValue();
+    }
+
+
     private static int parseType(String typeString) {
         if (typeString == null) {
             return SCRIPT_JAVASCRIPT;

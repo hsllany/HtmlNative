@@ -268,20 +268,22 @@ final class AttrsSet {
                 case ATTR_ONCLICK:
 
                     if (value instanceof String) {
-                        final String functionName = (String) value;
-                        final Script script = mModule.retrieveCode(functionName);
 
-                        if (script != null) {
-                            v.setOnClickListener(new View.OnClickListener() {
-
-                                @Override
-                                public void onClick(View v) {
-                                    script.execute(sandBoxContext);
-                                }
-                            });
-                        } else {
-                            Log.w(TAG, "Can't find related function " + functionName);
-                        }
+                        //TODO
+//                        final String functionName = (String) value;
+//                        final Script script = mModule.retrieveCode(functionName);
+//
+//                        if (script != null) {
+//                            v.setOnClickListener(new View.OnClickListener() {
+//
+//                                @Override
+//                                public void onClick(View v) {
+//                                    script.execute(sandBoxContext);
+//                                }
+//                            });
+//                        } else {
+//                            Log.w(TAG, "Can't find related function " + functionName);
+//                        }
                     }
                     break;
 

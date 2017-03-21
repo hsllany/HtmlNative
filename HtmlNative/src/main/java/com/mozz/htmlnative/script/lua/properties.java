@@ -1,4 +1,4 @@
-package com.mozz.htmlnative.script;
+package com.mozz.htmlnative.script.lua;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

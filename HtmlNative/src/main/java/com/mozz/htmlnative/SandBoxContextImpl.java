@@ -1,29 +1,17 @@
 package com.mozz.htmlnative;
 
 import android.content.Context;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.ArrayMap;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
-import com.mozz.htmlnative.common.MainHandler;
-import com.mozz.htmlnative.common.StrRunnable;
-import com.mozz.htmlnative.common.WefRunnable;
-import com.mozz.htmlnative.script.LuaRunner;
-import com.mozz.htmlnative.script.logcat;
-import com.mozz.htmlnative.script.properties;
-import com.mozz.htmlnative.script.setParams;
-import com.mozz.htmlnative.script.toast;
+import com.mozz.htmlnative.script.ScriptRunner;
+import com.mozz.htmlnative.script.ScriptRunnerFactory;
+import com.mozz.htmlnative.script.ScriptRunnerThread;
 
-import org.luaj.vm2.Globals;
-import org.luaj.vm2.LuaError;
-import org.luaj.vm2.LuaValue;
-
-import java.lang.ref.WeakReference;
 import java.util.Map;
 
 /**
@@ -41,7 +29,7 @@ final class SandBoxContextImpl implements HNSandBoxContext {
 
     private final VariablePoolImpl mPool = new VariablePoolImpl();
 
-    private Globals mGlobals;
+    private ScriptRunner mRunner;
 
     private final HNSegment mSegment;
 
@@ -52,18 +40,22 @@ final class SandBoxContextImpl implements HNSandBoxContext {
         mContext = context;
     }
 
+    @Override
     public Context getAndroidContext() {
         return mContext;
     }
 
+    @Override
     public void addVariable(String string, Object object) {
         mPool.addVariable(string, object);
     }
 
+    @Override
     public void updateVariable(String string, Object newValue) {
         mPool.updateVariable(string, newValue);
     }
 
+    @Override
     public Object getVariable(String string) {
         return mPool.getVariable(string);
     }
@@ -78,24 +70,26 @@ final class SandBoxContextImpl implements HNSandBoxContext {
     }
 
     @Nullable
+    @Override
     public View findViewById(@NonNull String id) {
         return mViewWithId.get(id);
     }
 
+    @Override
     public boolean containsView(String id) {
         return mViewWithId.containsKey(id);
     }
 
+    @Override
     public void onViewLoaded() {
-
         callCreated();
-
     }
 
+    @Override
     public void onViewCreate() {
-        // if there is script code in layout file, then initLuaRunner
+        // if there is script code in layout file, then initContextScriptRunner
         if (mSegment.mHasScriptEmbed) {
-            initLuaRunner();
+            mRunner = ScriptRunnerFactory.createRunner(mSegment.mScriptInfo.type(), this);
         }
 
         initVariablePool();
@@ -108,41 +102,12 @@ final class SandBoxContextImpl implements HNSandBoxContext {
     }
 
     private void callCreate() {
-        Script create = mSegment.retrieveReserved(ScriptTable.CREATE);
-        if (create == null) {
-            return;
+        if (mSegment.mScriptInfo != null) {
+            execute(mSegment.mScriptInfo.code());
         }
-        execute(create);
     }
 
     private void callCreated() {
-        Script created = mSegment.retrieveReserved(ScriptTable.CREATED);
-        if (created == null) {
-            return;
-        }
-        execute(created);
-    }
-
-    private void initLuaRunner() {
-        LuaRunner.getInstance().runLuaScript(new WefRunnable<HNSandBoxContext>(this) {
-            @Override
-            protected void runOverride(@Nullable HNSandBoxContext HNSandBoxContext) {
-                if (HNSandBoxContext == null) {
-                    return;
-                }
-                long time1 = SystemClock.currentThreadTimeMillis();
-                mGlobals = LuaRunner.newGlobals();
-                mGlobals.set("view", new setParams(HNSandBoxContext));
-                mGlobals.set("toast", new toast(HNSandBoxContext.getAndroidContext()));
-                mGlobals.set("property", new properties.property(HNSandBoxContext));
-                mGlobals.set("setProperty", new properties.setProperty(HNSandBoxContext));
-                mGlobals.set("getProperty", new properties.getProperty(HNSandBoxContext));
-                mGlobals.set("log", new logcat());
-                Log.i(TAG, "init Lua module spend " + (SystemClock.currentThreadTimeMillis() -
-                        time1) + " ms");
-            }
-        });
-
     }
 
     public String allIdTag() {
@@ -159,55 +124,15 @@ final class SandBoxContextImpl implements HNSandBoxContext {
         return null;
     }
 
-
-    private void execute(@NonNull Script script) {
-        execute(script.toString());
-    }
-
     @Override
     public void execute(final String script) {
-        if (mGlobals == null) {
-            Log.d(TAG, "skip the script \"" + script + "\" because no script in module " + mSegment);
+        if (mRunner == null) {
+            Log.d(TAG, "skip the script \"" + script + "\" because no script in module " +
+                    mSegment);
             return;
         }
 
-        LuaRunner.getInstance().runLuaScript(new StrRunnableContext(this, script) {
-            @Override
-            protected void runOverride(String s) {
-                SandBoxContextImpl context = mContextRef.get();
-                if (context == null) {
-                    return;
-                }
-
-                context.executeNowWithoutException(s);
-            }
-        });
-    }
-
-    /**
-     * Actual method to run script, which swallow the exception to prevent app crash
-     *
-     * @param s, script to run
-     */
-    private void executeNowWithoutException(String s) {
-        EventLog.writeEvent(EventLog.TAG_VIEW_CONTEXT, "Execute script \"" + s + "\".");
-        try {
-            LuaValue l = mGlobals.load(s);
-            l.call();
-        } catch (@NonNull final LuaError e) {
-            // make sure that lua script dose not crash the whole app
-            e.printStackTrace();
-            Log.e(TAG, "LuaScriptRun");
-            if (DEBUG) {
-                MainHandler.instance().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getAndroidContext(), "LuaScript Wrong:\n" + e.getMessage()
-                                , Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        }
+        ScriptRunnerThread.getInstance().runScript(this, this.mRunner, script);
     }
 
     @NonNull
@@ -217,14 +142,4 @@ final class SandBoxContextImpl implements HNSandBoxContext {
         return v;
     }
 
-    private static abstract class StrRunnableContext extends StrRunnable<String> {
-
-        WeakReference<SandBoxContextImpl> mContextRef;
-
-        StrRunnableContext(SandBoxContextImpl context, String s) {
-            super(s);
-
-            mContextRef = new WeakReference<>(context);
-        }
-    }
 }

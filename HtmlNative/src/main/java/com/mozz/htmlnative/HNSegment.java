@@ -12,7 +12,6 @@ import java.util.Map;
 final class HNSegment {
     HNDomTree mRootTree;
 
-    private ScriptTable mScriptTable;
 
     AttrsSet mAttrs;
 
@@ -29,26 +28,6 @@ final class HNSegment {
 
     HNSegment() {
         mAttrs = new AttrsSet(this);
-        mScriptTable = new ScriptTable();
-    }
-
-    void putFunction(String functionName, String code) {
-        mScriptTable.putFunction(functionName, code);
-        if (!mHasScriptEmbed) {
-            mHasScriptEmbed = true;
-        }
-    }
-
-    /**
-     * @param functionName
-     * @return
-     */
-    public Script retrieveCode(String functionName) {
-        return mScriptTable.retrieveCode(functionName);
-    }
-
-    public Script retrieveReserved(int reservedCode) {
-        return mScriptTable.retrieveReserved(reservedCode);
     }
 
     @NonNull
@@ -80,7 +59,7 @@ final class HNSegment {
 
     @Override
     public String toString() {
-        //TODO 
+        //TODO
         return mHead.toString();
     }
 }

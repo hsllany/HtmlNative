@@ -50,15 +50,15 @@ public final class HNRenderer {
 
         RXViewGroup rootViewGroup = new RXViewGroup(context);
 
-        HNSandBoxContext HNSandBoxContext = SandBoxContextImpl.create(rootViewGroup, segment,
+        HNSandBoxContext sandBoxContext = SandBoxContextImpl.create(rootViewGroup, segment,
                 context);
 
         pWatcher.check("[step 1] create HNSandBoxContext");
 
-        HNSandBoxContext.onViewCreate();
+        sandBoxContext.onViewCreate();
         pWatcher.check("[step 2] call onViewCreate");
 
-        View v = renderInternal(context, HNSandBoxContext, segment.mRootTree, rootViewGroup,
+        View v = renderInternal(context, sandBoxContext, segment.mRootTree, rootViewGroup,
                 segment.mAttrs, params, rootViewGroup);
         pWatcher.check("[step 3] rendering view");
 
@@ -68,10 +68,10 @@ public final class HNRenderer {
         rootViewGroup.addView(v, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
 
-        HNSandBoxContext.onViewLoaded();
+        sandBoxContext.onViewLoaded();
         pWatcher.checkDone("finally done");
 
-        EventLog.writeEvent(EventLog.TAG_RENDER, HNSandBoxContext.allIdTag());
+        EventLog.writeEvent(EventLog.TAG_RENDER, sandBoxContext.allIdTag());
 
         return rootViewGroup;
     }
