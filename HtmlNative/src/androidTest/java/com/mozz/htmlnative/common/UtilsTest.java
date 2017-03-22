@@ -16,7 +16,7 @@ public class UtilsTest {
     @Test
     public void closeQuitely() throws Exception {
         Closeable closeable = null;
-        Utils.closeQuitely(closeable);
+        Utils.closeQuietly(closeable);
 
         closeable = new Closeable() {
             @Override
@@ -25,7 +25,7 @@ public class UtilsTest {
             }
         };
 
-        Utils.closeQuitely(closeable);
+        Utils.closeQuietly(closeable);
     }
 
     @Test

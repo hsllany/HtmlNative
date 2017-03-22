@@ -6,7 +6,7 @@ import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
 /**
- * Created by Yang Tao on 17/2/24.
+ * @author Yang Tao, 17/2/24.
  */
 public class ScriptTest {
 
@@ -20,7 +20,7 @@ public class ScriptTest {
     @Test
     public void execute() throws Exception {
         Globals globals = JsePlatform.standardGlobals();
-//        globals.set("callback", new callback());
+        //        globals.set("callback", new callback());
 
         LuaValue value = globals.load(helloWorldScript);
         value.call();

@@ -423,7 +423,7 @@ final class Lexer {
         this.mReader.nextCh();
         mCurrent = this.mReader.current();
         mCacheQueue.push(peek());
-        EventLog.writeEvent(EventLog.TAG_LEXER, "next to " + peek());
+        HNEventLog.writeEvent(HNEventLog.TAG_LEXER, "next to " + peek());
     }
 
     private void lookFor(int status) {

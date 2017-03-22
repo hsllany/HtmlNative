@@ -8,9 +8,9 @@ import org.luaj.vm2.lib.TwoArgFunction;
  */
 
 public class callback extends TwoArgFunction {
-    private LuaScriptRunner mRunner;
+    private LuaRunner mRunner;
 
-    public callback(LuaScriptRunner runner) {
+    public callback(LuaRunner runner) {
         mRunner = runner;
     }
 

@@ -18,17 +18,17 @@ import java.io.InputStream;
  * @author Yang Tao, 17/3/10.
  */
 
-final class ProcessThread {
+final class HNProcessThread {
 
-    private static final String TAG = ProcessThread.class.getSimpleName();
+    private static final String TAG = HNProcessThread.class.getSimpleName();
 
-    private ProcessThread() {
+    private HNProcessThread() {
 
     }
 
     // for running render task
     @NonNull
-    private static HandlerThread mRenderThread = new HandlerThread("RVRenderThread");
+    private static HandlerThread mRenderThread = new HandlerThread("HNProcessThread");
     private static Handler mRenderHandler;
 
     static void init() {

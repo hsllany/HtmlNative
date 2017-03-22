@@ -11,7 +11,7 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
  * @author Yang Tao, 17/3/14.
  */
 
-public final class EventLog {
+public final class HNEventLog {
 
     private static final String TAG = "RVEvent";
 
@@ -32,7 +32,7 @@ public final class EventLog {
 
     private static int sDebugLevel = 0;
 
-    private EventLog() {
+    private HNEventLog() {
     }
 
     public static void writeEvent(@EventType int tag, String msg) {

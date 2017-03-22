@@ -4,7 +4,7 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.mozz.htmlnative.EventLog;
+import com.mozz.htmlnative.HNEventLog;
 import com.mozz.htmlnative.HNSandBoxContext;
 import com.mozz.htmlnative.common.MainHandler;
 import com.mozz.htmlnative.script.ScriptRunner;
@@ -21,14 +21,14 @@ import java.util.Map;
  * @author Yang Tao, 17/3/21.
  */
 
-public class LuaScriptRunner extends ScriptRunner {
+public class LuaRunner extends ScriptRunner {
     private Globals mGlobals;
 
-    private static final String TAG = LuaScriptRunner.class.getSimpleName();
+    private static final String TAG = LuaRunner.class.getSimpleName();
 
     private Map<String, LuaValue> mFunctionTable = new HashMap<>();
 
-    public LuaScriptRunner(HNSandBoxContext sandBoxContext) {
+    public LuaRunner(HNSandBoxContext sandBoxContext) {
         super(sandBoxContext);
         long time1 = SystemClock.currentThreadTimeMillis();
         mGlobals = JsePlatform.standardGlobals();
@@ -45,7 +45,7 @@ public class LuaScriptRunner extends ScriptRunner {
 
     @Override
     public void run(String script) {
-        EventLog.writeEvent(EventLog.TAG_VIEW_CONTEXT, "Execute script \"" + script + "\".");
+        HNEventLog.writeEvent(HNEventLog.TAG_VIEW_CONTEXT, "Execute script \"" + script + "\".");
         try {
             LuaValue l = mGlobals.load(script);
             l.call();

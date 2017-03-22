@@ -10,7 +10,6 @@ import android.widget.FrameLayout;
 
 import com.mozz.htmlnative.script.ScriptRunner;
 import com.mozz.htmlnative.script.ScriptRunnerFactory;
-import com.mozz.htmlnative.script.ScriptRunnerThread;
 
 import java.util.Map;
 
@@ -132,7 +131,7 @@ final class SandBoxContextImpl implements HNSandBoxContext {
             return;
         }
 
-        ScriptRunnerThread.getInstance().runScript(this, this.mRunner, script);
+        HNScriptRunnerThread.runScript(this, this.mRunner, script);
     }
 
     @Override

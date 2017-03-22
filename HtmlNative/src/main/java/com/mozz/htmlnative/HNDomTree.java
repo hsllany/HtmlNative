@@ -13,7 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-final class HNDomTree implements HNDomElement, Parser.ParseCallback {
+final class HNDomTree implements Parser.ParseCallback {
 
     static final String INNER_TREE_TAG = "inner";
 
@@ -36,7 +36,7 @@ final class HNDomTree implements HNDomElement, Parser.ParseCallback {
     private LinkedList<HNDomTree> mChildren;
 
     @Nullable
-    String mNodeName;
+    String mTag;
 
     private HNSegment mModule;
 
@@ -62,10 +62,10 @@ final class HNDomTree implements HNDomElement, Parser.ParseCallback {
         this(context, null, parent, depth, index);
     }
 
-    private HNDomTree(@NonNull HNSegment module, String nodeName, HNDomTree parent, int depth,
-                      int index) {
+    private HNDomTree(@NonNull HNSegment module, String tag, HNDomTree parent, int depth, int
+            index) {
         mModule = module;
-        mNodeName = nodeName;
+        mTag = tag;
         mDepth = depth;
         mParent = parent;
         mIndex = index;
@@ -164,13 +164,11 @@ final class HNDomTree implements HNDomElement, Parser.ParseCallback {
     }
 
     @Nullable
-    @Override
-    public String getNodeName() {
-        return mNodeName;
+    public String getTag() {
+        return mTag;
     }
 
     @Nullable
-    @Override
     public String getInner() {
         return mText;
     }
@@ -217,7 +215,7 @@ final class HNDomTree implements HNDomElement, Parser.ParseCallback {
     public String toString() {
         String index = "@" + mIndex + ":" + mOrder + ", ";
         String text = (mText == null ? "" : ", text=" + mText);
-        return "[" + index + mNodeName + ", attrs=" + mModule.mAttrs.toString(this) + text + "]";
+        return "[" + index + mTag + ", attrs=" + mModule.mAttrs.toString(this) + text + "]";
     }
 
     public HNDomTree getParent() {

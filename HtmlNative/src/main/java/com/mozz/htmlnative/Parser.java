@@ -267,7 +267,7 @@ final class Parser {
                     (), mLexer.column());
         }
 
-        tree.mNodeName = mCurToken.stringValue();
+        tree.mTag = mCurToken.stringValue();
         tree.mTagPair = 1;
         tree.mBracketPair = 1;
         processInternal(tree);
@@ -284,7 +284,7 @@ final class Parser {
      */
     private void processInternal(@NonNull HNDomTree tree, @NonNull ParseCallback callback) throws
             HNSyntaxError {
-        EventLog.writeEvent(EventLog.TAG_PARSER, "init to parse tree " + tree.getNodeName());
+        HNEventLog.writeEvent(HNEventLog.TAG_PARSER, "init to parse tree " + tree.getTag());
         int index = 0;
 
         lookFor(LK_ID | LK_EndArrowBracket | LK_SLASH);
@@ -319,9 +319,9 @@ final class Parser {
                             scan();
 
                             // compare the tag string with tree.nodeName
-                            if (!tree.getNodeName().equals(mCurToken.value())) {
+                            if (!tree.getTag().equals(mCurToken.value())) {
                                 throw new HNSyntaxError("View tag should be in pairs, current " +
-                                        "is<" + tree.getNodeName() + "></" + mCurToken.value() +
+                                        "is<" + tree.getTag() + "></" + mCurToken.value() +
                                         ">", mLexer.line(), mLexer.column());
                             }
 
@@ -344,7 +344,7 @@ final class Parser {
 
                             // handle the <br/> tag
                             if (HtmlTag.BR.equalsIgnoreCase(tag)) {
-                                if (isSwallowInnerTag(tree.getNodeName())) {
+                                if (isSwallowInnerTag(tree.getTag())) {
                                     tree.appendText("\n");
                                 } else {
                                     tree.last().appendText("\n");
@@ -415,7 +415,7 @@ final class Parser {
 
                     case Inner:
                         check(LK_INNER);
-                        if (isSwallowInnerTag(tree.getNodeName())) {
+                        if (isSwallowInnerTag(tree.getTag())) {
                             tree.appendText(mCurToken.stringValue());
                         } else {
                             HNDomTree innerChild = new HNDomTree(tree, HNDomTree.INNER_TREE_TAG,
@@ -505,7 +505,7 @@ final class Parser {
 
     private void scan() throws EOFException, HNSyntaxError {
         if (mReserved) {
-            EventLog.writeEvent(EventLog.TAG_PARSER, "Reprocess token ->" + mCurToken);
+            HNEventLog.writeEvent(HNEventLog.TAG_PARSER, "Reprocess token ->" + mCurToken);
             mReserved = false;
             return;
         }
@@ -515,7 +515,7 @@ final class Parser {
         mCurToken = mLexer.scan();
 
 
-        EventLog.writeEvent(EventLog.TAG_PARSER, "Process token ->" + mCurToken);
+        HNEventLog.writeEvent(HNEventLog.TAG_PARSER, "Process token ->" + mCurToken);
 
     }
 

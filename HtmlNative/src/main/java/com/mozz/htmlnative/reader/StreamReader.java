@@ -111,7 +111,7 @@ public class StreamReader implements TextReader {
 
     @Override
     public void close() {
-        Utils.closeQuitely(mInputStream);
+        Utils.closeQuietly(mInputStream);
     }
 
     @Override

@@ -17,7 +17,7 @@ public final class Utils {
     private Utils() {
     }
 
-    public static void closeQuitely(@Nullable Closeable closeable) {
+    public static void closeQuietly(@Nullable Closeable closeable) {
         if (closeable != null) {
             try {
                 closeable.close();

@@ -10,8 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
-import com.mozz.htmlnative.script.ScriptRunnerThread;
-
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 
@@ -28,7 +26,8 @@ public final class HNative {
     private DisplayMetrics mDefaultMetrics;
 
     private HNative() {
-        ProcessThread.init();
+        HNProcessThread.init();
+        HNScriptRunnerThread.init();
     }
 
     @Nullable
@@ -64,7 +63,7 @@ public final class HNative {
 
     public final void loadView(final Context context, final InputStream inputStream, final
     OnHNViewLoaded onHNViewLoaded) {
-        ProcessThread.runRenderTask(new ProcessThread.RenderTask(context, inputStream,
+        HNProcessThread.runRenderTask(new HNProcessThread.RenderTask(context, inputStream,
                 onHNViewLoaded));
     }
 
@@ -127,8 +126,8 @@ public final class HNative {
 
     public void onDestroy() {
         HNSegment.clearCache();
-        ProcessThread.quit();
-        ScriptRunnerThread.getInstance().quit();
+        HNProcessThread.quit();
+        HNScriptRunnerThread.quit();
     }
 
     public void setImageViewAdapter(@NonNull ImageViewAdapter adapter) {

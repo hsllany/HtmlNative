@@ -43,51 +43,44 @@ public final class HNRenderer {
     @MainThread
     final View render(@NonNull Context context, @NonNull HNSegment segment, @NonNull ViewGroup
             .LayoutParams params) throws RemoteInflateException {
-
-        EventLog.writeEvent(EventLog.TAG_RENDER, "start to render " + segment.toString());
-
+        HNEventLog.writeEvent(HNEventLog.TAG_RENDER, "start to render " + segment.toString());
         PerformanceWatcher pWatcher = Performance.newWatcher();
-
         RXViewGroup rootViewGroup = new RXViewGroup(context);
-
         HNSandBoxContext sandBoxContext = SandBoxContextImpl.create(rootViewGroup, segment,
                 context);
-
         pWatcher.check("[step 1] create HNSandBoxContext");
-
         sandBoxContext.onViewCreate();
         pWatcher.check("[step 2] call onViewCreate");
 
-        View v = renderInternal(context, sandBoxContext, segment.mRootTree, rootViewGroup,
-                segment.mAttrs, params, rootViewGroup);
+        View v = renderInternal(context, sandBoxContext, segment, rootViewGroup, params,
+                rootViewGroup);
         pWatcher.check("[step 3] rendering view");
 
-        if (v == null) {
-            return null;
+        if (v != null) {
+            rootViewGroup.addView(v, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
+                    .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            sandBoxContext.onViewLoaded();
+            pWatcher.checkDone("finally done");
+            HNEventLog.writeEvent(HNEventLog.TAG_RENDER, sandBoxContext.allIdTag());
+            return rootViewGroup;
         }
-        rootViewGroup.addView(v, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT));
 
-        sandBoxContext.onViewLoaded();
-        pWatcher.checkDone("finally done");
-
-        EventLog.writeEvent(EventLog.TAG_RENDER, sandBoxContext.allIdTag());
-
-        return rootViewGroup;
+        return null;
     }
 
     private View renderInternal(@NonNull Context context, @NonNull HNSandBoxContext
-            sandBoxContext, @NonNull HNDomTree tree, @NonNull ViewGroup parent, @NonNull AttrsSet
-            attrsSet, @NonNull ViewGroup.LayoutParams params, @NonNull RXViewGroup root) throws
-            RemoteInflateException {
+            sandBoxContext, HNSegment segment, @NonNull ViewGroup parent, @NonNull ViewGroup
+            .LayoutParams params, @NonNull RXViewGroup root) throws RemoteInflateException {
 
+        HNDomTree tree = segment.mRootTree;
+        AttrsSet attrsSet = segment.mAttrs;
 
         if (tree.isLeaf()) {
-            return createViewFromNodeName(tree, sandBoxContext, tree.getNodeName(), parent,
-                    context, attrsSet, params, root);
+            return createViewFromNodeName(tree, sandBoxContext, parent, context, attrsSet,
+                    params, root);
         } else {
-            View view = createViewFromNodeName(tree, sandBoxContext, tree.getNodeName(), parent,
-                    context, attrsSet, params, root);
+            View view = createViewFromNodeName(tree, sandBoxContext, parent, context, attrsSet,
+                    params, root);
 
             if (view == null) {
                 return null;
@@ -110,18 +103,18 @@ public final class HNRenderer {
                     }
 
 
-                    final View v = renderInternal(context, sandBoxContext, child, viewGroup,
-                            attrsSet, layoutParams, root);
+                    final View v = renderInternal(context, sandBoxContext, segment, viewGroup,
+                            layoutParams, root);
 
                     if (v != null) {
                         viewGroup.addView(v, layoutParams);
                     } else {
-                        EventLog.writeError(EventLog.TAG_RENDER, "error when inflating " + child
-                                .getNodeName());
+                        HNEventLog.writeError(HNEventLog.TAG_RENDER, "error when inflating " + child
+                                .getTag());
                     }
                 }
             } else {
-                EventLog.writeError(EventLog.TAG_RENDER, "View render from HNRenderer is not an " +
+                HNEventLog.writeError(HNEventLog.TAG_RENDER, "View render from HNRenderer is not an " +
                         "viewGroup" +
                         view.getClass().getSimpleName() +
                         ", but related HNDomTree has children. Will ignore its children!");
@@ -133,22 +126,23 @@ public final class HNRenderer {
 
 
     private View createViewFromNodeName(@NonNull HNDomTree tree, @NonNull HNSandBoxContext
-            sandBoxContext, @NonNull String nodeName, @NonNull ViewGroup parent, @NonNull Context
-            context, @NonNull AttrsSet attrsSet, @NonNull ViewGroup.LayoutParams params, @NonNull
-            RXViewGroup root) throws RemoteInflateException {
+            sandBoxContext, @NonNull ViewGroup parent, @NonNull Context context, @NonNull
+            AttrsSet attrsSet, @NonNull ViewGroup.LayoutParams params, @NonNull RXViewGroup root)
+            throws RemoteInflateException {
 
+        String tag = tree.getTag();
         PerformanceWatcher watcher = Performance.newWatcher();
         try {
 
-            if (HtmlTag.isDivOrTemplate(nodeName)) {
-                View v = attrsSet.createViewViaAttr(this, context, nodeName, tree);
+            if (HtmlTag.isDivOrTemplate(tag)) {
+                View v = attrsSet.createViewByTag(this, context, tag, tree);
 
                 if (v instanceof WebView) {
                     root.addWebView((WebView) v);
                 }
 
                 try {
-                    attrsSet.apply(context, nodeName, sandBoxContext, v, tree, parent, params);
+                    attrsSet.apply(context, sandBoxContext, v, tree, parent, params);
                 } catch (AttrApplyException e) {
                     e.printStackTrace();
                 }
@@ -156,7 +150,7 @@ public final class HNRenderer {
                 return v;
             } else {
 
-                View view = createView(context, nodeName);
+                View view = createViewByTag(context, tag);
 
                 watcher.check("create view" + view.toString());
 
@@ -165,7 +159,7 @@ public final class HNRenderer {
                 }
 
                 try {
-                    attrsSet.apply(context, nodeName, sandBoxContext, view, tree, parent, params);
+                    attrsSet.apply(context, sandBoxContext, view, tree, parent, params);
                 } catch (AttrApplyException e) {
                     e.printStackTrace();
                 }
@@ -175,25 +169,25 @@ public final class HNRenderer {
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-            throw new RemoteInflateException("class not found " + nodeName);
+            throw new RemoteInflateException("class not found " + tag);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
-            throw new RemoteInflateException("class's constructor is missing " + nodeName);
+            throw new RemoteInflateException("class's constructor is missing " + tag);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
-            throw new RemoteInflateException("class's constructor can not be accessed " + nodeName);
+            throw new RemoteInflateException("class's constructor can not be accessed " + tag);
         } catch (InstantiationException e) {
             e.printStackTrace();
-            throw new RemoteInflateException("class's constructor can not be invoked " + nodeName);
+            throw new RemoteInflateException("class's constructor can not be invoked " + tag);
         } catch (InvocationTargetException e) {
             e.printStackTrace();
-            throw new RemoteInflateException("class's method has something wrong " + nodeName);
+            throw new RemoteInflateException("class's method has something wrong " + tag);
         }
 
     }
 
     @Nullable
-    final View createView(@NonNull Context context, @Nullable String tagName) throws
+    final View createViewByTag(@NonNull Context context, @Nullable String tagName) throws
             ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
             InvocationTargetException, InstantiationException {
 
@@ -202,7 +196,7 @@ public final class HNRenderer {
             return null;
         }
 
-        EventLog.writeEvent(EventLog.TAG_ATTR, "create view" + viewClassName + " with tag" +
+        HNEventLog.writeEvent(HNEventLog.TAG_ATTR, "create view" + viewClassName + " with tag" +
                 tagName);
 
         // first let viewCreateHandler to create view

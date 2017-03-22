@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -13,19 +12,19 @@ import android.widget.TextView;
 import com.mozz.htmlnative.AttrApplyException;
 import com.mozz.htmlnative.HNRenderer;
 import com.mozz.htmlnative.HtmlTag;
-import com.mozz.htmlnative.HNDomElement;
 import com.mozz.htmlnative.common.Utils;
 
-public class TextViewAttr implements Attr {
+public class TextViewAttr extends Attr {
 
-    public static final String FONT_SIZE = "font-size";
-    public static final String COLOR = "color";
-    public static final String TEXT = "text";
-    public static final String LINE_HEIGHT = "line-height";
-    public static final String FONT_STYLE = "font-style";
-    public static final String FONT_WEIGHT = "font-weight";
-    public static final String FONT_ALIGN = "text-align";
-    public static final String HREF = "href";
+    private static final String FONT_SIZE = "font-size";
+    private static final String COLOR = "color";
+    private static final String TEXT = "text";
+    private static final String LINE_HEIGHT = "line-height";
+    private static final String FONT_STYLE = "font-style";
+    private static final String FONT_WEIGHT = "font-weight";
+    private static final String FONT_ALIGN = "text-align";
+    private static final String HREF = "href";
+    private static final String TEXT_WORD_SPACING = "word-spacing";
 
     @NonNull
     private static TextViewAttr sInstance = new TextViewAttr();
@@ -36,9 +35,9 @@ public class TextViewAttr implements Attr {
     }
 
     @Override
-    public void apply(final Context context, @NonNull String tag, View v, @NonNull String params,
-                      @NonNull final Object value, @NonNull HNDomElement tree) throws
-            AttrApplyException {
+    public void apply(final Context context, @NonNull java.lang.String tag, View v, @NonNull java
+            .lang.String params, @NonNull final Object value, @NonNull String innerElement)
+            throws AttrApplyException {
         final TextView textView = (TextView) v;
 
         switch (params) {
@@ -66,7 +65,7 @@ public class TextViewAttr implements Attr {
                 break;
 
             case FONT_WEIGHT:
-                String s = value.toString();
+                java.lang.String s = value.toString();
 
                 if (s.equals("bold")) {
                     textView.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
@@ -77,7 +76,7 @@ public class TextViewAttr implements Attr {
                 break;
 
             case FONT_STYLE:
-                String s2 = value.toString();
+                java.lang.String s2 = value.toString();
 
                 if (s2.equals("italic")) {
                     int style = textView.getTypeface().getStyle();
@@ -107,21 +106,42 @@ public class TextViewAttr implements Attr {
                 break;
 
             case FONT_ALIGN:
-                String val = value.toString();
-                if (val.equals("center")) {
-                    textView.setGravity(Gravity.CENTER);
-                } else if (val.equals("left")) {
-                    textView.setGravity(Gravity.LEFT);
-                } else if (val.equals("right")) {
-                    textView.setGravity(Gravity.RIGHT);
+                java.lang.String val = value.toString();
+                switch (val) {
+                    case "center":
+                        textView.setGravity(Gravity.CENTER);
+                        break;
+                    case "left":
+                        textView.setGravity(Gravity.LEFT);
+                        break;
+                    case "right":
+                        textView.setGravity(Gravity.RIGHT);
+                        break;
                 }
 
                 break;
-        }
 
-        if (!TextUtils.isEmpty(tree.getInner()) && TextUtils.isEmpty(textView.getText())) {
-            Log.d("TextViewAttr", tree.getInner());
-            textView.setText(tree.getInner());
+            case TEXT_WORD_SPACING: {
+                String ss = value.toString();
+                if (ss.equals("normal")) {
+
+                } else {
+                    Float f = Utils.toFloat(value);
+                    textView.setLetterSpacing(f);
+                }
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void setDefault(Context context, String tag, View v, String innerElement) throws
+            AttrApplyException {
+
+        TextView textView = (TextView) v;
+
+        if (!TextUtils.isEmpty(innerElement) && TextUtils.isEmpty(textView.getText())) {
+            textView.setText(innerElement);
         }
     }
 }

@@ -1,48 +1,33 @@
-package com.mozz.htmlnative.script;
+package com.mozz.htmlnative;
 
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 
-import com.mozz.htmlnative.HNSandBoxContext;
+import com.mozz.htmlnative.script.ScriptRunner;
 
 import java.lang.ref.WeakReference;
 
 /**
  * @author Yang Tao, 17/2/24.
  */
-public final class ScriptRunnerThread {
+final class HNScriptRunnerThread {
 
     @NonNull
-    private HandlerThread mScriptThread = new HandlerThread("HNScriptRunner");
-    private Handler mHandler;
+    private static HandlerThread mScriptThread = new HandlerThread("HNScriptRunner");
+    private static Handler mHandler;
 
-    private ScriptRunnerThread() {
+    public static void init() {
         mScriptThread.start();
         mHandler = new Handler(mScriptThread.getLooper());
     }
 
-    public void quit() {
+    public static void quit() {
         mScriptThread.quit();
     }
 
-    public void runScript(HNSandBoxContext context, ScriptRunner runner, String script) {
+    public static void runScript(HNSandBoxContext context, ScriptRunner runner, String script) {
         mHandler.post(new ScriptRunTask(context, runner, script));
-    }
-
-    private static ScriptRunnerThread instance = null;
-
-    @NonNull
-    public static ScriptRunnerThread getInstance() {
-        if (instance == null) {
-            synchronized (ScriptRunnerThread.class) {
-                if (instance == null) {
-                    instance = new ScriptRunnerThread();
-                }
-            }
-        }
-
-        return instance;
     }
 
     private static class ScriptRunTask implements Runnable {

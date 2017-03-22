@@ -6,16 +6,15 @@ import android.view.View;
 import android.webkit.WebView;
 
 import com.mozz.htmlnative.AttrApplyException;
-import com.mozz.htmlnative.HNDomElement;
 
 /**
  * @author Yang Tao, 17/3/6.
  */
 
-public class WebViewAttr implements Attr {
+public class WebViewAttr extends Attr {
     @Override
-    public void apply(Context context, String tag, View v, @NonNull String params, @NonNull final
-    Object value, HNDomElement tree) throws AttrApplyException {
+    public void apply(Context context, java.lang.String tag, View v, @NonNull java.lang.String
+            params, @NonNull final Object value, String innerElement) throws AttrApplyException {
         final WebView webView = (WebView) v;
 
         if (params.equals("src")) {

@@ -7,37 +7,43 @@ import android.view.ViewGroup;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.mozz.htmlnative.AttrApplyException;
-import com.mozz.htmlnative.HNDomElement;
 
 /**
  * @author Yang Tao, 17/3/3.
  */
 
-public class FlexBoxLayoutAttr implements LayoutAttr {
+public class FlexBoxLayoutAttr extends LayoutAttr {
     @Override
-    public void apply(Context context, String tag, View v, @NonNull String params, @NonNull
-            Object value, HNDomElement tree) throws AttrApplyException {
+    public void apply(Context context, java.lang.String tag, View v, @NonNull java.lang.String
+            params, @NonNull Object value, String innerElement) throws AttrApplyException {
         FlexboxLayout flexboxLayout = (FlexboxLayout) v;
 
-        if (params.equals("flex-direction")) {
-            String val = value.toString();
-            flexboxLayout.setFlexDirection(flexDirection(val));
-        } else if (params.equals("flex-wrap")) {
-            String val = value.toString();
-            flexboxLayout.setFlexWrap(flexWrap(val));
-        } else if (params.equals("justify-content")) {
-            String val = value.toString();
-            flexboxLayout.setJustifyContent(justContent(val));
+        switch (params) {
+            case "flex-direction": {
+                String val = value.toString();
+                flexboxLayout.setFlexDirection(flexDirection(val));
+                break;
+            }
+            case "flex-wrap": {
+                String val = value.toString();
+                flexboxLayout.setFlexWrap(flexWrap(val));
+                break;
+            }
+            case "justify-content": {
+                String val = value.toString();
+                flexboxLayout.setJustifyContent(justContent(val));
+                break;
+            }
         }
     }
 
     @Override
-    public void applyToChild(Context context, String tag, View v, ViewGroup parent, String
-            params, Object value) {
+    public void applyToChild(Context context, java.lang.String tag, View v, ViewGroup parent,
+                             java.lang.String params, Object value) {
 
     }
 
-    private static int flexDirection(@NonNull String direction) {
+    private static int flexDirection(@NonNull java.lang.String direction) {
         switch (direction) {
             case "column-reverse":
                 return FlexboxLayout.FLEX_DIRECTION_COLUMN_REVERSE;
@@ -50,7 +56,7 @@ public class FlexBoxLayoutAttr implements LayoutAttr {
         }
     }
 
-    private static int flexWrap(String wrap) {
+    private static int flexWrap(java.lang.String wrap) {
         switch (wrap) {
             case "nowrap":
                 return FlexboxLayout.FLEX_WRAP_NOWRAP;
@@ -63,7 +69,7 @@ public class FlexBoxLayoutAttr implements LayoutAttr {
         }
     }
 
-    private static int justContent(String content) {
+    private static int justContent(java.lang.String content) {
         switch (content) {
             case "flex-start":
                 return FlexboxLayout.JUSTIFY_CONTENT_FLEX_START;

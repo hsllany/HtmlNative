@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.mozz.htmlnative.EventLog;
+import com.mozz.htmlnative.HNEventLog;
 import com.mozz.htmlnative.HNative;
 import com.mozz.htmlnative.HrefLinkHandler;
 import com.mozz.htmlnative.ImageViewAdapter;
@@ -25,7 +25,7 @@ public class DemoApplication extends Application {
         super.onCreate();
         HNative.getInstance().init(this);
 
-        EventLog.setDebugLevel(EventLog.TAG_PARSER);
+        HNEventLog.setDebugLevel(HNEventLog.TAG_PARSER);
 
 
         HNative.getInstance().setImageViewAdapter(new ImageViewAdapter() {

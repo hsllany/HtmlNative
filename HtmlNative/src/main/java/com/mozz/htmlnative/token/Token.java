@@ -23,7 +23,6 @@ public final class Token {
     private static Token sPool;
     private static int sPoolSize = 0;
     private static final int MAX_POOL_SIZE = 20;
-    private static final Object sPoolSync = new Object();
 
     private Token(@NonNull TokenType tokenType, Object value) {
         mTokenType = tokenType;
@@ -82,22 +81,21 @@ public final class Token {
 
     @Nullable
     public static Token obtainToken(TokenType tokenType, Object value, long line, long column) {
-        synchronized (sPoolSync) {
-            if (sPool != null) {
-                Token t = sPool;
-                sPool = t.next;
-                t.next = null;
-                sPoolSize--;
+        if (sPool != null) {
+            Token t = sPool;
+            sPool = t.next;
+            t.next = null;
+            sPoolSize--;
 
-                t.mTokenType = tokenType;
-                t.mValue = value;
-                t.line = line;
-                t.startColumn = column;
-                return t;
-            }
-
-            return new Token(tokenType, value);
+            t.mTokenType = tokenType;
+            t.mValue = value;
+            t.line = line;
+            t.startColumn = column;
+            return t;
         }
+
+        return new Token(tokenType, value);
+        
     }
 
     @Nullable
@@ -106,10 +104,8 @@ public final class Token {
     }
 
     static void recycleAll() {
-        synchronized (sPoolSync) {
-            sPoolSize = 0;
-            sPool = null;
-        }
+        sPoolSize = 0;
+        sPool = null;
     }
 
     public void recycle() {
@@ -122,12 +118,10 @@ public final class Token {
         startColumn = -1;
         line = -1;
 
-        synchronized (sPoolSync) {
-            if (sPoolSize < MAX_POOL_SIZE) {
-                next = sPool;
-                sPool = this;
-                sPoolSize++;
-            }
+        if (sPoolSize < MAX_POOL_SIZE) {
+            next = sPool;
+            sPool = this;
+            sPoolSize++;
         }
     }
 

@@ -10,24 +10,21 @@ import java.io.InputStream;
 import java.util.Map;
 
 final class HNSegment {
+
     HNDomTree mRootTree;
-
-
     AttrsSet mAttrs;
-
-    boolean mHasScriptEmbed = false;
-
+    boolean mHasScriptEmbed;
     ScriptInfo mScriptInfo;
-
-    HNHead mHead = new HNHead();
+    HNHead mHead;
 
     @NonNull
     private static Map<String, HNSegment> sCache = new ArrayMap<>();
-
     private static final Object sCacheLock = new Object();
 
     HNSegment() {
-        mAttrs = new AttrsSet(this);
+        mAttrs = new AttrsSet();
+        mHead = new HNHead();
+        mHasScriptEmbed = false;
     }
 
     @NonNull

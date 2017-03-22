@@ -18,7 +18,7 @@ public class StringTextReader extends StreamReader {
 
     @Override
     public void close() {
-        Utils.closeQuitely(inputStream);
+        Utils.closeQuietly(inputStream);
         super.close();
     }
 }

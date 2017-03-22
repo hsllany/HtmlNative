@@ -6,7 +6,7 @@ import java.io.EOFException;
  * @author Yang Tao, 17/3/17.
  */
 
-class CharQueue {
+final class CharQueue {
 
     private final char[] cache;
 

@@ -91,7 +91,7 @@ public class LayoutExampleActivity extends AppCompatActivity {
         InputStream s = getAssets().open(fileName);
         byte[] buffer = new byte[s.available()];
         s.read(buffer);
-        Utils.closeQuitely(s);
+        Utils.closeQuietly(s);
 
         return new String(buffer);
     }
