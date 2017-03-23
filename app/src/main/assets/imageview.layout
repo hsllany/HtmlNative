@@ -1,21 +1,43 @@
 <html>
     <head>
-        <title>ImageView Example</title>
+        <title>Demo</title>
     </head>
     <body>
-        <p style="color: #000; font-size: 16; padding: 10">
+        <p style="color: #000; font-size: 16; padding: 10" id="text1">
             This is an example of ImageView
             <br/>2 Images are shown.
         </p>
-        <img onClick="clickme" src="http://n.sinaimg.cn/news/crawl/20170302/18ey-fycaahm6004808.jpg"/>
-        <img src="http://n.sinaimg.cn/news/crawl/20170312/VUL1-fychhvn8494769.jpg"/>
-    </body>
 
+        <button onClick="changeText1">click me</button>
+
+        <img src="http://n.sinaimg.cn/news/crawl/20170302/18ey-fycaahm6004808.jpg"/>
+        <img src="http://n.sinaimg.cn/news/crawl/20170312/VUL1-fychhvn8494769.jpg"/>
+
+
+    </body>
     <script type="text/lua">
-        function nihao()
-            toast("click on img")
+        -- show a toast in androd
+        alert("hello world")
+
+        b = false
+
+        function changeText1()
+            -- get the v by id
+            local v = view("text1")
+            if(b) then
+                v.style("background:red;color:#fff")
+            else
+                v.style("background:blue;color:red")
+            end
+
+            b = not(b)
+
         end
 
-        callback("clickme", nihao)
+        --[[ register the function to callback pool, then when p#text1 is clicked, its appearance
+        will change according to v value. ]]
+
+        callback("changeText1", changeText1)
+
     </script>
 </html>

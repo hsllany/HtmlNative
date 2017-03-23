@@ -52,6 +52,7 @@ public final class HtmlTag {
         sSwallowInnerTag.add(HtmlTag.INPUT);
         sSwallowInnerTag.add(HtmlTag.P);
         sSwallowInnerTag.add(HtmlTag.TEXT);
+        sSwallowInnerTag.add(HtmlTag.BUTTON);
     }
 
     ;

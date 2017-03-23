@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.AbsoluteLayout;
 
 import com.mozz.htmlnative.attrs.Attr;
@@ -21,7 +22,7 @@ import java.util.Map;
  *         NOT THREAD SAFE
  */
 
-final class AttrsSet {
+public final class AttrsSet {
 
     private static final String TAG = AttrsSet.class.getSimpleName();
 
@@ -176,6 +177,26 @@ final class AttrsSet {
             ((AbsoluteLayout.LayoutParams) layoutParams).x = outPos[2];
             ((AbsoluteLayout.LayoutParams) layoutParams).y = outPos[3];
         }
+    }
+
+    public static Attr getViewAttr(View v) {
+        return getAttr(v.getClass());
+    }
+
+    public static Attr getExtraAttr(View v) {
+        return AttrsHelper.getExtraAttrFromView(v.getClass());
+    }
+
+    public static LayoutAttr getParentAttr(ViewParent parent) {
+        if (parent instanceof ViewGroup) {
+            Attr parentAttr = getAttr(((ViewGroup) parent).getClass());
+            LayoutAttr parentLayoutAttr = null;
+            if (parentAttr instanceof LayoutAttr) {
+                parentLayoutAttr = (LayoutAttr) parentAttr;
+            }
+            return parentLayoutAttr;
+        }
+        return null;
     }
 
     /**

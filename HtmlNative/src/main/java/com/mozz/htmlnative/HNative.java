@@ -19,7 +19,7 @@ import java.lang.ref.WeakReference;
 
 public final class HNative {
 
-    public static final String LUA_TAG = "RVScript";
+    public static final String LUA_TAG = "HNativeLog";
 
     private static final String TAG = "HNative";
 

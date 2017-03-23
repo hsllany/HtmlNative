@@ -32,13 +32,10 @@ public class LuaRunner extends ScriptRunner {
         super(sandBoxContext);
         long time1 = SystemClock.currentThreadTimeMillis();
         mGlobals = JsePlatform.standardGlobals();
-        mGlobals.set("view", new setParams(sandBoxContext));
-        mGlobals.set("toast", new toast(sandBoxContext.getAndroidContext()));
-        mGlobals.set("property", new properties.property(sandBoxContext));
-        mGlobals.set("setProperty", new properties.setProperty(sandBoxContext));
-        mGlobals.set("getProperty", new properties.getProperty(sandBoxContext));
+        mGlobals.set("alert", new toast(sandBoxContext.getAndroidContext()));
         mGlobals.set("callback", new callback(this));
         mGlobals.set("log", new logcat());
+        mGlobals.set("view", new ViewBy(sandBoxContext));
         Log.i(TAG, "init Lua module spend " + (SystemClock.currentThreadTimeMillis() - time1) + "" +
                 " ms");
     }

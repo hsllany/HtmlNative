@@ -1,21 +1,36 @@
 <html>
     <head>
         <title>WebViewExample</title>
-        <meta name="nihao" content="world" />
+        <meta name="nihao" content="world"/>
     </head>
 
     <body>
-        <text style="color:#f00; background:#fff" onClick="nihao">This is an demo of iframe</text>
-        <iframe style="width:100%; height:100%; color:#000000" src="http://www.w3school.com.cn/" />
+        <text style="color:#f00; background:#fff" id="text1">This is an demo of
+            iframe
+        </text>
+        <button onClick="changeText1">click me</button>
+        <iframe style="width:100%; height:100%; color:#000000" src="http://www.w3school.com.cn/"/>
     </body>
 
     <script type="text/lua">
-        toast("hello world")
+        alert("hello world")
 
-        function nihao()
-            print("nihao")
+        b = false
+
+        function changeText1()
+            local v = view("text1")
+            if(b) then
+                v.style("background:red;color:#fff")
+            else
+                v.style("background:blue;color:red")
+            end
+
+            b = not(b)
+
         end
 
-        callback('nihao', nihao)
+        callback("changeText1", changeText1)
+
+
     </script>
 </html>

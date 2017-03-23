@@ -8,6 +8,8 @@ import com.mozz.htmlnative.AttrApplyException;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Yang Tao, 17/2/24.
@@ -114,5 +116,34 @@ public final class Utils {
                 throw new AttrApplyException("can't read color from " + colorString);
             }
         }
+    }
+
+
+    public static Map<String, String> parseStyle(@NonNull String styleString) {
+        Map<String, String> pas = new HashMap<>();
+        StringBuilder sb = new StringBuilder();
+        String key = null;
+        for (int i = 0; i < styleString.length(); i++) {
+            char c = styleString.charAt(i);
+
+            if (c == ';') {
+                pas.put(key, sb.toString());
+                sb.setLength(0);
+            } else if (c == ':') {
+                key = sb.toString();
+                sb.setLength(0);
+            } else {
+                if (c == ' ' || c == '\r' || c == '\n' || c == '\t' || c == '\f' || c == '\b') {
+                    continue;
+                }
+                sb.append(c);
+            }
+        }
+
+        if (key != null) {
+            pas.put(key, sb.toString());
+        }
+
+        return pas;
     }
 }
