@@ -271,7 +271,7 @@ final class AttrsSet {
 
             case ATTR_ID:
                 if (value instanceof String) {
-                    sandBoxContext.put((String) value, v);
+                    sandBoxContext.saveId((String) value, v);
                 } else {
                     throw new AttrApplyException("id must be a string.");
                 }

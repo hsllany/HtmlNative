@@ -3,15 +3,12 @@ package com.mozz.htmlnative;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.ArrayMap;
 import android.util.Log;
 import android.view.View;
-import android.widget.FrameLayout;
 
 import com.mozz.htmlnative.script.ScriptRunner;
 import com.mozz.htmlnative.script.ScriptRunnerFactory;
-
-import java.util.Map;
+import com.mozz.htmlnative.view.RXViewGroup;
 
 /**
  * @author Yang Tao, 17/3/6.
@@ -22,9 +19,7 @@ final class SandBoxContextImpl implements HNSandBoxContext {
 
     private static final String TAG = HNSandBoxContext.class.getSimpleName();
 
-    private static final int ViewContextTag = 0x3 << 24;
-
-    private final Map<String, View> mViewWithId = new ArrayMap<>();
+    private RXViewGroup mRootView;
 
     private final VariablePoolImpl mPool = new VariablePoolImpl();
 
@@ -34,7 +29,8 @@ final class SandBoxContextImpl implements HNSandBoxContext {
 
     private final Context mContext;
 
-    private SandBoxContextImpl(HNSegment segment, Context context) {
+    private SandBoxContextImpl(HNSegment segment, Context context, RXViewGroup rootView) {
+        mRootView = rootView;
         mSegment = segment;
         mContext = context;
     }
@@ -60,23 +56,19 @@ final class SandBoxContextImpl implements HNSandBoxContext {
     }
 
     @Nullable
-    public View put(String id, View view) {
-        View before = mViewWithId.put(id, view);
-        if (before != null) {
-            Log.w(TAG, "Duplicated id " + id + ", before is " + before + ", current is " + view);
-        }
-        return before;
+    public View saveId(String id, View view) {
+        return mRootView.putViewWithId(id, view);
     }
 
     @Nullable
     @Override
     public View findViewById(@NonNull String id) {
-        return mViewWithId.get(id);
+        return mRootView.findViewById(id);
     }
 
     @Override
     public boolean containsView(String id) {
-        return mViewWithId.containsKey(id);
+        return mRootView.containsView(id);
     }
 
     @Override
@@ -110,17 +102,7 @@ final class SandBoxContextImpl implements HNSandBoxContext {
     }
 
     public String allIdTag() {
-        return mViewWithId.toString();
-    }
-
-    public static HNSandBoxContext getViewContext(@NonNull FrameLayout v) {
-        Object object = v.getTag(ViewContextTag);
-
-        if (object != null && object instanceof HNSandBoxContext) {
-            return (HNSandBoxContext) object;
-        }
-
-        return null;
+        return mRootView.allIdTag();
     }
 
     @Override
@@ -140,10 +122,8 @@ final class SandBoxContextImpl implements HNSandBoxContext {
     }
 
     @NonNull
-    static HNSandBoxContext create(@NonNull FrameLayout layout, HNSegment module, Context context) {
-        HNSandBoxContext v = new SandBoxContextImpl(module, context);
-        layout.setTag(ViewContextTag, v);
-        return v;
+    static HNSandBoxContext create(@NonNull RXViewGroup layout, HNSegment module, Context context) {
+        return new SandBoxContextImpl(module, context, layout);
     }
 
 }

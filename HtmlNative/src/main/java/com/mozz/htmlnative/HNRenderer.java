@@ -52,8 +52,8 @@ public final class HNRenderer {
         sandBoxContext.onViewCreate();
         pWatcher.check("[step 2] call onViewCreate");
 
-        View v = renderInternal(context, sandBoxContext, segment, rootViewGroup, params,
-                rootViewGroup);
+        View v = renderInternal(context, sandBoxContext, segment.mRootTree, segment,
+                rootViewGroup, params, rootViewGroup);
         pWatcher.check("[step 3] rendering view");
 
         if (v != null) {
@@ -69,10 +69,10 @@ public final class HNRenderer {
     }
 
     private View renderInternal(@NonNull Context context, @NonNull HNSandBoxContext
-            sandBoxContext, HNSegment segment, @NonNull ViewGroup parent, @NonNull ViewGroup
-            .LayoutParams params, @NonNull RXViewGroup root) throws RemoteInflateException {
+            sandBoxContext, HNDomTree tree, HNSegment segment, @NonNull ViewGroup parent,
+                                @NonNull ViewGroup.LayoutParams params, @NonNull RXViewGroup
+                                        root) throws RemoteInflateException {
 
-        HNDomTree tree = segment.mRootTree;
         AttrsSet attrsSet = segment.mAttrs;
 
         if (tree.isLeaf()) {
@@ -103,18 +103,19 @@ public final class HNRenderer {
                     }
 
 
-                    final View v = renderInternal(context, sandBoxContext, segment, viewGroup,
-                            layoutParams, root);
+                    final View v = renderInternal(context, sandBoxContext, child, segment,
+                            viewGroup, layoutParams, root);
 
                     if (v != null) {
                         viewGroup.addView(v, layoutParams);
                     } else {
-                        HNEventLog.writeError(HNEventLog.TAG_RENDER, "error when inflating " + child
-                                .getTag());
+                        HNEventLog.writeError(HNEventLog.TAG_RENDER, "error when inflating " +
+                                child.getTag());
                     }
                 }
             } else {
-                HNEventLog.writeError(HNEventLog.TAG_RENDER, "View render from HNRenderer is not an " +
+                HNEventLog.writeError(HNEventLog.TAG_RENDER, "View render from HNRenderer is not " +
+                        "an " +
                         "viewGroup" +
                         view.getClass().getSimpleName() +
                         ", but related HNDomTree has children. Will ignore its children!");

@@ -31,7 +31,7 @@ final class ViewTagLookupTable {
     /**
      * For extra tag, lazy initialize later.
      */
-    private static Map<String, HNviewItem> sExtraTagClassTable;
+    private static Map<String, HNViewItem> sExtraTagClassTable;
 
     static {
 
@@ -73,9 +73,9 @@ final class ViewTagLookupTable {
             return null;
         }
 
-        HNviewItem HNviewItem = sExtraTagClassTable.get(tag);
-        if (HNviewItem != null) {
-            return HNviewItem.onGetViewClassName().getName();
+        HNViewItem HNViewItem = sExtraTagClassTable.get(tag);
+        if (HNViewItem != null) {
+            return HNViewItem.onGetViewClassName().getName();
         }
 
         return null;
@@ -90,11 +90,11 @@ final class ViewTagLookupTable {
         return sExtraTagClassTable.get(tag);
     }
 
-    static void registerExtraView(String tag, @NonNull HNviewItem HNviewItem) {
+    static void registerExtraView(String tag, @NonNull HNViewItem HNViewItem) {
         if (sExtraTagClassTable == null) {
             sExtraTagClassTable = new ArrayMap<>();
         }
 
-        sExtraTagClassTable.put(tag, HNviewItem);
+        sExtraTagClassTable.put(tag, HNViewItem);
     }
 }

@@ -118,10 +118,10 @@ public final class HNative {
 
     /**
      * @param tag
-     * @param HNviewItem
+     * @param HNViewItem
      */
-    public static void registerRView(String tag, @NonNull HNviewItem HNviewItem) {
-        ViewTagLookupTable.registerExtraView(tag, HNviewItem);
+    public static void registerRView(String tag, @NonNull HNViewItem HNViewItem) {
+        ViewTagLookupTable.registerExtraView(tag, HNViewItem);
     }
 
     public void onDestroy() {
