@@ -11,7 +11,7 @@ import android.widget.AbsoluteLayout;
 
 import com.mozz.htmlnative.common.Performance;
 import com.mozz.htmlnative.common.PerformanceWatcher;
-import com.mozz.htmlnative.view.RXViewGroup;
+import com.mozz.htmlnative.view.HNViewGroup;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -45,7 +45,7 @@ public final class HNRenderer {
             .LayoutParams params) throws RemoteInflateException {
         HNEventLog.writeEvent(HNEventLog.TAG_RENDER, "start to render " + segment.toString());
         PerformanceWatcher pWatcher = Performance.newWatcher();
-        RXViewGroup rootViewGroup = new RXViewGroup(context);
+        HNViewGroup rootViewGroup = new HNViewGroup(context);
         HNSandBoxContext sandBoxContext = SandBoxContextImpl.create(rootViewGroup, segment,
                 context);
         pWatcher.check("[step 1] create HNSandBoxContext");
@@ -70,7 +70,7 @@ public final class HNRenderer {
 
     private View renderInternal(@NonNull Context context, @NonNull HNSandBoxContext
             sandBoxContext, HNDomTree tree, HNSegment segment, @NonNull ViewGroup parent,
-                                @NonNull ViewGroup.LayoutParams params, @NonNull RXViewGroup
+                                @NonNull ViewGroup.LayoutParams params, @NonNull HNViewGroup
                                         root) throws RemoteInflateException {
 
         AttrsSet attrsSet = segment.mAttrs;
@@ -128,7 +128,7 @@ public final class HNRenderer {
 
     private View createViewFromNodeName(@NonNull HNDomTree tree, @NonNull HNSandBoxContext
             sandBoxContext, @NonNull ViewGroup parent, @NonNull Context context, @NonNull
-            AttrsSet attrsSet, @NonNull ViewGroup.LayoutParams params, @NonNull RXViewGroup root)
+            AttrsSet attrsSet, @NonNull ViewGroup.LayoutParams params, @NonNull HNViewGroup root)
             throws RemoteInflateException {
 
         String tag = tree.getTag();

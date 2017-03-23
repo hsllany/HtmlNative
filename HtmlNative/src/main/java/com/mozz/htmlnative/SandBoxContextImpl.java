@@ -8,7 +8,7 @@ import android.view.View;
 
 import com.mozz.htmlnative.script.ScriptRunner;
 import com.mozz.htmlnative.script.ScriptRunnerFactory;
-import com.mozz.htmlnative.view.RXViewGroup;
+import com.mozz.htmlnative.view.HNViewGroup;
 
 /**
  * @author Yang Tao, 17/3/6.
@@ -19,7 +19,7 @@ final class SandBoxContextImpl implements HNSandBoxContext {
 
     private static final String TAG = HNSandBoxContext.class.getSimpleName();
 
-    private RXViewGroup mRootView;
+    private HNViewGroup mRootView;
 
     private final VariablePoolImpl mPool = new VariablePoolImpl();
 
@@ -29,7 +29,7 @@ final class SandBoxContextImpl implements HNSandBoxContext {
 
     private final Context mContext;
 
-    private SandBoxContextImpl(HNSegment segment, Context context, RXViewGroup rootView) {
+    private SandBoxContextImpl(HNSegment segment, Context context, HNViewGroup rootView) {
         mRootView = rootView;
         mSegment = segment;
         mContext = context;
@@ -122,7 +122,7 @@ final class SandBoxContextImpl implements HNSandBoxContext {
     }
 
     @NonNull
-    static HNSandBoxContext create(@NonNull RXViewGroup layout, HNSegment module, Context context) {
+    static HNSandBoxContext create(@NonNull HNViewGroup layout, HNSegment module, Context context) {
         return new SandBoxContextImpl(module, context, layout);
     }
 
