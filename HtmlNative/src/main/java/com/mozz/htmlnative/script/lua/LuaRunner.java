@@ -70,6 +70,13 @@ public class LuaRunner extends ScriptRunner {
         }
     }
 
+    public void runFunction(String functionName, LuaFuncParams params) {
+        LuaValue v = mFunctionTable.get(functionName);
+        if (v != null) {
+            v.call(params.mValue);
+        }
+    }
+
     public void putFunction(String functionName, LuaValue l) {
         mFunctionTable.put(functionName, l);
     }

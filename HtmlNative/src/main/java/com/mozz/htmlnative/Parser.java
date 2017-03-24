@@ -2,8 +2,11 @@ package com.mozz.htmlnative;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
+import com.mozz.htmlnative.attrs.BackgroundStyle;
+import com.mozz.htmlnative.common.Utils;
 import com.mozz.htmlnative.reader.TextReader;
 import com.mozz.htmlnative.script.ScriptInfo;
 import com.mozz.htmlnative.token.Token;
@@ -393,11 +396,7 @@ final class Parser {
 
                     case Value:
                         check(LK_VALUE);
-                        if (attrName.equals(HtmlTag.ATTR_STYLE)) {
-                            parseStyle(tree, mCurToken.stringValue());
-                        } else {
-                            tree.addAttr(attrName, mCurToken.stringValue());
-                        }
+                        parseValue(tree, attrName, mCurToken.stringValue());
                         lookFor(LK_ID | LK_EndArrowBracket | LK_SLASH);
                         break;
 
@@ -472,13 +471,21 @@ final class Parser {
     static void parseStyle(@NonNull HNDomTree tree, @NonNull String styleString) {
         StringBuilder sb = new StringBuilder();
         String key = null;
+
+        boolean inBracket = false;
         for (int i = 0; i < styleString.length(); i++) {
             char c = styleString.charAt(i);
 
-            if (c == ';') {
-                tree.addAttr(key, sb.toString());
+            if (c == '(') {
+                inBracket = true;
+                sb.append(c);
+            } else if (c == ')') {
+                inBracket = false;
+                sb.append(c);
+            } else if (c == ';') {
+                tree.addAttr(key, parseStyleSingle(key, sb.toString()));
                 sb.setLength(0);
-            } else if (c == ':') {
+            } else if (c == ':' && !inBracket) {
                 key = sb.toString();
                 sb.setLength(0);
             } else {
@@ -490,7 +497,42 @@ final class Parser {
         }
 
         if (key != null) {
-            tree.addAttr(key, sb.toString());
+            tree.addAttr(key, parseStyleSingle(key, sb.toString()));
+        }
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
+    public static Object parseStyleSingle(String styleName, String styleValue) {
+        if (styleName.equals(HtmlTag.ATTR_BACKGROUND)) {
+
+            BackgroundStyle style = new BackgroundStyle();
+
+            String[] subStrings = styleValue.split(" ");
+            for (String singleValue : subStrings) {
+                String trueValue = singleValue.trim();
+                if (trueValue.startsWith("url(")) {
+                    style.setUrl(trueValue.substring(trueValue.indexOf('(') + 1, trueValue
+                            .lastIndexOf(')')));
+                } else if (trueValue.startsWith("#")) {
+                    try {
+                        style.setColor(Utils.color(trueValue));
+                    } catch (AttrApplyException e) {
+
+                    }
+                } else if (trueValue.equals("no-repeat")) {
+
+                } else {
+                    try {
+                        style.setColor(Utils.color(trueValue));
+                    } catch (AttrApplyException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            return style;
+        } else {
+            return styleValue;
         }
     }
 
@@ -544,6 +586,14 @@ final class Parser {
             throw new HNSyntaxError(" Looking for " + lookForToString(status) + ", but " +
                     "currently is " +
                     lookForToString(mLookFor), mLexer.line(), mLexer.column());
+        }
+    }
+
+    private static void parseValue(HNDomTree tree, String parameterName, String valueStr) {
+        if (parameterName.equals(HtmlTag.ATTR_STYLE)) {
+            parseStyle(tree, valueStr);
+        } else {
+            tree.addAttr(parameterName, valueStr);
         }
     }
 

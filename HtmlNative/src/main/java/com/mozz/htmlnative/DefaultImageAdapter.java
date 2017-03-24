@@ -1,6 +1,6 @@
 package com.mozz.htmlnative;
 
-import android.widget.ImageView;
+import com.mozz.htmlnative.view.ViewImageAdapter;
 
 /**
  * @author Yang Tao, 17/3/10.
@@ -18,7 +18,7 @@ final class DefaultImageAdapter implements ImageViewAdapter {
     }
 
     @Override
-    public void setImage(String src, ImageView imageView) {
+    public void setImage(String src, ViewImageAdapter imageView) {
         //do nothing
     }
 }

@@ -30,11 +30,18 @@ public final class HNViewGroup extends FrameLayout {
     }
 
     @Override
-    public void addView(View child) {
-        super.addView(child);
-
+    public void onViewAdded(View child) {
+        super.onViewAdded(child);
         if (child instanceof WebView) {
             mWebViewList.add((WebView) child);
+        }
+    }
+
+    @Override
+    public void onViewRemoved(View child) {
+        super.onViewRemoved(child);
+        if (child instanceof WebView) {
+            mWebViewList.remove(child);
         }
     }
 

@@ -3,7 +3,7 @@
         <title>Demo</title>
     </head>
     <body>
-        <p style="color: #000; font-size: 16; padding: 10" id="text1">
+        <p style="color: #000; font-size: 16; padding: 10; background:url(http://n.sinaimg.cn/news/crawl/20170302/18ey-fycaahm6004808.jpg)" id="text1">
             This is an example of ImageView
             <br/>2 Images are shown.
         </p>

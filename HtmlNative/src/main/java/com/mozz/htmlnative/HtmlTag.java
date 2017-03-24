@@ -33,6 +33,7 @@ public final class HtmlTag {
     public static final String TEXT = "text";
 
     public static final String ATTR_STYLE = "style";
+    public static final String ATTR_BACKGROUND = "background";
 
     public static final String HEAD = "head";
     public static final String META = "meta";

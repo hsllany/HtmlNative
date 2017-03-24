@@ -1,17 +1,20 @@
 package com.mozz.htmlnativedemo;
 
 import android.app.Application;
+import android.graphics.Bitmap;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.mozz.htmlnative.HNEventLog;
 import com.mozz.htmlnative.HNative;
 import com.mozz.htmlnative.HrefLinkHandler;
 import com.mozz.htmlnative.ImageViewAdapter;
+import com.mozz.htmlnative.view.ViewImageAdapter;
 import com.squareup.leakcanary.LeakCanary;
 
 /**
@@ -30,11 +33,23 @@ public class DemoApplication extends Application {
 
         HNative.getInstance().setImageViewAdapter(new ImageViewAdapter() {
             @Override
-            public void setImage(String src, ImageView imageView) {
-                long time1 = SystemClock.currentThreadTimeMillis();
-                Glide.with(DemoApplication.this).load(src).into(imageView);
+            public void setImage(String src, final ViewImageAdapter imageView) {
 
-                Log.d("PerformanceWatcher", "---->Glide spend" + (SystemClock.currentThreadTimeMillis() - time1));
+
+                long time1 = SystemClock.currentThreadTimeMillis();
+                Glide.with(DemoApplication.this).load(src).asBitmap().into(new SimpleTarget<Bitmap>() {
+
+
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap>
+                            glideAnimation) {
+                        Log.d("GlideTest", "onResourceReady");
+                        imageView.setImage(resource);
+                    }
+                });
+
+                Log.d("PerformanceWatcher", "---->Glide spend" + (SystemClock
+                        .currentThreadTimeMillis() - time1));
             }
         });
 

@@ -1,5 +1,5 @@
 <body>
-    <div style="display:flex; flex-direction:row:width:100%">
+    <div style="display:flex; flex-direction:row;width:100%;background:url(http://n.sinaimg.cn/news/crawl/20170302/18ey-fycaahm6004808.jpg)">
         <p style="background:red; padding:30">row-1</p>
         <p style="background:blue; padding:30">row-2</p>
         <p style="background:green; padding:30">row-3</p>

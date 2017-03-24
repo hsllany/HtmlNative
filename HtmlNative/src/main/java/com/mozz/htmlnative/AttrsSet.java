@@ -3,14 +3,17 @@ package com.mozz.htmlnative;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.AbsoluteLayout;
 
 import com.mozz.htmlnative.attrs.Attr;
+import com.mozz.htmlnative.attrs.BackgroundStyle;
 import com.mozz.htmlnative.attrs.LayoutAttr;
 import com.mozz.htmlnative.common.Utils;
+import com.mozz.htmlnative.view.ViewImageAdapter;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -245,7 +248,21 @@ public final class AttrsSet {
                 break;
 
             case ATTR_BACKGROUND:
-                v.setBackgroundColor(Utils.color(value));
+                if (value instanceof BackgroundStyle) {
+                    BackgroundStyle backgroundStyle = (BackgroundStyle) value;
+
+                    if (!TextUtils.isEmpty(backgroundStyle.getUrl())) {
+                        if (HNRenderer.getImageViewAdpater() != null) {
+                            HNRenderer.getImageViewAdpater().setImage(backgroundStyle.getUrl(),
+                                    new ViewImageAdapter(v));
+                        }
+                    } else if (backgroundStyle.isColorSet()) {
+                        v.setBackgroundColor(backgroundStyle.getColor());
+                    }
+                } else {
+                    throw new AttrApplyException("Background style is wrong when parsing.");
+                }
+
                 break;
 
             case ATTR_PADDING:
