@@ -252,10 +252,8 @@ public final class AttrsSet {
                     BackgroundStyle backgroundStyle = (BackgroundStyle) value;
 
                     if (!TextUtils.isEmpty(backgroundStyle.getUrl())) {
-                        if (HNRenderer.getImageViewAdpater() != null) {
-                            HNRenderer.getImageViewAdpater().setImage(backgroundStyle.getUrl(),
-                                    new ViewImageAdapter(v));
-                        }
+                        HNRenderer.getImageViewAdpater().setImage(backgroundStyle.getUrl(), new
+                                ViewImageAdapter(v));
                     } else if (backgroundStyle.isColorSet()) {
                         v.setBackgroundColor(backgroundStyle.getColor());
                     }

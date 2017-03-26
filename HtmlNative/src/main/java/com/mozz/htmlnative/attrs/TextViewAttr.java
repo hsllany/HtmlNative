@@ -25,6 +25,7 @@ public class TextViewAttr extends Attr {
     private static final String FONT_ALIGN = "text-align";
     private static final String HREF = "href";
     private static final String TEXT_WORD_SPACING = "word-spacing";
+    private static final String TEXT_OVER_FLOW = "text-overflow";
 
     @NonNull
     private static TextViewAttr sInstance = new TextViewAttr();
@@ -128,6 +129,15 @@ public class TextViewAttr extends Attr {
                 } else {
                     Float f = Utils.toFloat(value);
                     textView.setLetterSpacing(f);
+                }
+                break;
+            }
+
+            case TEXT_OVER_FLOW: {
+                String ss = value.toString();
+
+                if (ss.equals("ellipsis")) {
+                    textView.setEllipsize(TextUtils.TruncateAt.END);
                 }
                 break;
             }
