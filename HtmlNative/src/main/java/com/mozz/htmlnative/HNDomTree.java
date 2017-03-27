@@ -13,7 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-final class HNDomTree implements Parser.ParseCallback {
+final class HNDomTree implements Parser.ParseCallback, AttrsOwner {
 
     static final String INNER_TREE_TAG = "inner";
 
@@ -164,11 +164,13 @@ final class HNDomTree implements Parser.ParseCallback {
     }
 
     @Nullable
+    @Override
     public String getTag() {
         return mTag;
     }
 
     @Nullable
+    @Override
     public String getInner() {
         return mText;
     }
@@ -224,6 +226,16 @@ final class HNDomTree implements Parser.ParseCallback {
 
     public static void toggleDebug(boolean debug) {
         DEBUG = debug;
+    }
+
+    @Override
+    public int attrIndex() {
+        return mAttrIndex;
+    }
+
+    @Override
+    public void setAttrIndex(int newIndex) {
+        mAttrIndex = newIndex;
     }
 
     interface WalkAction {

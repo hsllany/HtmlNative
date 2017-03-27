@@ -38,7 +38,21 @@ public enum TokenType {
 
     Title("Title"),
 
-    Html("Html");
+    Html("Html"),
+
+    Hash("#"),
+
+    Dot("."),
+
+    Colon(":"),
+
+    Semicolon(";"),
+
+    StartBrace("{"),
+
+    Style("style"),
+
+    EndBrace("}");
 
     private String value;
 

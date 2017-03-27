@@ -23,11 +23,13 @@ final class Lexer {
     private static final int LK_INNER = 1 << 1;
 
     private CharQueue mCacheQueue;
-    private static final int CACHE_SIZE = 5;
+    private static final int CACHE_SIZE = 7;
 
     private int mReserved = 0;
 
     private char mCurrent = TextReader.INIT_CHAR;
+
+    private boolean mIsInStyle = false;
 
     // Add for recognize code from Inner Element. If < script > is meet, than mLookForScript==3,
     // otherwise, mLookForScript < 3.
@@ -73,9 +75,39 @@ final class Lexer {
                 mLookForScript = 0;
                 next();
                 return Token.obtainToken(TokenType.Equal, mReader.line(), mReader.column());
+
+            case '{':
+                mLookForScript = 0;
+                next();
+                return Token.obtainToken(TokenType.StartBrace, mReader.line(), mReader.column());
+
+            case '}':
+                mLookForScript = 0;
+                next();
+                return Token.obtainToken(TokenType.EndBrace, mReader.line(), mReader.column());
+
+            case '#':
+                mLookForScript = 0;
+                next();
+                return Token.obtainToken(TokenType.Hash, mReader.line(), mReader.column());
+
+            case '.':
+                mLookForScript = 0;
+                next();
+                return Token.obtainToken(TokenType.Dot, mReader.line(), mReader.column());
+
+            case ':':
+                mLookForScript = 0;
+                next();
+                return Token.obtainToken(TokenType.Colon, mReader.line(), mReader.column());
+
+            case ';':
+                mLookForScript = 0;
+                next();
+                return Token.obtainToken(TokenType.Semicolon, mReader.line(), mReader.column());
         }
 
-        if (isLookingFor(LK_INNER) && mLookForScript < 3 && peek() != '<') {
+        if (isLookingFor(LK_INNER) && mLookForScript < 3 && peek() != '<' && !mIsInStyle) {
             return scanInner();
         }
 
@@ -210,6 +242,16 @@ final class Lexer {
 
             type = TokenType.Title;
             tokenContent = type.toString();
+        } else if (idStr.equalsIgnoreCase(TokenType.Style.toString())) {
+            type = TokenType.Style;
+            tokenContent = type.toString();
+
+            if (!mIsInStyle && peekHistory(6) == '<') {
+                mIsInStyle = true;
+            } else {
+                mIsInStyle = false;
+            }
+
         } else {
             tokenContent = idStr;
         }

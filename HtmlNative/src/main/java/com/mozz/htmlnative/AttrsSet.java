@@ -56,6 +56,11 @@ public final class AttrsSet {
     private int mLastGrowLength = -1;
     private int mCompacity;
 
+    // for temp usage.
+
+    // to store the width, height, top and left during attribute process
+    private int[] mTempPos;
+
     AttrsSet() {
         this(10);
     }
@@ -65,10 +70,11 @@ public final class AttrsSet {
         mLength = new int[initCompacity];
         mGrowLength = 0;
         mCompacity = initCompacity;
+        mTempPos = new int[4];
     }
 
-    void put(@NonNull HNDomTree tree, String paramsKey, @NonNull Object value) {
-        int startPosition = tree.mAttrIndex;
+    void put(@NonNull AttrsOwner tree, String paramsKey, @NonNull Object value) {
+        int startPosition = tree.attrIndex();
 
         putInternal(startPosition + mLength[startPosition], paramsKey, value);
         mLength[startPosition]++;
@@ -99,7 +105,7 @@ public final class AttrsSet {
         }
     }
 
-    void newAttr(@NonNull HNDomTree tree) {
+    void newAttr(@NonNull AttrsOwner tree) {
         if (mLastGrowLength == mGrowLength) {
             mGrowLength++;
         }
@@ -108,7 +114,7 @@ public final class AttrsSet {
             grow(mCompacity);
         }
 
-        tree.mAttrIndex = mGrowLength;
+        tree.setAttrIndex(mGrowLength);
         mLastGrowLength = mGrowLength;
     }
 
@@ -117,8 +123,8 @@ public final class AttrsSet {
         return Arrays.toString(mAttrs);
     }
 
-    public String toString(@NonNull HNDomTree tree) {
-        int startPos = tree.mAttrIndex;
+    public String toString(@NonNull AttrsOwner tree) {
+        int startPos = tree.attrIndex();
         int length = mLength[startPos];
 
         Object[] objects = new Object[length << 1];
@@ -140,17 +146,19 @@ public final class AttrsSet {
      * @throws AttrApplyException
      */
     public void apply(Context context, @NonNull final HNSandBoxContext sandBoxContext, View v,
-                      @NonNull HNDomTree tree, @NonNull ViewGroup parent, @NonNull ViewGroup
+                      @NonNull AttrsOwner tree, @NonNull ViewGroup parent, @NonNull ViewGroup
             .LayoutParams layoutParams) throws AttrApplyException {
 
         String tagName = tree.getTag();
 
-        int startPosition = tree.mAttrIndex;
+        int startPosition = tree.attrIndex();
         int treeAttrLength = mLength[startPosition];
 
         // pos = {width, height, left, top}
-        int[] outPos = {ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,
-                0, 0};
+        mTempPos[0] = ViewGroup.LayoutParams.WRAP_CONTENT;
+        mTempPos[1] = ViewGroup.LayoutParams.WRAP_CONTENT;
+        mTempPos[2] = 0;
+        mTempPos[3] = 0;
 
         Attr viewAttr = getAttr(v.getClass());
         Attr extraAttr = AttrsHelper.getExtraAttrFromView(v.getClass());
@@ -164,21 +172,21 @@ public final class AttrsSet {
         // Then process each parameter.
 
         applyDefault(context, tagName, sandBoxContext, v, tree.getInner(), parent, layoutParams,
-                outPos, viewAttr, extraAttr, parentLayoutAttr);
+                mTempPos, viewAttr, extraAttr, parentLayoutAttr);
 
         for (int i = startPosition; i < startPosition + treeAttrLength; i++) {
             applyAttrToView(context, tagName, sandBoxContext, v, (String) mAttrs[i << 1], mAttrs[
-                    (i << 1) + 1], tree.getInner(), parent, layoutParams, outPos, viewAttr,
+                    (i << 1) + 1], tree.getInner(), parent, layoutParams, mTempPos, viewAttr,
                     extraAttr, parentLayoutAttr);
         }
 
 
-        layoutParams.height = outPos[1];
-        layoutParams.width = outPos[0];
+        layoutParams.height = mTempPos[1];
+        layoutParams.width = mTempPos[0];
 
         if (layoutParams instanceof AbsoluteLayout.LayoutParams) {
-            ((AbsoluteLayout.LayoutParams) layoutParams).x = outPos[2];
-            ((AbsoluteLayout.LayoutParams) layoutParams).y = outPos[3];
+            ((AbsoluteLayout.LayoutParams) layoutParams).x = mTempPos[2];
+            ((AbsoluteLayout.LayoutParams) layoutParams).y = mTempPos[3];
         }
     }
 
@@ -394,11 +402,11 @@ public final class AttrsSet {
     }
 
     final View createViewByTag(@NonNull HNRenderer renderer, Context context, @NonNull String
-            name, @NonNull HNDomTree tree) throws ClassNotFoundException, NoSuchMethodException,
+            name, @NonNull AttrsOwner tree) throws ClassNotFoundException, NoSuchMethodException,
             InvocationTargetException, InstantiationException, IllegalAccessException {
 
 
-        int startPosition = tree.mAttrIndex;
+        int startPosition = tree.attrIndex();
         int treeAttrLength = mLength[startPosition];
 
         for (int i = startPosition; i < startPosition + treeAttrLength; i++) {

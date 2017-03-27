@@ -25,6 +25,7 @@ import static com.mozz.htmlnative.token.TokenType.Meta;
 import static com.mozz.htmlnative.token.TokenType.Script;
 import static com.mozz.htmlnative.token.TokenType.Slash;
 import static com.mozz.htmlnative.token.TokenType.StartAngleBracket;
+import static com.mozz.htmlnative.token.TokenType.Style;
 import static com.mozz.htmlnative.token.TokenType.Template;
 import static com.mozz.htmlnative.token.TokenType.Title;
 
@@ -37,6 +38,11 @@ final class Parser {
 
     @NonNull
     private final Lexer mLexer;
+
+    /**
+     * To handle the css part
+     */
+    private final CssParser mCssParser;
 
     private int mLookFor;
 
@@ -61,6 +67,7 @@ final class Parser {
 
     public Parser(TextReader reader) {
         mLexer = new Lexer(reader);
+        mCssParser = new CssParser(mLexer);
     }
 
     public HNSegment process() throws HNSyntaxError {
@@ -82,7 +89,7 @@ final class Parser {
 
             scanFor(StartAngleBracket, Slash, Html, EndAngleBracket);
         } catch (EOFException e) {
-            Log.d(TAG, "Reach the end of stream");
+            Log.w(TAG, "Reach the end of stream");
 
         } finally {
             mLexer.close();
@@ -110,6 +117,7 @@ final class Parser {
                 return;
 
             default:
+                Log.e(TAG, "must init with <template> or <script>");
                 throw new HNSyntaxError("must init with <template> or <script>", mLexer.line(),
                         mLexer.column());
 
@@ -126,6 +134,7 @@ final class Parser {
 
     private void processScript(HNSegment segment) throws HNSyntaxError, EOFException {
         if (mCurToken.type() != Script) {
+            Log.e(TAG, "Look for script, but " + mCurToken.toString());
             throw new HNSyntaxError("Look for script, but " + mCurToken.toString(), mLexer.line()
                     , mLexer.column());
         }
@@ -175,6 +184,7 @@ final class Parser {
 
     private void processHead(HNSegment segment) throws HNSyntaxError, EOFException {
         if (mCurToken.type() != TokenType.Head) {
+            Log.e(TAG, "Look for \"head\", but " + mCurToken.toString());
             throw new HNSyntaxError("Look for \"head\", but " + mCurToken.toString(), mLexer.line
                     (), mLexer.column());
         }
@@ -187,6 +197,11 @@ final class Parser {
                 return;
             } else if (mCurToken.type() == Title) {
                 processTitle(segment);
+
+            } else if (mCurToken.type() == Style) {
+                scanFor(EndAngleBracket);
+                processStyle(segment);
+                scanFor(Style, EndAngleBracket);
             } else if (mCurToken.type() == Meta) {
                 processMeta(segment);
             } else if (mCurToken.type() == StartAngleBracket) {
@@ -200,8 +215,13 @@ final class Parser {
         }
     }
 
+    private void processStyle(HNSegment segment) throws EOFException, HNSyntaxError {
+        mCssParser.process(segment);
+    }
+
     private void processTitle(HNSegment segment) throws HNSyntaxError, EOFException {
         if (mCurToken.type() != Title) {
+            Log.e(TAG, "Look for head, but " + mCurToken.toString());
             throw new HNSyntaxError("Look for head, but " + mCurToken.toString(), mLexer.line(),
                     mLexer.column());
         }
@@ -217,6 +237,7 @@ final class Parser {
 
     private void processMeta(HNSegment segment) throws HNSyntaxError, EOFException {
         if (mCurToken.type() != Meta) {
+            Log.e(TAG, "Look for meta, but " + mCurToken.toString());
             throw new HNSyntaxError("Look for meta, but " + mCurToken.toString(), mLexer.line(),
                     mLexer.column());
         }
@@ -255,6 +276,8 @@ final class Parser {
                     return;
 
                 default:
+                    Log.e(TAG, "Unknown token " + mCurToken.toString() + " when " +
+                            "parsing <meta>" + mCurToken.toString());
                     throw new HNSyntaxError("Unknown token " + mCurToken.toString() + " when " +
                             "parsing <meta>" + mCurToken.toString(), mLexer.line(), mLexer.column
                             ());
@@ -266,6 +289,7 @@ final class Parser {
 
     private void processTemplate(HNDomTree tree) throws HNSyntaxError {
         if (mCurToken.type() != Template) {
+            Log.e(TAG, "Look for Template, but " + mCurToken.toString());
             throw new HNSyntaxError("Look for Template, but " + mCurToken.toString(), mLexer.line
                     (), mLexer.column());
         }
@@ -323,6 +347,9 @@ final class Parser {
 
                             // compare the tag string with tree.nodeName
                             if (!tree.getTag().equals(mCurToken.value())) {
+                                Log.e(TAG, "View tag should be in pairs, current " +
+                                        "is<" + tree.getTag() + "></" + mCurToken.value() +
+                                        ">");
                                 throw new HNSyntaxError("View tag should be in pairs, current " +
                                         "is<" + tree.getTag() + "></" + mCurToken.value() +
                                         ">", mLexer.line(), mLexer.column());
@@ -331,6 +358,7 @@ final class Parser {
                             scan();
 
                             if (mCurToken.type() != EndAngleBracket) {
+                                Log.e(TAG, "View tag must be end with >");
                                 throw new HNSyntaxError("View tag must be end with >", mLexer
                                         .line(), mLexer.column());
                             }
@@ -372,6 +400,8 @@ final class Parser {
 
                         tree.mBracketPair--;
                         if (tree.mBracketPair != 0) {
+                            Log.e(TAG, "< > must be in pairs, " + ", current bracket" +
+                                    " pair is " + tree.mBracketPair);
                             throw new HNSyntaxError("< > must be in pairs, " + ", current bracket" +
                                     " pair is " + tree.mBracketPair, mLexer.line(), mLexer.column
                                     ());
@@ -380,6 +410,7 @@ final class Parser {
                         break;
 
                     case Id:
+                    case Style:
                         check(LK_ID);
                         attrName = mCurToken.stringValue();
                         lookFor(LK_EQUAL);
@@ -388,6 +419,7 @@ final class Parser {
                     case Equal:
                         check(LK_EQUAL);
                         if (attrName == null) {
+                            Log.e(TAG, "attrName is null, please check the state");
                             throw new HNSyntaxError("attrName is null, please check the state",
                                     mLexer.line(), mLexer.column());
                         }
@@ -437,6 +469,9 @@ final class Parser {
                         scan();
 
                         if (mCurToken.type() != EndAngleBracket) {
+                            Log.e(TAG, "unknown state, slash should be followed by " +
+                                    ">, " +
+                                    "but currently " + mCurToken.type());
                             throw new HNSyntaxError("unknown state, slash should be followed by " +
                                     ">, " +
                                     "but currently " + mCurToken.type(), mLexer.line(), mLexer
@@ -445,6 +480,8 @@ final class Parser {
 
                         tree.mBracketPair--;
                         if (tree.mBracketPair != 0) {
+                            Log.e(TAG, "< > must be in pairs, " + ", current bracket" +
+                                    " pair is " + tree.mBracketPair);
                             throw new HNSyntaxError("< > must be in pairs, " + ", current bracket" +
                                     " pair is " + tree.mBracketPair, mLexer.line(), mLexer.column
                                     ());
@@ -453,6 +490,7 @@ final class Parser {
                         return;
 
                     default:
+                        Log.e(TAG, "unknown token " + mCurToken.toString());
                         throw new HNSyntaxError("unknown token " + mCurToken.toString(), mLexer
                                 .line(), mLexer.column());
 
@@ -462,6 +500,7 @@ final class Parser {
             }
         } catch (EOFException e) {
             if (meetEndTag) {
+                Log.e(TAG, "View Tag should ends with </");
                 throw new HNSyntaxError("View Tag should ends with </", mLexer.line(), mLexer
                         .column());
             }
@@ -570,6 +609,8 @@ final class Parser {
         scan();
 
         if (mCurToken.type() != tokenType) {
+            Log.e(TAG, "syntax error, should be " + tokenType.toString() +
+                    "， but current is " + mCurToken.toString());
             throw new HNSyntaxError("syntax error, should be " + tokenType.toString() +
                     "， but current is " + mCurToken.toString(), mLexer.line(), mLexer.column());
         }
@@ -583,6 +624,9 @@ final class Parser {
 
     private void check(int status) throws HNSyntaxError {
         if (!isLookingFor(status)) {
+            Log.e(TAG, " Looking for " + lookForToString(status) + ", but " +
+                    "currently is " +
+                    lookForToString(mLookFor));
             throw new HNSyntaxError(" Looking for " + lookForToString(status) + ", but " +
                     "currently is " +
                     lookForToString(mLookFor), mLexer.line(), mLexer.column());
