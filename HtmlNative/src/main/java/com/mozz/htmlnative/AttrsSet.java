@@ -146,10 +146,10 @@ public final class AttrsSet {
      * @throws AttrApplyException
      */
     public void apply(Context context, @NonNull final HNSandBoxContext sandBoxContext, View v,
-                      @NonNull AttrsOwner tree, @NonNull ViewGroup parent, @NonNull ViewGroup
-            .LayoutParams layoutParams) throws AttrApplyException {
+                      @NonNull AttrsOwner tree, String innerText, String tagName, @NonNull
+                              ViewGroup parent, @NonNull ViewGroup.LayoutParams layoutParams)
+            throws AttrApplyException {
 
-        String tagName = tree.getTag();
 
         int startPosition = tree.attrIndex();
         int treeAttrLength = mLength[startPosition];
@@ -171,12 +171,12 @@ public final class AttrsSet {
         // Apply the default attr to view first;
         // Then process each parameter.
 
-        applyDefault(context, tagName, sandBoxContext, v, tree.getInner(), parent, layoutParams,
+        applyDefault(context, tagName, sandBoxContext, v, innerText, parent, layoutParams,
                 mTempPos, viewAttr, extraAttr, parentLayoutAttr);
 
         for (int i = startPosition; i < startPosition + treeAttrLength; i++) {
             applyAttrToView(context, tagName, sandBoxContext, v, (String) mAttrs[i << 1], mAttrs[
-                    (i << 1) + 1], tree.getInner(), parent, layoutParams, mTempPos, viewAttr,
+                    (i << 1) + 1], innerText, parent, layoutParams, mTempPos, viewAttr,
                     extraAttr, parentLayoutAttr);
         }
 

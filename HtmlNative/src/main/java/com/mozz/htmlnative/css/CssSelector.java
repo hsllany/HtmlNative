@@ -62,14 +62,4 @@ public abstract class CssSelector implements AttrsOwner {
     public void setAttrIndex(int newIndex) {
         mAttrIndex = newIndex;
     }
-
-    @Override
-    public String getTag() {
-        return null;
-    }
-
-    @Override
-    public String getInner() {
-        return null;
-    }
 }

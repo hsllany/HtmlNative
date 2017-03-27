@@ -164,13 +164,11 @@ final class HNDomTree implements Parser.ParseCallback, AttrsOwner {
     }
 
     @Nullable
-    @Override
     public String getTag() {
         return mTag;
     }
 
     @Nullable
-    @Override
     public String getInner() {
         return mText;
     }

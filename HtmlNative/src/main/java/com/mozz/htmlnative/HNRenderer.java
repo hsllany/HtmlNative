@@ -143,7 +143,8 @@ public final class HNRenderer {
                 }
 
                 try {
-                    attrsSet.apply(context, sandBoxContext, v, tree, parent, params);
+                    attrsSet.apply(context, sandBoxContext, v, tree, tree.getInner(), tree.getTag
+                            (), parent, params);
                 } catch (AttrApplyException e) {
                     e.printStackTrace();
                 }
@@ -160,7 +161,8 @@ public final class HNRenderer {
                 }
 
                 try {
-                    attrsSet.apply(context, sandBoxContext, view, tree, parent, params);
+                    attrsSet.apply(context, sandBoxContext, view, tree, tree.getInner(), tree
+                            .getTag(), parent, params);
                 } catch (AttrApplyException e) {
                     e.printStackTrace();
                 }

@@ -9,8 +9,4 @@ public interface AttrsOwner {
     int attrIndex();
 
     void setAttrIndex(int newIndex);
-
-    String getTag();
-
-    String getInner();
 }
