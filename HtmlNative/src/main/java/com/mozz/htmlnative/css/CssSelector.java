@@ -10,10 +10,12 @@ public abstract class CssSelector implements AttrsOwner {
 
     protected CssSelector mNext;
     protected int mChainLength;
+    protected CssSelector mRoot = this;
 
     private int mAttrIndex;
 
-    public void chain(CssSelector selector) {
+    public final void chain(CssSelector selector) {
+        selector.mRoot = this.mRoot;
         if (mNext == null) {
             mNext = selector;
         } else {
@@ -24,10 +26,10 @@ public abstract class CssSelector implements AttrsOwner {
         mChainLength++;
     }
 
-    public boolean matchAll(Object object) {
+    public final boolean matchAll(String type, String id, String clazz) {
         CssSelector p = this;
         while (p != null) {
-            if (!p.matchThis(object)) {
+            if (!p.matchThis(type, id, clazz)) {
                 return false;
             }
 
@@ -37,7 +39,7 @@ public abstract class CssSelector implements AttrsOwner {
         return true;
     }
 
-    public abstract boolean matchThis(Object object);
+    public abstract boolean matchThis(String type, String id, String clazz);
 
     public abstract String selfToString();
 
@@ -53,9 +55,17 @@ public abstract class CssSelector implements AttrsOwner {
         return sb.toString();
     }
 
+    public final CssSelector next() {
+        return mNext;
+    }
+
     @Override
     public int attrIndex() {
-        return mAttrIndex;
+        if (mRoot == this) {
+            return mAttrIndex;
+        } else {
+            return mRoot.attrIndex();
+        }
     }
 
     @Override

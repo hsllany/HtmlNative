@@ -11,12 +11,14 @@ import android.widget.AbsoluteLayout;
 
 import com.mozz.htmlnative.common.Performance;
 import com.mozz.htmlnative.common.PerformanceWatcher;
+import com.mozz.htmlnative.css.CssSelector;
 import com.mozz.htmlnative.view.HNViewGroup;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 
 public final class HNRenderer {
@@ -32,7 +34,21 @@ public final class HNRenderer {
     private static ImageViewAdapter sImageViewAdapter = DefaultImageAdapter.sInstance;
     private static HrefLinkHandler sHrefLinkHandler = DefaultHrefLinkHandler.sInstance;
 
+    static class ViewCreateResult {
+        String id;
+        String clazz;
+    }
+
+    static class SelectorMapHolder {
+        Set<CssSelector> instance;
+    }
+
+    private ViewCreateResult mTempResult;
+    private SelectorMapHolder mMapHolder;
+
     private HNRenderer() {
+        mTempResult = new ViewCreateResult();
+        mMapHolder = new SelectorMapHolder();
     }
 
     @NonNull
@@ -44,43 +60,58 @@ public final class HNRenderer {
     final View render(@NonNull Context context, @NonNull HNSegment segment, @NonNull ViewGroup
             .LayoutParams params) throws RemoteInflateException {
         HNEventLog.writeEvent(HNEventLog.TAG_RENDER, "start to render " + segment.toString());
-        PerformanceWatcher pWatcher = Performance.newWatcher();
+
         HNViewGroup rootViewGroup = new HNViewGroup(context);
+
         HNSandBoxContext sandBoxContext = SandBoxContextImpl.create(rootViewGroup, segment,
                 context);
-        pWatcher.check("[step 1] create HNSandBoxContext");
-        sandBoxContext.onViewCreate();
-        pWatcher.check("[step 2] call onViewCreate");
+
+        this.performCreate(sandBoxContext);
 
         View v = renderInternal(context, sandBoxContext, segment.mRootTree, segment,
-                rootViewGroup, params, rootViewGroup);
-        pWatcher.check("[step 3] rendering view");
+                rootViewGroup, params, rootViewGroup, segment.mCss, mMapHolder.instance,
+                mMapHolder);
 
         if (v != null) {
             rootViewGroup.addView(v, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                     .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            sandBoxContext.onViewLoaded();
-            pWatcher.checkDone("finally done");
+
+            this.performCreated(sandBoxContext);
+
             HNEventLog.writeEvent(HNEventLog.TAG_RENDER, sandBoxContext.allIdTag());
+
             return rootViewGroup;
         }
 
         return null;
     }
 
+    private void performCreate(HNSandBoxContext sandBoxContext) {
+        if (sandBoxContext != null) {
+            sandBoxContext.onViewCreate();
+        }
+    }
+
+    private void performCreated(HNSandBoxContext sandBoxContext) {
+        if (sandBoxContext != null) {
+            sandBoxContext.onViewLoaded();
+        }
+    }
+
     private View renderInternal(@NonNull Context context, @NonNull HNSandBoxContext
             sandBoxContext, HNDomTree tree, HNSegment segment, @NonNull ViewGroup parent,
                                 @NonNull ViewGroup.LayoutParams params, @NonNull HNViewGroup
-                                        root) throws RemoteInflateException {
+                                        root, Css css, Set<CssSelector> parentSelector,
+                                SelectorMapHolder holder) throws RemoteInflateException {
 
         AttrsSet attrsSet = segment.mAttrs;
 
         if (tree.isLeaf()) {
             return createViewFromNodeName(tree, sandBoxContext, parent, context, attrsSet,
-                    params, root);
+                    params, root, css, parentSelector, holder);
         } else {
             View view = createViewFromNodeName(tree, sandBoxContext, parent, context, attrsSet,
-                    params, root);
+                    params, root, css, parentSelector, holder);
 
             if (view == null) {
                 return null;
@@ -102,9 +133,9 @@ public final class HNRenderer {
                                 .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     }
 
-
+                    // Recursively render child.
                     final View v = renderInternal(context, sandBoxContext, child, segment,
-                            viewGroup, layoutParams, root);
+                            viewGroup, layoutParams, root, css, holder.instance, holder);
 
                     if (v != null) {
                         viewGroup.addView(v, layoutParams);
@@ -128,11 +159,14 @@ public final class HNRenderer {
 
     private View createViewFromNodeName(@NonNull HNDomTree tree, @NonNull HNSandBoxContext
             sandBoxContext, @NonNull ViewGroup parent, @NonNull Context context, @NonNull
-            AttrsSet attrsSet, @NonNull ViewGroup.LayoutParams params, @NonNull HNViewGroup root)
-            throws RemoteInflateException {
+            AttrsSet attrsSet, @NonNull ViewGroup.LayoutParams params, @NonNull HNViewGroup root,
+                                        Css css, Set<CssSelector> parentSelector,
+                                        SelectorMapHolder outSelectors) throws
+            RemoteInflateException {
 
         String tag = tree.getTag();
         PerformanceWatcher watcher = Performance.newWatcher();
+
         try {
 
             if (HtmlTag.isDivOrTemplate(tag)) {
@@ -144,7 +178,23 @@ public final class HNRenderer {
 
                 try {
                     attrsSet.apply(context, sandBoxContext, v, tree, tree.getInner(), tree.getTag
-                            (), parent, params);
+                            (), parent, params, mTempResult);
+                } catch (AttrApplyException e) {
+                    e.printStackTrace();
+                }
+
+                Set<CssSelector> cssSelectors = css.matchedSelector(tag, mTempResult.id,
+                        mTempResult.clazz, parentSelector);
+
+                outSelectors.instance = cssSelectors;
+
+                try {
+                    for (CssSelector selector : cssSelectors) {
+                        if (selector.next() == null) {
+                            css.mCssSet.apply(context, sandBoxContext, v, selector, tree.getInner
+                                    (), tree.getTag(), parent, params, mTempResult);
+                        }
+                    }
                 } catch (AttrApplyException e) {
                     e.printStackTrace();
                 }
@@ -152,23 +202,40 @@ public final class HNRenderer {
                 return v;
             } else {
 
-                View view = createViewByTag(context, tag);
+                View v = createViewByTag(context, tag);
 
-                watcher.check("create view" + view.toString());
+                watcher.check("create view" + v.toString());
 
-                if (view instanceof WebView) {
-                    root.addWebView((WebView) view);
+                if (v instanceof WebView) {
+                    root.addWebView((WebView) v);
                 }
 
                 try {
-                    attrsSet.apply(context, sandBoxContext, view, tree, tree.getInner(), tree
-                            .getTag(), parent, params);
+                    attrsSet.apply(context, sandBoxContext, v, tree, tree.getInner(), tree.getTag
+                            (), parent, params, mTempResult);
                 } catch (AttrApplyException e) {
                     e.printStackTrace();
                 }
 
-                watcher.checkDone("create view " + view.toString() + ", and give it attrs.");
-                return view;
+                Set<CssSelector> cssSelectors = css.matchedSelector(tag, mTempResult.id,
+                        mTempResult.clazz, parentSelector);
+
+                outSelectors.instance = cssSelectors;
+
+                try {
+                    for (CssSelector selector : cssSelectors) {
+                        if (selector.next() == null) {
+                            css.mCssSet.apply(context, sandBoxContext, v, selector, tree.getInner
+                                    (), tree.getTag(), parent, params, mTempResult);
+                        }
+
+                    }
+                } catch (AttrApplyException e) {
+                    e.printStackTrace();
+                }
+
+                watcher.checkDone("create view " + v.toString() + ", and give it attrs.");
+                return v;
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();

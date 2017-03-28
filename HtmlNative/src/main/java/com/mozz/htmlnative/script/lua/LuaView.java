@@ -53,7 +53,7 @@ public class LuaView extends LuaTable {
                             try {
                                 AttrsSet.applyAttrToView(v.getContext(), null, context, v, entry
                                         .getKey(), entry.getValue(), null, parent, null, null,
-                                        viewAttr, extraAttr, parentAttr);
+                                        viewAttr, extraAttr, parentAttr, null);
                             } catch (AttrApplyException e) {
                                 e.printStackTrace();
                             }

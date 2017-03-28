@@ -1,17 +1,35 @@
 <html>
     <head>
         <title>Demo</title>
+        <style>
+            #text1{
+            background:red;
+            color:green
+            }
+
+            div p{
+            color:red;
+            padding: 30
+            }
+
+        </style>
     </head>
     <body>
-        <p style="color: #000; font-size: 16; padding: 10; background:url(http://n.sinaimg.cn/news/crawl/20170302/18ey-fycaahm6004808.jpg)" id="text1">
+        <p style="font-size: 16; padding: 10; background:url(http://n.sinaimg.cn/news/crawl/20170302/18ey-fycaahm6004808.jpg)"
+           id="text1">
             This is an example of ImageView
             <br/>2 Images are shown.
         </p>
 
+        <p>div in root</p>
+
         <button onClick="changeText1">click me</button>
 
-        <img src="http://n.sinaimg.cn/news/crawl/20170302/18ey-fycaahm6004808.jpg"/>
-        <img src="http://n.sinaimg.cn/news/crawl/20170312/VUL1-fychhvn8494769.jpg"/>
+        <div>
+            <p>p in div</p>
+            <img src="http://n.sinaimg.cn/news/crawl/20170302/18ey-fycaahm6004808.jpg" width="100%"/>
+            <img src="http://n.sinaimg.cn/news/crawl/20170312/VUL1-fychhvn8494769.jpg"/>
+        </div>
 
 
     </body>
@@ -22,15 +40,15 @@
         b = false
 
         function changeText1()
-            -- get the v by id
-            local v = view("text1")
-            if(b) then
-                v.style("background:red;color:#fff")
-            else
-                v.style("background:blue;color:red")
-            end
+        -- get the v by id
+        local v = view("text1")
+        if(b) then
+        v.style("background:red;color:#fff")
+        else
+        v.style("background:blue;color:red")
+        end
 
-            b = not(b)
+        b = not(b)
 
         end
 

@@ -4,7 +4,7 @@ package com.mozz.htmlnative.css;
  * @author Yang Tao, 17/3/27.
  */
 
-public class IdSelector extends TagSelector {
+public class IdSelector extends TypeSelector {
     public IdSelector(String Id) {
         super(Id);
     }
@@ -12,5 +12,10 @@ public class IdSelector extends TagSelector {
     @Override
     public String selfToString() {
         return "[Id=" + mTag + "]";
+    }
+
+    @Override
+    public boolean matchThis(String type, String id, String clazz) {
+        return mTag.equals(id);
     }
 }

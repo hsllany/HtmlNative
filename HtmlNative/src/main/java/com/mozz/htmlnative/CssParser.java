@@ -6,11 +6,13 @@ import android.util.Log;
 import com.mozz.htmlnative.css.ClassSelector;
 import com.mozz.htmlnative.css.CssSelector;
 import com.mozz.htmlnative.css.IdSelector;
-import com.mozz.htmlnative.css.TagSelector;
+import com.mozz.htmlnative.css.TypeSelector;
 import com.mozz.htmlnative.token.Token;
 import com.mozz.htmlnative.token.TokenType;
 
 import java.io.EOFException;
+
+import static com.mozz.htmlnative.Parser.parseStyleSingle;
 
 /**
  * @author Yang Tao, 17/3/26.
@@ -41,7 +43,7 @@ final class CssParser {
 
     private final Lexer lexer;
 
-    public CssParser(Lexer lexer) {
+    CssParser(Lexer lexer) {
         this.lexer = lexer;
     }
 
@@ -64,10 +66,10 @@ final class CssParser {
                     // tag selector should be in the first position of whole if-statement
                     if (isLookingFor(SELECTOR_TAG)) {
                         if (cssSelector == null) {
-                            cssSelector = new TagSelector(mCurToken.stringValue());
+                            cssSelector = new TypeSelector(mCurToken.stringValue());
                             segment.mCss.newAttr(cssSelector);
                         } else {
-                            cssSelector.chain(new TagSelector(mCurToken.stringValue()));
+                            cssSelector.chain(new TypeSelector(mCurToken.stringValue()));
                         }
                         lookFor(START_BRACE | SELECTOR_START);
                     } else if (isLookingFor(SELECTOR_CLASS)) {
@@ -92,7 +94,8 @@ final class CssParser {
                         lookFor(COLON);
                     } else if (isLookingFor(VALUE)) {
                         check(VALUE);
-                        segment.mCss.putAttr(cssSelector, keyCache, mCurToken.stringValue());
+                        segment.mCss.putAttr(cssSelector, keyCache, parseStyleSingle(keyCache,
+                                mCurToken.stringValue()));
                         lookFor(SEMICOLON | END_BRACE);
                     }
 
@@ -124,6 +127,18 @@ final class CssParser {
                     lookFor(END_BRACE | KEY);
                     break;
 
+                case Int:
+                    check(VALUE);
+                    segment.mCss.putAttr(cssSelector, keyCache, mCurToken.intValue());
+                    lookFor(SEMICOLON | END_BRACE);
+                    break;
+
+                case Double:
+                    check(VALUE);
+                    segment.mCss.putAttr(cssSelector, keyCache, mCurToken.doubleValue());
+                    lookFor(SEMICOLON | END_BRACE);
+                    break;
+
                 case StartAngleBracket:
                     check(SELECTOR_START);
                     scan();
@@ -131,9 +146,9 @@ final class CssParser {
                         Log.d(TAG, segment.mCss.toString());
                         return;
                     }
-
                     // if parse process didn't end, then there is a syntax error.
                 default:
+                    Log.e(TAG, "wrong when parsing css");
                     throw new HNSyntaxError("wrong when parsing css", lexer.line(), lexer.column());
             }
         }
@@ -159,10 +174,66 @@ final class CssParser {
 
     private void check(int status) throws HNSyntaxError {
         if (!isLookingFor(status)) {
-            throw new HNSyntaxError(" Looking for " + status + ", but " +
+            Log.e(TAG, " Looking for " + lookForToString(status) + ", but " +
                     "currently is " +
-                    this.lookFor, lexer.line(), lexer.column());
+                    lookForToString(this.lookFor));
+            throw new HNSyntaxError(" Looking for " + lookForToString(status) + ", but " +
+                    "currently is " +
+                    lookForToString(this.lookFor), lexer.line(), lexer.column());
         }
+    }
+
+    private static String lookForToString(int lookFor) {
+        StringBuilder sb = new StringBuilder("[ ");
+
+        if ((lookFor & SELECTOR_HASH) != 0) {
+            sb.append("# ");
+        }
+
+        if ((lookFor & SELECTOR_DOT) != 0) {
+            sb.append(". ");
+        }
+
+        if ((lookFor & SELECTOR_ID) != 0) {
+            sb.append("id ");
+        }
+
+        if ((lookFor & SELECTOR_CLASS) != 0) {
+            sb.append("class ");
+        }
+
+        if ((lookFor & SELECTOR_TAG) != 0) {
+            sb.append("type ");
+        }
+
+        if ((lookFor & START_BRACE) != 0) {
+            sb.append("{ ");
+        }
+
+        if ((lookFor & END_BRACE) != 0) {
+            sb.append("} ");
+        }
+
+        if ((lookFor & KEY) != 0) {
+            sb.append("cssPropertyName ");
+        }
+
+        if ((lookFor & VALUE) != 0) {
+            sb.append("cssPropertyValue ");
+        }
+
+        if ((lookFor & COLON) != 0) {
+            sb.append(": ");
+        }
+
+        if ((lookFor & SEMICOLON) != 0) {
+            sb.append("; ");
+        }
+
+        sb.append(" ]");
+
+        return sb.toString();
+
     }
 
 

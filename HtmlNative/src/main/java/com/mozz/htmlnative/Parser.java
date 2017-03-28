@@ -65,7 +65,7 @@ final class Parser {
     private static final int LK_NUMBER = LK_INT | LK_DOUBLE;
 
 
-    public Parser(TextReader reader) {
+    Parser(TextReader reader) {
         mLexer = new Lexer(reader);
         mCssParser = new CssParser(mLexer);
     }
@@ -642,7 +642,7 @@ final class Parser {
     }
 
     private static String lookForToString(int lookFor) {
-        StringBuilder sb = new StringBuilder("[");
+        StringBuilder sb = new StringBuilder("[ ");
 
         if ((lookFor & LK_EndArrowBracket) != 0) {
             sb.append("> ");

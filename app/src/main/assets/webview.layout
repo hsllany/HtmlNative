@@ -3,20 +3,20 @@
         <title>WebViewExample</title>
         <meta name="nihao" content="world"/>
         <style>
-            a b{
+            #text1{
                 background:red;
-                color:white
+                color:green
             }
 
-            b{
-                nihao:d
+            button{
+                color:yellow
             }
 
         </style>
     </head>
 
     <body>
-        <text style="color:#f00; background:#fff" id="text1">This is an demo of iframe<br/>nihao
+        <text id="text1">This is an demo of iframe<br/>nihao
         </text>
         <button onClick="changeText1">click me</button>
         <iframe style="width:100%; height:100%; color:#000000" src="http://www.w3school.com.cn/"/>

@@ -41,6 +41,7 @@ public final class AttrsSet {
     private static final String ATTR_TOP = "top";
     private static final String ATTR_ALPHA = "alpha";
     private static final String ATTR_ID = "id";
+    private static final String ATTR_CLAZZ = "class";
     private static final String ATTR_ONCLICK = "onClick";
     private static final String ATTR_VISIBLE = "visibility";
     private static final String ATTR_DISPLAY = "display";
@@ -147,8 +148,8 @@ public final class AttrsSet {
      */
     public void apply(Context context, @NonNull final HNSandBoxContext sandBoxContext, View v,
                       @NonNull AttrsOwner tree, String innerText, String tagName, @NonNull
-                              ViewGroup parent, @NonNull ViewGroup.LayoutParams layoutParams)
-            throws AttrApplyException {
+                              ViewGroup parent, @NonNull ViewGroup.LayoutParams layoutParams,
+                      HNRenderer.ViewCreateResult outResult) throws AttrApplyException {
 
 
         int startPosition = tree.attrIndex();
@@ -159,6 +160,10 @@ public final class AttrsSet {
         mTempPos[1] = ViewGroup.LayoutParams.WRAP_CONTENT;
         mTempPos[2] = 0;
         mTempPos[3] = 0;
+
+        // clear the value in result
+        outResult.clazz = null;
+        outResult.id = null;
 
         Attr viewAttr = getAttr(v.getClass());
         Attr extraAttr = AttrsHelper.getExtraAttrFromView(v.getClass());
@@ -177,7 +182,7 @@ public final class AttrsSet {
         for (int i = startPosition; i < startPosition + treeAttrLength; i++) {
             applyAttrToView(context, tagName, sandBoxContext, v, (String) mAttrs[i << 1], mAttrs[
                     (i << 1) + 1], innerText, parent, layoutParams, mTempPos, viewAttr,
-                    extraAttr, parentLayoutAttr);
+                    extraAttr, parentLayoutAttr, outResult);
         }
 
 
@@ -229,7 +234,8 @@ public final class AttrsSet {
     public static void applyAttrToView(Context context, String tagName, final HNSandBoxContext
             sandBoxContext, View v, String params, Object value, String innerElement, @NonNull
             ViewGroup parent, @NonNull ViewGroup.LayoutParams layoutParams, int[] posOut, Attr
-            viewAttr, Attr extralAttr, LayoutAttr parentAttr) throws AttrApplyException {
+            viewAttr, Attr extralAttr, LayoutAttr parentAttr, HNRenderer.ViewCreateResult
+            outResult) throws AttrApplyException {
 
 
         switch (params) {
@@ -316,8 +322,21 @@ public final class AttrsSet {
             case ATTR_ID:
                 if (value instanceof String) {
                     sandBoxContext.saveId((String) value, v);
+                    if (outResult != null) {
+                        outResult.id = (String) value;
+                    }
                 } else {
                     throw new AttrApplyException("id must be a string.");
+                }
+                break;
+
+            case ATTR_CLAZZ:
+                if (value instanceof String) {
+                    if (outResult != null) {
+                        outResult.clazz = (String) value;
+                    }
+                } else {
+                    throw new AttrApplyException("class must be a string.");
                 }
                 break;
 
