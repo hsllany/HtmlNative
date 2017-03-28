@@ -1,22 +1,21 @@
 HtmlNative
 ========
 
-[Chinese](README_ch.md)
+HtmlNative，用Html+css渲染Android原生控件；如果你还需要一些逻辑，支持Lua。
 
-HtmlNative，use Html+css to render  Android native widget. Furthermore if you need some logic inside of it, HtmlNative also support lua script.
+这个工具的诞生，来源于一个简单的想法：
 
-This repo stands upon some basic idea：
+虽然RN和Weex，已经提供了强大的能力，用Js来实现原生的开发；
 
-Although we have react-native and Weex, which are very strong and excellent, to enable us use javascript to write mobile applications.
+但强大的背后，是要面对的是较为陡峭学习曲线，从JavaScript到React\Vue, 这个曲线或许并不是对每个人都那么友好。
 
-But in order to master them, you need to climb up a rather steep learning curve, which may not be so friendly for everybody.
+但Html，应该是所有人都能学会的语言，试试用这个来实现;
 
-But html seems a lauguage that everybody know, so why not try using html to render native widget.
+有想法就去实践好了，于是乎有了HtmlNative这个四不像的“怪物”。
 
-If you have idea, just make it work. Then HtmlNative is born.
+## 例子:
 
-## Example:
-
+一个简单的Html；如果需要一些简单的逻辑，也可以加一些Lua的调味料做辅助。
 
 ```html
 <html>
@@ -36,21 +35,21 @@ If you have idea, just make it work. Then HtmlNative is born.
     </p>
     <img src="http://n.sinaimg.cn/news/crawl/20170302/18ey-fycaahm6004808.jpg" />
     <img src="http://n.sinaimg.cn/news/crawl/20170312/VUL1-fychhvn8494769.jpg" />
-    
+
     <button onClick="changeText1">clickme</button>
 </body>
 <script type="text/lua">
     -- Toast in Android
     alert("hello world")
-    
-    -- Define a global variable
+
+    -- 定义一个全局变量，并将其初始值置为false
     b = false
 
-    -- Define a function which responde to click event on button
+    -- 定义一个函数，实现一些简单的逻辑
     function changeText1()
         -- 通过id找到view
         local v = view("text1")
-        
+
         -- 设置下样式
         if(b) then
             v.style("background:red;color:#fff")
@@ -61,27 +60,27 @@ If you have idea, just make it work. Then HtmlNative is born.
         b = not(b)
 
     end
-    
-    -- register the function with a clickevent name.
+
+    -- 将这个函数注册，使得Android能调用到
     callback("changeText1", changeText1)
-    
+
     -- Done.
 
 </script>
 </html>
 ```
 
-After rendering:
+通过HtmlNative渲染后的结果:
 
 ![screen1](show.gif)
 
 ## In Android
 
-All you have to do is :
+像这样来使用 :
 
 ```java
 
-// get the html file somewhere
+// 通过任何方式，拿到html
 String htmlStr = ...
 
 HNative.getInstance().loadView(context, mActivity.getAssets().open(fileName), new HNative.OnHNViewLoaded() {
