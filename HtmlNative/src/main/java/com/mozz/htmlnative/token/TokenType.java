@@ -50,7 +50,7 @@ public enum TokenType {
 
     StartBrace("{"),
 
-    Style("style"),
+    Style("Style"),
 
     EndBrace("}");
 

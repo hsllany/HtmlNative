@@ -2,6 +2,7 @@ package com.mozz.htmlnative;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.mozz.htmlnative.reader.TextReader;
 import com.mozz.htmlnative.token.Token;
@@ -11,6 +12,8 @@ import java.io.EOFException;
 
 
 final class Lexer {
+
+    private static final String TAG = Lexer.class.getSimpleName();
 
     private TextReader mReader;
 
@@ -120,6 +123,7 @@ final class Lexer {
             return scanId();
         }
 
+        Log.e(TAG, "unknown token " + peek() + " at " + line() + "," + column());
         throw new HNSyntaxError("unknown token " + peek(), line(), column());
     }
 
@@ -211,40 +215,40 @@ final class Lexer {
                 (TokenType.Body.toString())) {
 
             type = TokenType.Template;
-            tokenContent = type.toString();
+            tokenContent = idStr;
 
         } else if (idStr.equalsIgnoreCase(TokenType.Script.toString())) {
             mLookForScript++;
 
             type = TokenType.Script;
-            tokenContent = type.toString();
+            tokenContent = idStr;
 
         } else if (idStr.equalsIgnoreCase(TokenType.Head.toString())) {
 
             type = TokenType.Head;
-            tokenContent = type.toString();
+            tokenContent = idStr;
 
         } else if (idStr.equalsIgnoreCase(TokenType.Meta.toString())) {
 
             type = TokenType.Meta;
-            tokenContent = type.toString();
+            tokenContent = idStr;
 
         } else if (idStr.equalsIgnoreCase(TokenType.Link.toString())) {
 
             type = TokenType.Link;
-            tokenContent = type.toString();
+            tokenContent = idStr;
         } else if (idStr.equalsIgnoreCase(TokenType.Html.toString())) {
 
             type = TokenType.Html;
-            tokenContent = type.toString();
+            tokenContent = idStr;
 
         } else if (idStr.equalsIgnoreCase(TokenType.Title.toString())) {
 
             type = TokenType.Title;
-            tokenContent = type.toString();
+            tokenContent = idStr;
         } else if (idStr.equalsIgnoreCase(TokenType.Style.toString())) {
             type = TokenType.Style;
-            tokenContent = type.toString();
+            tokenContent = idStr;
 
             if (!mIsInStyle && peekHistory(6) == '<') {
                 mIsInStyle = true;

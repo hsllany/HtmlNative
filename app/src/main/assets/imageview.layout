@@ -3,13 +3,13 @@
         <title>Demo</title>
         <style>
             #text1{
-            background:red;
-            color:green
+                background:red;
+                color:green
             }
 
             div p{
-            color:red;
-            padding: 30
+                color:red;
+                padding: 30
             }
 
         </style>
@@ -40,15 +40,16 @@
         b = false
 
         function changeText1()
-        -- get the v by id
-        local v = view("text1")
-        if(b) then
-        v.style("background:red;color:#fff")
-        else
-        v.style("background:blue;color:red")
-        end
+            -- get the v by id
+            local v = view("text1")
 
-        b = not(b)
+            if(b) then
+                v.style("background:red;color:#fff")
+            else
+                v.style("background:blue;color:red")
+            end
+
+            b = not(b)
 
         end
 

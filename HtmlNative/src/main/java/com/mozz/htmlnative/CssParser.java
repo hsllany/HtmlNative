@@ -54,13 +54,19 @@ final class CssParser {
 
         String keyCache = null;
 
+        boolean meetHashBefore = false;
+
         while (true) {
             scan();
 
             switch (mCurToken.type()) {
                 case Hash:
-                    check(SELECTOR_HASH);
-                    lookFor(SELECTOR_ID);
+                    check(SELECTOR_HASH | VALUE);
+                    if ((lookFor & VALUE) != 0) {
+                        meetHashBefore = true;
+                    } else {
+                        lookFor(SELECTOR_ID);
+                    }
                     break;
                 case Id:
                     // tag selector should be in the first position of whole if-statement
@@ -94,8 +100,14 @@ final class CssParser {
                         lookFor(COLON);
                     } else if (isLookingFor(VALUE)) {
                         check(VALUE);
+                        String value = mCurToken.stringValue();
+                        if (meetHashBefore) {
+                            value = "#" + value;
+                            meetHashBefore = false;
+                        }
+
                         segment.mCss.putAttr(cssSelector, keyCache, parseStyleSingle(keyCache,
-                                mCurToken.stringValue()));
+                                value));
                         lookFor(SEMICOLON | END_BRACE);
                     }
 
@@ -137,6 +149,44 @@ final class CssParser {
                     check(VALUE);
                     segment.mCss.putAttr(cssSelector, keyCache, mCurToken.doubleValue());
                     lookFor(SEMICOLON | END_BRACE);
+                    break;
+
+                // Below is special case, to handle the class or id selector which have the same
+                // name with Head, Meta, Script, Template, Body, Link, Style, Html and Title. The
+                // process is the same with Id token.
+                case Head:
+                case Meta:
+                case Script:
+                case Template:
+                case Body:
+                case Link:
+                case Style:
+                case Html:
+                case Title:
+                    check(SELECTOR_CLASS | SELECTOR_ID | SELECTOR_TAG);
+                    if (isLookingFor(SELECTOR_CLASS)) {
+                        if (cssSelector == null) {
+                            cssSelector = new ClassSelector(mCurToken.stringValue());
+                            segment.mCss.newAttr(cssSelector);
+                        } else {
+                            cssSelector.chain(new ClassSelector(mCurToken.stringValue()));
+                        }
+                    } else if (isLookingFor(SELECTOR_ID)) {
+                        if (cssSelector == null) {
+                            cssSelector = new IdSelector(mCurToken.stringValue());
+                            segment.mCss.newAttr(cssSelector);
+                        } else {
+                            cssSelector.chain(new IdSelector(mCurToken.stringValue()));
+                        }
+                    } else if (isLookingFor(SELECTOR_TAG)) {
+                        if (cssSelector == null) {
+                            cssSelector = new TypeSelector(mCurToken.stringValue());
+                            segment.mCss.newAttr(cssSelector);
+                        } else {
+                            cssSelector.chain(new TypeSelector(mCurToken.stringValue()));
+                        }
+                    }
+                    lookFor(START_BRACE | SELECTOR_START);
                     break;
 
                 case StartAngleBracket:

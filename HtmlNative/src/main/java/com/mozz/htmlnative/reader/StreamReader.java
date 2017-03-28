@@ -1,6 +1,7 @@
 package com.mozz.htmlnative.reader;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.mozz.htmlnative.common.Utils;
 
@@ -10,6 +11,8 @@ import java.io.Reader;
 
 
 public class StreamReader implements TextReader {
+
+    private static final String TAG = StreamReader.class.getSimpleName();
 
     public static final int CACHE_SIZE = 1024 * 2;
 
@@ -49,6 +52,7 @@ public class StreamReader implements TextReader {
         try {
             if (tempPos == tempCount - 1) {
                 if (meetEof) {
+                    Log.w(TAG, "reach the end of the stream!");
                     throw new EOFException("Reach the end of stream!");
                 }
                 fillInCache();
@@ -66,6 +70,7 @@ public class StreamReader implements TextReader {
             return ch;
 
         } catch (IOException e) {
+            Log.w(TAG, "IOException EOF " + e.getMessage());
             e.printStackTrace();
             EOFException eofException = new EOFException();
             eofException.initCause(e);
@@ -76,6 +81,7 @@ public class StreamReader implements TextReader {
 
     private void fillInCache() throws IOException {
         if (mInputStream == null) {
+            Log.w(TAG, "input stream is null");
             throw new EOFException("input stream is null");
         }
 
