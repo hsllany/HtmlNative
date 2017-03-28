@@ -199,7 +199,7 @@ final class Parser {
                 processTitle(segment);
 
             } else if (mCurToken.type() == Style) {
-                scanFor(EndAngleBracket);
+
                 processStyle(segment);
                 scanFor(Style, EndAngleBracket);
             } else if (mCurToken.type() == Meta) {
@@ -216,6 +216,29 @@ final class Parser {
     }
 
     private void processStyle(HNSegment segment) throws EOFException, HNSyntaxError {
+        // Ignore the element that is written in <style> tag
+        while (true) {
+            scan();
+
+            switch (mCurToken.type()) {
+                case Id:
+                case Value:
+                case Equal:
+                case Int:
+                case Double:
+                    continue;
+                case EndAngleBracket:
+                    break;
+
+                default:
+                    throw new HNSyntaxError("unknown " + mCurToken.toString() + " token in " +
+                            "<style>", mLexer.column(), mLexer.line());
+            }
+
+            if (mCurToken.type() == EndAngleBracket) {
+                break;
+            }
+        }
         mCssParser.process(segment);
     }
 

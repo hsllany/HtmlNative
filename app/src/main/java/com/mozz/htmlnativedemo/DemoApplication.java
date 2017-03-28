@@ -29,13 +29,10 @@ public class DemoApplication extends Application {
         HNative.getInstance().init(this);
 
         HNEventLog.setDebugLevel(HNEventLog.TAG_PARSER);
-
-
+        
         HNative.getInstance().setImageViewAdapter(new ImageViewAdapter() {
             @Override
             public void setImage(String src, final ViewImageAdapter imageView) {
-
-
                 long time1 = SystemClock.currentThreadTimeMillis();
                 Glide.with(DemoApplication.this).load(src).asBitmap().into(new SimpleTarget<Bitmap>() {
 
