@@ -1,10 +1,12 @@
 package com.mozz.htmlnativedemo;
 
 import android.app.Application;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -14,6 +16,7 @@ import com.mozz.htmlnative.HNEventLog;
 import com.mozz.htmlnative.HNative;
 import com.mozz.htmlnative.HrefLinkHandler;
 import com.mozz.htmlnative.ImageViewAdapter;
+import com.mozz.htmlnative.WebViewCreator;
 import com.mozz.htmlnative.view.ViewImageAdapter;
 import com.squareup.leakcanary.LeakCanary;
 
@@ -29,13 +32,11 @@ public class DemoApplication extends Application {
         HNative.getInstance().init(this);
 
         HNEventLog.setDebugLevel(HNEventLog.TAG_PARSER);
-        
+
         HNative.getInstance().setImageViewAdapter(new ImageViewAdapter() {
             @Override
             public void setImage(String src, final ViewImageAdapter imageView) {
-                long time1 = SystemClock.currentThreadTimeMillis();
                 Glide.with(DemoApplication.this).load(src).asBitmap().into(new SimpleTarget<Bitmap>() {
-
 
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap>
@@ -45,8 +46,6 @@ public class DemoApplication extends Application {
                     }
                 });
 
-                Log.d("PerformanceWatcher", "---->Glide spend" + (SystemClock
-                        .currentThreadTimeMillis() - time1));
             }
         });
 
@@ -54,6 +53,13 @@ public class DemoApplication extends Application {
             @Override
             public void onHref(String url, View view) {
                 Toast.makeText(DemoApplication.this, url, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        HNative.getInstance().setWebviewCreator(new WebViewCreator() {
+            @Override
+            public WebView create(Context context) {
+                return new WebView(context);
             }
         });
 

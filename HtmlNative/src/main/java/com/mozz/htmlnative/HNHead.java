@@ -5,7 +5,7 @@ package com.mozz.htmlnative;
  */
 
 public class HNHead {
-    private MetaData mMeta;
+    private Metas mMeta;
     private String mTitle;
 
     public boolean containsMeta(Meta key) {
@@ -44,7 +44,7 @@ public class HNHead {
 
     private void lazyInitialMetaData() {
         if (mMeta == null) {
-            mMeta = new MetaData();
+            mMeta = new Metas();
         }
     }
 

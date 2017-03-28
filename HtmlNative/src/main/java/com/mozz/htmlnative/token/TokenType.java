@@ -52,6 +52,8 @@ public enum TokenType {
 
     Style("Style"),
 
+    Comma(","),
+
     EndBrace("}");
 
     private String value;

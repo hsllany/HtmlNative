@@ -3,17 +3,17 @@ HtmlNative
 
 [Chinese](README_ch.md)
 
-HtmlNative，use Html+css to render  Android native widget. Furthermore if you need some logic inside of it, HtmlNative also support lua script.
+HtmlNative，use HTML + CSS to render Android native widget. Furthermore, if you need some logic inside, HtmlNative also support Lua script.
 
 This repo stands upon some basic idea：
 
-Although we have react-native and Weex, which are very strong and excellent, to enable us use javascript to write mobile applications.
+Although we have react-native and Weex, which are very strong and excellent, to enable us to use javascript to write mobile applications.
 
 But in order to master them, you need to climb up a rather steep learning curve, which may not be so friendly for everybody.
 
-But html seems a lauguage that everybody know, so why not try using html to render native widget.
+But HTML seems a language that everybody knows, so why not try using HTML to render native widget.
 
-If you have idea, just make it work. Then HtmlNative is born.
+So HtmlNative is born.
 
 ## Example:
 
@@ -102,6 +102,40 @@ HNative.getInstance().loadView(context, mActivity.getAssets().open(fileName), ne
     }
 });
 
+```
+
+Also, you can define some the default behaviour when image loading, WebView creation and hyperlink clicking.
+
+```java
+    HNative.getInstance().setImageViewAdapter(new ImageViewAdapter() {
+        @Override
+        public void setImage(String src, final ViewImageAdapter imageView) {
+            Glide.with(DemoApplication.this).load(src).asBitmap().into(new SimpleTarget<Bitmap>() {
+
+                @Override
+                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap>
+                            glideAnimation) {
+                    Log.d("GlideTest", "onResourceReady");
+                    imageView.setImage(resource);
+                }
+            });
+
+        }
+    });
+
+    HNative.getInstance().setHrefLinkHandler(new HrefLinkHandler() {
+        @Override
+        public void onHref(String url, View view) {
+            Toast.makeText(DemoApplication.this, url, Toast.LENGTH_SHORT).show();
+            }
+    });
+
+    HNative.getInstance().setWebviewCreator(new WebViewCreator() {
+        @Override
+        public WebView create(Context context) {
+            return new WebView(context);
+        }
+    });
 ```
 
 ### License

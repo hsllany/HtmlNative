@@ -8,10 +8,10 @@ import java.util.Map;
  * @author Yang Tao, 17/3/15.
  */
 
-final class MetaData {
+final class Metas {
     private Map<String, Meta> metaMap;
 
-    public MetaData() {
+    public Metas() {
         metaMap = new ArrayMap<>(4);
     }
 
