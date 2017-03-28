@@ -1,16 +1,35 @@
 HtmlNative
 ========
 
-HtmlNative is a library that parse html (subset) to native widget. It also include Lua Script to manipulate UI widget.
+HtmlNative，用Html+css渲染Android原生控件；如果你还需要一些逻辑，支持Lua。
 
-## Example:
+这个工具的诞生，来源于一个简单的想法：
 
-HtmlNative will render its view according to a special html file, which contains a special subset of all Html Tag. Even more, you can control the basic logic of this view by writing lua script inside of this html file.
+虽然RN和Weex，已经提供了强大的能力，用Js来实现原生的开发；
+
+但强大的背后，是要面对的是较为陡峭学习曲线，从JavaScript到React\Vue, 这个曲线或许并不是对每个人都那么友好。
+
+但Html，应该是所有人都能学会的语言，试试用这个来实现;
+
+有想法就去实践好了，于是乎有了HtmlNative这个四不像的“怪物”。
+
+## 例子:
+
+一个简单的Html；如果需要一些简单的逻辑，也可以加一些Lua的调味料做辅助。
 
 ```html
 <html>
+<head>
+    <style>
+        #text1{
+            color: #000;
+            font-size: 16;
+            padding: 10
+        }
+    </style>
+</head>
 <body>
-    <p id="text1" style="color: #000; font-size: 16; padding: 10">
+    <p id="text1">
         This is an example of ImageView
         <br />2 Images are shown.
     </p>
@@ -20,16 +39,18 @@ HtmlNative will render its view according to a special html file, which contains
     <button onClick="changeText1">clickme</button>
 </body>
 <script type="text/lua">
-    -- show a toast in androd
+    -- Toast in Android
     alert("hello world")
 
-    -- define a global variable, and set its initial value to false
+    -- 定义一个全局变量，并将其初始值置为false
     b = false
 
-    -- define a function that will change the p#text1 according to b's value.
+    -- 定义一个函数，实现一些简单的逻辑
     function changeText1()
-        -- get the v by id
+        -- 通过id找到view
         local v = view("text1")
+
+        -- 设置下样式
         if(b) then
             v.style("background:red;color:#fff")
         else
@@ -40,25 +61,26 @@ HtmlNative will render its view according to a special html file, which contains
 
     end
 
-    --[[ register the function to callback pool, so the onClick parameter on p will work.]]
-
+    -- 将这个函数注册，使得Android能调用到
     callback("changeText1", changeText1)
+
+    -- Done.
 
 </script>
 </html>
 ```
 
-Through HtmlNative, an view like this will be displayed. (All its widget is native widget):
+通过HtmlNative渲染后的结果:
 
 ![screen1](show.gif)
 
-## Usage
+## In Android
 
-All you have to do is :
+像这样来使用 :
 
 ```java
 
-// you can get the raw html file
+// 通过任何方式，拿到html
 String htmlStr = ...
 
 HNative.getInstance().loadView(context, mActivity.getAssets().open(fileName), new HNative.OnHNViewLoaded() {
@@ -80,79 +102,6 @@ HNative.getInstance().loadView(context, mActivity.getAssets().open(fileName), ne
 });
 
 ```
-
-## Currently Supported Tag and Style:
-
-### Common style and parameter of Html Element:
-
-```java
-
-"width": width of this tag, in px, or 100%
-"height": width of this tag, in px, or 100%
-"background": color of this tag, in string, '#fff', '#ffffff'
-"padding": padding, in px
-"paddingLeft": in px
-"paddingRight": in px
-"paddingTop": in px
-"paddingBottom": in px
-"left": x position for element, only works when parent view is div and its display is "absolute"
-"top"; y position for element, only works when parent view is div and its display is "absolute"
-"alpha"; in float
-"id": string to identify the view
-"onClick": name of the function you defined in <script>
-"visibility": "visible" or "invisible"
-"display": "box", "flex" or "absolute", default is "box"
-"direction": only worked when this element is "<div>" and its display is "flex"
-
-```
-
-### Tag
-
-
-| Tag        | Android Native Widget           | Style  |
-| :-------------: |:-------------:|-----|
-| <p>      | TextView | color, font-size, line-height, font-style, font-weight, text-align |
-| <img>      | ImageView      |   src |
-| <iframe> | WebView      |    src |
-| <input> | EditText      | same as p |
-| <div> | LinearLayout, FlexBoxLayout | display, direction |
-| <a> | TextView with click event      | href, same as p |
-| <br/> | \n      |  |
-
-### Lua Api
-
-#### alert(msg)
-
-- msg - string, message to show
-- Display a toast in Android with msg.
-
-#### view(id)
-
-- id - string
-- Return a view by id, may null.
-
-#### view.style(styleString)
-
-- view - return value of view(id)
-- styleString - string, such as "background:#fff"
-- change the appearance of a view
-
-#### log(msg)
-- msg, msg to show in logcat
-- show a log in android Logcat with TAG="HNativeLog"
-
-#### callback(functionName, function)
-- functionName, register an function with functionName, then you can invoke it in onClick parameter of an Html Element
-- function to run
-
-
-## Future Plan
-
-1. To support more Html Tag, and more Css style
-2. Dose not support <style> element yet, will support in future.
-3. Will not support <link> element, if you want use this, WebView may a better choice.
-4. To support more API.
-4. May support javascript script via using V8 engine.
 
 ### License
 
