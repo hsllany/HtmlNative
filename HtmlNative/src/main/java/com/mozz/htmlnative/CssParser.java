@@ -18,7 +18,7 @@ import static com.mozz.htmlnative.Parser.parseStyleSingle;
  * @author Yang Tao, 17/3/26.
  */
 
-final class CssParser {
+class CssParser {
 
     private static final String TAG = CssParser.class.getSimpleName();
 
@@ -48,12 +48,10 @@ final class CssParser {
     @Nullable
     private Token mCurToken;
 
-    private final Lexer lexer;
-
-    StringBuilder mValueCache = new StringBuilder();
+    private final CssLexer lexer;
 
     CssParser(Lexer lexer) {
-        this.lexer = lexer;
+        this.lexer = new CssLexer(lexer);
     }
 
     public void process(HNSegment segment) throws EOFException, HNSyntaxError {
@@ -63,21 +61,13 @@ final class CssParser {
 
         String keyCache = null;
 
-        mValueCache.setLength(0);
-
-        boolean meetSemicolon = false;
-
         while (true) {
             scan();
 
             switch (mCurToken.type()) {
                 case Hash:
                     check(SELECTOR_HASH | VALUE);
-                    if ((lookFor & VALUE) != 0) {
-                        appendToValueCacheWisely('#');
-                    } else {
-                        lookFor(SELECTOR_ID);
-                    }
+                    lookFor(SELECTOR_ID);
                     break;
                 case Id:
                     // tag selector should be in the first position of whole if-statement
@@ -109,13 +99,7 @@ final class CssParser {
                         check(KEY);
                         keyCache = mCurToken.stringValue();
                         lookFor(COLON);
-                        meetSemicolon = false;
-                    } else if (isLookingFor(VALUE)) {
-                        check(VALUE);
-                        appendToValueCacheWisely(mCurToken.stringValue());
-                        lookFor(SEMICOLON | END_BRACE | VALUE);
                     }
-
                     break;
                 case Dot:
                     check(SELECTOR_DOT);
@@ -125,6 +109,7 @@ final class CssParser {
                 case Colon:
                     check(COLON);
                     lookFor(VALUE);
+                    shouldScanValue = true;
                     break;
 
                 case StartBrace:
@@ -135,47 +120,19 @@ final class CssParser {
                 case EndBrace:
                     check(END_BRACE);
                     lookFor(SELECTOR_START);
-                    if (!meetSemicolon) {
-                        segment.mCss.putAttr(cssSelector, keyCache, parseStyleSingle(keyCache,
-                                mValueCache.toString()));
-
-                        mValueCache.setLength(0);
-                        meetSemicolon = false;
-                    }
                     segment.mCss.putSelector(cssSelector);
                     cssSelector = null;
                     break;
 
-                case StartParen:
-                case EndParen:
-                    check(VALUE);
-                    appendToValueCacheWisely(mCurToken.type().toString());
-                    lookFor(VALUE | END_BRACE | SEMICOLON);
-                    break;
                 case Value:
                     check(VALUE);
-                    appendToValueCacheWisely(mCurToken.stringValue());
+                    segment.mCss.putAttr(cssSelector, keyCache, parseStyleSingle(keyCache,
+                            mCurToken.stringValue()));
                     lookFor(VALUE | END_BRACE | SEMICOLON);
                     break;
                 case Semicolon:
                     check(SEMICOLON);
-                    segment.mCss.putAttr(cssSelector, keyCache, parseStyleSingle(keyCache,
-                            mValueCache.toString()));
-                    mValueCache.setLength(0);
-                    meetSemicolon = true;
                     lookFor(END_BRACE | KEY);
-                    break;
-
-                case Int:
-                    check(VALUE);
-                    appendToValueCacheWisely(mCurToken.intValue());
-                    lookFor(SEMICOLON | END_BRACE | VALUE);
-                    break;
-
-                case Double:
-                    check(VALUE);
-                    appendToValueCacheWisely(mCurToken.doubleValue());
-                    lookFor(SEMICOLON | END_BRACE | VALUE);
                     break;
 
                 // Below is special case, to handle the class or id selector which have the same
@@ -221,6 +178,7 @@ final class CssParser {
                     scan();
                     if (mCurToken.type() == TokenType.Slash) {
                         Log.d(TAG, segment.mCss.toString());
+
                         return;
                     }
                     // if parse process didn't end, then there is a syntax error.
@@ -250,6 +208,67 @@ final class CssParser {
         Log.d(TAG, "Css -> next is " + mCurToken.toString());
     }
 
+    private boolean shouldScanValue = false;
+
+    private class CssLexer {
+
+        private Lexer lexer;
+
+        CssLexer(Lexer lexer) {
+            super();
+            this.lexer = lexer;
+        }
+
+        @Nullable
+        Token scan() throws EOFException, HNSyntaxError {
+            if (shouldScanValue) {
+                return scanValue();
+            } else {
+                return lexer.scan();
+            }
+        }
+
+        char peek() {
+            return lexer.peek();
+        }
+
+        Token scanValue() throws EOFException {
+            long startColumn = lexer.column();
+            long line = lexer.line();
+
+            lexer.skipWhiteSpace();
+
+            lexer.clearBuf();
+
+            if (peek() == ';') {
+                lexer.next();
+                return Token.obtainToken(TokenType.Value, "", line, startColumn);
+            }
+
+            do {
+                lexer.mBuffer.append(peek());
+                lexer.next();
+
+                if (peek() == ';' || peek() == '}') {
+                    break;
+                }
+            } while (true);
+
+            shouldScanValue = false;
+
+            return Token.obtainToken(TokenType.Value, lexer.mBuffer.toString(), line, startColumn);
+        }
+
+        long line() {
+            return lexer.line();
+        }
+
+        long column() {
+            return lexer.column();
+        }
+    }
+
+
     private void check(int status) throws HNSyntaxError {
         if (!isLookingFor(status)) {
             Log.e(TAG, " Looking for " + lookForToString(status) + ", but " +
@@ -258,14 +277,6 @@ final class CssParser {
             throw new HNSyntaxError(" Looking for " + lookForToString(status) + ", but " +
                     "currently is " +
                     lookForToString(this.lookFor), lexer.line(), lexer.column());
-        }
-    }
-
-    private void appendToValueCacheWisely(Object o) {
-        if (mValueCache.length() == 0) {
-            mValueCache.append(o);
-        } else {
-            mValueCache.append(' ').append(o);
         }
     }
 

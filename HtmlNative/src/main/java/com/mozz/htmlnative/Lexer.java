@@ -11,34 +11,34 @@ import com.mozz.htmlnative.token.TokenType;
 import java.io.EOFException;
 
 
-final class Lexer {
+class Lexer {
 
     private static final String TAG = Lexer.class.getSimpleName();
 
-    private TextReader mReader;
+    protected TextReader mReader;
 
     @NonNull
-    private StringBuilder mBuffer = new StringBuilder();
+    protected StringBuilder mBuffer = new StringBuilder();
 
-    private int mLookFor = 0;
+    protected int mLookFor = 0;
 
     private static final int LK_NOTHING = 1;
     private static final int LK_INNER = 1 << 1;
 
-    private CharQueue mCacheQueue;
+    protected CharQueue mCacheQueue;
     private static final int CACHE_SIZE = 7;
 
-    private int mReserved = 0;
+    protected int mReserved = 0;
 
-    private char mCurrent = TextReader.INIT_CHAR;
+    protected char mCurrent = TextReader.INIT_CHAR;
 
-    private boolean mIsInStyle = false;
+    protected boolean mIsInStyle = false;
 
     // Add for recognize code from Inner Element. If < script > is meet, than mLookForScript==3,
     // otherwise, mLookForScript < 3.
-    private int mLookForScript = 0;
+    protected int mLookForScript = 0;
 
-    private StringBuilder mLastCache = new StringBuilder();
+    protected StringBuilder mLastCache = new StringBuilder();
 
     Lexer(TextReader reader) {
         mReader = reader;
@@ -155,7 +155,7 @@ final class Lexer {
     }
 
     @Nullable
-    private Token scanNumber() throws EOFException, HNSyntaxError {
+    Token scanNumber() throws EOFException, HNSyntaxError {
         mLastCache.setLength(0);
         long startColumn = mReader.column();
         long line = mReader.line();
@@ -236,7 +236,7 @@ final class Lexer {
     }
 
     @Nullable
-    private Token scanId() throws EOFException {
+    Token scanId() throws EOFException {
         long startColumn = mReader.column();
         long line = mReader.line();
 
@@ -308,7 +308,7 @@ final class Lexer {
     }
 
     @Nullable
-    private Token scanValue() throws EOFException {
+    Token scanValue() throws EOFException {
         long startColumn = mReader.column();
         long line = mReader.line();
 
@@ -341,7 +341,7 @@ final class Lexer {
     }
 
     @Nullable
-    private Token scanInner() throws EOFException {
+    Token scanInner() throws EOFException {
         long startColumn = mReader.column();
         long line = mReader.line();
 
@@ -456,7 +456,7 @@ final class Lexer {
     }
 
 
-    private void skipWhiteSpace() throws EOFException {
+    protected void skipWhiteSpace() throws EOFException {
         for (; ; ) {
             char ch = peek();
             if (ch == ' ' || ch == '\r' || ch == '\n' || ch == '\t' || ch == '\f' || ch == '\b') {
@@ -481,11 +481,11 @@ final class Lexer {
         return mReader.column();
     }
 
-    private char peek() {
+    protected char peek() {
         return mCurrent;
     }
 
-    private char peekWithLastCache() {
+    protected char peekWithLastCache() {
         if (mLastCache.length() > 0) {
             Log.d(TAG, "use last cache");
             return mLastCache.charAt(0);
@@ -511,8 +511,9 @@ final class Lexer {
         return mCacheQueue.peek(CACHE_SIZE - historyBackCount - 1);
     }
 
-    private void next() throws EOFException {
+    void next() throws EOFException {
         if (mReserved > 0) {
+            Log.d(TAG, "read from CacheQueue " + mReserved);
             mCurrent = mCacheQueue.peek(CACHE_SIZE - mReserved - 1);
             mReserved--;
             return;
@@ -540,7 +541,11 @@ final class Lexer {
         return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
     }
 
-    private void clearBuf() {
+    TextReader selfReader() {
+        return mReader;
+    }
+
+    protected void clearBuf() {
         mBuffer.setLength(0);
         if (mLastCache.length() > 0) {
             mBuffer.append(mLastCache);

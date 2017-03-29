@@ -80,6 +80,9 @@ public final class Utils {
 
     public static int color(@NonNull Object colorObj) throws AttrApplyException {
         String colorString = colorObj.toString();
+        if (colorString.length() == 0) {
+            throw new AttrApplyException("empty color string for parse");
+        }
         if (colorString.charAt(0) == '#') {
             if (colorString.length() > 4) {
                 try {

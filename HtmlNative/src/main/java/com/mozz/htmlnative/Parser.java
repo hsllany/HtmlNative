@@ -13,6 +13,7 @@ import com.mozz.htmlnative.token.Token;
 import com.mozz.htmlnative.token.TokenType;
 
 import java.io.EOFException;
+import java.util.Arrays;
 
 import static com.mozz.htmlnative.HtmlTag.isSwallowInnerTag;
 import static com.mozz.htmlnative.token.TokenType.EndAngleBracket;
@@ -241,7 +242,7 @@ final class Parser {
         }
         try {
             mCssParser.process(segment);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -575,6 +576,9 @@ final class Parser {
             BackgroundStyle style = new BackgroundStyle();
 
             String[] subStrings = styleValue.split(" ");
+
+            Log.d(TAG, "background is " + Arrays.toString(subStrings));
+
             for (String singleValue : subStrings) {
                 String trueValue = singleValue.trim();
                 if (trueValue.startsWith("url(")) {
