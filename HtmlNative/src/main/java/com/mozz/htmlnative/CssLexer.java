@@ -10,9 +10,11 @@ import com.mozz.htmlnative.token.TokenType;
 
 import java.io.EOFException;
 
+/**
+ * @author Yang Tao, 17/3/29.
+ */
 
-final class Lexer {
-
+public class CssLexer {
     private static final String TAG = Lexer.class.getSimpleName();
 
     private TextReader mReader;

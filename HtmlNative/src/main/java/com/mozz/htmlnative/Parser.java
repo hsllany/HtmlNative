@@ -239,7 +239,11 @@ final class Parser {
                 break;
             }
         }
-        mCssParser.process(segment);
+        try {
+            mCssParser.process(segment);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void processTitle(HNSegment segment) throws HNSyntaxError, EOFException {
@@ -565,6 +569,7 @@ final class Parser {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     public static Object parseStyleSingle(String styleName, String styleValue) {
+        Log.d(TAG, "process style " + styleName + ", " + styleValue);
         if (styleName.equals(HtmlTag.ATTR_BACKGROUND)) {
 
             BackgroundStyle style = new BackgroundStyle();

@@ -46,6 +46,10 @@ public enum TokenType {
 
     Colon(":"),
 
+    StartParen("("),
+
+    EndParen(")"),
+
     Semicolon(";"),
 
     StartBrace("{"),

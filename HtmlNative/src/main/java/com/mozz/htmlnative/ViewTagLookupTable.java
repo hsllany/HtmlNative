@@ -51,6 +51,10 @@ final class ViewTagLookupTable {
         sReservedTagClassTable.put(HtmlTag.IFRAME, WebView.class.getName());
         sReservedTagClassTable.put(HtmlTag.WEB, WebView.class.getName());
         sReservedTagClassTable.put(HtmlTag.A, TextView.class.getName());
+        sReservedTagClassTable.put(HtmlTag.SPAN, TextView.class.getName());
+        sReservedTagClassTable.put(HtmlTag.H1, TextView.class.getName());
+        sReservedTagClassTable.put(HtmlTag.H2, TextView.class.getName());
+
     }
 
     /**

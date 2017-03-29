@@ -6,6 +6,9 @@ import android.support.annotation.Nullable;
 
 public final class Token {
 
+    public static final int EXTRA_NUMBER_EM = 1;
+    public static final int EXTRA_NUMBER_PERSENTAGE = 2;
+
     private long startColumn;
 
     private long line;
@@ -14,6 +17,8 @@ public final class Token {
 
     @Nullable
     private Object mValue;
+
+    private int mExtra = -1;
 
     @Nullable
     private Token next;
@@ -64,8 +69,10 @@ public final class Token {
     }
 
     public double doubleValue() {
-        if (mValue instanceof Double || mValue instanceof Float) {
+        if (mValue instanceof Double) {
             return (double) mValue;
+        } else if (mValue instanceof Float) {
+            return (float) mValue;
         } else {
             return 0d;
         }
@@ -95,12 +102,19 @@ public final class Token {
         }
 
         return new Token(tokenType, value);
-        
+
     }
 
     @Nullable
     public static Token obtainToken(TokenType tokenType, long line, long column) {
         return obtainToken(tokenType, null, line, column);
+    }
+
+    public static Token obtainToken(TokenType tokenType, Object value, long line, long column,
+                                    int extra) {
+        Token t = obtainToken(tokenType, value, line, column);
+        t.mExtra = extra;
+        return t;
     }
 
     static void recycleAll() {
@@ -152,5 +166,9 @@ public final class Token {
 
     public long getLine() {
         return line;
+    }
+
+    public int getExtra() {
+        return mExtra;
     }
 }

@@ -14,7 +14,7 @@ import android.widget.ListView;
 
 public class ExampleListActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
-    private static final String[] sList = {"webview.layout", "imageview.layout", "text.layout", "flex.layout", "body_para.layout"};
+    private static final String[] sList = {"webview.layout", "imageview.layout", "text.layout", "flex.html", "body_para.layout"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

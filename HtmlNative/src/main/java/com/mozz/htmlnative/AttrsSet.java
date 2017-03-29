@@ -33,10 +33,15 @@ public final class AttrsSet {
     private static final String ATTR_HEIGHT = "height";
     private static final String ATTR_BACKGROUND = "background";
     private static final String ATTR_PADDING = "padding";
-    private static final String ATTR_PADDING_LEFT = "paddingLeft";
-    private static final String ATTR_PADDING_RIGHT = "paddingRight";
-    private static final String ATTR_PADDING_TOP = "paddingTop";
-    private static final String ATTR_PADDING_BOTTOM = "paddingBottom";
+    private static final String ATTR_PADDING_LEFT = "padding-left";
+    private static final String ATTR_PADDING_RIGHT = "padding-right";
+    private static final String ATTR_PADDING_TOP = "padding-top";
+    private static final String ATTR_PADDING_BOTTOM = "padding-bottom";
+    private static final String ATTR_MARGIN = "margin";
+    private static final String ATTR_MARGIN_LEFT = "margin-left";
+    private static final String ATTR_MARGIN_RIGHT = "margin-right";
+    private static final String ATTR_MARGIN_TOP = "margin-top";
+    private static final String ATTR_MARGIN_BOTTOM = "margin-bottom";
     private static final String ATTR_LEFT = "left";
     private static final String ATTR_TOP = "top";
     private static final String ATTR_ALPHA = "alpha";
@@ -278,29 +283,34 @@ public final class AttrsSet {
                 break;
 
             case ATTR_PADDING:
+            case ATTR_MARGIN:
                 int padding = Utils.toInt(value);
                 v.setPadding(padding, padding, padding, padding);
                 break;
 
             case ATTR_PADDING_LEFT:
+            case ATTR_MARGIN_LEFT:
                 int paddingLeft = Utils.toInt(value);
                 v.setPadding(paddingLeft, v.getPaddingTop(), v.getPaddingRight(), v
                         .getPaddingBottom());
                 break;
 
             case ATTR_PADDING_RIGHT:
+            case ATTR_MARGIN_RIGHT:
                 int paddingRight = Utils.toInt(value);
                 v.setPadding(v.getPaddingTop(), v.getPaddingTop(), paddingRight, v
                         .getPaddingBottom());
                 break;
 
             case ATTR_PADDING_TOP:
+            case ATTR_MARGIN_TOP:
                 int paddingTop = Utils.toInt(value);
                 v.setPadding(v.getPaddingLeft(), paddingTop, v.getPaddingRight(), v
                         .getPaddingBottom());
                 break;
 
             case ATTR_PADDING_BOTTOM:
+            case ATTR_MARGIN_BOTTOM:
                 int paddingBottom = Utils.toInt(value);
                 v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(),
                         paddingBottom);

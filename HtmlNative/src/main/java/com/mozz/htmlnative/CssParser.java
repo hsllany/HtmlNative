@@ -30,11 +30,18 @@ final class CssParser {
     private static final int START_BRACE = 1 << 3;
     private static final int END_BRACE = 1 << 4;
     private static final int KEY = 1 << 5;
-    private static final int VALUE = 1 << 6;
+    private static final int VALUE_STRING = 1 << 6;
+    private static final int VALUE_INT = 1 << 9;
+    private static final int VALUE_DOUBLE = 1 << 10;
+    private static final int VALUE_HASH = 1 << 11;
+    private static final int VALUE_START_PAREN = 1 << 12;
+    private static final int VALUE_END_PAREN = 1 << 13;
     private static final int COLON = 1 << 7;
     private static final int SEMICOLON = 1 << 8;
 
     private static final int SELECTOR_START = SELECTOR_HASH | SELECTOR_TAG | SELECTOR_DOT;
+    private static final int VALUE = VALUE_STRING | VALUE_INT | VALUE_DOUBLE | VALUE_HASH |
+            VALUE_START_PAREN | VALUE_END_PAREN;
 
     private int lookFor;
 
@@ -42,6 +49,8 @@ final class CssParser {
     private Token mCurToken;
 
     private final Lexer lexer;
+
+    StringBuilder mValueCache = new StringBuilder();
 
     CssParser(Lexer lexer) {
         this.lexer = lexer;
@@ -54,7 +63,9 @@ final class CssParser {
 
         String keyCache = null;
 
-        boolean meetHashBefore = false;
+        mValueCache.setLength(0);
+
+        boolean meetSemicolon = false;
 
         while (true) {
             scan();
@@ -63,7 +74,7 @@ final class CssParser {
                 case Hash:
                     check(SELECTOR_HASH | VALUE);
                     if ((lookFor & VALUE) != 0) {
-                        meetHashBefore = true;
+                        appendToValueCacheWisely('#');
                     } else {
                         lookFor(SELECTOR_ID);
                     }
@@ -98,17 +109,11 @@ final class CssParser {
                         check(KEY);
                         keyCache = mCurToken.stringValue();
                         lookFor(COLON);
+                        meetSemicolon = false;
                     } else if (isLookingFor(VALUE)) {
                         check(VALUE);
-                        String value = mCurToken.stringValue();
-                        if (meetHashBefore) {
-                            value = "#" + value;
-                            meetHashBefore = false;
-                        }
-
-                        segment.mCss.putAttr(cssSelector, keyCache, parseStyleSingle(keyCache,
-                                value));
-                        lookFor(SEMICOLON | END_BRACE);
+                        appendToValueCacheWisely(mCurToken.stringValue());
+                        lookFor(SEMICOLON | END_BRACE | VALUE);
                     }
 
                     break;
@@ -130,25 +135,47 @@ final class CssParser {
                 case EndBrace:
                     check(END_BRACE);
                     lookFor(SELECTOR_START);
+                    if (!meetSemicolon) {
+                        segment.mCss.putAttr(cssSelector, keyCache, parseStyleSingle(keyCache,
+                                mValueCache.toString()));
+
+                        mValueCache.setLength(0);
+                        meetSemicolon = false;
+                    }
                     segment.mCss.putSelector(cssSelector);
                     cssSelector = null;
                     break;
 
+                case StartParen:
+                case EndParen:
+                    check(VALUE);
+                    appendToValueCacheWisely(mCurToken.type().toString());
+                    lookFor(VALUE | END_BRACE | SEMICOLON);
+                    break;
+                case Value:
+                    check(VALUE);
+                    appendToValueCacheWisely(mCurToken.stringValue());
+                    lookFor(VALUE | END_BRACE | SEMICOLON);
+                    break;
                 case Semicolon:
                     check(SEMICOLON);
+                    segment.mCss.putAttr(cssSelector, keyCache, parseStyleSingle(keyCache,
+                            mValueCache.toString()));
+                    mValueCache.setLength(0);
+                    meetSemicolon = true;
                     lookFor(END_BRACE | KEY);
                     break;
 
                 case Int:
                     check(VALUE);
-                    segment.mCss.putAttr(cssSelector, keyCache, mCurToken.intValue());
-                    lookFor(SEMICOLON | END_BRACE);
+                    appendToValueCacheWisely(mCurToken.intValue());
+                    lookFor(SEMICOLON | END_BRACE | VALUE);
                     break;
 
                 case Double:
                     check(VALUE);
-                    segment.mCss.putAttr(cssSelector, keyCache, mCurToken.doubleValue());
-                    lookFor(SEMICOLON | END_BRACE);
+                    appendToValueCacheWisely(mCurToken.doubleValue());
+                    lookFor(SEMICOLON | END_BRACE | VALUE);
                     break;
 
                 // Below is special case, to handle the class or id selector which have the same
@@ -198,8 +225,9 @@ final class CssParser {
                     }
                     // if parse process didn't end, then there is a syntax error.
                 default:
-                    Log.e(TAG, "wrong when parsing css");
-                    throw new HNSyntaxError("wrong when parsing css", lexer.line(), lexer.column());
+                    Log.e(TAG, "unknown token " + mCurToken.toString() + " when parsing css");
+                    throw new HNSyntaxError("unknown token " + mCurToken.toString() + " when " +
+                            "parsing css", lexer.line(), lexer.column());
             }
         }
     }
@@ -230,6 +258,14 @@ final class CssParser {
             throw new HNSyntaxError(" Looking for " + lookForToString(status) + ", but " +
                     "currently is " +
                     lookForToString(this.lookFor), lexer.line(), lexer.column());
+        }
+    }
+
+    private void appendToValueCacheWisely(Object o) {
+        if (mValueCache.length() == 0) {
+            mValueCache.append(o);
+        } else {
+            mValueCache.append(' ').append(o);
         }
     }
 
@@ -285,6 +321,4 @@ final class CssParser {
         return sb.toString();
 
     }
-
-
 }

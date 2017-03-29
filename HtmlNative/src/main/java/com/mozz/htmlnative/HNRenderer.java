@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -22,6 +23,8 @@ import java.util.Set;
 
 
 public final class HNRenderer {
+
+    private static final String TAG = HNRenderer.class.getSimpleName();
 
     private static final HashMap<String, Constructor<? extends View>> sConstructorMap = new
             HashMap<>();
@@ -172,6 +175,12 @@ public final class HNRenderer {
             if (HtmlTag.isDivOrTemplate(tag)) {
                 View v = attrsSet.createViewByTag(this, context, tag, tree);
 
+                if (v == null) {
+                    Log.e(TAG, "createViewFromNodeName attrsSet.createViewByTag: view is null " +
+                            "with tag " + tag);
+                    return null;
+                }
+
                 if (v instanceof WebView) {
                     root.addWebView((WebView) v);
                 }
@@ -203,6 +212,12 @@ public final class HNRenderer {
             } else {
 
                 View v = createViewByTag(context, tag);
+
+                if (v == null) {
+                    Log.e(TAG, "createViewFromNodeName createViewByTag: view is null with tag " +
+                            tag);
+                    return null;
+                }
 
                 watcher.check("create view" + v.toString());
 

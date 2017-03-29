@@ -28,6 +28,7 @@ public final class HtmlTag {
     public static final String IFRAME = "iframe";
     public static final String WEB = "web";
     public static final String BR = "br";
+    public static final String SPAN = "span";
     public static final String BODY = "body";
     static final String TEMPLATE = TokenType.Template.toString();
     public static final String TEXT = "text";
