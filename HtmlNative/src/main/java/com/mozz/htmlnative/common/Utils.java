@@ -3,8 +3,11 @@ package com.mozz.htmlnative.common;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
+import android.util.TypedValue;
 
 import com.mozz.htmlnative.AttrApplyException;
+import com.mozz.htmlnative.attrs.PixelValue;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -16,6 +19,9 @@ import java.util.Map;
  */
 
 public final class Utils {
+
+    private static final String TAG = Utils.class.getSimpleName();
+
     private Utils() {
     }
 
@@ -34,7 +40,7 @@ public final class Utils {
             return (int) object;
         } else {
             try {
-                int i = Integer.parseInt(object.toString());
+                int i = Integer.valueOf(object.toString());
                 return i;
             } catch (NumberFormatException e) {
                 throw new AttrApplyException("can't read int from " + object);
@@ -53,6 +59,68 @@ public final class Utils {
                 throw new AttrApplyException("can't read float from " + object);
             }
         }
+    }
+
+    public static PixelValue toPixel(Object object) throws AttrApplyException {
+        int unit = TypedValue.COMPLEX_UNIT_PX;
+        if (object instanceof String) {
+            String string = (String) object;
+
+            StringBuilder unitString = new StringBuilder();
+            int i = string.length() - 1;
+            for (; i > 0; i--) {
+                char c = string.charAt(i);
+                if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
+                    unitString.append(c);
+                } else {
+                    break;
+                }
+            }
+
+            try {
+                unit = getUnit(unitString.reverse().toString());
+            } catch (AttrApplyException e) {
+            }
+
+            float value = toFloat(string.substring(0, i + 1));
+            return new PixelValue(value, unit);
+
+        } else {
+            return new PixelValue(toFloat(object), unit);
+        }
+    }
+
+    public static int getUnit(String s) throws AttrApplyException {
+        switch (s.toLowerCase()) {
+            case "px":
+                return TypedValue.COMPLEX_UNIT_PX;
+            case "dp":
+            case "dip":
+                return TypedValue.COMPLEX_UNIT_DIP;
+            case "sp":
+                return TypedValue.COMPLEX_UNIT_SP;
+            case "em":
+                return PixelValue.EM;
+            default:
+                return PixelValue.UNSET;
+
+        }
+    }
+
+    public static PixelValue[] pixelPairs(String ss) throws AttrApplyException {
+        String[] single = ss.split(" ");
+
+        PixelValue[] pixelValues = new PixelValue[single.length];
+
+        int i = 0;
+
+        for (String s : single) {
+            String trimS = s.trim();
+
+            pixelValues[i++] = toPixel(trimS);
+        }
+
+        return pixelValues;
     }
 
     public static float px(Object object) throws AttrApplyException {
@@ -81,6 +149,7 @@ public final class Utils {
     public static int color(@NonNull Object colorObj) throws AttrApplyException {
         String colorString = colorObj.toString();
         if (colorString.length() == 0) {
+            Log.e(TAG, "empty color string for parse");
             throw new AttrApplyException("empty color string for parse");
         }
         if (colorString.charAt(0) == '#') {
@@ -88,7 +157,8 @@ public final class Utils {
                 try {
                     return Color.parseColor(colorString);
                 } catch (IllegalArgumentException e) {
-                    e.printStackTrace();
+                    Log.e(TAG, "IllegalArgumentException" + e.getMessage() + " can't read color " +
+                            "from");
                     throw new AttrApplyException("can't read color from " + colorString);
                 }
             } else if (colorString.length() == 4) {

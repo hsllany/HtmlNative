@@ -1,7 +1,8 @@
 <html>
 <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
-    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1"/>
+    <meta name="viewport"
+          content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1"/>
     <style>
 	html{
 		font-size: 62.5%;
@@ -15,179 +16,59 @@
 	}
 
 	.header{
-		margin-top: 1.3em;
+	    color:white;
 		padding: 1.3em;
-		background: url("assets/youcehong.png") no-repeat;
-		background-size:0.7em 100%;
+		background: red;
 	}
 
-	#leheadline_cooperate_icon{
-		font-size: 1.3em;
-		height: 1.3em;
-		color: #3f3f3f;
-		text-decoration: none;
-		vertical-align: middle;
+	.header span{
+	    color:white;
 	}
-
-	#leheadline_cooperate_icon img{
-		width:1.3em;
-		height:1.3em;
-	}
-
-	#leheadline_head_icon{
-		padding: 0 0 0 1.5em;
-		font-size: 1.3em;
-		height: 1.3em;
-		color: #3f3f3f;
-		text-decoration: none;
-		background: url("assets/hezuo_icon.png") no-repeat;
-		vertical-align: middle;
-		line-height:1.3em;
-		background-size:1.3em 1.3em;
-	}
-
-	.header a{
-		padding: 0;
-		line-height: 1.3em;
-		font-size: 1.3em;
-		height: 1.3em;
-		vertical-align:middle;
-		color: #3f3f3f;
-		text-decoration: none;
-	}
-
-	#leheadline_source{
-		padding: 0;
-		font-size: 1.3em;
-		display: block;
-		color: #777777;
-		text-decoration: none;
-		background-position: center;
-		display: block;
-	}
-
-	.header h1{
-		margin-top: 0.6em;
-		margin-bottom: 0.6em;
-		font-size: 2.6em;
-		font-weight: normal;
-		line-height: normal;
-	}
-
-	.article h2{
-		text-align: center;
-		font-weight: normal;
-		color: #d2d2d2;
-		font-size: 1.8em;
-		padding: 0 0 0.8em 0;
-		margin-bottom: 0;
-		background: url("assets/fubiaoti.png") no-repeat;
-		background-position: bottom;
-		background-size: 8em 0.15em;
-	}
-
-	.article{
-		margin-top: 1.3em;
-		padding: 0 1.3em 1.3em 1.3em;
-		background: url("assets/end.png") no-repeat;
-		background-position: bottom;
-		background-size: 10em 1em;
-	}
-
-	.article p{
-		margin: 1.6em 0 0 0;
-		font-size: 1.6em;
-		line-height: 1.7;
-	}
-
-	.article img{
-		margin: 1.6em 0 0 0;
-		width: 100%;
-	}
-
-	.article .leheadline_img_wrapper{
-		margin: 1.6em 0 0 0;
-	}
-
-	.article .leheadline_img_wrapper img{
-		width: 100%;
-	}
-
-	.article .leheadline_img_wrapper .leheadline_intro{
-		margin: 1em 0 1em 0;
-		display: block;
-		text-align: center;
-		font-size: 1.3em;
-	}
-
-	.article .leheadline_video_wrapper{
-		margin: 1.6em 0 0 0;
-	}
-
-	.article .leheadline_video_wrapper video{
-		width: 100%;
-		margin: 0 auto;
-		display: block;
-	}
-
-	.article .leheadline_video_wrapper .leheadline_intro{
-		margin: 1em 0 1em 0;
-		display: block;
-		text-align: center;
-		font-size: 1.3em;
-	}
-
-	#leheadline_other{
-		padding: 1.3em 1.3em 1.3em 1.3em;
-	}
-
-	#leheadline_other img{
-		width: 100%;
-	}
-
-
-
-	</style>
+    </style>
     <title>文章标题</title>
 </head>
 <body>
-    <div class="header">
-        <span id="leheadline_head_icon">乐头条 | </span>
-        <a href="http://www.le.com/">合作方名称</a>
-        <h1>滴滴在硅谷建了研发中心做无人驾驶，还从 Uber 挖了人</h1>
-        <span id="leheadline_source">来源：{{来源及时间}}</span>
+<div class="header">
+    <span id="leheadline_head_icon">乐头条 | </span>
+    <a href="http://www.le.com/">合作方名称</a>
+    <h1>滴滴在硅谷建了研发中心做无人驾驶，还从 Uber 挖了人</h1>
+    <span id="leheadline_source">来源：{{来源及时间}}</span>
+</div>
+
+<div class="article">
+    <h2>这是滴滴在海外的第一个实验室</h2>
+    <p>周四，滴滴正式在美国加州山景城宣布了滴滴美国研究院的成立，一个由数十位工程师和研究人员组成的团队，已经入驻这里，从大数据安全和无人驾驶两个方向展开研究。</p>
+
+    <div class="leheadline_img_wrapper">
+        <img src="coop/pic.png" alt="新闻说明"/>
+        <span class="leheadline_intro">滴滴美国研究所</span>
     </div>
 
-    <div class="article">
-        <h2>这是滴滴在海外的第一个实验室</h2>
-        <p>周四，滴滴正式在美国加州山景城宣布了滴滴美国研究院的成立，一个由数十位工程师和研究人员组成的团队，已经入驻这里，从大数据安全和无人驾驶两个方向展开研究。</p>
+    <img src="coop/pic.png"/>
 
-        <div class="leheadline_img_wrapper">
-            <img src="coop/pic.png" alt="新闻说明"/>
-            <span class="leheadline_intro">滴滴美国研究所</span>
-        </div>
+    <p>美国研究院由滴滴研究院副院长弓峰敏带领。弓峰敏是去年 9 月加入滴滴，担任滴滴信息安全战略副总裁和滴滴研究院副院长，并开始组建美国研究院。加盟滴滴之前，他是安全公司 Palo Alto
+        Networks 的联合创始人。</p>
 
-        <img src="coop/pic.png"/>
-
-        <p>美国研究院由滴滴研究院副院长弓峰敏带领。弓峰敏是去年 9 月加入滴滴，担任滴滴信息安全战略副总裁和滴滴研究院副院长，并开始组建美国研究院。加盟滴滴之前，他是安全公司 Palo Alto Networks 的联合创始人。</p>
-
-        <div class="leheadline_video_wrapper">
-            <video src="http://www.w3school.com.cn/example/html5/mov_bbb.mp4" type="video/mp4" controls="controls" poster="coop/pic.png" preload="none"></video>
-        </div>
-
-        <div class="leheadline_video_wrapper">
-            <video src="http://www.w3school.com.cn/example/html5/mov_bbb.mp4" type="video/mp4" controls="controls" poster="coop/pic.png" preload="none"></video>
-            <span class="leheadline_intro">说明</span>
-        </div>
-
-        <p>这一次，滴滴还从Uber挖来了查理·米勒（Charlie Miller）。米勒被誉为全球顶级安全专家，曾是一名黑客，从事苹果越狱和安全研究，在加入 Uber 之前，米勒受雇于苹果。2015 年，米勒完成了对一辆吉普切诺基的远程控制实验。2015 年 9 月，他加入Uber担任汽车安全工程师。</p>
-
-        <p>在Twitter上，米勒表示他的工作是帮助滴滴研发和使用的自动驾驶系统抵抗来自外部的攻击和威胁。在宣布加入滴滴美国研究院的消息之后，他又发布推文表示实验室正在招人。</p>
+    <div class="leheadline_video_wrapper">
+        <video src="http://www.w3school.com.cn/example/html5/mov_bbb.mp4" type="video/mp4"
+               controls="controls" poster="coop/pic.png" preload="none"></video>
     </div>
 
-    <div id="leheadline_other">
-        <img src="coop/banner.png"/>
+    <div class="leheadline_video_wrapper">
+        <video src="http://www.w3school.com.cn/example/html5/mov_bbb.mp4" type="video/mp4"
+               controls="controls" poster="coop/pic.png" preload="none"></video>
+        <span class="leheadline_intro">说明</span>
     </div>
-    <script src="http://rec.letv.com/detail_template/script-v1.js"></script>
+
+    <p>这一次，滴滴还从Uber挖来了查理·米勒（Charlie Miller）。米勒被誉为全球顶级安全专家，曾是一名黑客，从事苹果越狱和安全研究，在加入 Uber
+        之前，米勒受雇于苹果。2015 年，米勒完成了对一辆吉普切诺基的远程控制实验。2015 年 9 月，他加入Uber担任汽车安全工程师。</p>
+
+    <p>在Twitter上，米勒表示他的工作是帮助滴滴研发和使用的自动驾驶系统抵抗来自外部的攻击和威胁。在宣布加入滴滴美国研究院的消息之后，他又发布推文表示实验室正在招人。</p>
+</div>
+
+<div id="leheadline_other">
+    <img src="coop/banner.png"/>
+</div>
+<script src="http://rec.letv.com/detail_template/script-v1.js"></script>
 </body>
 </html>

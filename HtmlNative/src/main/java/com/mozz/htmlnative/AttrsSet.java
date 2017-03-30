@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -12,6 +13,7 @@ import android.widget.AbsoluteLayout;
 import com.mozz.htmlnative.attrs.Attr;
 import com.mozz.htmlnative.attrs.BackgroundStyle;
 import com.mozz.htmlnative.attrs.LayoutAttr;
+import com.mozz.htmlnative.attrs.PixelValue;
 import com.mozz.htmlnative.common.Utils;
 import com.mozz.htmlnative.view.ViewImageAdapter;
 
@@ -284,8 +286,25 @@ public final class AttrsSet {
 
             case ATTR_PADDING:
             case ATTR_MARGIN:
-                int padding = Utils.toInt(value);
-                v.setPadding(padding, padding, padding, padding);
+                PixelValue[] pixelValues = Utils.pixelPairs(value.toString());
+                int top = -1;
+                int bottom = -1;
+                int left = -1;
+                int right = -1;
+                if (pixelValues.length == 1) {
+                    top = bottom = left = right = (int) pixelValues[0].getValue();
+                } else if (pixelValues.length == 2) {
+                    top = bottom = (int) pixelValues[0].getValue();
+                    left = right = (int) pixelValues[1].getValue();
+                } else if (pixelValues.length == 4) {
+                    top = (int) pixelValues[0].getValue();
+                    bottom = (int) pixelValues[2].getValue();
+                    left = (int) pixelValues[3].getValue();
+                    right = (int) pixelValues[1].getValue();
+                }
+                if (top != -1 && bottom != -1 && left != -1 && right != -1) {
+                    v.setPadding(left, top, right, bottom);
+                }
                 break;
 
             case ATTR_PADDING_LEFT:

@@ -51,8 +51,12 @@ public class TextViewAttr extends Attr {
                 break;
 
             case FONT_SIZE:
-                float size = Utils.px(value);
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
+                PixelValue size = Utils.toPixel(value);
+                if (size.getUnit() == PixelValue.UNSET) {
+                    textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, (float) size.getValue());
+                } else {
+                    textView.setTextSize(size.getUnit(), (float) size.getValue());
+                }
                 break;
 
             case LINE_HEIGHT:

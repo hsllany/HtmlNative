@@ -63,7 +63,6 @@ public final class HNRenderer {
     final View render(@NonNull Context context, @NonNull HNSegment segment, @NonNull ViewGroup
             .LayoutParams params) throws RemoteInflateException {
         HNEventLog.writeEvent(HNEventLog.TAG_RENDER, "start to render " + segment.toString());
-
         HNViewGroup rootViewGroup = new HNViewGroup(context);
 
         HNSandBoxContext sandBoxContext = SandBoxContextImpl.create(rootViewGroup, segment,
@@ -172,86 +171,50 @@ public final class HNRenderer {
 
         try {
 
+            View v;
             if (HtmlTag.isDivOrTemplate(tag)) {
-                View v = attrsSet.createViewByTag(this, context, tag, tree);
-
-                if (v == null) {
-                    Log.e(TAG, "createViewFromNodeName attrsSet.createViewByTag: view is null " +
-                            "with tag " + tag);
-                    return null;
-                }
-
-                if (v instanceof WebView) {
-                    root.addWebView((WebView) v);
-                }
-
-                try {
-                    attrsSet.apply(context, sandBoxContext, v, tree, tree.getInner(), tree.getTag
-                            (), parent, params, mTempResult);
-                } catch (AttrApplyException e) {
-                    e.printStackTrace();
-                }
-
-                Set<CssSelector> cssSelectors = css.matchedSelector(tag, mTempResult.id,
-                        mTempResult.clazz, parentSelector);
-
-                outSelectors.instance = cssSelectors;
-
-                try {
-                    for (CssSelector selector : cssSelectors) {
-                        if (selector.next() == null) {
-                            css.mCssSet.apply(context, sandBoxContext, v, selector, tree.getInner
-                                    (), tree.getTag(), parent, params, mTempResult);
-                        }
-                    }
-                } catch (AttrApplyException e) {
-                    e.printStackTrace();
-                }
-
-                return v;
+                v = attrsSet.createViewByTag(this, context, tag, tree);
             } else {
-
-                View v = createViewByTag(context, tag);
-
-                if (v == null) {
-                    Log.e(TAG, "createViewFromNodeName createViewByTag: view is null with tag " +
-                            tag);
-                    return null;
-                }
-
-                watcher.check("create view" + v.toString());
-
-                if (v instanceof WebView) {
-                    root.addWebView((WebView) v);
-                }
-
-                try {
-                    attrsSet.apply(context, sandBoxContext, v, tree, tree.getInner(), tree.getTag
-                            (), parent, params, mTempResult);
-                } catch (AttrApplyException e) {
-                    e.printStackTrace();
-                }
-
-                Set<CssSelector> cssSelectors = css.matchedSelector(tag, mTempResult.id,
-                        mTempResult.clazz, parentSelector);
-
-                outSelectors.instance = cssSelectors;
-
-                try {
-                    for (CssSelector selector : cssSelectors) {
-                        if (selector.next() == null) {
-                            css.mCssSet.apply(context, sandBoxContext, v, selector, tree.getInner
-                                    (), tree.getTag(), parent, params, mTempResult);
-                        }
-
-                    }
-                } catch (AttrApplyException e) {
-                    e.printStackTrace();
-                }
-
-                watcher.checkDone("create view " + v.toString() + ", and give it attrs.");
-                return v;
+                v = createViewByTag(context, tag);
             }
+
+            if (v == null) {
+                Log.e(TAG, "createViewFromNodeName createViewByTag: view is null with tag " + tag);
+                return null;
+            }
+
+            watcher.check("create view" + v.toString());
+
+            if (v instanceof WebView) {
+                root.addWebView((WebView) v);
+            }
+
+            try {
+                attrsSet.apply(context, sandBoxContext, v, tree, tree.getInner(), tree.getTag(),
+                        parent, params, mTempResult);
+            } catch (AttrApplyException e) {
+                e.printStackTrace();
+            }
+
+            Set<CssSelector> cssSelectors = css.matchedSelector(tag, mTempResult.id, mTempResult
+                    .clazz, parentSelector);
+
+            outSelectors.instance = cssSelectors;
+
+            try {
+                for (CssSelector selector : cssSelectors) {
+                    if (selector.next() == null) {
+                        css.mCssSet.apply(context, sandBoxContext, v, selector, tree.getInner(),
+                                tree.getTag(), parent, params, mTempResult);
+                    }
+
+                }
+            } catch (AttrApplyException e) {
+                e.printStackTrace();
+            }
+
+            watcher.checkDone("create view " + v.toString() + ", and give it attrs.");
+            return v;
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             throw new RemoteInflateException("class not found " + tag);

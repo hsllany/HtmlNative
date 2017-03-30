@@ -64,10 +64,11 @@ final class HNProcessThread {
 
                 final HNSegment segment = HNSegment.load(mFileSource);
 
-                Log.d(TAG, segment.mRootTree.wholeTreeToString());
-                Log.d(TAG, segment.toString());
+                Log.d(TAG, "DOM: " + segment.mRootTree.wholeTreeToString());
+                Log.d(TAG, "HEAD: " + segment.mHead.toString());
+                Log.d(TAG, "CSS " + segment.mCss.mCssSet.toString());
                 if (segment.mScriptInfo != null) {
-                    Log.d(TAG, segment.mScriptInfo.toString());
+                    Log.d(TAG, "SCRIPT " + segment.mScriptInfo.toString());
                 }
 
                 MainHandler.instance().post(new Runnable() {

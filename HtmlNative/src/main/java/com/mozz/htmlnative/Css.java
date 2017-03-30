@@ -7,9 +7,7 @@ import com.mozz.htmlnative.css.CssSelector;
 import com.mozz.htmlnative.css.IdSelector;
 import com.mozz.htmlnative.css.TypeSelector;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -18,19 +16,17 @@ import java.util.Set;
 
 final class Css {
     AttrsSet mCssSet;
-    private Set<CssSelector> mSelector;
 
-    private Map<String, ClassSelector> mClassSelectors;
-    private Map<String, IdSelector> mIdSelectors;
-    private Map<String, TypeSelector> mTypeSelectors;
+    private SelectorHolder mClassSelectors;
+    private SelectorHolder mIdSelectors;
+    private SelectorHolder mTypeSelectors;
 
     public Css() {
         mCssSet = new AttrsSet();
-        mSelector = new HashSet<>();
 
-        mClassSelectors = new HashMap<>();
-        mIdSelectors = new HashMap<>();
-        mTypeSelectors = new HashMap<>();
+        mClassSelectors = new SelectorHolder();
+        mIdSelectors = new SelectorHolder();
+        mTypeSelectors = new SelectorHolder();
     }
 
     public void newAttr(@NonNull AttrsOwner tree) {
@@ -56,22 +52,11 @@ final class Css {
 
     public Set<CssSelector> matchedSelector(String type, String id, String clazz,
                                             Set<CssSelector> parentSelector) {
+        
         Set<CssSelector> matchedSelector = new HashSet<>();
-
-        CssSelector cssSelector = mClassSelectors.get(clazz);
-        if (cssSelector != null) {
-            matchedSelector.add(mClassSelectors.get(clazz));
-        }
-
-        cssSelector = mTypeSelectors.get(type);
-        if (cssSelector != null) {
-            matchedSelector.add(mTypeSelectors.get(type));
-        }
-
-        cssSelector = mIdSelectors.get(id);
-        if (cssSelector != null) {
-            matchedSelector.add(mIdSelectors.get(id));
-        }
+        mClassSelectors.select(clazz, matchedSelector);
+        mIdSelectors.select(id, matchedSelector);
+        mTypeSelectors.select(type, matchedSelector);
 
         if (parentSelector != null && !parentSelector.isEmpty()) {
             for (CssSelector selector : parentSelector) {
@@ -87,6 +72,7 @@ final class Css {
 
     @Override
     public String toString() {
-        return "AttrSet=" + mCssSet.toString() + ", Selector=" + mSelector;
+        return "AttrSet=" + mCssSet.toString() + ", class=" + mClassSelectors + ", id=" +
+                mIdSelectors + ", type=" + mTypeSelectors;
     }
 }

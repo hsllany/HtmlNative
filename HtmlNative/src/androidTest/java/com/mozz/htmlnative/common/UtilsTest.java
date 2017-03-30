@@ -1,6 +1,9 @@
 package com.mozz.htmlnative.common;
 
 import android.graphics.Color;
+import android.util.TypedValue;
+
+import com.mozz.htmlnative.attrs.PixelValue;
 
 import junit.framework.Assert;
 
@@ -58,6 +61,27 @@ public class UtilsTest {
     @Test
     public void toBoolean() throws Exception {
 
+    }
+
+    @Test
+    public void toPixel() throws Exception {
+        String a = "23px";
+        PixelValue p = Utils.toPixel(a);
+
+        org.junit.Assert.assertTrue(p.getUnit() == TypedValue.COMPLEX_UNIT_PX);
+        org.junit.Assert.assertTrue(p.getValue() == 23);
+
+        a = "123.5dp";
+        p = Utils.toPixel(a);
+
+        org.junit.Assert.assertTrue(p.getUnit() == TypedValue.COMPLEX_UNIT_DIP);
+        org.junit.Assert.assertTrue(p.getValue() == 123.5);
+
+        a = "123.5";
+        p = Utils.toPixel(a);
+
+        org.junit.Assert.assertTrue(p.getUnit() == TypedValue.COMPLEX_UNIT_PX);
+        org.junit.Assert.assertTrue(p.getValue() == 123.5);
     }
 
 }
