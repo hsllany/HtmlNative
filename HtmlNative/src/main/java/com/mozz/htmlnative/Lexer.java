@@ -15,30 +15,30 @@ class Lexer {
 
     private static final String TAG = Lexer.class.getSimpleName();
 
-    protected TextReader mReader;
+    private TextReader mReader;
 
     @NonNull
-    protected StringBuilder mBuffer = new StringBuilder();
+    StringBuilder mBuffer = new StringBuilder();
 
-    protected int mLookFor = 0;
+    private int mLookFor = 0;
 
     private static final int LK_NOTHING = 1;
     private static final int LK_INNER = 1 << 1;
 
-    protected CharQueue mCacheQueue;
+    private CharQueue mCacheQueue;
     private static final int CACHE_SIZE = 7;
 
-    protected int mReserved = 0;
+    private int mReserved = 0;
 
-    protected char mCurrent = TextReader.INIT_CHAR;
+    private char mCurrent = TextReader.INIT_CHAR;
 
-    protected boolean mIsInStyle = false;
+    private boolean mIsInStyle = false;
 
     // Add for recognize code from Inner Element. If < script > is meet, than mLookForScript==3,
     // otherwise, mLookForScript < 3.
-    protected int mLookForScript = 0;
+    private int mLookForScript = 0;
 
-    protected StringBuilder mLastCache = new StringBuilder();
+    private StringBuilder mLastCache = new StringBuilder();
 
     Lexer(TextReader reader) {
         mReader = reader;
@@ -540,11 +540,7 @@ class Lexer {
     private static boolean isLetter(char ch) {
         return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
     }
-
-    TextReader selfReader() {
-        return mReader;
-    }
-
+    
     protected void clearBuf() {
         mBuffer.setLength(0);
         if (mLastCache.length() > 0) {

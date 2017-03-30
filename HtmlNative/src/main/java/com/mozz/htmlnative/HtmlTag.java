@@ -33,9 +33,6 @@ public final class HtmlTag {
     static final String TEMPLATE = TokenType.Template.toString();
     public static final String TEXT = "text";
 
-    public static final String ATTR_STYLE = "style";
-    public static final String ATTR_BACKGROUND = "background";
-
     public static final String HEAD = "head";
     public static final String META = "meta";
     public static final String LINK = "link";

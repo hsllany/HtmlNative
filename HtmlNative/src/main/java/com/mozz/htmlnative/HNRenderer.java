@@ -21,11 +21,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-
+/**
+ * Render views
+ */
 public final class HNRenderer {
 
     private static final String TAG = HNRenderer.class.getSimpleName();
 
+    /**
+     * cache the constructor for later use
+     */
     private static final HashMap<String, Constructor<? extends View>> sConstructorMap = new
             HashMap<>();
 
@@ -42,7 +47,7 @@ public final class HNRenderer {
         String clazz;
     }
 
-    static class SelectorMapHolder {
+    private static class SelectorMapHolder {
         Set<CssSelector> instance;
     }
 

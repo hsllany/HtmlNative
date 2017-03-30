@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -30,30 +29,6 @@ import java.util.Map;
 public final class AttrsSet {
 
     private static final String TAG = AttrsSet.class.getSimpleName();
-
-    private static final String ATTR_WIDTH = "width";
-    private static final String ATTR_HEIGHT = "height";
-    private static final String ATTR_BACKGROUND = "background";
-    private static final String ATTR_PADDING = "padding";
-    private static final String ATTR_PADDING_LEFT = "padding-left";
-    private static final String ATTR_PADDING_RIGHT = "padding-right";
-    private static final String ATTR_PADDING_TOP = "padding-top";
-    private static final String ATTR_PADDING_BOTTOM = "padding-bottom";
-    private static final String ATTR_MARGIN = "margin";
-    private static final String ATTR_MARGIN_LEFT = "margin-left";
-    private static final String ATTR_MARGIN_RIGHT = "margin-right";
-    private static final String ATTR_MARGIN_TOP = "margin-top";
-    private static final String ATTR_MARGIN_BOTTOM = "margin-bottom";
-    private static final String ATTR_LEFT = "left";
-    private static final String ATTR_TOP = "top";
-    private static final String ATTR_ALPHA = "alpha";
-    private static final String ATTR_ID = "id";
-    private static final String ATTR_CLAZZ = "class";
-    private static final String ATTR_ONCLICK = "onClick";
-    private static final String ATTR_VISIBLE = "visibility";
-    private static final String ATTR_DISPLAY = "display";
-    private static final String ATTR_DIRECTION = "direction";
-    private static final String VAL_FILL_PARENT = "100%";
 
     @NonNull
     private static Map<Class<? extends View>, Attr> sCachedAttrs = new HashMap<>();
@@ -246,10 +221,10 @@ public final class AttrsSet {
 
 
         switch (params) {
-            case ATTR_WIDTH:
+            case Styles.ATTR_WIDTH:
                 if (value instanceof Integer) {
                     posOut[0] = (Integer) value;
-                } else if (value.toString().equalsIgnoreCase(VAL_FILL_PARENT)) {
+                } else if (value.toString().equalsIgnoreCase(Styles.VAL_FILL_PARENT)) {
                     posOut[0] = ViewGroup.LayoutParams.MATCH_PARENT;
                 } else {
                     throw new AttrApplyException("Width must be an int or 'WRAP_CONTENT'");
@@ -257,10 +232,10 @@ public final class AttrsSet {
 
                 break;
 
-            case ATTR_HEIGHT:
+            case Styles.ATTR_HEIGHT:
                 if (value instanceof Integer) {
                     posOut[1] = (Integer) value;
-                } else if (value.toString().equalsIgnoreCase(VAL_FILL_PARENT)) {
+                } else if (value.toString().equalsIgnoreCase(Styles.VAL_FILL_PARENT)) {
                     posOut[1] = ViewGroup.LayoutParams.MATCH_PARENT;
                 } else {
                     throw new AttrApplyException("Height must be an int or 'WRAP_CONTENT'");
@@ -268,7 +243,7 @@ public final class AttrsSet {
 
                 break;
 
-            case ATTR_BACKGROUND:
+            case Styles.ATTR_BACKGROUND:
                 if (value instanceof BackgroundStyle) {
                     BackgroundStyle backgroundStyle = (BackgroundStyle) value;
 
@@ -284,8 +259,8 @@ public final class AttrsSet {
 
                 break;
 
-            case ATTR_PADDING:
-            case ATTR_MARGIN:
+            case Styles.ATTR_PADDING:
+            case Styles.ATTR_MARGIN:
                 PixelValue[] pixelValues = Utils.pixelPairs(value.toString());
                 int top = -1;
                 int bottom = -1;
@@ -307,48 +282,48 @@ public final class AttrsSet {
                 }
                 break;
 
-            case ATTR_PADDING_LEFT:
-            case ATTR_MARGIN_LEFT:
+            case Styles.ATTR_PADDING_LEFT:
+            case Styles.ATTR_MARGIN_LEFT:
                 int paddingLeft = Utils.toInt(value);
                 v.setPadding(paddingLeft, v.getPaddingTop(), v.getPaddingRight(), v
                         .getPaddingBottom());
                 break;
 
-            case ATTR_PADDING_RIGHT:
-            case ATTR_MARGIN_RIGHT:
+            case Styles.ATTR_PADDING_RIGHT:
+            case Styles.ATTR_MARGIN_RIGHT:
                 int paddingRight = Utils.toInt(value);
                 v.setPadding(v.getPaddingTop(), v.getPaddingTop(), paddingRight, v
                         .getPaddingBottom());
                 break;
 
-            case ATTR_PADDING_TOP:
-            case ATTR_MARGIN_TOP:
+            case Styles.ATTR_PADDING_TOP:
+            case Styles.ATTR_MARGIN_TOP:
                 int paddingTop = Utils.toInt(value);
                 v.setPadding(v.getPaddingLeft(), paddingTop, v.getPaddingRight(), v
                         .getPaddingBottom());
                 break;
 
-            case ATTR_PADDING_BOTTOM:
-            case ATTR_MARGIN_BOTTOM:
+            case Styles.ATTR_PADDING_BOTTOM:
+            case Styles.ATTR_MARGIN_BOTTOM:
                 int paddingBottom = Utils.toInt(value);
                 v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(),
                         paddingBottom);
                 break;
 
-            case ATTR_LEFT:
+            case Styles.ATTR_LEFT:
                 posOut[2] = Utils.toInt(value);
                 break;
 
-            case ATTR_TOP:
+            case Styles.ATTR_TOP:
                 posOut[3] = Utils.toInt(value);
                 break;
 
-            case ATTR_ALPHA:
+            case Styles.ATTR_ALPHA:
                 float alpha = Utils.toFloat(value);
                 v.setAlpha(alpha);
                 break;
 
-            case ATTR_ID:
+            case Styles.ATTR_ID:
                 if (value instanceof String) {
                     sandBoxContext.saveId((String) value, v);
                     if (outResult != null) {
@@ -359,7 +334,7 @@ public final class AttrsSet {
                 }
                 break;
 
-            case ATTR_CLAZZ:
+            case Styles.ATTR_CLAZZ:
                 if (value instanceof String) {
                     if (outResult != null) {
                         outResult.clazz = (String) value;
@@ -369,7 +344,7 @@ public final class AttrsSet {
                 }
                 break;
 
-            case ATTR_VISIBLE:
+            case Styles.ATTR_VISIBLE:
                 String visible = value.toString();
 
                 if (visible.equals("visible")) {
@@ -379,7 +354,7 @@ public final class AttrsSet {
                 }
                 break;
 
-            case ATTR_DIRECTION:
+            case Styles.ATTR_DIRECTION:
                 String direction = value.toString();
 
                 if (direction.equals("ltr")) {
@@ -389,7 +364,7 @@ public final class AttrsSet {
                 }
                 break;
 
-            case ATTR_ONCLICK:
+            case Styles.ATTR_ONCLICK:
 
                 if (value instanceof String) {
 
@@ -462,7 +437,7 @@ public final class AttrsSet {
             final Object value = mAttrs[(i << 1) + 1];
 
             switch (params) {
-                case ATTR_DISPLAY:
+                case Styles.ATTR_DISPLAY:
                     if (value.equals("flex")) {
                         return renderer.createViewByTag(context, "flexbox");
                     } else if (value.equals("absolute")) {

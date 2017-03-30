@@ -571,7 +571,7 @@ final class Parser {
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     public static Object parseStyleSingle(String styleName, String styleValue) {
         Log.d(TAG, "process style " + styleName + ", " + styleValue);
-        if (styleName.equals(HtmlTag.ATTR_BACKGROUND)) {
+        if (styleName.equals(Styles.ATTR_BACKGROUND)) {
 
             BackgroundStyle style = new BackgroundStyle();
 
@@ -666,7 +666,7 @@ final class Parser {
     }
 
     private static void parseValue(HNDomTree tree, String parameterName, String valueStr) {
-        if (parameterName.equals(HtmlTag.ATTR_STYLE)) {
+        if (parameterName.equals(Styles.ATTR_STYLE)) {
             parseStyle(tree, valueStr);
         } else {
             tree.addAttr(parameterName, valueStr);
