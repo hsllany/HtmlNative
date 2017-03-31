@@ -19,6 +19,7 @@ import com.mozz.htmlnative.view.HNViewGroup;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -51,9 +52,17 @@ public final class HNRenderer {
     private CssIdClass mTempResult;
     private SelectorMapHolder mMapHolder;
 
+    private int[] parentCssStack = new int[50];
+    private int[] lastCssStackSize = new int[10];
+    private int parentIndex = 0;
+    private int level = 0;
+    private ParentCss mParentCss = new ParentCss();
+
     private HNRenderer() {
         mTempResult = new CssIdClass();
         mMapHolder = new SelectorMapHolder();
+
+        Arrays.fill(parentCssStack, -1);
     }
 
     @NonNull
@@ -71,6 +80,8 @@ public final class HNRenderer {
                 context);
 
         this.performCreate(sandBoxContext);
+
+        level = -1;
 
         View v = renderInternal(context, sandBoxContext, segment.mRootTree, segment,
                 rootViewGroup, params, rootViewGroup, segment.mCss, mMapHolder.instance,
@@ -108,8 +119,13 @@ public final class HNRenderer {
         AttrsSet attrsSet = segment.mAttrs;
 
         if (tree.isLeaf()) {
-            return createViewFromNodeName(tree, sandBoxContext, parent, context, attrsSet,
+            View v = createViewFromNodeName(tree, sandBoxContext, parent, context, attrsSet,
                     params, root, css, parentSelector, holder);
+            parentIndex -= lastCssStackSize[level];
+            lastCssStackSize[level] = 0;
+            level--;
+            debugCssParent("return as single");
+            return v;
         } else {
             View view = createViewFromNodeName(tree, sandBoxContext, parent, context, attrsSet,
                     params, root, css, parentSelector, holder);
@@ -120,6 +136,9 @@ public final class HNRenderer {
 
 
             if (view instanceof ViewGroup) {
+
+                Set<CssSelector> tempSelector = holder.instance;
+
                 final ViewGroup viewGroup = (ViewGroup) view;
 
                 List<HNDomTree> children = tree.children();
@@ -139,7 +158,7 @@ public final class HNRenderer {
 
                     // Recursively render child.
                     final View v = renderInternal(context, sandBoxContext, child, segment,
-                            viewGroup, layoutParams, root, css, holder.instance, holder);
+                            viewGroup, layoutParams, root, css, tempSelector, holder);
 
                     if (v != null) {
                         viewGroup.addView(v, layoutParams);
@@ -156,6 +175,10 @@ public final class HNRenderer {
                         ", but related HNDomTree has children. Will ignore its children!");
             }
 
+            parentIndex -= lastCssStackSize[level];
+            lastCssStackSize[level] = 0;
+            level--;
+            debugCssParent("return as viewgroup");
             return view;
         }
     }
@@ -170,6 +193,8 @@ public final class HNRenderer {
 
         String tag = tree.getTag();
         PerformanceWatcher watcher = Performance.newWatcher();
+
+        level++;
 
         try {
 
@@ -208,8 +233,24 @@ public final class HNRenderer {
             }
 
             try {
+                debugCssParent("before apply to " + tag);
+                // apply parent style first
+                for (int i = 0; i < parentIndex; i++) {
+                    mParentCss.index = i;
+
+                    if (parentCssStack[i] > 0) {
+                        attrsSet.apply(context, sandBoxContext, v, mParentCss, null, tree.getTag
+                                (), parent, params, null, false, true);
+                    } else {
+                        css.mCssSet.apply(context, sandBoxContext, v, mParentCss, null, tree
+                                .getTag(), parent, params, null, false, true);
+                    }
+                }
+
+
                 attrsSet.apply(context, sandBoxContext, v, tree, tree.getInner(), tree.getTag(),
-                        parent, params, mTempResult);
+                        parent, params, mTempResult, true, false);
+
             } catch (AttrApplyException e) {
                 e.printStackTrace();
             }
@@ -222,14 +263,19 @@ public final class HNRenderer {
             try {
                 for (CssSelector selector : cssSelectors) {
                     if (selector.next() == null) {
+                        Log.d("Selector", "worked selector " + selector.getRoot());
                         css.mCssSet.apply(context, sandBoxContext, v, selector, tree.getInner(),
-                                tree.getTag(), parent, params, mTempResult);
+                                tree.getTag(), parent, params, mTempResult, false, false);
+                        parentCssStack[parentIndex++] = -selector.attrIndex();
+                        lastCssStackSize[level]++;
                     }
 
                 }
             } catch (AttrApplyException e) {
                 e.printStackTrace();
             }
+
+            debugCssParent("after apply");
 
             watcher.checkDone("create view " + v.toString() + ", and give it attrs.");
             return v;
@@ -339,6 +385,30 @@ public final class HNRenderer {
         public RemoteInflateException(Throwable throwable) {
             super(throwable);
         }
+    }
+
+    private class ParentCss implements AttrsOwner {
+
+        private int index;
+
+        @Override
+        public int attrIndex() {
+            return parentCssStack[index] > 0 ? parentCssStack[index] : -parentCssStack[index];
+        }
+
+        @Override
+        public void setAttrIndex(int newIndex) {
+
+        }
+    }
+
+    private void debugCssParent(String msg) {
+        Log.d("ParentCss", "---------" + msg + "---------");
+        Log.d("ParentCss", "parentIndex=" + parentIndex);
+        Log.d("ParentCss", "level=" + level);
+        Log.d("ParentCss", "stackCss=" + Arrays.toString(parentCssStack));
+        Log.d("ParentCss", "stackSize=" + Arrays.toString(lastCssStackSize));
+        Log.d("ParentCss", "------------------");
     }
 
 

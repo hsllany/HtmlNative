@@ -3,6 +3,7 @@ package com.mozz.htmlnative;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -118,15 +119,20 @@ public final class AttrsSet {
     public void apply(Context context, @NonNull final HNSandBoxContext sandBoxContext, View v,
                       @NonNull AttrsOwner tree, String innerText, String tagName, @NonNull
                               ViewGroup parent, @NonNull ViewGroup.LayoutParams layoutParams,
-                      CssIdClass outCssIdClass) throws AttrApplyException {
+                      CssIdClass outCssIdClass, boolean applyDefault, boolean isParent) throws
+            AttrApplyException {
 
-
+        if (!isParent) {
+            Log.d("ParentCss", tagName + "'s attrIndex = " + tree.attrIndex());
+        }
         int startPosition = tree.attrIndex();
         int treeAttrLength = mLength[startPosition];
 
         // clear the value in result
-        outCssIdClass.clazz = null;
-        outCssIdClass.id = null;
+        if (outCssIdClass != null) {
+            outCssIdClass.clazz = null;
+            outCssIdClass.id = null;
+        }
 
         AttrHandler viewAttrHandler = getAttr(v.getClass());
         AttrHandler extraAttrHandler = AttrsHelper.getExtraAttrFromView(v.getClass());
@@ -135,11 +141,12 @@ public final class AttrsSet {
         if (parentAttrHandler instanceof LayoutAttrHandler) {
             parentLayoutAttr = (LayoutAttrHandler) parentAttrHandler;
         }
-
         // Apply the default attr to view first;
         // Then process each parameter.
-        applyDefaultStyle(context, tagName, sandBoxContext, v, innerText, parent, layoutParams,
-                viewAttrHandler, extraAttrHandler, parentLayoutAttr);
+        if (applyDefault) {
+            applyDefaultStyle(context, tagName, sandBoxContext, v, innerText, parent,
+                    layoutParams, viewAttrHandler, extraAttrHandler, parentLayoutAttr);
+        }
 
         for (int i = startPosition; i < startPosition + treeAttrLength; i++) {
             Styles.applyStyle(context, tagName, sandBoxContext, v, (String) mAttrs[i << 1],

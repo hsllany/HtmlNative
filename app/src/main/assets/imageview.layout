@@ -7,26 +7,20 @@
                 color:green
             }
 
+            div{
+                color: red
+            }
+
             div p{
-                color:red;
                 padding: 30
             }
 
         </style>
     </head>
     <body>
-        <p style="font-size: 16; padding: 10; background:url(http://n.sinaimg.cn/news/crawl/20170302/18ey-fycaahm6004808.jpg)"
-           id="text1">
-            This is an example of ImageView
-            <br/>2 Images are shown.
-        </p>
-
-        <p>div in root</p>
-
-        <button onClick="changeText1">click me</button>
-
         <div>
             <p>p in div</p>
+            <p>p2 in div</p>
             <img src="http://n.sinaimg.cn/news/crawl/20170302/18ey-fycaahm6004808.jpg" width="100%"/>
             <img src="http://n.sinaimg.cn/news/crawl/20170312/VUL1-fychhvn8494769.jpg"/>
         </div>

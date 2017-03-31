@@ -3,6 +3,7 @@ package com.mozz.htmlnative;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsoluteLayout;
@@ -18,6 +19,8 @@ import com.mozz.htmlnative.view.ViewImageAdapter;
  * @author Yang Tao, 17/3/30.
  */
 public final class Styles {
+
+    private static final String TAG = Styles.class.getSimpleName();
 
     private Styles() {
     }
@@ -69,6 +72,8 @@ public final class Styles {
             viewAttrHandler, AttrHandler extraAttrHandler, LayoutAttrHandler parentAttr,
                                   CssIdClass outResult) throws AttrApplyException {
 
+
+        Log.d(TAG, "apply " + params + " = " + value.toString() + " to " + v + "(" + tagName + ")");
 
         switch (params) {
             case ATTR_WIDTH:

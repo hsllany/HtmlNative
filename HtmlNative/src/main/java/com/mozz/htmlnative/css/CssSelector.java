@@ -8,9 +8,8 @@ import com.mozz.htmlnative.AttrsOwner;
 
 public abstract class CssSelector implements AttrsOwner {
 
-    protected CssSelector mNext;
-    protected int mChainLength;
-    protected CssSelector mRoot = this;
+    private CssSelector mNext;
+    private CssSelector mRoot = this;
 
     private int mAttrIndex;
 
@@ -22,8 +21,6 @@ public abstract class CssSelector implements AttrsOwner {
             mNext.mNext = selector;
             mNext = mNext.mNext;
         }
-
-        mChainLength++;
     }
 
     public final boolean matchAll(String type, String id, String clazz) {
@@ -66,6 +63,10 @@ public abstract class CssSelector implements AttrsOwner {
         } else {
             return mRoot.attrIndex();
         }
+    }
+
+    public CssSelector getRoot() {
+        return mRoot;
     }
 
     @Override

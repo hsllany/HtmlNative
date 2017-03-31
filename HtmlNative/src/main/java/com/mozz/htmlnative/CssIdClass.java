@@ -6,4 +6,9 @@ package com.mozz.htmlnative;
 class CssIdClass {
     String id;
     String clazz;
+
+    @Override
+    public String toString() {
+        return "[id=" + id + ", class=" + clazz + "]";
+    }
 }
