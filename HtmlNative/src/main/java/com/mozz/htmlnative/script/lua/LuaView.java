@@ -52,8 +52,9 @@ public class LuaView extends LuaTable {
                                 parent = (ViewGroup) v.getParent();
                             }
                             try {
-                                Styles.applyStyle(v.getContext(), null, context, v, entry
-                                        .getKey(), entry.getValue(), null, parent, null, null, viewAttrHandler, extraAttrHandler, parentAttr, null);
+                                Styles.applyStyle(v.getContext(), null, context, v, entry.getKey
+                                        (), entry.getValue(), null, parent, null,
+                                        viewAttrHandler, extraAttrHandler, parentAttr, null);
                             } catch (AttrApplyException e) {
                                 e.printStackTrace();
                             }
