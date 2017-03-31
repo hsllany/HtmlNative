@@ -4,12 +4,14 @@
         <meta name="nihao" content="world"/>
         <style>
             #text1{
-                background:red;
-                color:green
+            background:red;
+            color:green;
+            margin: 3em 3em;
+            padding: 2em;
             }
 
             button{
-                color:yellow
+            color:yellow
             }
 
         </style>
@@ -28,14 +30,14 @@
         b = false
 
         function changeText1()
-            local v = view("text1")
-            if(b) then
-                v.style("background:red;color:#fff")
-            else
-                v.style("background:blue;color:red")
-            end
+        local v = view("text1")
+        if(b) then
+        v.style("background:red;color:#fff")
+        else
+        v.style("background:blue;color:red")
+        end
 
-            b = not(b)
+        b = not(b)
 
         end
 

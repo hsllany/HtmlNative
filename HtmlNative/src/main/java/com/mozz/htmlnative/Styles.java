@@ -66,8 +66,8 @@ public final class Styles {
     public static void applyStyle(Context context, String tagName, final HNSandBoxContext
             sandBoxContext, View v, String params, Object value, String innerElement, @NonNull
             ViewGroup parent, @NonNull ViewGroup.LayoutParams layoutParams, AttrHandler
-            viewAttrHandler, AttrHandler extraAttrHandler, LayoutAttrHandler parentAttr, CssIdClass outResult) throws
-            AttrApplyException {
+            viewAttrHandler, AttrHandler extraAttrHandler, LayoutAttrHandler parentAttr,
+                                  CssIdClass outResult) throws AttrApplyException {
 
 
         switch (params) {
@@ -109,8 +109,85 @@ public final class Styles {
 
                 break;
 
-            case ATTR_PADDING:
-            case ATTR_MARGIN:
+
+            case ATTR_MARGIN: {
+                if (layoutParams instanceof ViewGroup.MarginLayoutParams) {
+                    PixelValue[] pixelValues = Utils.pixelPairs(value.toString());
+                    int top = -1;
+                    int bottom = -1;
+                    int left = -1;
+                    int right = -1;
+                    if (pixelValues.length == 1) {
+                        top = bottom = left = right = (int) pixelValues[0].getValue();
+                    } else if (pixelValues.length == 2) {
+                        top = bottom = (int) pixelValues[0].getValue();
+                        left = right = (int) pixelValues[1].getValue();
+                    } else if (pixelValues.length == 4) {
+                        top = (int) pixelValues[0].getValue();
+                        bottom = (int) pixelValues[2].getValue();
+                        left = (int) pixelValues[3].getValue();
+                        right = (int) pixelValues[1].getValue();
+                    }
+                    if (top != -1 && bottom != -1 && left != -1 && right != -1) {
+                        ((ViewGroup.MarginLayoutParams) layoutParams).setMargins(left, top,
+                                right, bottom);
+                    }
+                }
+            }
+            break;
+
+            case ATTR_MARGIN_RIGHT:
+                if (layoutParams instanceof ViewGroup.MarginLayoutParams) {
+                    ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup
+                            .MarginLayoutParams) layoutParams;
+                    int left = marginLayoutParams.leftMargin;
+                    int right = Utils.toInt(value);
+                    int top = marginLayoutParams.topMargin;
+                    int bottom = marginLayoutParams.bottomMargin;
+
+                    marginLayoutParams.setMargins(left, top, right, bottom);
+                }
+                break;
+
+            case ATTR_MARGIN_LEFT:
+                if (layoutParams instanceof ViewGroup.MarginLayoutParams) {
+                    ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup
+                            .MarginLayoutParams) layoutParams;
+                    int left = Utils.toInt(value);
+                    int right = marginLayoutParams.rightMargin;
+                    int top = marginLayoutParams.topMargin;
+                    int bottom = marginLayoutParams.bottomMargin;
+                    marginLayoutParams.setMargins(left, top, right, bottom);
+                }
+                break;
+
+            case ATTR_MARGIN_TOP:
+                if (layoutParams instanceof ViewGroup.MarginLayoutParams) {
+                    ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup
+                            .MarginLayoutParams) layoutParams;
+                    int left = marginLayoutParams.leftMargin;
+                    int right = marginLayoutParams.rightMargin;
+                    int top = Utils.toInt(value);
+                    int bottom = marginLayoutParams.bottomMargin;
+
+                    marginLayoutParams.setMargins(left, top, right, bottom);
+                }
+                break;
+
+            case ATTR_MARGIN_BOTTOM:
+                if (layoutParams instanceof ViewGroup.MarginLayoutParams) {
+                    ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup
+                            .MarginLayoutParams) layoutParams;
+                    int left = marginLayoutParams.leftMargin;
+                    int right = marginLayoutParams.rightMargin;
+                    int top = marginLayoutParams.topMargin;
+                    int bottom = Utils.toInt(value);
+
+                    marginLayoutParams.setMargins(left, top, right, bottom);
+                }
+                break;
+
+            case ATTR_PADDING: {
                 PixelValue[] pixelValues = Utils.pixelPairs(value.toString());
                 int top = -1;
                 int bottom = -1;
@@ -130,31 +207,28 @@ public final class Styles {
                 if (top != -1 && bottom != -1 && left != -1 && right != -1) {
                     v.setPadding(left, top, right, bottom);
                 }
-                break;
+            }
+            break;
 
             case ATTR_PADDING_LEFT:
-            case ATTR_MARGIN_LEFT:
                 int paddingLeft = Utils.toInt(value);
                 v.setPadding(paddingLeft, v.getPaddingTop(), v.getPaddingRight(), v
                         .getPaddingBottom());
                 break;
 
             case ATTR_PADDING_RIGHT:
-            case ATTR_MARGIN_RIGHT:
                 int paddingRight = Utils.toInt(value);
                 v.setPadding(v.getPaddingTop(), v.getPaddingTop(), paddingRight, v
                         .getPaddingBottom());
                 break;
 
             case ATTR_PADDING_TOP:
-            case ATTR_MARGIN_TOP:
                 int paddingTop = Utils.toInt(value);
                 v.setPadding(v.getPaddingLeft(), paddingTop, v.getPaddingRight(), v
                         .getPaddingBottom());
                 break;
 
             case ATTR_PADDING_BOTTOM:
-            case ATTR_MARGIN_BOTTOM:
                 int paddingBottom = Utils.toInt(value);
                 v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(),
                         paddingBottom);

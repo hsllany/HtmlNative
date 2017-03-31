@@ -147,7 +147,7 @@ public final class Utils {
     }
 
     public static int color(@NonNull Object colorObj) throws AttrApplyException {
-        String colorString = colorObj.toString();
+        String colorString = colorObj.toString().trim();
         if (colorString.length() == 0) {
             Log.e(TAG, "empty color string for parse");
             throw new AttrApplyException("empty color string for parse");

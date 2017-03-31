@@ -9,7 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.AbsoluteLayout;
+import android.widget.LinearLayout;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.mozz.htmlnative.common.Performance;
 import com.mozz.htmlnative.common.PerformanceWatcher;
 import com.mozz.htmlnative.css.CssSelector;
@@ -75,11 +77,8 @@ public final class HNRenderer {
                 mMapHolder);
 
         if (v != null) {
-            rootViewGroup.addView(v, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
-                    .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-
+            rootViewGroup.addView(v, params);
             this.performCreated(sandBoxContext);
-
             HNEventLog.writeEvent(HNEventLog.TAG_RENDER, sandBoxContext.allIdTag());
 
             return rootViewGroup;
@@ -126,12 +125,15 @@ public final class HNRenderer {
                 List<HNDomTree> children = tree.children();
                 for (HNDomTree child : children) {
 
-                    final ViewGroup.LayoutParams layoutParams;
+                    ViewGroup.LayoutParams layoutParams = null;
                     if (view instanceof AbsoluteLayout) {
                         layoutParams = new AbsoluteLayout.LayoutParams(ViewGroup.LayoutParams
                                 .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0, 0);
-                    } else {
-                        layoutParams = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams
+                    } else if (view instanceof LinearLayout) {
+                        layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams
+                                .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    } else if (view instanceof FlexboxLayout) {
+                        layoutParams = new FlexboxLayout.LayoutParams(ViewGroup.LayoutParams
                                 .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     }
 

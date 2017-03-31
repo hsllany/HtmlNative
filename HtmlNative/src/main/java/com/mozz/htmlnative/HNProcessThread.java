@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.mozz.htmlnative.common.MainHandler;
 import com.mozz.htmlnative.common.WefRunnable;
@@ -78,8 +79,8 @@ final class HNProcessThread {
                     }
                 });
 
-                final ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup
-                        .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                final ViewGroup.LayoutParams layoutParams = new FrameLayout.LayoutParams
+                        (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 MainHandler.instance().post(new Runnable() {
                     @Override
                     public void run() {
