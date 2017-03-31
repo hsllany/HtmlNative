@@ -14,7 +14,7 @@ import com.mozz.htmlnative.HNRenderer;
 import com.mozz.htmlnative.HtmlTag;
 import com.mozz.htmlnative.common.Utils;
 
-public class TextViewAttr extends Attr {
+public class TextViewAttrHandler extends AttrHandler {
 
     private static final String FONT_SIZE = "font-size";
     private static final String COLOR = "color";
@@ -28,10 +28,10 @@ public class TextViewAttr extends Attr {
     private static final String TEXT_OVER_FLOW = "text-overflow";
 
     @NonNull
-    private static TextViewAttr sInstance = new TextViewAttr();
+    private static TextViewAttrHandler sInstance = new TextViewAttrHandler();
 
     @NonNull
-    public static TextViewAttr getInstance() {
+    public static TextViewAttrHandler getInstance() {
         return sInstance;
     }
 

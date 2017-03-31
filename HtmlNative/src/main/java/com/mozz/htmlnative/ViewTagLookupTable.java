@@ -13,7 +13,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
-import com.mozz.htmlnative.attrs.Attr;
+import com.mozz.htmlnative.attrs.AttrHandler;
 
 import java.util.Map;
 
@@ -86,7 +86,7 @@ final class ViewTagLookupTable {
     }
 
     @Nullable
-    static Attr findAttrFromExtraByTag(String tag) {
+    static AttrHandler findAttrFromExtraByTag(String tag) {
         if (sExtraTagClassTable == null) {
             sExtraTagClassTable = new ArrayMap<>();
         }

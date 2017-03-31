@@ -8,7 +8,7 @@ import com.mozz.htmlnative.AttrApplyException;
 import com.mozz.htmlnative.HNRenderer;
 import com.mozz.htmlnative.view.ViewImageAdapter;
 
-public class ImageViewAttr extends Attr {
+public class ImageViewAttrHandler extends AttrHandler {
 
     @Override
     public void apply(final Context context, java.lang.String tag, final View v, @NonNull java

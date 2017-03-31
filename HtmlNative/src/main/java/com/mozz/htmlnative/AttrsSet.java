@@ -3,20 +3,13 @@ package com.mozz.htmlnative;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.widget.AbsoluteLayout;
 
-import com.mozz.htmlnative.attrs.Attr;
-import com.mozz.htmlnative.attrs.BackgroundStyle;
-import com.mozz.htmlnative.attrs.LayoutAttr;
-import com.mozz.htmlnative.attrs.PixelValue;
-import com.mozz.htmlnative.common.Utils;
-import com.mozz.htmlnative.view.ViewImageAdapter;
+import com.mozz.htmlnative.attrs.AttrHandler;
+import com.mozz.htmlnative.attrs.LayoutAttrHandler;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,18 +24,13 @@ public final class AttrsSet {
     private static final String TAG = AttrsSet.class.getSimpleName();
 
     @NonNull
-    private static Map<Class<? extends View>, Attr> sCachedAttrs = new HashMap<>();
+    private static Map<Class<? extends View>, AttrHandler> sCachedAttrs = new HashMap<>();
 
     private Object[] mAttrs;
     private int[] mLength;
     private int mGrowLength;
     private int mLastGrowLength = -1;
     private int mCompacity;
-
-    // for temp usage.
-
-    // to store the width, height, top and left during attribute process
-    private int[] mTempPos;
 
     AttrsSet() {
         this(10);
@@ -53,7 +41,6 @@ public final class AttrsSet {
         mLength = new int[initCompacity];
         mGrowLength = 0;
         mCompacity = initCompacity;
-        mTempPos = new int[4];
     }
 
     void put(@NonNull AttrsOwner tree, String paramsKey, @NonNull Object value) {
@@ -131,66 +118,50 @@ public final class AttrsSet {
     public void apply(Context context, @NonNull final HNSandBoxContext sandBoxContext, View v,
                       @NonNull AttrsOwner tree, String innerText, String tagName, @NonNull
                               ViewGroup parent, @NonNull ViewGroup.LayoutParams layoutParams,
-                      HNRenderer.ViewCreateResult outResult) throws AttrApplyException {
+                      CssIdClass outCssIdClass) throws AttrApplyException {
 
 
         int startPosition = tree.attrIndex();
         int treeAttrLength = mLength[startPosition];
 
-        // pos = {width, height, left, top}
-        mTempPos[0] = ViewGroup.LayoutParams.WRAP_CONTENT;
-        mTempPos[1] = ViewGroup.LayoutParams.WRAP_CONTENT;
-        mTempPos[2] = 0;
-        mTempPos[3] = 0;
-
         // clear the value in result
-        outResult.clazz = null;
-        outResult.id = null;
+        outCssIdClass.clazz = null;
+        outCssIdClass.id = null;
 
-        Attr viewAttr = getAttr(v.getClass());
-        Attr extraAttr = AttrsHelper.getExtraAttrFromView(v.getClass());
-        Attr parentAttr = getAttr(parent.getClass());
-        LayoutAttr parentLayoutAttr = null;
-        if (parentAttr instanceof LayoutAttr) {
-            parentLayoutAttr = (LayoutAttr) parentAttr;
+        AttrHandler viewAttrHandler = getAttr(v.getClass());
+        AttrHandler extraAttrHandler = AttrsHelper.getExtraAttrFromView(v.getClass());
+        AttrHandler parentAttrHandler = getAttr(parent.getClass());
+        LayoutAttrHandler parentLayoutAttr = null;
+        if (parentAttrHandler instanceof LayoutAttrHandler) {
+            parentLayoutAttr = (LayoutAttrHandler) parentAttrHandler;
         }
 
         // Apply the default attr to view first;
         // Then process each parameter.
-
-        applyDefault(context, tagName, sandBoxContext, v, innerText, parent, layoutParams,
-                mTempPos, viewAttr, extraAttr, parentLayoutAttr);
+        applyDefaultStyle(context, tagName, sandBoxContext, v, innerText, parent, layoutParams,
+                viewAttrHandler, extraAttrHandler, parentLayoutAttr);
 
         for (int i = startPosition; i < startPosition + treeAttrLength; i++) {
-            applyAttrToView(context, tagName, sandBoxContext, v, (String) mAttrs[i << 1], mAttrs[
-                    (i << 1) + 1], innerText, parent, layoutParams, mTempPos, viewAttr,
-                    extraAttr, parentLayoutAttr, outResult);
-        }
-
-
-        layoutParams.height = mTempPos[1];
-        layoutParams.width = mTempPos[0];
-
-        if (layoutParams instanceof AbsoluteLayout.LayoutParams) {
-            ((AbsoluteLayout.LayoutParams) layoutParams).x = mTempPos[2];
-            ((AbsoluteLayout.LayoutParams) layoutParams).y = mTempPos[3];
+            Styles.applyStyle(context, tagName, sandBoxContext, v, (String) mAttrs[i << 1],
+                    mAttrs[(i << 1) + 1], innerText, parent, layoutParams, viewAttrHandler,
+                    extraAttrHandler, parentLayoutAttr, outCssIdClass);
         }
     }
 
-    public static Attr getViewAttr(View v) {
+    public static AttrHandler getViewAttr(View v) {
         return getAttr(v.getClass());
     }
 
-    public static Attr getExtraAttr(View v) {
+    public static AttrHandler getExtraAttr(View v) {
         return AttrsHelper.getExtraAttrFromView(v.getClass());
     }
 
-    public static LayoutAttr getParentAttr(ViewParent parent) {
+    public static LayoutAttrHandler getParentAttr(ViewParent parent) {
         if (parent instanceof ViewGroup) {
-            Attr parentAttr = getAttr(((ViewGroup) parent).getClass());
-            LayoutAttr parentLayoutAttr = null;
-            if (parentAttr instanceof LayoutAttr) {
-                parentLayoutAttr = (LayoutAttr) parentAttr;
+            AttrHandler parentAttrHandler = getAttr(((ViewGroup) parent).getClass());
+            LayoutAttrHandler parentLayoutAttr = null;
+            if (parentAttrHandler instanceof LayoutAttrHandler) {
+                parentLayoutAttr = (LayoutAttrHandler) parentAttrHandler;
             }
             return parentLayoutAttr;
         }
@@ -198,225 +169,18 @@ public final class AttrsSet {
     }
 
     /**
-     * Apply a params with value to a view
-     *
-     * @param context        {@link android.content.Context}
-     * @param tagName        TagName of this view in raw Dom
-     * @param sandBoxContext {@link HNSandBoxContext}
-     * @param v              {@link android.view.View} view to be processed
-     * @param params         parameter name
-     * @param value          parameter value
-     * @param innerElement   inner String in this tag element
-     * @param parent         {@link android.view.ViewGroup}, parent of the view
-     * @param layoutParams   {@link android.view.ViewGroup.LayoutParams}, layoutParams for parent
-     *                       when add this view to parent
-     * @param posOut         int array, {width, height, left, top} will be set after this function
-     * @throws AttrApplyException
+     * Apply a default style to view
      */
-    public static void applyAttrToView(Context context, String tagName, final HNSandBoxContext
-            sandBoxContext, View v, String params, Object value, String innerElement, @NonNull
-            ViewGroup parent, @NonNull ViewGroup.LayoutParams layoutParams, int[] posOut, Attr
-            viewAttr, Attr extralAttr, LayoutAttr parentAttr, HNRenderer.ViewCreateResult
-            outResult) throws AttrApplyException {
-
-
-        switch (params) {
-            case Styles.ATTR_WIDTH:
-                if (value instanceof Integer) {
-                    posOut[0] = (Integer) value;
-                } else if (value.toString().equalsIgnoreCase(Styles.VAL_FILL_PARENT)) {
-                    posOut[0] = ViewGroup.LayoutParams.MATCH_PARENT;
-                } else {
-                    throw new AttrApplyException("Width must be an int or 'WRAP_CONTENT'");
-                }
-
-                break;
-
-            case Styles.ATTR_HEIGHT:
-                if (value instanceof Integer) {
-                    posOut[1] = (Integer) value;
-                } else if (value.toString().equalsIgnoreCase(Styles.VAL_FILL_PARENT)) {
-                    posOut[1] = ViewGroup.LayoutParams.MATCH_PARENT;
-                } else {
-                    throw new AttrApplyException("Height must be an int or 'WRAP_CONTENT'");
-                }
-
-                break;
-
-            case Styles.ATTR_BACKGROUND:
-                if (value instanceof BackgroundStyle) {
-                    BackgroundStyle backgroundStyle = (BackgroundStyle) value;
-
-                    if (!TextUtils.isEmpty(backgroundStyle.getUrl())) {
-                        HNRenderer.getImageViewAdpater().setImage(backgroundStyle.getUrl(), new
-                                ViewImageAdapter(v));
-                    } else if (backgroundStyle.isColorSet()) {
-                        v.setBackgroundColor(backgroundStyle.getColor());
-                    }
-                } else {
-                    throw new AttrApplyException("Background style is wrong when parsing.");
-                }
-
-                break;
-
-            case Styles.ATTR_PADDING:
-            case Styles.ATTR_MARGIN:
-                PixelValue[] pixelValues = Utils.pixelPairs(value.toString());
-                int top = -1;
-                int bottom = -1;
-                int left = -1;
-                int right = -1;
-                if (pixelValues.length == 1) {
-                    top = bottom = left = right = (int) pixelValues[0].getValue();
-                } else if (pixelValues.length == 2) {
-                    top = bottom = (int) pixelValues[0].getValue();
-                    left = right = (int) pixelValues[1].getValue();
-                } else if (pixelValues.length == 4) {
-                    top = (int) pixelValues[0].getValue();
-                    bottom = (int) pixelValues[2].getValue();
-                    left = (int) pixelValues[3].getValue();
-                    right = (int) pixelValues[1].getValue();
-                }
-                if (top != -1 && bottom != -1 && left != -1 && right != -1) {
-                    v.setPadding(left, top, right, bottom);
-                }
-                break;
-
-            case Styles.ATTR_PADDING_LEFT:
-            case Styles.ATTR_MARGIN_LEFT:
-                int paddingLeft = Utils.toInt(value);
-                v.setPadding(paddingLeft, v.getPaddingTop(), v.getPaddingRight(), v
-                        .getPaddingBottom());
-                break;
-
-            case Styles.ATTR_PADDING_RIGHT:
-            case Styles.ATTR_MARGIN_RIGHT:
-                int paddingRight = Utils.toInt(value);
-                v.setPadding(v.getPaddingTop(), v.getPaddingTop(), paddingRight, v
-                        .getPaddingBottom());
-                break;
-
-            case Styles.ATTR_PADDING_TOP:
-            case Styles.ATTR_MARGIN_TOP:
-                int paddingTop = Utils.toInt(value);
-                v.setPadding(v.getPaddingLeft(), paddingTop, v.getPaddingRight(), v
-                        .getPaddingBottom());
-                break;
-
-            case Styles.ATTR_PADDING_BOTTOM:
-            case Styles.ATTR_MARGIN_BOTTOM:
-                int paddingBottom = Utils.toInt(value);
-                v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(),
-                        paddingBottom);
-                break;
-
-            case Styles.ATTR_LEFT:
-                posOut[2] = Utils.toInt(value);
-                break;
-
-            case Styles.ATTR_TOP:
-                posOut[3] = Utils.toInt(value);
-                break;
-
-            case Styles.ATTR_ALPHA:
-                float alpha = Utils.toFloat(value);
-                v.setAlpha(alpha);
-                break;
-
-            case Styles.ATTR_ID:
-                if (value instanceof String) {
-                    sandBoxContext.saveId((String) value, v);
-                    if (outResult != null) {
-                        outResult.id = (String) value;
-                    }
-                } else {
-                    throw new AttrApplyException("id must be a string.");
-                }
-                break;
-
-            case Styles.ATTR_CLAZZ:
-                if (value instanceof String) {
-                    if (outResult != null) {
-                        outResult.clazz = (String) value;
-                    }
-                } else {
-                    throw new AttrApplyException("class must be a string.");
-                }
-                break;
-
-            case Styles.ATTR_VISIBLE:
-                String visible = value.toString();
-
-                if (visible.equals("visible")) {
-                    v.setVisibility(View.VISIBLE);
-                } else if (visible.equals("invisible")) {
-                    v.setVisibility(View.INVISIBLE);
-                }
-                break;
-
-            case Styles.ATTR_DIRECTION:
-                String direction = value.toString();
-
-                if (direction.equals("ltr")) {
-                    v.setTextDirection(View.TEXT_DIRECTION_LTR);
-                } else if (direction.equals("rtl")) {
-                    v.setTextDirection(View.TEXT_DIRECTION_RTL);
-                }
-                break;
-
-            case Styles.ATTR_ONCLICK:
-
-                if (value instanceof String) {
-
-                    final String functionName = (String) value;
-
-                    v.setOnClickListener(new View.OnClickListener() {
-
-                        @Override
-                        public void onClick(View v) {
-                            sandBoxContext.executeFun(functionName);
-                        }
-                    });
-
-                }
-                break;
-
-            default:
-
-                // If not common attrs, then
-                // 1. apply the corresponding view attr first;
-                // 2. apply the extra attr
-                // 3. use parent view attr to this
-
-                if (viewAttr != null) {
-                    viewAttr.apply(context, tagName, v, params, value, innerElement);
-                }
-
-                // If there extra attr is set, then should be applied also.
-
-                if (extralAttr != null) {
-                    extralAttr.apply(context, tagName, v, params, value, innerElement);
-                }
-
-                // finally apply corresponding parent attr to child
-                if (parentAttr != null) {
-                    parentAttr.applyToChild(context, tagName, v, parent, params, value);
-                }
-                break;
-        }
-
-    }
-
-    public static void applyDefault(Context context, String tagName, final HNSandBoxContext
+    private static void applyDefaultStyle(Context context, String tagName, final HNSandBoxContext
             sandBoxContext, View v, String innerElement, @NonNull ViewGroup parent, @NonNull
-            ViewGroup.LayoutParams layoutParams, int[] posOut, Attr viewAttr, Attr extralAttr,
-                                    LayoutAttr parentAttr) throws AttrApplyException {
-        if (viewAttr != null) {
-            viewAttr.setDefault(context, tagName, v, innerElement);
+            ViewGroup.LayoutParams layoutParams, AttrHandler viewAttrHandler, AttrHandler
+            extralAttrHandler, LayoutAttrHandler parentAttr) throws AttrApplyException {
+        if (viewAttrHandler != null) {
+            viewAttrHandler.setDefault(context, tagName, v, innerElement);
         }
 
-        if (extralAttr != null) {
-            extralAttr.setDefault(context, tagName, v, innerElement);
+        if (extralAttrHandler != null) {
+            extralAttrHandler.setDefault(context, tagName, v, innerElement);
         }
 
         if (parentAttr != null) {
@@ -424,47 +188,33 @@ public final class AttrsSet {
         }
     }
 
-    final View createViewByTag(@NonNull HNRenderer renderer, Context context, @NonNull String
-            name, @NonNull AttrsOwner tree) throws ClassNotFoundException, NoSuchMethodException,
-            InvocationTargetException, InstantiationException, IllegalAccessException {
-
-
-        int startPosition = tree.attrIndex();
+    final Object getAttr(AttrsOwner owner, String attrName) {
+        int startPosition = owner.attrIndex();
         int treeAttrLength = mLength[startPosition];
 
         for (int i = startPosition; i < startPosition + treeAttrLength; i++) {
             String params = (String) mAttrs[i << 1];
             final Object value = mAttrs[(i << 1) + 1];
 
-            switch (params) {
-                case Styles.ATTR_DISPLAY:
-                    if (value.equals("flex")) {
-                        return renderer.createViewByTag(context, "flexbox");
-                    } else if (value.equals("absolute")) {
-                        return renderer.createViewByTag(context, "box");
-                    } else if (value.equals("box")) {
-                        return renderer.createViewByTag(context, "linearbox");
-                    }
-
-                    break;
+            if (params.equals(attrName)) {
+                return value;
             }
         }
 
-        return renderer.createViewByTag(context, "linearbox");
-
+        return null;
     }
 
     @Nullable
-    private static Attr getAttr(@NonNull Class<? extends View> clazz) {
-        Attr attr = sCachedAttrs.get(clazz);
-        if (attr == null) {
-            attr = AttrsHelper.getAttrFromView(clazz);
-            if (attr != null) {
-                sCachedAttrs.put(clazz, attr);
+    private static AttrHandler getAttr(@NonNull Class<? extends View> clazz) {
+        AttrHandler attrHandler = sCachedAttrs.get(clazz);
+        if (attrHandler == null) {
+            attrHandler = AttrsHelper.getAttrFromView(clazz);
+            if (attrHandler != null) {
+                sCachedAttrs.put(clazz, attrHandler);
             }
         }
 
-        return attr;
+        return attrHandler;
     }
 
 }

@@ -10,7 +10,7 @@ import com.mozz.htmlnative.AttrApplyException;
  * @author Yang Tao, 17/3/3.
  */
 
-public abstract class LayoutAttr extends Attr {
+public abstract class LayoutAttrHandler extends AttrHandler {
     public abstract void applyToChild(Context context, String tag, View v, ViewGroup parent,
                                       String params, Object value) throws AttrApplyException;
 

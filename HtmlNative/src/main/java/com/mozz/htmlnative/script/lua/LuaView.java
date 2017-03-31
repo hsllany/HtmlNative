@@ -6,8 +6,9 @@ import android.view.ViewGroup;
 import com.mozz.htmlnative.AttrApplyException;
 import com.mozz.htmlnative.AttrsSet;
 import com.mozz.htmlnative.HNSandBoxContext;
-import com.mozz.htmlnative.attrs.Attr;
-import com.mozz.htmlnative.attrs.LayoutAttr;
+import com.mozz.htmlnative.Styles;
+import com.mozz.htmlnative.attrs.AttrHandler;
+import com.mozz.htmlnative.attrs.LayoutAttrHandler;
 import com.mozz.htmlnative.common.MainHandler;
 import com.mozz.htmlnative.common.Utils;
 
@@ -39,9 +40,9 @@ public class LuaView extends LuaTable {
 
                 final Map<String, String> params = Utils.parseStyle(style);
 
-                final Attr viewAttr = AttrsSet.getViewAttr(v);
-                final Attr extraAttr = AttrsSet.getExtraAttr(v);
-                final LayoutAttr parentAttr = AttrsSet.getParentAttr(v.getParent());
+                final AttrHandler viewAttrHandler = AttrsSet.getViewAttr(v);
+                final AttrHandler extraAttrHandler = AttrsSet.getExtraAttr(v);
+                final LayoutAttrHandler parentAttr = AttrsSet.getParentAttr(v.getParent());
                 MainHandler.instance().post(new Runnable() {
                     @Override
                     public void run() {
@@ -51,9 +52,8 @@ public class LuaView extends LuaTable {
                                 parent = (ViewGroup) v.getParent();
                             }
                             try {
-                                AttrsSet.applyAttrToView(v.getContext(), null, context, v, entry
-                                        .getKey(), entry.getValue(), null, parent, null, null,
-                                        viewAttr, extraAttr, parentAttr, null);
+                                Styles.applyStyle(v.getContext(), null, context, v, entry
+                                        .getKey(), entry.getValue(), null, parent, null, null, viewAttrHandler, extraAttrHandler, parentAttr, null);
                             } catch (AttrApplyException e) {
                                 e.printStackTrace();
                             }

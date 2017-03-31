@@ -42,20 +42,15 @@ public final class HNRenderer {
     private static ImageViewAdapter sImageViewAdapter = DefaultImageAdapter.sInstance;
     private static HrefLinkHandler sHrefLinkHandler = DefaultHrefLinkHandler.sInstance;
 
-    static class ViewCreateResult {
-        String id;
-        String clazz;
-    }
-
     private static class SelectorMapHolder {
         Set<CssSelector> instance;
     }
 
-    private ViewCreateResult mTempResult;
+    private CssIdClass mTempResult;
     private SelectorMapHolder mMapHolder;
 
     private HNRenderer() {
-        mTempResult = new ViewCreateResult();
+        mTempResult = new CssIdClass();
         mMapHolder = new SelectorMapHolder();
     }
 
@@ -177,14 +172,30 @@ public final class HNRenderer {
         try {
 
             View v;
+
             if (HtmlTag.isDivOrTemplate(tag)) {
-                v = attrsSet.createViewByTag(this, context, tag, tree);
+                Object displayObj = attrsSet.getAttr(tree, "display");
+                if (displayObj != null && displayObj instanceof String) {
+                    String display = (String) displayObj;
+
+                    if (display.equals("flex")) {
+                        v = createViewByTag(context, "flexbox");
+                    } else if (display.equals("absolute")) {
+                        v = createViewByTag(context, "box");
+                    } else if (display.equals("box")) {
+                        v = createViewByTag(context, "linearbox");
+                    } else {
+                        v = createViewByTag(context, "linearbox");
+                    }
+                } else {
+                    v = createViewByTag(context, "linearbox");
+                }
             } else {
                 v = createViewByTag(context, tag);
             }
 
             if (v == null) {
-                Log.e(TAG, "createViewFromNodeName createViewByTag: view is null with tag " + tag);
+                Log.e(TAG, "createViewFromNodeName createDiv: view is null with tag " + tag);
                 return null;
             }
 

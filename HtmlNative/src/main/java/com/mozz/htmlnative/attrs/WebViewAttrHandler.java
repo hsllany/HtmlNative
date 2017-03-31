@@ -11,7 +11,7 @@ import com.mozz.htmlnative.AttrApplyException;
  * @author Yang Tao, 17/3/6.
  */
 
-public class WebViewAttr extends Attr {
+public class WebViewAttrHandler extends AttrHandler {
     @Override
     public void apply(Context context, java.lang.String tag, View v, @NonNull java.lang.String
             params, @NonNull final Object value, String innerElement) throws AttrApplyException {
