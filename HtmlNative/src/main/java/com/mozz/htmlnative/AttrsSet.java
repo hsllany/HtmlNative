@@ -3,7 +3,6 @@ package com.mozz.htmlnative;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -121,10 +120,7 @@ public final class AttrsSet {
                               ViewGroup parent, @NonNull ViewGroup.LayoutParams layoutParams,
                       CssIdClass outCssIdClass, boolean applyDefault, boolean isParent) throws
             AttrApplyException {
-
-        if (!isParent) {
-            Log.d("ParentCss", tagName + "'s attrIndex = " + tree.attrIndex());
-        }
+        
         int startPosition = tree.attrIndex();
         int treeAttrLength = mLength[startPosition];
 

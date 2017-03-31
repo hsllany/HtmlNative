@@ -2,7 +2,6 @@ package com.mozz.htmlnative;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.mozz.htmlnative.common.Utils;
 
@@ -18,10 +17,6 @@ final class HNDomTree implements Parser.ParseCallback, AttrsOwner {
     static final String INNER_TREE_TAG = "inner";
 
     private static final String TREE_ORDER_PARAMETER = "order";
-
-    private static final String TAG = HNDomTree.class.getSimpleName();
-
-    static boolean DEBUG = false;
 
     private int mDepth;
 
@@ -86,7 +81,8 @@ final class HNDomTree implements Parser.ParseCallback, AttrsOwner {
                     mParent.onChangeChildOrder();
                 }
             } catch (AttrApplyException e) {
-                Log.i(TAG, "Wrong when read order, expecting integer while actual is " + value +
+                HNLog.e(HNLog.DOM, "Wrong when read order, expecting integer while actual is " +
+                        value +
                         ", " + value.getClass().toString());
             }
         }
@@ -108,9 +104,6 @@ final class HNDomTree implements Parser.ParseCallback, AttrsOwner {
     }
 
     void addChild(HNDomTree child) {
-        if (DEBUG) {
-            Log.d(TAG, "add child " + child.toString() + " to " + this.toString() + ".");
-        }
         if (child.mOrder != -1) {
             if (mIsInOrder) {
                 mIsInOrder = false;
@@ -221,11 +214,7 @@ final class HNDomTree implements Parser.ParseCallback, AttrsOwner {
     public HNDomTree getParent() {
         return mParent;
     }
-
-    public static void toggleDebug(boolean debug) {
-        DEBUG = debug;
-    }
-
+    
     @Override
     public int attrIndex() {
         return mAttrIndex;

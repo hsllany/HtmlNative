@@ -2,13 +2,14 @@ package com.mozz.htmlnative;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
-import com.mozz.htmlnative.reader.TextReader;
 import com.mozz.htmlnative.token.Token;
 import com.mozz.htmlnative.token.TokenType;
+import com.mozz.htmlnative.reader.TextReader;
 
 import java.io.EOFException;
+
+import static com.mozz.htmlnative.HNLog.LEXER;
 
 
 class Lexer {
@@ -150,7 +151,7 @@ class Lexer {
             return scanId();
         }
 
-        Log.e(TAG, "unknown token " + peek() + " at " + line() + "," + column());
+        HNLog.e(LEXER, "unknown token " + peek() + " at " + line() + "," + column());
         throw new HNSyntaxError("unknown token " + peek(), line(), column());
     }
 
@@ -167,7 +168,7 @@ class Lexer {
         }
 
         if (!Lexer.isDigit(peek())) {
-            Log.e(TAG, "Illegal word" + peek() + " when reading Number!");
+            HNLog.e(LEXER, "Illegal word" + peek() + " when reading Number!");
             throw new HNSyntaxError("Illegal word when reading Number!", line, startColumn);
         }
 
@@ -487,7 +488,6 @@ class Lexer {
 
     protected char peekWithLastCache() {
         if (mLastCache.length() > 0) {
-            Log.d(TAG, "use last cache");
             return mLastCache.charAt(0);
         }
         return mCurrent;
@@ -513,7 +513,6 @@ class Lexer {
 
     void next() throws EOFException {
         if (mReserved > 0) {
-            Log.d(TAG, "read from CacheQueue " + mReserved);
             mCurrent = mCacheQueue.peek(CACHE_SIZE - mReserved - 1);
             mReserved--;
             return;
@@ -521,7 +520,7 @@ class Lexer {
         this.mReader.nextCh();
         mCurrent = this.mReader.current();
         mCacheQueue.push(peek());
-        HNEventLog.writeEvent(HNEventLog.TAG_LEXER, "next to " + peek());
+        HNLog.d(LEXER, "next-> " + peek());
     }
 
     private void lookFor(int status) {
@@ -540,7 +539,7 @@ class Lexer {
     private static boolean isLetter(char ch) {
         return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
     }
-    
+
     protected void clearBuf() {
         mBuffer.setLength(0);
         if (mLastCache.length() > 0) {

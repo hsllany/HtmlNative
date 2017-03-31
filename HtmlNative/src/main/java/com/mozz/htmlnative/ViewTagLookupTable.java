@@ -34,6 +34,9 @@ final class ViewTagLookupTable {
     private static Map<String, HNViewItem> sExtraTagClassTable;
 
     static {
+        sReservedTagClassTable.put("box", AbsoluteLayout.class.getName());
+        sReservedTagClassTable.put("linearbox", LinearLayout.class.getName());
+        sReservedTagClassTable.put("flexbox", FlexboxLayout.class.getName());
 
         sReservedTagClassTable.put(HtmlTag.BODY, LinearLayout.class.getName());
         sReservedTagClassTable.put(HtmlTag.TEMPLATE, LinearLayout.class.getName());
@@ -43,11 +46,7 @@ final class ViewTagLookupTable {
         sReservedTagClassTable.put(HtmlTag.IMG, ImageView.class.getName());
         sReservedTagClassTable.put(HtmlTag.INPUT, EditText.class.getName());
         sReservedTagClassTable.put(HtmlTag.BUTTON, Button.class.getName());
-        sReservedTagClassTable.put("linearbox", LinearLayout.class.getName());
-        sReservedTagClassTable.put("flexbox", FlexboxLayout.class.getName());
         sReservedTagClassTable.put(HtmlTag.SCROLLER, ScrollView.class.getName());
-        sReservedTagClassTable.put("box", AbsoluteLayout.class.getName());
-        sReservedTagClassTable.put(HNDomTree.INNER_TREE_TAG, TextView.class.getName());
         sReservedTagClassTable.put(HtmlTag.IFRAME, WebView.class.getName());
         sReservedTagClassTable.put(HtmlTag.WEB, WebView.class.getName());
         sReservedTagClassTable.put(HtmlTag.A, TextView.class.getName());
@@ -55,6 +54,7 @@ final class ViewTagLookupTable {
         sReservedTagClassTable.put(HtmlTag.H1, TextView.class.getName());
         sReservedTagClassTable.put(HtmlTag.H2, TextView.class.getName());
 
+        sReservedTagClassTable.put(HNDomTree.INNER_TREE_TAG, TextView.class.getName());
     }
 
     /**

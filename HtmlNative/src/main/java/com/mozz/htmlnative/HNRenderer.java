@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -28,8 +27,6 @@ import java.util.Set;
  * Render views
  */
 public final class HNRenderer {
-
-    private static final String TAG = HNRenderer.class.getSimpleName();
 
     /**
      * cache the constructor for later use
@@ -72,8 +69,8 @@ public final class HNRenderer {
 
     @MainThread
     final View render(@NonNull Context context, @NonNull HNSegment segment, @NonNull ViewGroup
-            .LayoutParams params) throws RemoteInflateException {
-        HNEventLog.writeEvent(HNEventLog.TAG_RENDER, "start to render " + segment.toString());
+            .LayoutParams params) throws HNRenderException {
+        HNLog.d(HNLog.RENDER, "start to render " + segment.toString());
         HNViewGroup rootViewGroup = new HNViewGroup(context);
 
         HNSandBoxContext sandBoxContext = SandBoxContextImpl.create(rootViewGroup, segment,
@@ -90,7 +87,7 @@ public final class HNRenderer {
         if (v != null) {
             rootViewGroup.addView(v, params);
             this.performCreated(sandBoxContext);
-            HNEventLog.writeEvent(HNEventLog.TAG_RENDER, sandBoxContext.allIdTag());
+            HNLog.d(HNLog.RENDER, sandBoxContext.allIdTag());
 
             return rootViewGroup;
         }
@@ -114,7 +111,7 @@ public final class HNRenderer {
             sandBoxContext, HNDomTree tree, HNSegment segment, @NonNull ViewGroup parent,
                                 @NonNull ViewGroup.LayoutParams params, @NonNull HNViewGroup
                                         root, Css css, Set<CssSelector> parentSelector,
-                                SelectorMapHolder holder) throws RemoteInflateException {
+                                SelectorMapHolder holder) throws HNRenderException {
 
         AttrsSet attrsSet = segment.mAttrs;
 
@@ -163,12 +160,11 @@ public final class HNRenderer {
                     if (v != null) {
                         viewGroup.addView(v, layoutParams);
                     } else {
-                        HNEventLog.writeError(HNEventLog.TAG_RENDER, "error when inflating " +
-                                child.getTag());
+                        HNLog.e(HNLog.RENDER, "error when inflating " + child.getTag());
                     }
                 }
             } else {
-                HNEventLog.writeError(HNEventLog.TAG_RENDER, "View render from HNRenderer is not " +
+                HNLog.e(HNLog.RENDER, "View render from HNRenderer is not " +
                         "an " +
                         "viewGroup" +
                         view.getClass().getSimpleName() +
@@ -188,8 +184,7 @@ public final class HNRenderer {
             sandBoxContext, @NonNull ViewGroup parent, @NonNull Context context, @NonNull
             AttrsSet attrsSet, @NonNull ViewGroup.LayoutParams params, @NonNull HNViewGroup root,
                                         Css css, Set<CssSelector> parentSelector,
-                                        SelectorMapHolder outSelectors) throws
-            RemoteInflateException {
+                                        SelectorMapHolder outSelectors) throws HNRenderException {
 
         String tag = tree.getTag();
         PerformanceWatcher watcher = Performance.newWatcher();
@@ -222,7 +217,8 @@ public final class HNRenderer {
             }
 
             if (v == null) {
-                Log.e(TAG, "createViewFromNodeName createDiv: view is null with tag " + tag);
+                HNLog.e(HNLog.RENDER, "createViewFromNodeName createDiv: view is null with tag "
+                        + tag);
                 return null;
             }
 
@@ -263,7 +259,6 @@ public final class HNRenderer {
             try {
                 for (CssSelector selector : cssSelectors) {
                     if (selector.next() == null) {
-                        Log.d("Selector", "worked selector " + selector.getRoot());
                         css.mCssSet.apply(context, sandBoxContext, v, selector, tree.getInner(),
                                 tree.getTag(), parent, params, mTempResult, false, false);
                         parentCssStack[parentIndex++] = -selector.attrIndex();
@@ -281,19 +276,19 @@ public final class HNRenderer {
             return v;
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-            throw new RemoteInflateException("class not found " + tag);
+            throw new HNRenderException("class not found " + tag);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
-            throw new RemoteInflateException("class's constructor is missing " + tag);
+            throw new HNRenderException("class's constructor is missing " + tag);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
-            throw new RemoteInflateException("class's constructor can not be accessed " + tag);
+            throw new HNRenderException("class's constructor can not be accessed " + tag);
         } catch (InstantiationException e) {
             e.printStackTrace();
-            throw new RemoteInflateException("class's constructor can not be invoked " + tag);
+            throw new HNRenderException("class's constructor can not be invoked " + tag);
         } catch (InvocationTargetException e) {
             e.printStackTrace();
-            throw new RemoteInflateException("class's method has something wrong " + tag);
+            throw new HNRenderException("class's method has something wrong " + tag);
         }
 
     }
@@ -308,7 +303,7 @@ public final class HNRenderer {
             return null;
         }
 
-        HNEventLog.writeEvent(HNEventLog.TAG_ATTR, "create view" + viewClassName + " with tag" +
+        HNLog.d(HNLog.ATTR, "create view" + viewClassName + " with tag" +
                 tagName);
 
         // first let viewCreateHandler to create view
@@ -369,20 +364,20 @@ public final class HNRenderer {
     }
 
 
-    public static class RemoteInflateException extends Exception {
-        public RemoteInflateException() {
+    public static class HNRenderException extends Exception {
+        public HNRenderException() {
             super();
         }
 
-        public RemoteInflateException(String detailMessage, Throwable throwable) {
+        public HNRenderException(String detailMessage, Throwable throwable) {
             super(detailMessage, throwable);
         }
 
-        public RemoteInflateException(String detailMessage) {
+        public HNRenderException(String detailMessage) {
             super(detailMessage);
         }
 
-        public RemoteInflateException(Throwable throwable) {
+        public HNRenderException(Throwable throwable) {
             super(throwable);
         }
     }
@@ -403,12 +398,12 @@ public final class HNRenderer {
     }
 
     private void debugCssParent(String msg) {
-        Log.d("ParentCss", "---------" + msg + "---------");
-        Log.d("ParentCss", "parentIndex=" + parentIndex);
-        Log.d("ParentCss", "level=" + level);
-        Log.d("ParentCss", "stackCss=" + Arrays.toString(parentCssStack));
-        Log.d("ParentCss", "stackSize=" + Arrays.toString(lastCssStackSize));
-        Log.d("ParentCss", "------------------");
+        HNLog.d(HNLog.RENDER, "---------" + msg + "---------");
+        HNLog.d(HNLog.RENDER, "parentIndex=" + parentIndex);
+        HNLog.d(HNLog.RENDER, "level=" + level);
+        HNLog.d(HNLog.RENDER, "stackCss=" + Arrays.toString(parentCssStack));
+        HNLog.d(HNLog.RENDER, "stackSize=" + Arrays.toString(lastCssStackSize));
+        HNLog.d(HNLog.RENDER, "------------------");
     }
 
 

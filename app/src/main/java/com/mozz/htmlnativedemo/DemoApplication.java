@@ -3,7 +3,6 @@ package com.mozz.htmlnativedemo;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
@@ -12,7 +11,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.mozz.htmlnative.HNEventLog;
+import com.mozz.htmlnative.HNLog;
 import com.mozz.htmlnative.HNative;
 import com.mozz.htmlnative.HrefLinkHandler;
 import com.mozz.htmlnative.ImageViewAdapter;
@@ -31,7 +30,7 @@ public class DemoApplication extends Application {
         super.onCreate();
         HNative.getInstance().init(this);
 
-        HNEventLog.setDebugLevel(HNEventLog.TAG_PARSER);
+        HNLog.setDebugLevel(HNLog.PARSER);
 
         HNative.getInstance().setImageViewAdapter(new ImageViewAdapter() {
             @Override

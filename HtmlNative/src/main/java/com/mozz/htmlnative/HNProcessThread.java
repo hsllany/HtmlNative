@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -65,11 +64,11 @@ final class HNProcessThread {
 
                 final HNSegment segment = HNSegment.load(mFileSource);
 
-                Log.d(TAG, "DOM: " + segment.mRootTree.wholeTreeToString());
-                Log.d(TAG, "HEAD: " + segment.mHead.toString());
-                Log.d(TAG, "CSS " + segment.mCss.mCssSet.toString());
+                HNLog.d(HNLog.PROCESS_THREAD, "DOM: " + segment.mRootTree.wholeTreeToString());
+                HNLog.d(HNLog.PROCESS_THREAD, "HEAD: " + segment.mHead.toString());
+                HNLog.d(HNLog.PROCESS_THREAD, "CSS " + segment.mCss.mCssSet.toString());
                 if (segment.mScriptInfo != null) {
-                    Log.d(TAG, "SCRIPT " + segment.mScriptInfo.toString());
+                    HNLog.d(HNLog.PROCESS_THREAD, "SCRIPT " + segment.mScriptInfo.toString());
                 }
 
                 MainHandler.instance().post(new Runnable() {
@@ -87,7 +86,7 @@ final class HNProcessThread {
                         View v = null;
                         try {
                             v = HNRenderer.get().render(context, segment, layoutParams);
-                        } catch (HNRenderer.RemoteInflateException e) {
+                        } catch (HNRenderer.HNRenderException e) {
                             e.printStackTrace();
                         }
 

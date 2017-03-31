@@ -1,7 +1,6 @@
 package com.mozz.htmlnative;
 
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.mozz.htmlnative.css.ClassSelector;
 import com.mozz.htmlnative.css.CssSelector;
@@ -19,9 +18,6 @@ import static com.mozz.htmlnative.Parser.parseStyleSingle;
  */
 
 class CssParser {
-
-    private static final String TAG = CssParser.class.getSimpleName();
-
     private static final int SELECTOR_HASH = 1 << 7;
     private static final int SELECTOR_DOT = 1 << 8;
     private static final int SELECTOR_ID = 1;
@@ -177,13 +173,14 @@ class CssParser {
                     check(SELECTOR_START);
                     scan();
                     if (mCurToken.type() == TokenType.Slash) {
-                        Log.d(TAG, segment.mCss.toString());
+                        HNLog.d(HNLog.CSS_PARSER, segment.mCss.toString());
 
                         return;
                     }
                     // if parse process didn't end, then there is a syntax error.
                 default:
-                    Log.e(TAG, "unknown token " + mCurToken.toString() + " when parsing css");
+                    HNLog.e(HNLog.CSS_PARSER, "unknown token " + mCurToken.toString() + " when " +
+                            "parsing css");
                     throw new HNSyntaxError("unknown token " + mCurToken.toString() + " when " +
                             "parsing css", lexer.line(), lexer.column());
             }
@@ -205,7 +202,7 @@ class CssParser {
         }
         mCurToken = lexer.scan();
 
-        Log.d(TAG, "Css -> next is " + mCurToken.toString());
+        HNLog.e(HNLog.CSS_PARSER, "Css -> next is " + mCurToken.toString());
     }
 
     private boolean shouldScanValue = false;
@@ -271,7 +268,7 @@ class CssParser {
 
     private void check(int status) throws HNSyntaxError {
         if (!isLookingFor(status)) {
-            Log.e(TAG, " Looking for " + lookForToString(status) + ", but " +
+            HNLog.d(HNLog.CSS_PARSER, " Looking for " + lookForToString(status) + ", but " +
                     "currently is " +
                     lookForToString(this.lookFor));
             throw new HNSyntaxError(" Looking for " + lookForToString(status) + ", but " +

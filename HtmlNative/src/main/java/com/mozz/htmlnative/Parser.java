@@ -7,10 +7,10 @@ import android.util.Log;
 
 import com.mozz.htmlnative.attrs.BackgroundStyle;
 import com.mozz.htmlnative.common.Utils;
-import com.mozz.htmlnative.reader.TextReader;
-import com.mozz.htmlnative.script.ScriptInfo;
 import com.mozz.htmlnative.token.Token;
 import com.mozz.htmlnative.token.TokenType;
+import com.mozz.htmlnative.reader.TextReader;
+import com.mozz.htmlnative.script.ScriptInfo;
 
 import java.io.EOFException;
 import java.util.Arrays;
@@ -339,7 +339,7 @@ final class Parser {
      */
     private void processInternal(@NonNull HNDomTree tree, @NonNull ParseCallback callback) throws
             HNSyntaxError {
-        HNEventLog.writeEvent(HNEventLog.TAG_PARSER, "init to parse tree " + tree.getTag());
+        HNLog.d(HNLog.PARSER, "init to parse tree " + tree.getTag());
         int index = 0;
 
         lookFor(LK_ID | LK_EndArrowBracket | LK_SLASH);
@@ -618,7 +618,7 @@ final class Parser {
 
     private void scan() throws EOFException, HNSyntaxError {
         if (mReserved) {
-            HNEventLog.writeEvent(HNEventLog.TAG_PARSER, "Reprocess token ->" + mCurToken);
+            HNLog.d(HNLog.PARSER, "Reprocess token ->" + mCurToken);
             mReserved = false;
             return;
         }
@@ -628,7 +628,7 @@ final class Parser {
         mCurToken = mLexer.scan();
 
 
-        HNEventLog.writeEvent(HNEventLog.TAG_PARSER, "Process token ->" + mCurToken);
+        HNLog.d(HNLog.PARSER, "Process token ->" + mCurToken);
 
     }
 

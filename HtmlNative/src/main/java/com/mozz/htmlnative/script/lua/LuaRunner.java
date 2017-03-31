@@ -4,7 +4,7 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.mozz.htmlnative.HNEventLog;
+import com.mozz.htmlnative.HNLog;
 import com.mozz.htmlnative.HNSandBoxContext;
 import com.mozz.htmlnative.common.MainHandler;
 import com.mozz.htmlnative.script.ScriptRunner;
@@ -42,7 +42,7 @@ public class LuaRunner extends ScriptRunner {
 
     @Override
     public void run(String script) {
-        HNEventLog.writeEvent(HNEventLog.TAG_VIEW_CONTEXT, "Execute script \"" + script + "\".");
+        HNLog.d(HNLog.SANDBOX, "Execute script \"" + script + "\".");
         try {
             LuaValue l = mGlobals.load(script);
             l.call();

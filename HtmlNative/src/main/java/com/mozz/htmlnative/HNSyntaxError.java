@@ -7,7 +7,7 @@ public class HNSyntaxError extends Exception {
     private long mLine;
     private long mColumn;
 
-    HNSyntaxError(String msg, long line, long column) {
+    public HNSyntaxError(String msg, long line, long column) {
         super(msg);
         mLine = line;
         mColumn = column;

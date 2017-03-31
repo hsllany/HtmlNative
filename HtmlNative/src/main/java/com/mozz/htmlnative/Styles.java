@@ -3,7 +3,6 @@ package com.mozz.htmlnative;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsoluteLayout;
@@ -73,7 +72,8 @@ public final class Styles {
                                   CssIdClass outResult) throws AttrApplyException {
 
 
-        Log.d(TAG, "apply " + params + " = " + value.toString() + " to " + v + "(" + tagName + ")");
+        HNLog.d(HNLog.STYLE, "apply " + params + " = " + value.toString() + " to " + v + "(" +
+                tagName + ")");
 
         switch (params) {
             case ATTR_WIDTH:
