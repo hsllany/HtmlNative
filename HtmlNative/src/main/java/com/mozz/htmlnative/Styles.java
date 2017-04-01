@@ -16,6 +16,9 @@ import com.mozz.htmlnative.attrs.PixelValue;
 import com.mozz.htmlnative.common.Utils;
 import com.mozz.htmlnative.view.ViewImageAdapter;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * @author Yang Tao, 17/3/30.
  */
@@ -54,6 +57,13 @@ public final class Styles {
     static final String VAL_DISPLAY_BOX = "box";
     static final String VAL_DISPLAY_ABSOLUTE = "absolute";
 
+    private static final Set<String> sInheritAttrs = new HashSet<>();
+
+    static {
+        sInheritAttrs.add(ATTR_VISIBLE);
+        sInheritAttrs.add(ATTR_DIRECTION);
+    }
+
     /**
      * Apply a params with value to a view
      *
@@ -76,6 +86,11 @@ public final class Styles {
                                           extraAttrHandler, LayoutAttrHandler parentAttr, boolean
                                           isParent) throws AttrApplyException {
 
+        if (isParent) {
+            if (!sInheritAttrs.contains(params)) {
+                return;
+            }
+        }
 
         HNLog.d(HNLog.STYLE, "apply " + params + " = " + value.toString() + " to " + v + "(" +
                 tagName + ")");
@@ -104,10 +119,6 @@ public final class Styles {
                 break;
 
             case ATTR_BACKGROUND:
-                if (isParent) {
-                    break;
-                }
-
                 if (value instanceof BackgroundStyle) {
                     BackgroundStyle backgroundStyle = (BackgroundStyle) value;
 
@@ -125,9 +136,6 @@ public final class Styles {
 
 
             case ATTR_MARGIN: {
-                if (isParent) {
-                    break;
-                }
                 if (layoutParams instanceof ViewGroup.MarginLayoutParams) {
                     PixelValue[] pixelValues = Utils.pixelPairs(value.toString());
                     int top = -1;
@@ -154,9 +162,6 @@ public final class Styles {
             break;
 
             case ATTR_MARGIN_RIGHT:
-                if (isParent) {
-                    break;
-                }
                 if (layoutParams instanceof ViewGroup.MarginLayoutParams) {
                     ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup
                             .MarginLayoutParams) layoutParams;
@@ -170,9 +175,6 @@ public final class Styles {
                 break;
 
             case ATTR_MARGIN_LEFT:
-                if (isParent) {
-                    break;
-                }
                 if (layoutParams instanceof ViewGroup.MarginLayoutParams) {
                     ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup
                             .MarginLayoutParams) layoutParams;
@@ -185,9 +187,6 @@ public final class Styles {
                 break;
 
             case ATTR_MARGIN_TOP:
-                if (isParent) {
-                    break;
-                }
                 if (layoutParams instanceof ViewGroup.MarginLayoutParams) {
                     ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup
                             .MarginLayoutParams) layoutParams;
@@ -201,9 +200,6 @@ public final class Styles {
                 break;
 
             case ATTR_MARGIN_BOTTOM:
-                if (isParent) {
-                    break;
-                }
                 if (layoutParams instanceof ViewGroup.MarginLayoutParams) {
                     ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup
                             .MarginLayoutParams) layoutParams;
@@ -217,9 +213,6 @@ public final class Styles {
                 break;
 
             case ATTR_PADDING: {
-                if (isParent) {
-                    break;
-                }
                 PixelValue[] pixelValues = Utils.pixelPairs(value.toString());
                 int top = -1;
                 int bottom = -1;
@@ -243,36 +236,24 @@ public final class Styles {
             break;
 
             case ATTR_PADDING_LEFT:
-                if (isParent) {
-                    break;
-                }
                 int paddingLeft = Utils.toInt(value);
                 v.setPadding(paddingLeft, v.getPaddingTop(), v.getPaddingRight(), v
                         .getPaddingBottom());
                 break;
 
             case ATTR_PADDING_RIGHT:
-                if (isParent) {
-                    break;
-                }
                 int paddingRight = Utils.toInt(value);
                 v.setPadding(v.getPaddingTop(), v.getPaddingTop(), paddingRight, v
                         .getPaddingBottom());
                 break;
 
             case ATTR_PADDING_TOP:
-                if (isParent) {
-                    break;
-                }
                 int paddingTop = Utils.toInt(value);
                 v.setPadding(v.getPaddingLeft(), paddingTop, v.getPaddingRight(), v
                         .getPaddingBottom());
                 break;
 
             case ATTR_PADDING_BOTTOM:
-                if (isParent) {
-                    break;
-                }
                 int paddingBottom = Utils.toInt(value);
                 v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(),
                         paddingBottom);
@@ -336,17 +317,19 @@ public final class Styles {
                 // 3. use parent view attr to this
 
                 if (viewAttrHandler != null) {
-                    viewAttrHandler.apply(context, tagName, v, params, value, innerElement);
+                    viewAttrHandler.apply(context, tagName, v, params, value, innerElement,
+                            isParent);
                 }
 
                 // If there extra attr is set, then should be applied also.
                 if (extraAttrHandler != null) {
-                    extraAttrHandler.apply(context, tagName, v, params, value, innerElement);
+                    extraAttrHandler.apply(context, tagName, v, params, value, innerElement,
+                            isParent);
                 }
 
                 // finally apply corresponding parent attr to child
                 if (parentAttr != null) {
-                    parentAttr.applyToChild(context, tagName, v, parent, params, value);
+                    parentAttr.applyToChild(context, tagName, v, parent, params, value, isParent);
                 }
                 break;
         }

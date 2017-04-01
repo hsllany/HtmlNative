@@ -14,8 +14,13 @@ import com.google.android.flexbox.FlexboxLayout;
 public class FlexBoxLayoutAttrHandler extends LayoutAttrHandler {
     @Override
     public void apply(Context context, java.lang.String tag, View v, @NonNull java.lang.String
-            params, @NonNull Object value, CharSequence innerElement) throws AttrApplyException {
+            params, @NonNull Object value, CharSequence innerElement, boolean isParent) throws
+            AttrApplyException {
         FlexboxLayout flexboxLayout = (FlexboxLayout) v;
+
+        if (isParent) {
+            return;
+        }
 
         switch (params) {
             case "flex-direction": {
@@ -38,7 +43,7 @@ public class FlexBoxLayoutAttrHandler extends LayoutAttrHandler {
 
     @Override
     public void applyToChild(Context context, java.lang.String tag, View v, ViewGroup parent,
-                             java.lang.String params, Object value) {
+                             java.lang.String params, Object value, boolean isParent) {
 
     }
 

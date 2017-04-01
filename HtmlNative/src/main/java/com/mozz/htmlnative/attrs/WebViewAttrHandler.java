@@ -10,13 +10,16 @@ import android.webkit.WebView;
  */
 
 public class WebViewAttrHandler extends AttrHandler {
+
+    private static final String ATTR_SRC = "src";
+
     @Override
     public void apply(Context context, java.lang.String tag, View v, @NonNull java.lang.String
-            params, @NonNull final Object value, CharSequence innerElement) throws
-            AttrApplyException {
+            params, @NonNull final Object value, CharSequence innerElement, boolean isParent)
+            throws AttrApplyException {
         final WebView webView = (WebView) v;
 
-        if (params.equals("src")) {
+        if (params.equals("src") && !isParent) {
             webView.loadUrl(value.toString());
         }
     }

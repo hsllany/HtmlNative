@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 public class LinearLayoutAttrHandler extends AttrHandler {
     @Override
     public void apply(Context context, java.lang.String tag, View v, String params, Object value,
-                      CharSequence innerElement) throws AttrApplyException {
+                      CharSequence innerElement, boolean isParent) throws AttrApplyException {
 
         LinearLayout l = (LinearLayout) v;
 

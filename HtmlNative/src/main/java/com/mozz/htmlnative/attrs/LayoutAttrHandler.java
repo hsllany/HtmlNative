@@ -10,7 +10,8 @@ import android.view.ViewGroup;
 
 public abstract class LayoutAttrHandler extends AttrHandler {
     public abstract void applyToChild(Context context, String tag, View v, ViewGroup parent,
-                                      String params, Object value) throws AttrApplyException;
+                                      String params, Object value, boolean isParent) throws
+            AttrApplyException;
 
     public void setDefaultToChild(Context context, String tag, View v, String innerElement)
             throws AttrApplyException {

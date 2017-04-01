@@ -13,6 +13,9 @@ import com.mozz.htmlnative.HNRenderer;
 import com.mozz.htmlnative.HtmlTag;
 import com.mozz.htmlnative.common.Utils;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class TextViewAttrHandler extends AttrHandler {
 
     private static final String FONT_SIZE = "font-size";
@@ -26,6 +29,18 @@ public class TextViewAttrHandler extends AttrHandler {
     private static final String TEXT_WORD_SPACING = "word-spacing";
     private static final String TEXT_OVER_FLOW = "text-overflow";
 
+    static final Set<String> sInheritAttrs = new HashSet<>();
+
+    static {
+        sInheritAttrs.add(FONT_SIZE);
+        sInheritAttrs.add(COLOR);
+        sInheritAttrs.add(LINE_HEIGHT);
+        sInheritAttrs.add(FONT_STYLE);
+        sInheritAttrs.add(FONT_WEIGHT);
+        sInheritAttrs.add(FONT_ALIGN);
+        sInheritAttrs.add(TEXT_WORD_SPACING);
+    }
+
     @NonNull
     private static TextViewAttrHandler sInstance = new TextViewAttrHandler();
 
@@ -36,8 +51,15 @@ public class TextViewAttrHandler extends AttrHandler {
 
     @Override
     public void apply(final Context context, @NonNull java.lang.String tag, View v, @NonNull java
-            .lang.String params, @NonNull final Object value, @NonNull CharSequence innerElement)
-            throws AttrApplyException {
+            .lang.String params, @NonNull final Object value, @NonNull CharSequence innerElement,
+                      boolean isParent) throws AttrApplyException {
+
+        if (isParent) {
+            if (!sInheritAttrs.contains(params)) {
+                return;
+            }
+        }
+
         final TextView textView = (TextView) v;
 
         switch (params) {

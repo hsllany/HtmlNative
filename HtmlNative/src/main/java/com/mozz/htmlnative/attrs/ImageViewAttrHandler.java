@@ -11,9 +11,9 @@ public class ImageViewAttrHandler extends AttrHandler {
 
     @Override
     public void apply(final Context context, java.lang.String tag, final View v, @NonNull java
-            .lang.String params, @NonNull final Object value, CharSequence innerElement) throws
-            AttrApplyException {
-        if (params.equals("src") && HNRenderer.getImageViewAdpater() != null) {
+            .lang.String params, @NonNull final Object value, CharSequence innerElement, boolean
+            isParent) throws AttrApplyException {
+        if (params.equals("src") && HNRenderer.getImageViewAdpater() != null && !isParent) {
             HNRenderer.getImageViewAdpater().setImage(value.toString(), new ViewImageAdapter(v));
         }
     }
