@@ -25,7 +25,7 @@ final class Css {
     private SelectorHolder mTypeSelectors;
 
     public Css() {
-        mCssSet = new AttrsSet();
+        mCssSet = new AttrsSet("Css");
 
         mClassSelectors = new SelectorHolder();
         mIdSelectors = new SelectorHolder();

@@ -65,8 +65,15 @@ public final class Utils {
             return (float) object;
         } else {
             try {
-                float f = Float.valueOf(object.toString());
-                return f;
+                String fStr = object.toString();
+                boolean isPercentage = false;
+                if (fStr.endsWith("%")) {
+                    fStr = fStr.substring(0, fStr.length() - 1);
+                    isPercentage = true;
+                }
+                float f = Float.valueOf(fStr);
+
+                return isPercentage ? f / 100 : f;
             } catch (NumberFormatException e) {
                 throw new AttrApplyException("can't read float from " + object);
             }

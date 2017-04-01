@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -14,9 +13,6 @@ import com.mozz.htmlnative.HNRenderer;
 import com.mozz.htmlnative.HtmlTag;
 import com.mozz.htmlnative.common.Utils;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class TextViewAttrHandler extends AttrHandler {
 
     private static final String FONT_SIZE = "font-size";
@@ -25,22 +21,20 @@ public class TextViewAttrHandler extends AttrHandler {
     private static final String LINE_HEIGHT = "line-height";
     private static final String FONT_STYLE = "font-style";
     private static final String FONT_WEIGHT = "font-weight";
-    private static final String FONT_ALIGN = "text-align";
+    private static final String TEXT_ALIGN = "text-align";
     private static final String HREF = "href";
     private static final String TEXT_WORD_SPACING = "word-spacing";
     private static final String TEXT_OVER_FLOW = "text-overflow";
     private static final String TEXT_TRANSFORM = "text-transform";
 
-    static final Set<String> sInheritAttrs = new HashSet<>();
-
     static {
-        sInheritAttrs.add(FONT_SIZE);
-        sInheritAttrs.add(COLOR);
-        sInheritAttrs.add(LINE_HEIGHT);
-        sInheritAttrs.add(FONT_STYLE);
-        sInheritAttrs.add(FONT_WEIGHT);
-        sInheritAttrs.add(FONT_ALIGN);
-        sInheritAttrs.add(TEXT_WORD_SPACING);
+        InheritAttrs.inherit(FONT_SIZE);
+        InheritAttrs.inherit(COLOR);
+        InheritAttrs.inherit(LINE_HEIGHT);
+        InheritAttrs.inherit(FONT_STYLE);
+        InheritAttrs.inherit(FONT_WEIGHT);
+        InheritAttrs.inherit(TEXT_ALIGN);
+        InheritAttrs.inherit(TEXT_WORD_SPACING);
     }
 
     @NonNull
@@ -56,16 +50,7 @@ public class TextViewAttrHandler extends AttrHandler {
             .lang.String params, @NonNull final Object value, @NonNull CharSequence innerElement,
                       boolean isParent) throws AttrApplyException {
 
-        if (isParent) {
-            if (!sInheritAttrs.contains(params)) {
-                return;
-            }
-        }
-
         final TextView textView = (TextView) v;
-
-        Log.d("TextBug", "apply " + params + "=" + value);
-
         switch (params) {
             case COLOR:
                 textView.setTextColor(Utils.color(value));
@@ -85,13 +70,8 @@ public class TextViewAttrHandler extends AttrHandler {
                 break;
 
             case LINE_HEIGHT:
-                float lineHeight = 1.f;
-                if (value instanceof Integer) {
-                    lineHeight = (float) (int) value;
-                } else if (value instanceof Float) {
-                    lineHeight = (float) value;
-                }
-                textView.setLineSpacing(lineHeight, 0);
+                float lineHeight = Utils.toFloat(value);
+                textView.setLineSpacing(0, lineHeight);
                 break;
 
             case FONT_WEIGHT:
@@ -145,7 +125,7 @@ public class TextViewAttrHandler extends AttrHandler {
                 }
                 break;
 
-            case FONT_ALIGN:
+            case TEXT_ALIGN:
                 java.lang.String val = value.toString();
                 switch (val) {
                     case "center":

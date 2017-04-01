@@ -34,16 +34,18 @@ public final class AttrsSet {
     private int mGrowLength;
     private int mLastGrowLength = -1;
     private int mCompacity;
+    private String mName;
 
-    public AttrsSet() {
-        this(10);
+    public AttrsSet(String name) {
+        this(name, 10);
     }
 
-    public AttrsSet(int initCompacity) {
+    public AttrsSet(String name, int initCompacity) {
         mAttrs = new Object[initCompacity << 1];
         mLength = new int[initCompacity];
         mGrowLength = 0;
         mCompacity = initCompacity;
+        mName = name;
     }
 
     public void put(@NonNull AttrsOwner tree, String paramsKey, @NonNull Object value) {
@@ -125,6 +127,9 @@ public final class AttrsSet {
 
         int startPosition = tree.attrIndex();
         int treeAttrLength = mLength[startPosition];
+
+        HNLog.d(HNLog.ATTR, "[" + mName + "]: apply to AttrsOwner " + tree.attrIndex() + ", to "
+                + tagName);
 
         AttrHandler viewAttrHandler = getAttr(v.getClass());
         AttrHandler extraAttrHandler = AttrsHelper.getExtraAttrFromView(v.getClass());

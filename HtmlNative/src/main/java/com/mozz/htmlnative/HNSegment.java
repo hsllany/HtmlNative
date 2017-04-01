@@ -23,7 +23,7 @@ final class HNSegment {
     private static final Object sCacheLock = new Object();
 
     HNSegment() {
-        mAttrs = new AttrsSet();
+        mAttrs = new AttrsSet("inLineStyle");
         mHead = new HNHead();
         mHasScriptEmbed = false;
         mCss = new Css();

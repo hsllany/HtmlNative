@@ -12,6 +12,8 @@ import com.mozz.htmlnative.common.Utils;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 
+import static com.mozz.htmlnative.HNLog.STYLE;
+
 /**
  * @author Yang Tao, 17/2/21.
  */
@@ -43,6 +45,12 @@ public final class HNative {
 
     public void init(@NonNull Context context) {
         initScreenMetrics(context);
+    }
+
+    public void debugAll() {
+        HNLog.setDebugLevel(STYLE);
+        HNLog.setDebugLevel(HNLog.RENDER);
+        HNLog.setDebugLevel(HNLog.ATTR);
     }
 
     private void initScreenMetrics(@NonNull Context context) {

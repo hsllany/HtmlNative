@@ -11,13 +11,11 @@ import android.widget.AbsoluteLayout;
 import com.mozz.htmlnative.attrs.AttrApplyException;
 import com.mozz.htmlnative.attrs.AttrHandler;
 import com.mozz.htmlnative.attrs.BackgroundStyle;
+import com.mozz.htmlnative.attrs.InheritAttrs;
 import com.mozz.htmlnative.attrs.LayoutAttrHandler;
 import com.mozz.htmlnative.attrs.PixelValue;
 import com.mozz.htmlnative.common.Utils;
 import com.mozz.htmlnative.view.ViewImageAdapter;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author Yang Tao, 17/3/30.
@@ -57,11 +55,9 @@ public final class Styles {
     static final String VAL_DISPLAY_BOX = "box";
     static final String VAL_DISPLAY_ABSOLUTE = "absolute";
 
-    private static final Set<String> sInheritAttrs = new HashSet<>();
-
     static {
-        sInheritAttrs.add(ATTR_VISIBLE);
-        sInheritAttrs.add(ATTR_DIRECTION);
+        InheritAttrs.inherit(ATTR_VISIBLE);
+        InheritAttrs.inherit(ATTR_DIRECTION);
     }
 
     /**
@@ -86,8 +82,12 @@ public final class Styles {
                                           extraAttrHandler, LayoutAttrHandler parentAttr, boolean
                                           isParent) throws AttrApplyException {
 
+        HNLog.d(HNLog.STYLE, "before apply " + params + " = " + value.toString() + " to " + v + "" +
+                "(" +
+                tagName + ")");
+
         if (isParent) {
-            if (!sInheritAttrs.contains(params)) {
+            if (!InheritAttrs.isInherit(params)) {
                 return;
             }
         }
@@ -368,7 +368,7 @@ public final class Styles {
 
             return style;
         } else {
-            return styleValue;
+            return styleValue.trim();
         }
     }
 }

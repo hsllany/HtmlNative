@@ -29,6 +29,7 @@ public class DemoApplication extends Application {
     public void onCreate() {
         super.onCreate();
         HNative.getInstance().init(this);
+        HNative.getInstance().debugAll();
 
         HNLog.setDebugLevel(HNLog.PARSER);
 
