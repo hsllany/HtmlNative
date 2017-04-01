@@ -41,14 +41,16 @@ public final class Styles {
     static final String ATTR_LEFT = "left";
     static final String ATTR_TOP = "top";
     static final String ATTR_ALPHA = "alpha";
-    static final String ATTR_ID = "id";
-    static final String ATTR_CLAZZ = "class";
     static final String ATTR_ONCLICK = "onClick";
     static final String ATTR_VISIBLE = "visibility";
     static final String ATTR_DISPLAY = "display";
     static final String ATTR_DIRECTION = "direction";
 
     static final String VAL_FILL_PARENT = "100%";
+
+    static final String VAL_DISPLAY_FLEX = "flex";
+    static final String VAL_DISPLAY_BOX = "box";
+    static final String VAL_DISPLAY_ABSOLUTE = "absolute";
 
     /**
      * Apply a params with value to a view
@@ -66,10 +68,11 @@ public final class Styles {
      * @throws AttrApplyException
      */
     public static void applyStyle(Context context, String tagName, final HNSandBoxContext
-            sandBoxContext, View v, String params, Object value, String innerElement, @NonNull
-            ViewGroup parent, @NonNull ViewGroup.LayoutParams layoutParams, AttrHandler
-            viewAttrHandler, AttrHandler extraAttrHandler, LayoutAttrHandler parentAttr,
-                                  CssIdClass outResult) throws AttrApplyException {
+            sandBoxContext, View v, String params, Object value, CharSequence innerElement,
+                                  @NonNull ViewGroup parent, @NonNull ViewGroup.LayoutParams
+                                          layoutParams, AttrHandler viewAttrHandler, AttrHandler
+                                          extraAttrHandler, LayoutAttrHandler parentAttr, boolean
+                                          isParent) throws AttrApplyException {
 
 
         HNLog.d(HNLog.STYLE, "apply " + params + " = " + value.toString() + " to " + v + "(" +
@@ -99,6 +102,10 @@ public final class Styles {
                 break;
 
             case ATTR_BACKGROUND:
+                if (isParent) {
+                    break;
+                }
+
                 if (value instanceof BackgroundStyle) {
                     BackgroundStyle backgroundStyle = (BackgroundStyle) value;
 
@@ -116,6 +123,9 @@ public final class Styles {
 
 
             case ATTR_MARGIN: {
+                if (isParent) {
+                    break;
+                }
                 if (layoutParams instanceof ViewGroup.MarginLayoutParams) {
                     PixelValue[] pixelValues = Utils.pixelPairs(value.toString());
                     int top = -1;
@@ -142,6 +152,9 @@ public final class Styles {
             break;
 
             case ATTR_MARGIN_RIGHT:
+                if (isParent) {
+                    break;
+                }
                 if (layoutParams instanceof ViewGroup.MarginLayoutParams) {
                     ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup
                             .MarginLayoutParams) layoutParams;
@@ -155,6 +168,9 @@ public final class Styles {
                 break;
 
             case ATTR_MARGIN_LEFT:
+                if (isParent) {
+                    break;
+                }
                 if (layoutParams instanceof ViewGroup.MarginLayoutParams) {
                     ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup
                             .MarginLayoutParams) layoutParams;
@@ -167,6 +183,9 @@ public final class Styles {
                 break;
 
             case ATTR_MARGIN_TOP:
+                if (isParent) {
+                    break;
+                }
                 if (layoutParams instanceof ViewGroup.MarginLayoutParams) {
                     ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup
                             .MarginLayoutParams) layoutParams;
@@ -180,6 +199,9 @@ public final class Styles {
                 break;
 
             case ATTR_MARGIN_BOTTOM:
+                if (isParent) {
+                    break;
+                }
                 if (layoutParams instanceof ViewGroup.MarginLayoutParams) {
                     ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup
                             .MarginLayoutParams) layoutParams;
@@ -193,6 +215,9 @@ public final class Styles {
                 break;
 
             case ATTR_PADDING: {
+                if (isParent) {
+                    break;
+                }
                 PixelValue[] pixelValues = Utils.pixelPairs(value.toString());
                 int top = -1;
                 int bottom = -1;
@@ -216,24 +241,36 @@ public final class Styles {
             break;
 
             case ATTR_PADDING_LEFT:
+                if (isParent) {
+                    break;
+                }
                 int paddingLeft = Utils.toInt(value);
                 v.setPadding(paddingLeft, v.getPaddingTop(), v.getPaddingRight(), v
                         .getPaddingBottom());
                 break;
 
             case ATTR_PADDING_RIGHT:
+                if (isParent) {
+                    break;
+                }
                 int paddingRight = Utils.toInt(value);
                 v.setPadding(v.getPaddingTop(), v.getPaddingTop(), paddingRight, v
                         .getPaddingBottom());
                 break;
 
             case ATTR_PADDING_TOP:
+                if (isParent) {
+                    break;
+                }
                 int paddingTop = Utils.toInt(value);
                 v.setPadding(v.getPaddingLeft(), paddingTop, v.getPaddingRight(), v
                         .getPaddingBottom());
                 break;
 
             case ATTR_PADDING_BOTTOM:
+                if (isParent) {
+                    break;
+                }
                 int paddingBottom = Utils.toInt(value);
                 v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(),
                         paddingBottom);
@@ -254,27 +291,6 @@ public final class Styles {
             case ATTR_ALPHA:
                 float alpha = Utils.toFloat(value);
                 v.setAlpha(alpha);
-                break;
-
-            case ATTR_ID:
-                if (value instanceof String) {
-                    sandBoxContext.saveId((String) value, v);
-                    if (outResult != null) {
-                        outResult.id = (String) value;
-                    }
-                } else {
-                    throw new AttrApplyException("id must be a string.");
-                }
-                break;
-
-            case ATTR_CLAZZ:
-                if (value instanceof String) {
-                    if (outResult != null) {
-                        outResult.clazz = (String) value;
-                    }
-                } else {
-                    throw new AttrApplyException("class must be a string.");
-                }
                 break;
 
             case ATTR_VISIBLE:

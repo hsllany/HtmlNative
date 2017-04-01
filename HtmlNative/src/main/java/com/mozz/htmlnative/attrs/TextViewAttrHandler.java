@@ -37,7 +37,7 @@ public class TextViewAttrHandler extends AttrHandler {
 
     @Override
     public void apply(final Context context, @NonNull java.lang.String tag, View v, @NonNull java
-            .lang.String params, @NonNull final Object value, @NonNull String innerElement)
+            .lang.String params, @NonNull final Object value, @NonNull CharSequence innerElement)
             throws AttrApplyException {
         final TextView textView = (TextView) v;
 
@@ -149,7 +149,7 @@ public class TextViewAttrHandler extends AttrHandler {
     }
 
     @Override
-    public void setDefault(Context context, String tag, View v, String innerElement) throws
+    public void setDefault(Context context, String tag, View v, CharSequence innerElement) throws
             AttrApplyException {
 
         TextView textView = (TextView) v;

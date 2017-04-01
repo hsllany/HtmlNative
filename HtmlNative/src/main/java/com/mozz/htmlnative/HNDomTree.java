@@ -36,9 +36,19 @@ final class HNDomTree implements Parser.ParseCallback, AttrsOwner {
     private HNSegment mModule;
 
     @Nullable
-    private String mText = null;
+    private String mInnerText = null;
 
-    int mAttrIndex;
+    /**
+     * Id in html
+     */
+    private String mId = null;
+
+    /**
+     * class property in html
+     */
+    private String mClass = null;
+
+    private int mAttrIndex;
 
     // for cache use
     int mBracketPair;
@@ -96,10 +106,10 @@ final class HNDomTree implements Parser.ParseCallback, AttrsOwner {
     }
 
     void appendText(String text) {
-        if (mText == null) {
-            mText = text;
+        if (mInnerText == null) {
+            mInnerText = text;
         } else {
-            mText += text;
+            mInnerText += text;
         }
     }
 
@@ -163,7 +173,7 @@ final class HNDomTree implements Parser.ParseCallback, AttrsOwner {
 
     @Nullable
     public String getInner() {
-        return mText;
+        return mInnerText;
     }
 
     public int getDepth() {
@@ -198,8 +208,8 @@ final class HNDomTree implements Parser.ParseCallback, AttrsOwner {
 
     @Override
     public void onLeaveParse() {
-        if (mText != null) {
-            mModule.mAttrs.put(this, "text", mText);
+        if (mInnerText != null) {
+            mModule.mAttrs.put(this, "text", mInnerText);
         }
     }
 
@@ -207,14 +217,14 @@ final class HNDomTree implements Parser.ParseCallback, AttrsOwner {
     @Override
     public String toString() {
         String index = "@" + mIndex + ":" + mOrder + ", ";
-        String text = (mText == null ? "" : ", text=" + mText);
+        String text = (mInnerText == null ? "" : ", text=" + mInnerText);
         return "[" + index + mTag + ", attrs=" + mModule.mAttrs.toString(this) + text + "]";
     }
 
     public HNDomTree getParent() {
         return mParent;
     }
-    
+
     @Override
     public int attrIndex() {
         return mAttrIndex;
@@ -223,6 +233,22 @@ final class HNDomTree implements Parser.ParseCallback, AttrsOwner {
     @Override
     public void setAttrIndex(int newIndex) {
         mAttrIndex = newIndex;
+    }
+
+    public String getId() {
+        return mId;
+    }
+
+    public void setId(String id) {
+        this.mId = id;
+    }
+
+    public String getClazz() {
+        return mClass;
+    }
+
+    public void setClazz(String clazz) {
+        this.mClass = clazz;
     }
 
     interface WalkAction {

@@ -7,10 +7,10 @@ import android.util.Log;
 
 import com.mozz.htmlnative.attrs.BackgroundStyle;
 import com.mozz.htmlnative.common.Utils;
-import com.mozz.htmlnative.token.Token;
-import com.mozz.htmlnative.token.TokenType;
 import com.mozz.htmlnative.reader.TextReader;
 import com.mozz.htmlnative.script.ScriptInfo;
+import com.mozz.htmlnative.token.Token;
+import com.mozz.htmlnative.token.TokenType;
 
 import java.io.EOFException;
 import java.util.Arrays;
@@ -35,6 +35,8 @@ import static com.mozz.htmlnative.token.TokenType.Title;
  */
 final class Parser {
 
+    private static final String ID = "id";
+    private static final String CLAZZ = "class";
     private static final String TAG = "Parser";
 
     @NonNull
@@ -668,6 +670,10 @@ final class Parser {
     private static void parseValue(HNDomTree tree, String parameterName, String valueStr) {
         if (parameterName.equals(Styles.ATTR_STYLE)) {
             parseStyle(tree, valueStr);
+        } else if (parameterName.equals(ID)) {
+            tree.setId(valueStr);
+        } else if (parameterName.equals(CLAZZ)) {
+            tree.setClazz(valueStr);
         } else {
             tree.addAttr(parameterName, valueStr);
         }

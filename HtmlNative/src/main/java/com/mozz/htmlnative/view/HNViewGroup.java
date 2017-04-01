@@ -45,10 +45,6 @@ public final class HNViewGroup extends FrameLayout {
         }
     }
 
-    public void addWebView(WebView v) {
-        mWebViewList.add(v);
-    }
-
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();

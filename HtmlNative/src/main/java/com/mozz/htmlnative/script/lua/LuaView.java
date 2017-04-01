@@ -2,6 +2,7 @@ package com.mozz.htmlnative.script.lua;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.mozz.htmlnative.AttrApplyException;
 import com.mozz.htmlnative.AttrsSet;
@@ -53,8 +54,9 @@ public class LuaView extends LuaTable {
                             }
                             try {
                                 Styles.applyStyle(v.getContext(), null, context, v, entry.getKey
-                                        (), entry.getValue(), null, parent, null,
-                                        viewAttrHandler, extraAttrHandler, parentAttr, null);
+                                        (), entry.getValue(), v instanceof TextView ? ((TextView)
+                                        v).getText() : null, parent, null, viewAttrHandler,
+                                        extraAttrHandler, parentAttr, false);
                             } catch (AttrApplyException e) {
                                 e.printStackTrace();
                             }

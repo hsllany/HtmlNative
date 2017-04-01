@@ -52,6 +52,10 @@ public final class HNRenderer {
     private int[] parentCssStack = new int[50];
     private int[] lastCssStackSize = new int[10];
     private int parentIndex = 0;
+
+    /**
+     * level in Dom Tree
+     */
     private int level = 0;
     private ParentCss mParentCss = new ParentCss();
 
@@ -73,11 +77,14 @@ public final class HNRenderer {
         HNLog.d(HNLog.RENDER, "start to render " + segment.toString());
         HNViewGroup rootViewGroup = new HNViewGroup(context);
 
-        HNSandBoxContext sandBoxContext = SandBoxContextImpl.create(rootViewGroup, segment,
-                context);
+        HNSandBoxContext sandBoxContext = SandBoxContextImpl.createContext(rootViewGroup,
+                segment, context);
 
         this.performCreate(sandBoxContext);
 
+        /**
+         * set the default level to -1
+         */
         level = -1;
 
         View v = renderInternal(context, sandBoxContext, segment.mRootTree, segment,
@@ -116,16 +123,16 @@ public final class HNRenderer {
         AttrsSet attrsSet = segment.mAttrs;
 
         if (tree.isLeaf()) {
-            View v = createViewFromNodeName(tree, sandBoxContext, parent, context, attrsSet,
-                    params, root, css, parentSelector, holder);
+            View v = createView(tree, sandBoxContext, parent, context, attrsSet, params, root,
+                    css, parentSelector, holder);
             parentIndex -= lastCssStackSize[level];
             lastCssStackSize[level] = 0;
             level--;
             debugCssParent("return as single");
             return v;
         } else {
-            View view = createViewFromNodeName(tree, sandBoxContext, parent, context, attrsSet,
-                    params, root, css, parentSelector, holder);
+            View view = createView(tree, sandBoxContext, parent, context, attrsSet, params, root,
+                    css, parentSelector, holder);
 
             if (view == null) {
                 return null;
@@ -180,11 +187,11 @@ public final class HNRenderer {
     }
 
 
-    private View createViewFromNodeName(@NonNull HNDomTree tree, @NonNull HNSandBoxContext
-            sandBoxContext, @NonNull ViewGroup parent, @NonNull Context context, @NonNull
-            AttrsSet attrsSet, @NonNull ViewGroup.LayoutParams params, @NonNull HNViewGroup root,
-                                        Css css, Set<CssSelector> parentSelector,
-                                        SelectorMapHolder outSelectors) throws HNRenderException {
+    private View createView(@NonNull HNDomTree tree, @NonNull HNSandBoxContext sandBoxContext,
+                            @NonNull ViewGroup parent, @NonNull Context context, @NonNull
+                                    AttrsSet attrsSet, @NonNull ViewGroup.LayoutParams params,
+                            @NonNull HNViewGroup root, Css css, Set<CssSelector> parentSelector,
+                            SelectorMapHolder outSelectors) throws HNRenderException {
 
         String tag = tree.getTag();
         PerformanceWatcher watcher = Performance.newWatcher();
@@ -192,22 +199,23 @@ public final class HNRenderer {
         level++;
 
         try {
-
             View v;
-
             if (HtmlTag.isDivOrTemplate(tag)) {
                 Object displayObj = attrsSet.getAttr(tree, "display");
                 if (displayObj != null && displayObj instanceof String) {
                     String display = (String) displayObj;
+                    switch (display) {
+                        case Styles.VAL_DISPLAY_FLEX:
+                            v = createViewByTag(context, "flexbox");
+                            break;
+                        case Styles.VAL_DISPLAY_ABSOLUTE:
+                            v = createViewByTag(context, "box");
+                            break;
 
-                    if (display.equals("flex")) {
-                        v = createViewByTag(context, "flexbox");
-                    } else if (display.equals("absolute")) {
-                        v = createViewByTag(context, "box");
-                    } else if (display.equals("box")) {
-                        v = createViewByTag(context, "linearbox");
-                    } else {
-                        v = createViewByTag(context, "linearbox");
+                        case Styles.VAL_DISPLAY_BOX:
+                        default:
+                            v = createViewByTag(context, "linearbox");
+                            break;
                     }
                 } else {
                     v = createViewByTag(context, "linearbox");
@@ -217,50 +225,48 @@ public final class HNRenderer {
             }
 
             if (v == null) {
-                HNLog.e(HNLog.RENDER, "createViewFromNodeName createDiv: view is null with tag "
-                        + tag);
+                HNLog.e(HNLog.RENDER, "createView createDiv: view is null with tag " + tag);
                 return null;
             }
 
-            watcher.check("create view" + v.toString());
-
-            if (v instanceof WebView) {
-                root.addWebView((WebView) v);
-            }
+            watcher.check("createContext view" + v.toString());
 
             try {
                 debugCssParent("before apply to " + tag);
-                // apply parent style first
+
+                /**
+                 * First apply the parent css style to it.
+                 */
                 for (int i = 0; i < parentIndex; i++) {
                     mParentCss.index = i;
-
+                    AttrsSet attrs;
                     if (parentCssStack[i] > 0) {
-                        attrsSet.apply(context, sandBoxContext, v, mParentCss, null, tree.getTag
-                                (), parent, params, null, false, true);
+                        attrs = attrsSet;
                     } else {
-                        css.mCssSet.apply(context, sandBoxContext, v, mParentCss, null, tree
-                                .getTag(), parent, params, null, false, true);
+                        attrs = css.mCssSet;
+                    }
+                    attrs.apply(context, sandBoxContext, v, mParentCss, null, tree.getTag(),
+                            parent, params, false, true);
+
+                    if (tree.getId() != null) {
+                        sandBoxContext.saveId(tree.getId(), v);
                     }
                 }
-
-
                 attrsSet.apply(context, sandBoxContext, v, tree, tree.getInner(), tree.getTag(),
-                        parent, params, mTempResult, true, false);
-
+                        parent, params, true, false);
             } catch (AttrApplyException e) {
                 e.printStackTrace();
             }
 
-            Set<CssSelector> cssSelectors = css.matchedSelector(tag, mTempResult.id, mTempResult
-                    .clazz, parentSelector);
-
+            Set<CssSelector> cssSelectors = css.matchedSelector(tag, tree.getId(), tree.getClazz
+                    (), parentSelector);
             outSelectors.instance = cssSelectors;
 
             try {
                 for (CssSelector selector : cssSelectors) {
                     if (selector.next() == null) {
                         css.mCssSet.apply(context, sandBoxContext, v, selector, tree.getInner(),
-                                tree.getTag(), parent, params, mTempResult, false, false);
+                                tree.getTag(), parent, params, false, false);
                         parentCssStack[parentIndex++] = -selector.attrIndex();
                         lastCssStackSize[level]++;
                     }
@@ -272,7 +278,7 @@ public final class HNRenderer {
 
             debugCssParent("after apply");
 
-            watcher.checkDone("create view " + v.toString() + ", and give it attrs.");
+            watcher.checkDone("createContext view " + v.toString() + ", and give it attrs.");
             return v;
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -303,10 +309,10 @@ public final class HNRenderer {
             return null;
         }
 
-        HNLog.d(HNLog.ATTR, "create view" + viewClassName + " with tag" +
+        HNLog.d(HNLog.ATTR, "createContext view" + viewClassName + " with tag" +
                 tagName);
 
-        // first let viewCreateHandler to create view
+        // first let viewCreateHandler to createContext view
         View view = createViewByViewHandler(context, viewClassName);
         if (view != null) {
             return view;
@@ -316,13 +322,7 @@ public final class HNRenderer {
         Class<? extends View> clazz;
         if (constructor == null) {
             // Class not found in the cache, see if it's real, and try to add it
-
-            if (viewClassName == null) {
-                throw new ClassNotFoundException("can't find related widget " + viewClassName);
-            }
-
             clazz = context.getClassLoader().loadClass(viewClassName).asSubclass(View.class);
-
             constructor = clazz.getConstructor(sConstructorSignature);
             constructor.setAccessible(true);
             sConstructorMap.put(viewClassName, constructor);
@@ -330,7 +330,6 @@ public final class HNRenderer {
 
         mConstructorArgs[0] = context;
         view = constructor.newInstance(mConstructorArgs);
-
         return view;
     }
 

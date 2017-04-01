@@ -15,7 +15,7 @@ import com.mozz.htmlnative.AttrApplyException;
 public class FlexBoxLayoutAttrHandler extends LayoutAttrHandler {
     @Override
     public void apply(Context context, java.lang.String tag, View v, @NonNull java.lang.String
-            params, @NonNull Object value, String innerElement) throws AttrApplyException {
+            params, @NonNull Object value, CharSequence innerElement) throws AttrApplyException {
         FlexboxLayout flexboxLayout = (FlexboxLayout) v;
 
         switch (params) {

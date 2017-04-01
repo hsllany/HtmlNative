@@ -14,7 +14,8 @@ import com.mozz.htmlnative.AttrApplyException;
 public class WebViewAttrHandler extends AttrHandler {
     @Override
     public void apply(Context context, java.lang.String tag, View v, @NonNull java.lang.String
-            params, @NonNull final Object value, String innerElement) throws AttrApplyException {
+            params, @NonNull final Object value, CharSequence innerElement) throws
+            AttrApplyException {
         final WebView webView = (WebView) v;
 
         if (params.equals("src")) {

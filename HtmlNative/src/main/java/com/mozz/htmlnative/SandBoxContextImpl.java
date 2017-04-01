@@ -122,7 +122,7 @@ final class SandBoxContextImpl implements HNSandBoxContext {
     }
 
     @NonNull
-    static HNSandBoxContext create(@NonNull HNViewGroup layout, HNSegment module, Context context) {
+    static HNSandBoxContext createContext(@NonNull HNViewGroup layout, HNSegment module, Context context) {
         return new SandBoxContextImpl(module, context, layout);
     }
 

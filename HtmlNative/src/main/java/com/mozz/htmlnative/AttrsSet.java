@@ -118,17 +118,10 @@ public final class AttrsSet {
     public void apply(Context context, @NonNull final HNSandBoxContext sandBoxContext, View v,
                       @NonNull AttrsOwner tree, String innerText, String tagName, @NonNull
                               ViewGroup parent, @NonNull ViewGroup.LayoutParams layoutParams,
-                      CssIdClass outCssIdClass, boolean applyDefault, boolean isParent) throws
-            AttrApplyException {
-        
+                      boolean applyDefault, boolean isParent) throws AttrApplyException {
+
         int startPosition = tree.attrIndex();
         int treeAttrLength = mLength[startPosition];
-
-        // clear the value in result
-        if (outCssIdClass != null) {
-            outCssIdClass.clazz = null;
-            outCssIdClass.id = null;
-        }
 
         AttrHandler viewAttrHandler = getAttr(v.getClass());
         AttrHandler extraAttrHandler = AttrsHelper.getExtraAttrFromView(v.getClass());
@@ -147,7 +140,7 @@ public final class AttrsSet {
         for (int i = startPosition; i < startPosition + treeAttrLength; i++) {
             Styles.applyStyle(context, tagName, sandBoxContext, v, (String) mAttrs[i << 1],
                     mAttrs[(i << 1) + 1], innerText, parent, layoutParams, viewAttrHandler,
-                    extraAttrHandler, parentLayoutAttr, outCssIdClass);
+                    extraAttrHandler, parentLayoutAttr, isParent);
         }
     }
 
