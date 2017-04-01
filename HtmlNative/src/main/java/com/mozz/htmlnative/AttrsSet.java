@@ -7,7 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import com.mozz.htmlnative.attrs.AttrApplyException;
 import com.mozz.htmlnative.attrs.AttrHandler;
+import com.mozz.htmlnative.attrs.AttrsHelper;
+import com.mozz.htmlnative.attrs.AttrsOwner;
 import com.mozz.htmlnative.attrs.LayoutAttrHandler;
 
 import java.util.Arrays;
@@ -32,18 +35,18 @@ public final class AttrsSet {
     private int mLastGrowLength = -1;
     private int mCompacity;
 
-    AttrsSet() {
+    public AttrsSet() {
         this(10);
     }
 
-    AttrsSet(int initCompacity) {
+    public AttrsSet(int initCompacity) {
         mAttrs = new Object[initCompacity << 1];
         mLength = new int[initCompacity];
         mGrowLength = 0;
         mCompacity = initCompacity;
     }
 
-    void put(@NonNull AttrsOwner tree, String paramsKey, @NonNull Object value) {
+    public void put(@NonNull AttrsOwner tree, String paramsKey, @NonNull Object value) {
         int startPosition = tree.attrIndex();
 
         putInternal(startPosition + mLength[startPosition], paramsKey, value);
@@ -75,7 +78,7 @@ public final class AttrsSet {
         }
     }
 
-    void newAttr(@NonNull AttrsOwner tree) {
+    public void newAttr(@NonNull AttrsOwner tree) {
         if (mLastGrowLength == mGrowLength) {
             mGrowLength++;
         }
@@ -109,7 +112,7 @@ public final class AttrsSet {
      * @param context        {@link android.content.Context}
      * @param sandBoxContext {@link HNSandBoxContext}
      * @param v              {@link android.view.View}
-     * @param tree           {@link HNDomTree}
+     * @param tree           {@link AttrsOwner}
      * @param parent         {@link android.view.ViewGroup}, parent of the view
      * @param layoutParams   {@link android.view.ViewGroup.LayoutParams}, layoutParams for parent
      *                       when add this view to parent
@@ -184,7 +187,7 @@ public final class AttrsSet {
         }
     }
 
-    final Object getAttr(AttrsOwner owner, String attrName) {
+    public final Object getAttr(AttrsOwner owner, String attrName) {
         int startPosition = owner.attrIndex();
         int treeAttrLength = mLength[startPosition];
 

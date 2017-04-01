@@ -21,7 +21,7 @@ import java.util.Map;
  * @author Yang Tao, 17/3/3.
  */
 
-final class ViewTagLookupTable {
+public final class ViewTagLookupTable {
 
     /**
      * Relate the tag and class.
@@ -66,7 +66,7 @@ final class ViewTagLookupTable {
      * @return corresponding class name, or null if not found
      */
     @Nullable
-    static String findClassByTag(@NonNull String tag) {
+    public static String findClassByTag(@NonNull String tag) {
         String viewClassName = sReservedTagClassTable.get(tag.toLowerCase());
 
         if (viewClassName != null) {
@@ -86,7 +86,7 @@ final class ViewTagLookupTable {
     }
 
     @Nullable
-    static AttrHandler findAttrFromExtraByTag(String tag) {
+    public static AttrHandler findAttrFromExtraByTag(String tag) {
         if (sExtraTagClassTable == null) {
             sExtraTagClassTable = new ArrayMap<>();
         }
@@ -94,7 +94,7 @@ final class ViewTagLookupTable {
         return sExtraTagClassTable.get(tag);
     }
 
-    static void registerExtraView(String tag, @NonNull HNViewItem HNViewItem) {
+    public static void registerExtraView(String tag, @NonNull HNViewItem HNViewItem) {
         if (sExtraTagClassTable == null) {
             sExtraTagClassTable = new ArrayMap<>();
         }

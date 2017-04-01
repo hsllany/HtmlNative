@@ -1,4 +1,4 @@
-package com.mozz.htmlnative;
+package com.mozz.htmlnative.attrs;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,24 +9,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
-import com.mozz.htmlnative.attrs.AttrHandler;
-import com.mozz.htmlnative.attrs.FlexBoxLayoutAttrHandler;
-import com.mozz.htmlnative.attrs.ImageViewAttrHandler;
-import com.mozz.htmlnative.attrs.LinearLayoutAttrHandler;
-import com.mozz.htmlnative.attrs.TextViewAttrHandler;
-import com.mozz.htmlnative.attrs.WebViewAttrHandler;
+import com.mozz.htmlnative.ViewTagLookupTable;
 
 /**
  * @author Yang Tao, 17/3/22.
  */
 
-class AttrsHelper {
+public class AttrsHelper {
 
     private AttrsHelper() {
     }
 
     //TODO there is much can be done when dealing with the AttrHandler
-    static AttrHandler getAttrFromView(@NonNull Class<? extends View> clazz) {
+    public static AttrHandler getAttrFromView(@NonNull Class<? extends View> clazz) {
         // cover all TextView sub classes
         if (TextView.class.isAssignableFrom(clazz)) {
             return TextViewAttrHandler.getInstance();
@@ -45,7 +40,7 @@ class AttrsHelper {
     }
 
     @Nullable
-    static AttrHandler getExtraAttrFromView(@NonNull Class<? extends View> clazz) {
+    public static AttrHandler getExtraAttrFromView(@NonNull Class<? extends View> clazz) {
         return ViewTagLookupTable.findAttrFromExtraByTag(clazz.getName());
     }
 }

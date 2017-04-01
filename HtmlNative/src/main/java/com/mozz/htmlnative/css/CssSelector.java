@@ -1,6 +1,6 @@
 package com.mozz.htmlnative.css;
 
-import com.mozz.htmlnative.AttrsOwner;
+import com.mozz.htmlnative.attrs.AttrsOwner;
 
 /**
  * @author Yang Tao, 17/3/27.

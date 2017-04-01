@@ -23,7 +23,7 @@ public class ParserTest {
 
     private void testBackground(String background, String url, int color) {
         String background1 = background;
-        Object b = Parser.parseStyleSingle("background", background1);
+        Object b = Styles.parseStyleSingle("background", background1);
         Assert.assertTrue(b instanceof BackgroundStyle);
 
         BackgroundStyle backgroundStyle = (BackgroundStyle) b;

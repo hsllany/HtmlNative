@@ -1,5 +1,7 @@
 package com.mozz.htmlnative;
 
+import com.mozz.htmlnative.common.CharQueue;
+
 import org.junit.Test;
 
 import java.io.EOFException;

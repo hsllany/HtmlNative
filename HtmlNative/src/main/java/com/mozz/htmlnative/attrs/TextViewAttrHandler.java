@@ -9,7 +9,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 
-import com.mozz.htmlnative.AttrApplyException;
 import com.mozz.htmlnative.HNRenderer;
 import com.mozz.htmlnative.HtmlTag;
 import com.mozz.htmlnative.common.Utils;

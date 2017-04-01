@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.flexbox.FlexboxLayout;
-import com.mozz.htmlnative.AttrApplyException;
 
 /**
  * @author Yang Tao, 17/3/3.

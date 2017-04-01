@@ -2,18 +2,14 @@ package com.mozz.htmlnative;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
-import com.mozz.htmlnative.attrs.BackgroundStyle;
-import com.mozz.htmlnative.common.Utils;
 import com.mozz.htmlnative.reader.TextReader;
 import com.mozz.htmlnative.script.ScriptInfo;
 import com.mozz.htmlnative.token.Token;
 import com.mozz.htmlnative.token.TokenType;
 
 import java.io.EOFException;
-import java.util.Arrays;
 
 import static com.mozz.htmlnative.HtmlTag.isSwallowInnerTag;
 import static com.mozz.htmlnative.token.TokenType.EndAngleBracket;
@@ -552,7 +548,7 @@ final class Parser {
                 inBracket = false;
                 sb.append(c);
             } else if (c == ';') {
-                tree.addAttr(key, parseStyleSingle(key, sb.toString()));
+                tree.addAttr(key, Styles.parseStyleSingle(key, sb.toString()));
                 sb.setLength(0);
             } else if (c == ':' && !inBracket) {
                 key = sb.toString();
@@ -566,46 +562,7 @@ final class Parser {
         }
 
         if (key != null) {
-            tree.addAttr(key, parseStyleSingle(key, sb.toString()));
-        }
-    }
-
-    @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
-    public static Object parseStyleSingle(String styleName, String styleValue) {
-        Log.d(TAG, "process style " + styleName + ", " + styleValue);
-        if (styleName.equals(Styles.ATTR_BACKGROUND)) {
-
-            BackgroundStyle style = new BackgroundStyle();
-
-            String[] subStrings = styleValue.split(" ");
-
-            Log.d(TAG, "background is " + Arrays.toString(subStrings));
-
-            for (String singleValue : subStrings) {
-                String trueValue = singleValue.trim();
-                if (trueValue.startsWith("url(")) {
-                    style.setUrl(trueValue.substring(trueValue.indexOf('(') + 1, trueValue
-                            .lastIndexOf(')')));
-                } else if (trueValue.startsWith("#")) {
-                    try {
-                        style.setColor(Utils.color(trueValue));
-                    } catch (AttrApplyException e) {
-
-                    }
-                } else if (trueValue.equals("no-repeat")) {
-
-                } else {
-                    try {
-                        style.setColor(Utils.color(trueValue));
-                    } catch (AttrApplyException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            return style;
-        } else {
-            return styleValue;
+            tree.addAttr(key, Styles.parseStyleSingle(key, sb.toString()));
         }
     }
 

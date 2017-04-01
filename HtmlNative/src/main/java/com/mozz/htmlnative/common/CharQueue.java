@@ -1,4 +1,4 @@
-package com.mozz.htmlnative;
+package com.mozz.htmlnative.common;
 
 import java.io.EOFException;
 
@@ -6,7 +6,7 @@ import java.io.EOFException;
  * @author Yang Tao, 17/3/17.
  */
 
-final class CharQueue {
+public final class CharQueue {
 
     private final char[] cache;
 

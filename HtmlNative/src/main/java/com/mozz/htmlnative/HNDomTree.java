@@ -3,6 +3,8 @@ package com.mozz.htmlnative;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.mozz.htmlnative.attrs.AttrApplyException;
+import com.mozz.htmlnative.attrs.AttrsOwner;
 import com.mozz.htmlnative.common.Utils;
 
 import java.util.Collections;

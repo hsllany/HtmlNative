@@ -2,11 +2,13 @@ package com.mozz.htmlnative;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsoluteLayout;
 
+import com.mozz.htmlnative.attrs.AttrApplyException;
 import com.mozz.htmlnative.attrs.AttrHandler;
 import com.mozz.htmlnative.attrs.BackgroundStyle;
 import com.mozz.htmlnative.attrs.LayoutAttrHandler;
@@ -305,7 +307,6 @@ public final class Styles {
 
             case ATTR_DIRECTION:
                 String direction = value.toString();
-
                 if (direction.equals("ltr")) {
                     v.setTextDirection(View.TEXT_DIRECTION_LTR);
                 } else if (direction.equals("rtl")) {
@@ -314,11 +315,8 @@ public final class Styles {
                 break;
 
             case ATTR_ONCLICK:
-
                 if (value instanceof String) {
-
                     final String functionName = (String) value;
-
                     v.setOnClickListener(new View.OnClickListener() {
 
                         @Override
@@ -353,5 +351,41 @@ public final class Styles {
                 break;
         }
 
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
+    public static Object parseStyleSingle(String styleName, String styleValue) {
+        if (styleName.equals(ATTR_BACKGROUND)) {
+
+            BackgroundStyle style = new BackgroundStyle();
+
+            String[] subStrings = styleValue.split(" ");
+
+            for (String singleValue : subStrings) {
+                String trueValue = singleValue.trim();
+                if (trueValue.startsWith("url(")) {
+                    style.setUrl(trueValue.substring(trueValue.indexOf('(') + 1, trueValue
+                            .lastIndexOf(')')));
+                } else if (trueValue.startsWith("#")) {
+                    try {
+                        style.setColor(Utils.color(trueValue));
+                    } catch (AttrApplyException e) {
+
+                    }
+                } else if (trueValue.equals("no-repeat")) {
+
+                } else {
+                    try {
+                        style.setColor(Utils.color(trueValue));
+                    } catch (AttrApplyException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            return style;
+        } else {
+            return styleValue;
+        }
     }
 }

@@ -2,12 +2,15 @@ package com.mozz.htmlnative;
 
 import android.support.annotation.NonNull;
 
+import com.mozz.htmlnative.attrs.AttrsOwner;
 import com.mozz.htmlnative.css.ClassSelector;
 import com.mozz.htmlnative.css.CssSelector;
 import com.mozz.htmlnative.css.IdSelector;
 import com.mozz.htmlnative.css.TypeSelector;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -74,5 +77,35 @@ final class Css {
     public String toString() {
         return "AttrSet=" + mCssSet.toString() + ", class=" + mClassSelectors + ", id=" +
                 mIdSelectors + ", type=" + mTypeSelectors;
+    }
+
+    /**
+     * @author Yang Tao, 17/3/30.
+     */
+
+    private static final class SelectorHolder {
+        private Map<String, Set<CssSelector>> mSelectors = new HashMap<>();
+
+        public void put(String key, CssSelector selector) {
+            Set<CssSelector> sets = mSelectors.get(key);
+            if (sets == null) {
+                sets = new HashSet<>();
+                mSelectors.put(key, sets);
+            }
+
+            sets.add(selector);
+        }
+
+        void select(String key, Set<CssSelector> outSelectors) {
+            Set<CssSelector> sets = mSelectors.get(key);
+            if (sets != null && !sets.isEmpty()) {
+                outSelectors.addAll(sets);
+            }
+        }
+
+        @Override
+        public String toString() {
+            return mSelectors.toString();
+        }
     }
 }

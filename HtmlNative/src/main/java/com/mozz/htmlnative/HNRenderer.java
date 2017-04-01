@@ -11,6 +11,8 @@ import android.widget.AbsoluteLayout;
 import android.widget.LinearLayout;
 
 import com.google.android.flexbox.FlexboxLayout;
+import com.mozz.htmlnative.attrs.AttrApplyException;
+import com.mozz.htmlnative.attrs.AttrsOwner;
 import com.mozz.htmlnative.common.Performance;
 import com.mozz.htmlnative.common.PerformanceWatcher;
 import com.mozz.htmlnative.css.CssSelector;
@@ -46,7 +48,6 @@ public final class HNRenderer {
         Set<CssSelector> instance;
     }
 
-    private CssIdClass mTempResult;
     private SelectorMapHolder mMapHolder;
 
     private int[] parentCssStack = new int[50];
@@ -60,7 +61,6 @@ public final class HNRenderer {
     private ParentCss mParentCss = new ParentCss();
 
     private HNRenderer() {
-        mTempResult = new CssIdClass();
         mMapHolder = new SelectorMapHolder();
 
         Arrays.fill(parentCssStack, -1);

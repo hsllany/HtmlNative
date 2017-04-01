@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.TypedValue;
 
-import com.mozz.htmlnative.AttrApplyException;
+import com.mozz.htmlnative.attrs.AttrApplyException;
 import com.mozz.htmlnative.attrs.PixelValue;
 
 import java.io.Closeable;

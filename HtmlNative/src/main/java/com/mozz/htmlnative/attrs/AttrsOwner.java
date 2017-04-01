@@ -1,4 +1,4 @@
-package com.mozz.htmlnative;
+package com.mozz.htmlnative.attrs;
 
 /**
  * @author Yang Tao, 17/3/27.

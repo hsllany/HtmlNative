@@ -11,7 +11,7 @@ import com.mozz.htmlnative.token.TokenType;
 
 import java.io.EOFException;
 
-import static com.mozz.htmlnative.Parser.parseStyleSingle;
+import static com.mozz.htmlnative.Styles.parseStyleSingle;
 
 /**
  * @author Yang Tao, 17/3/26.

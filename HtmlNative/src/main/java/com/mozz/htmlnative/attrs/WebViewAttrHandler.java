@@ -5,8 +5,6 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.webkit.WebView;
 
-import com.mozz.htmlnative.AttrApplyException;
-
 /**
  * @author Yang Tao, 17/3/6.
  */

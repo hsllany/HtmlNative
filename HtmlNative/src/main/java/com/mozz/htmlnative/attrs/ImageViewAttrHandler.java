@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.View;
 
-import com.mozz.htmlnative.AttrApplyException;
 import com.mozz.htmlnative.HNRenderer;
 import com.mozz.htmlnative.view.ViewImageAdapter;
 
