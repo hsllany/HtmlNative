@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -28,6 +29,7 @@ public class TextViewAttrHandler extends AttrHandler {
     private static final String HREF = "href";
     private static final String TEXT_WORD_SPACING = "word-spacing";
     private static final String TEXT_OVER_FLOW = "text-overflow";
+    private static final String TEXT_TRANSFORM = "text-transform";
 
     static final Set<String> sInheritAttrs = new HashSet<>();
 
@@ -61,6 +63,8 @@ public class TextViewAttrHandler extends AttrHandler {
         }
 
         final TextView textView = (TextView) v;
+
+        Log.d("TextBug", "apply " + params + "=" + value);
 
         switch (params) {
             case COLOR:
@@ -114,6 +118,16 @@ public class TextViewAttrHandler extends AttrHandler {
                     }
 
                     textView.setTypeface(Typeface.DEFAULT, style);
+                } else if (s2.equals("normal")) {
+                    int style = textView.getTypeface().getStyle();
+
+                    if (style == Typeface.BOLD_ITALIC) {
+                        style = Typeface.BOLD;
+                    } else {
+                        style = Typeface.NORMAL;
+                    }
+
+                    textView.setTypeface(Typeface.DEFAULT, style);
                 }
 
                 break;
@@ -152,8 +166,8 @@ public class TextViewAttrHandler extends AttrHandler {
                 if (ss.equals("normal")) {
 
                 } else {
-                    Float f = Utils.toFloat(value);
-                    textView.setLetterSpacing(f);
+                    PixelValue f = Utils.toPixel(value);
+                    textView.setLetterSpacing((float) f.getEmValue());
                 }
                 break;
             }
@@ -166,7 +180,20 @@ public class TextViewAttrHandler extends AttrHandler {
                 }
                 break;
             }
+
+            case TEXT_TRANSFORM: {
+                switch (value.toString()) {
+                    case "uppercase":
+                        textView.setAllCaps(true);
+                        break;
+                    case "lowercase":
+                        textView.setAllCaps(false);
+                        break;
+                }
+            }
+            break;
         }
+
     }
 
     @Override

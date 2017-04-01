@@ -1,5 +1,6 @@
 package com.mozz.htmlnative.common;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,6 +24,17 @@ public final class Utils {
     private static final String TAG = Utils.class.getSimpleName();
 
     private Utils() {
+    }
+
+    private static float screenDensity = -1.f;
+
+    public static void init(Context context) {
+        float density = context.getResources().getDisplayMetrics().density;
+        updateScreenDensity(density);
+    }
+
+    public static void updateScreenDensity(float density) {
+        screenDensity = density;
     }
 
     public static void closeQuietly(@Nullable Closeable closeable) {
@@ -218,5 +230,19 @@ public final class Utils {
         }
 
         return pas;
+    }
+
+    public static float dp2px(float px) {
+        if (screenDensity == -1.f) {
+            throw new IllegalStateException("you must call init() first");
+        }
+        return (int) (screenDensity * px + 0.5f);
+    }
+
+    public static float px2dp(float dp) {
+        if (screenDensity == -1.f) {
+            throw new IllegalStateException("you must call init() first");
+        }
+        return dp / screenDensity;
     }
 }

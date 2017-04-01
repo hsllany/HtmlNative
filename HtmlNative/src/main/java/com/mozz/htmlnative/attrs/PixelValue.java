@@ -3,6 +3,8 @@ package com.mozz.htmlnative.attrs;
 import android.support.annotation.IntDef;
 import android.util.TypedValue;
 
+import com.mozz.htmlnative.common.Utils;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -58,5 +60,32 @@ public class PixelValue {
     @Override
     public String toString() {
         return this.value + " " + this.unit;
+    }
+
+
+    public double getEmValue() {
+        switch (unit) {
+            case EM:
+                return this.value;
+            case TypedValue.COMPLEX_UNIT_PX:
+                return this.value * 16;
+            case TypedValue.COMPLEX_UNIT_DIP:
+                return Utils.dp2px((float) this.value);
+            default:
+                return value;
+        }
+    }
+
+    public double getPxValue() {
+        switch (unit) {
+            case EM:
+                return this.value / 16;
+            case TypedValue.COMPLEX_UNIT_PX:
+                return this.value;
+            case TypedValue.COMPLEX_UNIT_DIP:
+                return Utils.px2dp((float) this.value);
+            default:
+                return value;
+        }
     }
 }

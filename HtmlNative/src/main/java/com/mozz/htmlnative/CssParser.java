@@ -110,7 +110,7 @@ class CssParser {
 
                 case StartBrace:
                     check(START_BRACE);
-                    lookFor(KEY);
+                    lookFor(KEY | END_BRACE);
                     break;
 
                 case EndBrace:

@@ -126,8 +126,13 @@ final class Parser {
     private void processTemplateThenScript(HNDomTree tree, HNSegment segment) throws
             EOFException, HNSyntaxError {
         processTemplate(tree);
-        scanFor(StartAngleBracket, Script);
-        processScript(segment);
+        scanFor(StartAngleBracket);
+        scan(true);
+        if (mCurToken.type() == Script) {
+            processScript(segment);
+        } else {
+            scanFor(Slash, Html, EndAngleBracket);
+        }
         scan();
     }
 

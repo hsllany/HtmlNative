@@ -4,11 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
+
+import com.mozz.htmlnative.common.Utils;
 
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
@@ -20,8 +19,6 @@ import java.lang.ref.WeakReference;
 public final class HNative {
 
     public static final String LUA_TAG = "HNLua";
-
-    private DisplayMetrics mDefaultMetrics;
 
     private HNative() {
         HNProcessThread.init();
@@ -48,15 +45,8 @@ public final class HNative {
         initScreenMetrics(context);
     }
 
-    DisplayMetrics getScreenMetrics() {
-        return mDefaultMetrics;
-    }
-
     private void initScreenMetrics(@NonNull Context context) {
-        WindowManager window = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = window.getDefaultDisplay();
-        mDefaultMetrics = new DisplayMetrics();
-        display.getMetrics(mDefaultMetrics);
+        Utils.init(context);
     }
 
     public final void loadView(final Context context, final InputStream inputStream, final
