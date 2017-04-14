@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -22,14 +23,15 @@ import java.io.InputStream;
 public class LayoutExampleActivity extends AppCompatActivity {
 
     static final String EXTRA_KEY_RV_FILE = "rv_asset_file";
+    private String mFileName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         AssetsViewLoader mLoader = new AssetsViewLoader(this);
-        String fileName = getIntent().getStringExtra(EXTRA_KEY_RV_FILE);
-        mLoader.load(fileName);
+        mFileName = getIntent().getStringExtra(EXTRA_KEY_RV_FILE);
+        mLoader.load(mFileName);
 
     }
 
@@ -45,6 +47,10 @@ public class LayoutExampleActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.show_code:
                 showCode();
+                break;
+
+            case R.id.in_webview:
+                showWebview();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -75,13 +81,13 @@ public class LayoutExampleActivity extends AppCompatActivity {
 
             // Use the Builder class for convenient dialog construction
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage(code)
-                    .setNegativeButton("close", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // User cancelled the dialog
-                            dialog.dismiss();
-                        }
-                    });
+            builder.setMessage(code).setNegativeButton("close", new DialogInterface
+                    .OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    // User cancelled the dialog
+                    dialog.dismiss();
+                }
+            });
             // Create the AlertDialog object and return it
             return builder.create();
         }
@@ -94,5 +100,11 @@ public class LayoutExampleActivity extends AppCompatActivity {
         Utils.closeQuietly(s);
 
         return new String(buffer);
+    }
+
+    private void showWebview() {
+        Intent intent = new Intent(this, WebViewActivity.class);
+        intent.putExtra(EXTRA_KEY_RV_FILE, mFileName);
+        startActivity(intent);
     }
 }

@@ -44,7 +44,7 @@ public final class Styles {
     static final String ATTR_LEFT = "left";
     static final String ATTR_TOP = "top";
     static final String ATTR_ALPHA = "alpha";
-    static final String ATTR_ONCLICK = "onClick";
+    static final String ATTR_ONCLICK = "onclick";
     static final String ATTR_VISIBLE = "visibility";
     static final String ATTR_DISPLAY = "display";
     static final String ATTR_DIRECTION = "direction";

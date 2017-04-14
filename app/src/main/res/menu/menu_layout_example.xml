@@ -3,5 +3,10 @@
     <item
         android:id="@+id/show_code"
         android:icon="@android:drawable/ic_menu_info_details"
-        android:title="Show Html" />
+        android:title="Show Html"/>
+
+    <item
+        android:id="@+id/in_webview"
+        android:icon="@android:drawable/btn_radio"
+        android:title="In Browser"/>
 </menu>

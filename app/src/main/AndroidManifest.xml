@@ -25,6 +25,10 @@
         <activity
             android:name="com.mozz.htmlnativedemo.ExampleListActivity"
             android:label="RV Example List"/>
+
+        <activity
+            android:name=".WebViewActivity"
+            android:label="WebView"/>
     </application>
 
 </manifest>

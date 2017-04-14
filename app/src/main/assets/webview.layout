@@ -4,14 +4,14 @@
         <meta name="nihao" content="world"/>
         <style>
             #text1{
-            background:red;
-            color:green;
-            margin: 3em 3em;
-            padding: 2em;
+                background:red;
+                color:green;
+                margin: 3em 3em;
+                padding: 2em;
             }
 
             button{
-            color:yellow
+                color:yellow
             }
 
         </style>
@@ -20,7 +20,7 @@
     <body>
         <text id="text1">This is an demo of iframe<br/>nihao
         </text>
-        <button onClick="changeText1">click me</button>
+        <button onclick="changeText1">click me</button>
         <iframe style="width:100%; height:100%; color:#000000" src="http://www.w3school.com.cn/"/>
     </body>
 
@@ -30,19 +30,16 @@
         b = false
 
         function changeText1()
-        local v = view("text1")
-        if(b) then
-        v.style("background:red;color:#fff")
-        else
-        v.style("background:blue;color:red")
-        end
-
-        b = not(b)
-
+            local v = view("text1")
+            if(b) then
+                v.style("background:red;color:#fff")
+            else
+                v.style("background:blue;color:red")
+            end
+            b = not(b)
         end
 
         callback("changeText1", changeText1)
-
 
     </script>
 </html>
