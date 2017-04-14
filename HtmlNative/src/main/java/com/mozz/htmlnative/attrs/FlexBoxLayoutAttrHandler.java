@@ -13,9 +13,9 @@ import com.google.android.flexbox.FlexboxLayout;
 
 public class FlexBoxLayoutAttrHandler extends LayoutAttrHandler {
     @Override
-    public void apply(Context context, java.lang.String tag, View v, @NonNull java.lang.String
-            params, @NonNull Object value, CharSequence innerElement, boolean isParent) throws
-            AttrApplyException {
+    public void apply(Context context, String tag, View v, String params, Object value,
+                      CharSequence innerElement, ViewGroup.LayoutParams layoutParams, View
+                                  parent, boolean isParent) throws AttrApplyException {
         FlexboxLayout flexboxLayout = (FlexboxLayout) v;
 
         if (isParent) {
@@ -42,9 +42,19 @@ public class FlexBoxLayoutAttrHandler extends LayoutAttrHandler {
     }
 
     @Override
-    public void applyToChild(Context context, java.lang.String tag, View v, ViewGroup parent,
-                             java.lang.String params, Object value, boolean isParent) {
+    public void applyToChild(Context context, String tag, View v, String params, Object value,
+                             CharSequence innerElement, ViewGroup.LayoutParams layoutParams, View
+                                         parent, boolean isParent) throws AttrApplyException {
 
+    }
+
+    @Override
+    public void setDefault(Context context, String tag, View v, CharSequence innerElement,
+                           ViewGroup.LayoutParams layoutParams, View parent) throws
+            AttrApplyException {
+        super.setDefault(context, tag, v, innerElement, layoutParams, parent);
+
+        layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
     }
 
     private static int flexDirection(@NonNull java.lang.String direction) {

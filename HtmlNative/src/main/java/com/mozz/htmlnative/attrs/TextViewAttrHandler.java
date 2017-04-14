@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mozz.htmlnative.HNRenderer;
@@ -27,6 +28,15 @@ public class TextViewAttrHandler extends AttrHandler {
     private static final String TEXT_OVER_FLOW = "text-overflow";
     private static final String TEXT_TRANSFORM = "text-transform";
 
+    private static final int DEFAULT_SIZE = 14;
+    private static final int DEFAULT_H1_SIZE = 22;
+    private static final int DEFAULT_H1_PADDING = (int) Utils.dp2px(12);
+
+    private static final int DEFAULT_H2_SIZE = 18;
+    private static final int DEFAULT_H2_PADDING = (int) Utils.dp2px(8);
+
+    private static final int DEFAULT_P_PADDING = (int) Utils.dp2px(5);
+
     static {
         InheritAttrs.inherit(FONT_SIZE);
         InheritAttrs.inherit(COLOR);
@@ -46,9 +56,9 @@ public class TextViewAttrHandler extends AttrHandler {
     }
 
     @Override
-    public void apply(final Context context, @NonNull java.lang.String tag, View v, @NonNull java
-            .lang.String params, @NonNull final Object value, @NonNull CharSequence innerElement,
-                      boolean isParent) throws AttrApplyException {
+    public void apply(Context context, String tag, View v, String params, final Object value,
+                      CharSequence innerElement, ViewGroup.LayoutParams layoutParams, View
+                                  parent, boolean isParent) throws AttrApplyException {
 
         final TextView textView = (TextView) v;
         switch (params) {
@@ -177,13 +187,33 @@ public class TextViewAttrHandler extends AttrHandler {
     }
 
     @Override
-    public void setDefault(Context context, String tag, View v, CharSequence innerElement) throws
+    public void setDefault(Context context, String tag, View v, CharSequence innerElement,
+                           ViewGroup.LayoutParams layoutParams, View parent) throws
             AttrApplyException {
 
         TextView textView = (TextView) v;
 
         if (!TextUtils.isEmpty(innerElement) && TextUtils.isEmpty(textView.getText())) {
             textView.setText(innerElement);
+        }
+
+        textView.setTextSize(DEFAULT_SIZE);
+
+        if (tag.equals(HtmlTag.H1)) {
+            textView.setTextSize(DEFAULT_H1_SIZE);
+            AttrsHelper.setPadding(textView, DEFAULT_H1_PADDING, textView.getPaddingLeft(),
+                    DEFAULT_H1_PADDING, textView.getPaddingRight());
+            AttrsHelper.setBold(textView);
+        } else if (tag.equals(HtmlTag.H2)) {
+            textView.setTextSize(DEFAULT_H2_SIZE);
+            AttrsHelper.setPadding(textView, DEFAULT_H2_PADDING, textView.getPaddingLeft(),
+                    DEFAULT_H2_PADDING, textView.getPaddingRight());
+            AttrsHelper.setBold(textView);
+        } else if (tag.equals(HtmlTag.P)) {
+            AttrsHelper.setTopPadding(textView, DEFAULT_P_PADDING);
+            AttrsHelper.setBottomPadding(textView, DEFAULT_P_PADDING);
+        } else if (tag.equals(HtmlTag.A)) {
+
         }
     }
 }

@@ -5,8 +5,10 @@ import android.support.annotation.NonNull;
 import android.util.ArrayMap;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
+import android.widget.ScrollView;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -16,17 +18,22 @@ import java.util.Map;
  * @author Yang Tao, 17/3/8.
  */
 
-public final class HNViewGroup extends FrameLayout {
+public final class HNViewGroup extends ScrollView {
 
     private final Map<String, View> mViewWithId = new ArrayMap<>();
 
     private static final String TAG = HNViewGroup.class.getSimpleName();
+
+    private FrameLayout mContentView;
 
     @NonNull
     private List<WebView> mWebViewList = new LinkedList<>();
 
     public HNViewGroup(@NonNull Context context) {
         super(context);
+        mContentView = new FrameLayout(context);
+        super.addView(mContentView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams
+                .MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
     }
 
     @Override
@@ -43,6 +50,10 @@ public final class HNViewGroup extends FrameLayout {
         if (child instanceof WebView) {
             mWebViewList.remove(child);
         }
+    }
+
+    public void addContent(View v, ViewGroup.LayoutParams layoutParams) {
+        mContentView.addView(v, layoutParams);
     }
 
     @Override

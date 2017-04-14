@@ -1,31 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.mozz.htmlnativedemo.MainActivity">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/activity_main"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context="com.mozz.htmlnativedemo.MainActivity">
 
     <LinearLayout
         android:id="@+id/search_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:background="#1b1b1b"
         android:orientation="horizontal">
 
         <EditText
             android:id="@+id/search_editbox"
+            style="?android:attr/textViewStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:hint="please input an url"
+            android:padding="10dp"
+            android:textColor="@android:color/white"
+            android:textColorHint="#676767"/>
 
-        <Button
+        <ImageButton
             android:id="@+id/search_go_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="5"
-            android:text="go" />
+            android:background="@android:color/transparent"
+            android:src="@android:drawable/ic_menu_search"/>
 
     </LinearLayout>
 
@@ -34,6 +41,6 @@
         android:id="@+id/relative_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/search_bar" />
+        android:layout_below="@id/search_bar"/>
 
 </LinearLayout>

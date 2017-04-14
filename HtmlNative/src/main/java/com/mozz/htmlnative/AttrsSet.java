@@ -180,15 +180,15 @@ public final class AttrsSet {
             ViewGroup.LayoutParams layoutParams, AttrHandler viewAttrHandler, AttrHandler
             extralAttrHandler, LayoutAttrHandler parentAttr) throws AttrApplyException {
         if (viewAttrHandler != null) {
-            viewAttrHandler.setDefault(context, tagName, v, innerElement);
+            viewAttrHandler.setDefault(context, tagName, v, innerElement, layoutParams, parent);
         }
 
         if (extralAttrHandler != null) {
-            extralAttrHandler.setDefault(context, tagName, v, innerElement);
+            extralAttrHandler.setDefault(context, tagName, v, innerElement, layoutParams, parent);
         }
 
         if (parentAttr != null) {
-            parentAttr.setDefaultToChild(context, tagName, v, innerElement);
+            parentAttr.setDefaultToChild(context, tagName, v, innerElement, layoutParams, parent);
         }
     }
 

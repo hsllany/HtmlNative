@@ -9,18 +9,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.URLUtil;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.mozz.htmlnative.HNEnvironment;
 import com.mozz.htmlnative.HNHead;
 import com.mozz.htmlnative.HNative;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     EditText mSearch;
-    Button mGo;
+    ImageButton mGo;
 
     ViewGroup mContainer;
 
@@ -34,11 +35,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mContainer = (RelativeLayout) findViewById(R.id.relative_view);
         mSearch = (EditText) findViewById(R.id.search_editbox);
-        mGo = (Button) findViewById(R.id.search_go_btn);
+        mGo = (ImageButton) findViewById(R.id.search_go_btn);
         mGo.setOnClickListener(this);
-
         mLoader = new RemoteViewLoader(this);
-        mSearch.setText("http://10.58.107.21/test2.layout");
     }
 
     @Override
@@ -56,6 +55,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(i);
                 break;
 
+            case R.id.about:
+                Toast.makeText(this, HNEnvironment.v, Toast.LENGTH_SHORT).show();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

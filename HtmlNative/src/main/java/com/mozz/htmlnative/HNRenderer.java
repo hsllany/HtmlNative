@@ -92,7 +92,7 @@ public final class HNRenderer {
                 mMapHolder);
 
         if (v != null) {
-            rootViewGroup.addView(v, params);
+            rootViewGroup.addContent(v, params);
             this.performCreated(sandBoxContext);
             HNLog.d(HNLog.RENDER, sandBoxContext.allIdTag());
 

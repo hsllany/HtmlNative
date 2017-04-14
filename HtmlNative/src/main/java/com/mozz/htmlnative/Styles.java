@@ -10,6 +10,7 @@ import android.widget.AbsoluteLayout;
 
 import com.mozz.htmlnative.attrs.AttrApplyException;
 import com.mozz.htmlnative.attrs.AttrHandler;
+import com.mozz.htmlnative.attrs.AttrsHelper;
 import com.mozz.htmlnative.attrs.BackgroundStyle;
 import com.mozz.htmlnative.attrs.InheritAttrs;
 import com.mozz.htmlnative.attrs.LayoutAttrHandler;
@@ -237,26 +238,22 @@ public final class Styles {
 
             case ATTR_PADDING_LEFT:
                 int paddingLeft = Utils.toInt(value);
-                v.setPadding(paddingLeft, v.getPaddingTop(), v.getPaddingRight(), v
-                        .getPaddingBottom());
+                AttrsHelper.setLeftPadding(v, paddingLeft);
                 break;
 
             case ATTR_PADDING_RIGHT:
                 int paddingRight = Utils.toInt(value);
-                v.setPadding(v.getPaddingTop(), v.getPaddingTop(), paddingRight, v
-                        .getPaddingBottom());
+                AttrsHelper.setRightPadding(v, paddingRight);
                 break;
 
             case ATTR_PADDING_TOP:
                 int paddingTop = Utils.toInt(value);
-                v.setPadding(v.getPaddingLeft(), paddingTop, v.getPaddingRight(), v
-                        .getPaddingBottom());
+                AttrsHelper.setTopPadding(v, paddingTop);
                 break;
 
             case ATTR_PADDING_BOTTOM:
                 int paddingBottom = Utils.toInt(value);
-                v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(),
-                        paddingBottom);
+                AttrsHelper.setBottomPadding(v, paddingBottom);
                 break;
 
             case ATTR_LEFT:
@@ -318,18 +315,19 @@ public final class Styles {
 
                 if (viewAttrHandler != null) {
                     viewAttrHandler.apply(context, tagName, v, params, value, innerElement,
-                            isParent);
+                            layoutParams, parent, isParent);
                 }
 
                 // If there extra attr is set, then should be applied also.
                 if (extraAttrHandler != null) {
                     extraAttrHandler.apply(context, tagName, v, params, value, innerElement,
-                            isParent);
+                            layoutParams, parent, isParent);
                 }
 
                 // finally apply corresponding parent attr to child
                 if (parentAttr != null) {
-                    parentAttr.applyToChild(context, tagName, v, parent, params, value, isParent);
+                    parentAttr.applyToChild(context, tagName, v, params, value, innerElement,
+                            layoutParams, parent, isParent);
                 }
                 break;
         }

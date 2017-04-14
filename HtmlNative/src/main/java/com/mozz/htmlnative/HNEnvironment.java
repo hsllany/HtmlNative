@@ -15,7 +15,7 @@ public final class HNEnvironment {
     public static final int versionCode = 1;
     public static final String versionName = "v0.1.0";
 
-    public static final String v = "RemoteView-" + HNEnvironment.versionName + "(" +
+    public static final String v = "HtmlNative " + HNEnvironment.versionName + "(" +
             HNEnvironment.versionCode + ")";
 
     public static void toggleDebug(boolean debug) {

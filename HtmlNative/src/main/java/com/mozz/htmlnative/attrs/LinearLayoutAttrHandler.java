@@ -3,12 +3,14 @@ package com.mozz.htmlnative.attrs;
 import android.content.Context;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 public class LinearLayoutAttrHandler extends AttrHandler {
     @Override
-    public void apply(Context context, java.lang.String tag, View v, String params, Object value,
-                      CharSequence innerElement, boolean isParent) throws AttrApplyException {
+    public void apply(Context context, String tag, View v, String params, Object value,
+                      CharSequence innerElement, ViewGroup.LayoutParams layoutParams, View
+                                  parent, boolean isParent) throws AttrApplyException {
 
         LinearLayout l = (LinearLayout) v;
 
@@ -27,8 +29,12 @@ public class LinearLayoutAttrHandler extends AttrHandler {
     }
 
     @Override
-    public void setDefault(Context context, String tag, View v, CharSequence innerElement) throws
+    public void setDefault(Context context, String tag, View v, CharSequence innerElement,
+                           ViewGroup.LayoutParams layoutParams, View parent) throws
             AttrApplyException {
         ((LinearLayout) v).setOrientation(LinearLayout.VERTICAL);
+
+        layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layoutParams.width = LinearLayout.LayoutParams.MATCH_PARENT;
     }
 }

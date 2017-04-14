@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/layout_example"
-        android:title="Layout Example" />
+        android:title="Examples" />
     <item
         android:id="@+id/about"
         android:title="About" />

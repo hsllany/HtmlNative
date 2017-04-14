@@ -1,8 +1,8 @@
 package com.mozz.htmlnative.attrs;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 
 /**
@@ -14,9 +14,9 @@ public class WebViewAttrHandler extends AttrHandler {
     private static final String ATTR_SRC = "src";
 
     @Override
-    public void apply(Context context, java.lang.String tag, View v, @NonNull java.lang.String
-            params, @NonNull final Object value, CharSequence innerElement, boolean isParent)
-            throws AttrApplyException {
+    public void apply(Context context, String tag, View v, String params, Object value,
+                      CharSequence innerElement, ViewGroup.LayoutParams layoutParams, View
+                                  parent, boolean isParent) throws AttrApplyException {
         final WebView webView = (WebView) v;
 
         if (params.equals("src") && !isParent) {

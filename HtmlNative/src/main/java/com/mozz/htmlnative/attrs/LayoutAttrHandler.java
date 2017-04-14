@@ -9,12 +9,13 @@ import android.view.ViewGroup;
  */
 
 public abstract class LayoutAttrHandler extends AttrHandler {
-    public abstract void applyToChild(Context context, String tag, View v, ViewGroup parent,
-                                      String params, Object value, boolean isParent) throws
-            AttrApplyException;
+    public abstract void applyToChild(Context context, String tag, View v, String params, Object
+            value, CharSequence innerElement, ViewGroup.LayoutParams layoutParams, View parent,
+                                      boolean isParent) throws AttrApplyException;
 
-    public void setDefaultToChild(Context context, String tag, View v, String innerElement)
-            throws AttrApplyException {
+    public void setDefaultToChild(Context context, String tag, View v, CharSequence innerElement,
+                                  ViewGroup.LayoutParams layoutParams, View parent) throws
+            AttrApplyException {
 
     }
 }
