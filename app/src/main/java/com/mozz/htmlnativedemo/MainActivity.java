@@ -18,6 +18,8 @@ import com.mozz.htmlnative.HNEnvironment;
 import com.mozz.htmlnative.HNHead;
 import com.mozz.htmlnative.HNative;
 
+import static com.mozz.htmlnativedemo.WebViewActivity.EXTAL_URL;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     EditText mSearch;
@@ -58,6 +60,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.about:
                 Toast.makeText(this, HNEnvironment.v, Toast.LENGTH_SHORT).show();
                 break;
+
+            case R.id.main_in_webview:
+                String url = mSearch.getText().toString();
+                if (URLUtil.isValidUrl(url)) {
+                    Intent intent = new Intent(this, WebViewActivity.class);
+                    intent.putExtra(EXTAL_URL, url);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, "not valid url", Toast.LENGTH_LONG).show();
+                }
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -85,6 +98,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 }
             });
+        } else {
+            Toast.makeText(this, "not valid url", Toast.LENGTH_LONG).show();
         }
     }
 }

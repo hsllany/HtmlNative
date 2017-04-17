@@ -65,7 +65,7 @@ public class UtilsTest {
 
     @Test
     public void toPixel() throws Exception {
-        String a = "23px";
+        String a = "1px";
         PixelValue p = Utils.toPixel(a);
 
         org.junit.Assert.assertTrue(p.getUnit() == TypedValue.COMPLEX_UNIT_PX);

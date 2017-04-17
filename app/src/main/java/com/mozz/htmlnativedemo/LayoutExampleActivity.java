@@ -16,6 +16,8 @@ import com.mozz.htmlnative.common.Utils;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static com.mozz.htmlnativedemo.WebViewActivity.EXTAL_URL;
+
 /**
  * @author Yang Tao, 17/3/2.
  */
@@ -104,7 +106,7 @@ public class LayoutExampleActivity extends AppCompatActivity {
 
     private void showWebview() {
         Intent intent = new Intent(this, WebViewActivity.class);
-        intent.putExtra(EXTRA_KEY_RV_FILE, mFileName);
+        intent.putExtra(EXTAL_URL, "file:///android_asset/" + mFileName);
         startActivity(intent);
     }
 }

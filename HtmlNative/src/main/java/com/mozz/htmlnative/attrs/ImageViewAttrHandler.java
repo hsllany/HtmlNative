@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import com.mozz.htmlnative.HNRenderer;
 import com.mozz.htmlnative.view.ViewImageAdapter;
 
-public class ImageViewAttrHandler extends AttrHandler {
+class ImageViewAttrHandler extends AttrHandler {
 
     @Override
     public void apply(Context context, String tag, View v, String params, Object value,

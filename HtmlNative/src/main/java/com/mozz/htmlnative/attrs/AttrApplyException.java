@@ -9,6 +9,14 @@ public class AttrApplyException extends Exception {
         super();
     }
 
+    public AttrApplyException(Throwable cause){
+        super(cause);
+    }
+
+    public AttrApplyException(String msg, Throwable cause){
+        super(msg, cause);
+    }
+
     public AttrApplyException(String msg) {
         super(msg);
     }

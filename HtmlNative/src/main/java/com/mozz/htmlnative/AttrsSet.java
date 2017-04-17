@@ -9,6 +9,7 @@ import android.view.ViewParent;
 
 import com.mozz.htmlnative.attrs.AttrApplyException;
 import com.mozz.htmlnative.attrs.AttrHandler;
+import com.mozz.htmlnative.attrs.AttrsHandlerFactory;
 import com.mozz.htmlnative.attrs.AttrsHelper;
 import com.mozz.htmlnative.attrs.AttrsOwner;
 import com.mozz.htmlnative.attrs.LayoutAttrHandler;
@@ -212,7 +213,7 @@ public final class AttrsSet {
     private static AttrHandler getAttr(@NonNull Class<? extends View> clazz) {
         AttrHandler attrHandler = sCachedAttrs.get(clazz);
         if (attrHandler == null) {
-            attrHandler = AttrsHelper.getAttrFromView(clazz);
+            attrHandler = AttrsHandlerFactory.getAttrFromView(clazz);
             if (attrHandler != null) {
                 sCachedAttrs.put(clazz, attrHandler);
             }

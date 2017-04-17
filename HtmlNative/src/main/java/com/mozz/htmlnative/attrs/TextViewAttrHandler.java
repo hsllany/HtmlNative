@@ -14,7 +14,7 @@ import com.mozz.htmlnative.HNRenderer;
 import com.mozz.htmlnative.HtmlTag;
 import com.mozz.htmlnative.common.Utils;
 
-public class TextViewAttrHandler extends AttrHandler {
+class TextViewAttrHandler extends AttrHandler {
 
     private static final String FONT_SIZE = "font-size";
     private static final String COLOR = "color";
@@ -29,11 +29,17 @@ public class TextViewAttrHandler extends AttrHandler {
     private static final String TEXT_TRANSFORM = "text-transform";
 
     private static final int DEFAULT_SIZE = 14;
-    private static final int DEFAULT_H1_SIZE = 22;
-    private static final int DEFAULT_H1_PADDING = (int) Utils.dp2px(12);
+    private static final int DEFAULT_H1_SIZE = Utils.em2px(2);
+    private static final int DEFAULT_H1_PADDING = Utils.em2px(0.67f);
 
-    private static final int DEFAULT_H2_SIZE = 18;
-    private static final int DEFAULT_H2_PADDING = (int) Utils.dp2px(8);
+    private static final int DEFAULT_H2_SIZE = Utils.em2px(1.5f);
+    private static final int DEFAULT_H2_PADDING = (int) Utils.em2px(.75f);
+
+    private static final int DEFAULT_H3_SIZE = (int) Utils.em2px(1.17f);
+    private static final int DEFAULT_H3_PADDING = (int) Utils.em2px(.83f);
+
+    private static final int DEFAULT_H4_SIZE = (int) Utils.em2px(1.f);
+    private static final int DEFAULT_H4_PADDING = (int) Utils.em2px(1.12f);
 
     private static final int DEFAULT_P_PADDING = (int) Utils.dp2px(5);
 
@@ -45,14 +51,6 @@ public class TextViewAttrHandler extends AttrHandler {
         InheritAttrs.inherit(FONT_WEIGHT);
         InheritAttrs.inherit(TEXT_ALIGN);
         InheritAttrs.inherit(TEXT_WORD_SPACING);
-    }
-
-    @NonNull
-    private static TextViewAttrHandler sInstance = new TextViewAttrHandler();
-
-    @NonNull
-    public static TextViewAttrHandler getInstance() {
-        return sInstance;
     }
 
     @Override
@@ -142,10 +140,10 @@ public class TextViewAttrHandler extends AttrHandler {
                         textView.setGravity(Gravity.CENTER);
                         break;
                     case "left":
-                        textView.setGravity(Gravity.LEFT);
+                        textView.setGravity(Gravity.START);
                         break;
                     case "right":
-                        textView.setGravity(Gravity.RIGHT);
+                        textView.setGravity(Gravity.END);
                         break;
                 }
 
@@ -154,7 +152,7 @@ public class TextViewAttrHandler extends AttrHandler {
             case TEXT_WORD_SPACING: {
                 String ss = value.toString();
                 if (ss.equals("normal")) {
-
+                    textView.setLetterSpacing(textView.getLetterSpacing());
                 } else {
                     PixelValue f = Utils.toPixel(value);
                     textView.setLetterSpacing((float) f.getEmValue());
@@ -199,21 +197,44 @@ public class TextViewAttrHandler extends AttrHandler {
 
         textView.setTextSize(DEFAULT_SIZE);
 
-        if (tag.equals(HtmlTag.H1)) {
-            textView.setTextSize(DEFAULT_H1_SIZE);
-            AttrsHelper.setPadding(textView, DEFAULT_H1_PADDING, textView.getPaddingLeft(),
-                    DEFAULT_H1_PADDING, textView.getPaddingRight());
-            AttrsHelper.setBold(textView);
-        } else if (tag.equals(HtmlTag.H2)) {
-            textView.setTextSize(DEFAULT_H2_SIZE);
-            AttrsHelper.setPadding(textView, DEFAULT_H2_PADDING, textView.getPaddingLeft(),
-                    DEFAULT_H2_PADDING, textView.getPaddingRight());
-            AttrsHelper.setBold(textView);
-        } else if (tag.equals(HtmlTag.P)) {
-            AttrsHelper.setTopPadding(textView, DEFAULT_P_PADDING);
-            AttrsHelper.setBottomPadding(textView, DEFAULT_P_PADDING);
-        } else if (tag.equals(HtmlTag.A)) {
+        switch (tag) {
+            case HtmlTag.H1:
+                textView.setTextSize(DEFAULT_H1_SIZE);
+                AttrsHelper.setPadding(textView, DEFAULT_H1_PADDING, textView.getPaddingLeft(),
+                        DEFAULT_H1_PADDING, textView.getPaddingRight());
+                AttrsHelper.setBold(textView);
+                break;
 
+            case HtmlTag.H2:
+                textView.setTextSize(DEFAULT_H2_SIZE);
+                AttrsHelper.setPadding(textView, DEFAULT_H2_PADDING, textView.getPaddingLeft(),
+                        DEFAULT_H2_PADDING, textView.getPaddingRight());
+                AttrsHelper.setBold(textView);
+                break;
+
+            case HtmlTag.H3:
+                textView.setTextSize(DEFAULT_H3_SIZE);
+                AttrsHelper.setPadding(textView, DEFAULT_H3_PADDING, textView.getPaddingLeft(),
+                        DEFAULT_H3_PADDING, textView.getPaddingRight());
+                AttrsHelper.setBold(textView);
+                break;
+
+            case HtmlTag.H4:
+                textView.setTextSize(DEFAULT_H4_SIZE);
+                AttrsHelper.setPadding(textView, DEFAULT_H4_PADDING, textView.getPaddingLeft(),
+                        DEFAULT_H4_PADDING, textView.getPaddingRight());
+                AttrsHelper.setBold(textView);
+                break;
+
+            case HtmlTag.P:
+                AttrsHelper.setTopPadding(textView, DEFAULT_P_PADDING);
+                AttrsHelper.setBottomPadding(textView, DEFAULT_P_PADDING);
+                layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                break;
+            case HtmlTag.A:
+                AttrsHelper.setUnderLine(textView);
+                layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                break;
         }
     }
 }

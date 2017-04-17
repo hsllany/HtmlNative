@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-public class LinearLayoutAttrHandler extends AttrHandler {
+class LinearLayoutAttrHandler extends AttrHandler {
     @Override
     public void apply(Context context, String tag, View v, String params, Object value,
                       CharSequence innerElement, ViewGroup.LayoutParams layoutParams, View

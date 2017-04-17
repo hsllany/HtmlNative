@@ -11,7 +11,7 @@ import com.google.android.flexbox.FlexboxLayout;
  * @author Yang Tao, 17/3/3.
  */
 
-public class FlexBoxLayoutAttrHandler extends LayoutAttrHandler {
+class FlexBoxLayoutAttrHandler extends LayoutAttrHandler {
     @Override
     public void apply(Context context, String tag, View v, String params, Object value,
                       CharSequence innerElement, ViewGroup.LayoutParams layoutParams, View

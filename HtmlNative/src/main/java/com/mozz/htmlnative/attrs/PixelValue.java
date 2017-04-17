@@ -63,12 +63,12 @@ public class PixelValue {
     }
 
 
-    public double getEmValue() {
+    public final double getEmValue() {
         switch (unit) {
             case EM:
                 return this.value;
             case TypedValue.COMPLEX_UNIT_PX:
-                return this.value * 16;
+                return this.value / 16.f;
             case TypedValue.COMPLEX_UNIT_DIP:
                 return Utils.dp2px((float) this.value);
             default:
@@ -76,7 +76,7 @@ public class PixelValue {
         }
     }
 
-    public double getPxValue() {
+    public final double getPxValue() {
         switch (unit) {
             case EM:
                 return this.value / 16;

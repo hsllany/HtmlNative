@@ -181,7 +181,7 @@ public final class HNRenderer {
             parentIndex -= lastCssStackSize[level];
             lastCssStackSize[level] = 0;
             level--;
-            debugCssParent("return as viewgroup");
+            debugCssParent("return as view group");
             return view;
         }
     }
@@ -220,6 +220,10 @@ public final class HNRenderer {
                 } else {
                     v = createViewByTag(context, "linearbox");
                 }
+
+                // set the <body> width to 100%
+                params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
             } else {
                 v = createViewByTag(context, tag);
             }
@@ -304,7 +308,7 @@ public final class HNRenderer {
             ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
             InvocationTargetException, InstantiationException {
 
-        String viewClassName = ViewTagLookupTable.findClassByTag(tagName);
+        String viewClassName = ViewRelations.findClassByTag(tagName);
         if (viewClassName == null) {
             return null;
         }

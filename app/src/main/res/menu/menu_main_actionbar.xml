@@ -2,9 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/layout_example"
-        android:title="Examples" />
+        android:title="Examples"/>
+
+    <item
+        android:id="@+id/main_in_webview"
+        android:title="In Browser"/>
     <item
         android:id="@+id/about"
-        android:title="About" />
+        android:title="About"/>
 
 </menu>

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.util.TypedValue;
 
 import com.mozz.htmlnative.attrs.AttrApplyException;
@@ -168,29 +167,34 @@ public final class Utils {
     public static int color(@NonNull Object colorObj) throws AttrApplyException {
         String colorString = colorObj.toString().trim();
         if (colorString.length() == 0) {
-            Log.e(TAG, "empty color string for parse");
             throw new AttrApplyException("empty color string for parse");
         }
+
+        // handle the #* like color
         if (colorString.charAt(0) == '#') {
+
+            // handle the #000000 like color string
             if (colorString.length() > 4) {
                 try {
                     return Color.parseColor(colorString);
                 } catch (IllegalArgumentException e) {
-                    Log.e(TAG, "IllegalArgumentException" + e.getMessage() + " can't read color " +
-                            "from");
-                    throw new AttrApplyException("can't read color from " + colorString);
+                    throw new AttrApplyException(e);
                 }
+
+
             } else if (colorString.length() == 4) {
                 long color = 0;
                 for (int i = 0; i < 3; i++) {
                     char c = colorString.charAt(i + 1);
-                    int cI = 0;
+                    int cI;
                     if (c >= 'a' && c <= 'z') {
                         cI = c - 'a' + 10;
                     } else if (c >= 'A' && c <= 'Z') {
                         cI = c - 'A' + 10;
                     } else if (c >= '0' && c <= '9') {
                         cI = c - '0';
+                    } else {
+                        throw new AttrApplyException("unknown color string " + colorString);
                     }
 
                     color |= (cI * 16 + cI) << (3 - i - 1) * 8;
@@ -198,14 +202,18 @@ public final class Utils {
 
                 return (int) (color | 0x00000000ff000000);
             } else {
-                throw new AttrApplyException("error when parsing color " + colorString);
+                throw new AttrApplyException("unknown color string " + colorString);
             }
+
         } else {
+            /**
+             handle the color like 'red', 'green' ect. see {@link https://www.w3.org/TR/CSS2/syndata
+            .html#tokenization}
+             */
             try {
                 return Color.parseColor(colorString);
             } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-                throw new AttrApplyException("can't read color from " + colorString);
+                throw new AttrApplyException("can't read color from " + colorString, e);
             }
         }
     }
@@ -251,5 +259,13 @@ public final class Utils {
             throw new IllegalStateException("you must call init() first");
         }
         return dp / screenDensity;
+    }
+
+    public static int em2px(float em) {
+        return (int) (em * 16.f);
+    }
+
+    public static float px2em(int px) {
+        return px / 16.f;
     }
 }
