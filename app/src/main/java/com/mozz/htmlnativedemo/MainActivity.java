@@ -14,7 +14,6 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.mozz.htmlnative.HNEnvironment;
 import com.mozz.htmlnative.HNHead;
 import com.mozz.htmlnative.HNative;
 
@@ -58,7 +57,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.about:
-                Toast.makeText(this, HNEnvironment.v, Toast.LENGTH_SHORT).show();
+                Intent ii = new Intent(this, TestActivity.class);
+                startActivity(ii);
                 break;
 
             case R.id.main_in_webview:

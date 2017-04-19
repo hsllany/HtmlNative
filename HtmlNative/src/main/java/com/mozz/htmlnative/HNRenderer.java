@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.AbsoluteLayout;
-import android.widget.LinearLayout;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.mozz.htmlnative.attrs.AttrApplyException;
@@ -17,6 +16,7 @@ import com.mozz.htmlnative.common.Performance;
 import com.mozz.htmlnative.common.PerformanceWatcher;
 import com.mozz.htmlnative.css.CssSelector;
 import com.mozz.htmlnative.view.HNViewGroup;
+import com.mozz.htmlnative.view.HtmlLayout;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -152,12 +152,15 @@ public final class HNRenderer {
                     if (view instanceof AbsoluteLayout) {
                         layoutParams = new AbsoluteLayout.LayoutParams(ViewGroup.LayoutParams
                                 .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0, 0);
-                    } else if (view instanceof LinearLayout) {
-                        layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams
-                                .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    } else if (view instanceof HtmlLayout) {
+                        layoutParams = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams
+                                .WRAP_CONTENT, ViewGroup.MarginLayoutParams.WRAP_CONTENT);
                     } else if (view instanceof FlexboxLayout) {
                         layoutParams = new FlexboxLayout.LayoutParams(ViewGroup.LayoutParams
                                 .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    } else {
+                        throw new HNRenderException("can't create related layoutParams, unknown " +
+                                "view type " + view.toString());
                     }
 
                     // Recursively render child.

@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.mozz.htmlnative.attrs.AttrHandler;
+import com.mozz.htmlnative.view.HtmlLayout;
 
 import java.util.Map;
 
@@ -35,11 +36,11 @@ public final class ViewRelations {
 
     static {
         sReservedTagClassTable.put("box", AbsoluteLayout.class.getName());
-        sReservedTagClassTable.put("linearbox", LinearLayout.class.getName());
+        sReservedTagClassTable.put("linearbox", HtmlLayout.class.getName());
         sReservedTagClassTable.put("flexbox", FlexboxLayout.class.getName());
 
-        sReservedTagClassTable.put(HtmlTag.BODY, LinearLayout.class.getName());
-        sReservedTagClassTable.put(HtmlTag.TEMPLATE, LinearLayout.class.getName());
+        sReservedTagClassTable.put(HtmlTag.BODY, HtmlLayout.class.getName());
+        sReservedTagClassTable.put(HtmlTag.TEMPLATE, HtmlLayout.class.getName());
 
         sReservedTagClassTable.put(HtmlTag.P, TextView.class.getName());
         sReservedTagClassTable.put(HtmlTag.TEXT, TextView.class.getName());

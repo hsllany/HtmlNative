@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
+import com.mozz.htmlnative.view.HtmlLayout;
 
 /**
  * @author Yang Tao, 17/4/17.
@@ -34,7 +35,7 @@ public final class AttrsHandlerFactory {
             return sText;
         } else if (ImageView.class.isAssignableFrom(clazz)) {
             return sImage;
-        } else if (clazz.equals(LinearLayout.class)) {
+        } else if (clazz.equals(HtmlLayout.class)) {
             return sLinear;
         } else if (clazz.equals(FlexboxLayout.class)) {
             return sFlex;

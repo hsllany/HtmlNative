@@ -15,8 +15,6 @@ import static com.mozz.htmlnative.HNLog.LEXER;
 
 class Lexer {
 
-    private static final String TAG = Lexer.class.getSimpleName();
-
     private TextReader mReader;
 
     @NonNull

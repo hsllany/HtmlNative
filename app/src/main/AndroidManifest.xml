@@ -29,6 +29,8 @@
         <activity
             android:name=".WebViewActivity"
             android:label="WebView"/>
+
+        <activity android:name=".TestActivity"/>
     </application>
 
 </manifest>

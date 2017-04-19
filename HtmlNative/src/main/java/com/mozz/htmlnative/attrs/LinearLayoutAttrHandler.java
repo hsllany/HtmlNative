@@ -12,28 +12,26 @@ class LinearLayoutAttrHandler extends AttrHandler {
                       CharSequence innerElement, ViewGroup.LayoutParams layoutParams, View
                                   parent, boolean isParent) throws AttrApplyException {
 
-        LinearLayout l = (LinearLayout) v;
-
-        switch (params) {
-            case "text-align":
-                if (value.toString().equals("center")) {
-                    l.setGravity(Gravity.CENTER);
-                } else if (value.toString().equals("left")) {
-                    l.setGravity(Gravity.START);
-                } else if (value.toString().equals("right")) {
-                    l.setGravity(Gravity.END);
-                }
-                break;
-
-        }
+//        LinearLayout l = (LinearLayout) v;
+//
+//        switch (params) {
+//            case "text-align":
+//                if (value.toString().equals("center")) {
+//                    l.setGravity(Gravity.CENTER);
+//                } else if (value.toString().equals("left")) {
+//                    l.setGravity(Gravity.START);
+//                } else if (value.toString().equals("right")) {
+//                    l.setGravity(Gravity.END);
+//                }
+//                break;
+//
+//        }
     }
 
     @Override
     public void setDefault(Context context, String tag, View v, CharSequence innerElement,
                            ViewGroup.LayoutParams layoutParams, View parent) throws
             AttrApplyException {
-        ((LinearLayout) v).setOrientation(LinearLayout.VERTICAL);
-
         layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
         layoutParams.width = LinearLayout.LayoutParams.MATCH_PARENT;
     }
