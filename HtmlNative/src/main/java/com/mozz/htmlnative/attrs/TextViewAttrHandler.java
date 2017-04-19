@@ -2,7 +2,6 @@ package com.mozz.htmlnative.attrs;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -200,6 +199,7 @@ class TextViewAttrHandler extends AttrHandler {
         switch (tag) {
             case HtmlTag.H1:
                 textView.setTextSize(DEFAULT_H1_SIZE);
+                layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 AttrsHelper.setPadding(textView, DEFAULT_H1_PADDING, textView.getPaddingLeft(),
                         DEFAULT_H1_PADDING, textView.getPaddingRight());
                 AttrsHelper.setBold(textView);
@@ -207,6 +207,7 @@ class TextViewAttrHandler extends AttrHandler {
 
             case HtmlTag.H2:
                 textView.setTextSize(DEFAULT_H2_SIZE);
+                layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 AttrsHelper.setPadding(textView, DEFAULT_H2_PADDING, textView.getPaddingLeft(),
                         DEFAULT_H2_PADDING, textView.getPaddingRight());
                 AttrsHelper.setBold(textView);
@@ -214,6 +215,7 @@ class TextViewAttrHandler extends AttrHandler {
 
             case HtmlTag.H3:
                 textView.setTextSize(DEFAULT_H3_SIZE);
+                layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 AttrsHelper.setPadding(textView, DEFAULT_H3_PADDING, textView.getPaddingLeft(),
                         DEFAULT_H3_PADDING, textView.getPaddingRight());
                 AttrsHelper.setBold(textView);
@@ -221,6 +223,7 @@ class TextViewAttrHandler extends AttrHandler {
 
             case HtmlTag.H4:
                 textView.setTextSize(DEFAULT_H4_SIZE);
+                layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 AttrsHelper.setPadding(textView, DEFAULT_H4_PADDING, textView.getPaddingLeft(),
                         DEFAULT_H4_PADDING, textView.getPaddingRight());
                 AttrsHelper.setBold(textView);
