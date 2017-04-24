@@ -56,7 +56,7 @@ final class HNProcessThread {
         }
 
         @Override
-        protected void runOverride(@Nullable final Context context) {
+        protected void run(@Nullable final Context context) {
             try {
                 if (context == null || mCallback == null) {
                     return;

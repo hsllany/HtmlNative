@@ -6,33 +6,13 @@
     <com.mozz.htmlnative.view.HtmlLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@android:color/black"
         android:padding="10px">
 
-        <TextView
+        <com.mozz.htmlnative.view.HtmlLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/holo_red_dark"
-            android:text="hello world"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/holo_red_dark"
-            android:padding="20px"
-            android:text="hello world"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/holo_red_dark"
-            android:text="hello world"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/holo_red_dark"
-            android:text="hello world"/>
-
+            android:layout_height="300px"
+            android:background="@color/colorAccent"></com.mozz.htmlnative.view.HtmlLayout>
 
 
     </com.mozz.htmlnative.view.HtmlLayout>

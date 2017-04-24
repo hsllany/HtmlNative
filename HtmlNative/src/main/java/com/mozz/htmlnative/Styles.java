@@ -97,27 +97,25 @@ public final class Styles {
                 tagName + ")");
 
         switch (params) {
-            case ATTR_WIDTH:
-                if (value instanceof Integer) {
-                    layoutParams.width = (Integer) value;
-                } else if (value.toString().equalsIgnoreCase(VAL_FILL_PARENT)) {
+            case ATTR_WIDTH: {
+                if (value.toString().equalsIgnoreCase(VAL_FILL_PARENT)) {
                     layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 } else {
-                    throw new AttrApplyException("Width must be an int or 'WRAP_CONTENT'");
+                    PixelValue pixel = Utils.toPixel(value);
+                    layoutParams.width = (int) pixel.getPxValue();
                 }
+            }
+            break;
 
-                break;
-
-            case ATTR_HEIGHT:
-                if (value instanceof Integer) {
-                    layoutParams.height = (Integer) value;
-                } else if (value.toString().equalsIgnoreCase(VAL_FILL_PARENT)) {
+            case ATTR_HEIGHT: {
+                if (value.toString().equalsIgnoreCase(VAL_FILL_PARENT)) {
                     layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
                 } else {
-                    throw new AttrApplyException("Height must be an int or 'WRAP_CONTENT'");
+                    PixelValue pixel = Utils.toPixel(value);
+                    layoutParams.height = (int) pixel.getPxValue();
                 }
-
-                break;
+            }
+            break;
 
             case ATTR_BACKGROUND:
                 if (value instanceof BackgroundStyle) {
@@ -134,7 +132,6 @@ public final class Styles {
                 }
 
                 break;
-
 
             case ATTR_MARGIN: {
                 if (layoutParams instanceof ViewGroup.MarginLayoutParams) {

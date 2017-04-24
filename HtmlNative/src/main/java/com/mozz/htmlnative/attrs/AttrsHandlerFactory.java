@@ -5,7 +5,6 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.AbsoluteLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
@@ -19,7 +18,7 @@ public final class AttrsHandlerFactory {
 
     private static TextViewAttrHandler sText = new TextViewAttrHandler();
     private static ImageViewAttrHandler sImage = new ImageViewAttrHandler();
-    private static LinearLayoutAttrHandler sLinear = new LinearLayoutAttrHandler();
+    private static HtmlLayoutAttrHandler sLinear = new HtmlLayoutAttrHandler();
     private static FlexBoxLayoutAttrHandler sFlex = new FlexBoxLayoutAttrHandler();
     private static WebViewAttrHandler sWebview = new WebViewAttrHandler();
     private static AbsoluteAttrHandler sAbsolute = new AbsoluteAttrHandler();

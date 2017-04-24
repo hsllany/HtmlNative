@@ -17,8 +17,8 @@ public abstract class WefRunnable<T> implements Runnable {
     public final void run() {
         T raw = mRef.get();
 
-        runOverride(raw);
+        run(raw);
     }
 
-    protected abstract void runOverride(T t);
+    protected abstract void run(T t);
 }

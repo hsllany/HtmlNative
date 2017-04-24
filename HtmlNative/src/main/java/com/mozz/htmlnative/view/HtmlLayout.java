@@ -91,8 +91,6 @@ public class HtmlLayout extends ViewGroup {
 
         height = height + getPaddingBottom();
 
-        Log.d("lala", "height = " + height);
-
         setMeasuredDimension(widthMode == MeasureSpec.EXACTLY ? msWidth : width, heightMode ==
                 MeasureSpec.EXACTLY ? msHeight : height);
     }
@@ -158,9 +156,6 @@ public class HtmlLayout extends ViewGroup {
             // 当前行的最大高度
             lineHeight = mLineLength.get(i);
 
-            Log.e(TAG, "第" + i + "行 ：" + lineViews.size() + " , " + lineViews);
-            Log.e(TAG, "第" + i + "行， ：" + lineHeight);
-
             // 遍历当前行所有的View
             for (int j = 0; j < lineViews.size(); j++) {
                 View child = lineViews.get(j);
@@ -174,9 +169,6 @@ public class HtmlLayout extends ViewGroup {
                 int tc = top + lp.topMargin;
                 int rc = lc + child.getMeasuredWidth();
                 int bc = tc + child.getMeasuredHeight();
-
-                Log.i(TAG, child + " , l = " + lc + " , t = " + tc + " , r =" + rc + " , b = " +
-                        bc);
 
                 child.layout(lc, tc, rc, bc);
 
