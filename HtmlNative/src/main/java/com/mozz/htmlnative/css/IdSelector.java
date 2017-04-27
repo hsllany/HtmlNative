@@ -1,5 +1,7 @@
 package com.mozz.htmlnative.css;
 
+import com.mozz.htmlnative.DomElement;
+
 /**
  * @author Yang Tao, 17/3/27.
  */
@@ -11,11 +13,11 @@ public class IdSelector extends TypeSelector {
 
     @Override
     public String selfToString() {
-        return "[Id=" + mTag + "]";
+        return "#" + mTag;
     }
 
     @Override
-    public boolean matchThis(String type, String id, String clazz) {
-        return mTag.equals(id);
+    public boolean matchThis(DomElement element) {
+        return element.hasId() && element.getId().equals(mTag);
     }
 }

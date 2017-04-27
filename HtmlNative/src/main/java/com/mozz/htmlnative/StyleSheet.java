@@ -17,15 +17,15 @@ import java.util.Set;
  * @author Yang Tao, 17/3/27.
  */
 
-final class Css {
+final class StyleSheet {
     AttrsSet mCssSet;
 
     private SelectorHolder mClassSelectors;
     private SelectorHolder mIdSelectors;
     private SelectorHolder mTypeSelectors;
 
-    public Css() {
-        mCssSet = new AttrsSet("Css");
+    public StyleSheet() {
+        mCssSet = new AttrsSet("StyleSheet");
 
         mClassSelectors = new SelectorHolder();
         mIdSelectors = new SelectorHolder();
@@ -41,6 +41,10 @@ final class Css {
     }
 
     public void putSelector(CssSelector cssSelector) {
+        putSingleSelector(cssSelector.tail());
+    }
+
+    private void putSingleSelector(CssSelector cssSelector) {
         if (cssSelector.getClass().equals(ClassSelector.class)) {
             ClassSelector classSelector = (ClassSelector) cssSelector;
             mClassSelectors.put(classSelector.getName(), classSelector);
@@ -53,30 +57,18 @@ final class Css {
         }
     }
 
-    public Set<CssSelector> matchedSelector(String type, String id, String clazz,
-                                            Set<CssSelector> parentSelector) {
-        
+    public Set<CssSelector> matchedSelector(String type, String id, String clazz) {
         Set<CssSelector> matchedSelector = new HashSet<>();
-        mClassSelectors.select(clazz, matchedSelector);
-        mIdSelectors.select(id, matchedSelector);
-        mTypeSelectors.select(type, matchedSelector);
-
-        if (parentSelector != null && !parentSelector.isEmpty()) {
-            for (CssSelector selector : parentSelector) {
-                CssSelector next = selector.next();
-
-                if (next != null && next.matchThis(type, id, clazz)) {
-                    matchedSelector.add(next);
-                }
-            }
-        }
+        mClassSelectors.matches(clazz, matchedSelector);
+        mIdSelectors.matches(id, matchedSelector);
+        mTypeSelectors.matches(type, matchedSelector);
         return matchedSelector;
     }
 
     @Override
     public String toString() {
-        return "AttrSet=" + mCssSet.toString() + ", class=" + mClassSelectors + ", id=" +
-                mIdSelectors + ", type=" + mTypeSelectors;
+        return "AttrSet=" + mCssSet.toString() + "\n, class=" + mClassSelectors + "\n, id=" +
+                mIdSelectors + "\n, type=" + mTypeSelectors;
     }
 
     /**
@@ -96,7 +88,7 @@ final class Css {
             sets.add(selector);
         }
 
-        void select(String key, Set<CssSelector> outSelectors) {
+        void matches(String key, Set<CssSelector> outSelectors) {
             Set<CssSelector> sets = mSelectors.get(key);
             if (sets != null && !sets.isEmpty()) {
                 outSelectors.addAll(sets);

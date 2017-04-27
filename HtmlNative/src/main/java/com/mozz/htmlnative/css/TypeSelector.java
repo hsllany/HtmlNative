@@ -1,5 +1,7 @@
 package com.mozz.htmlnative.css;
 
+import com.mozz.htmlnative.DomElement;
+
 /**
  * @author Yang Tao, 17/3/27.
  */
@@ -17,13 +19,13 @@ public class TypeSelector extends CssSelector {
     }
 
     @Override
-    public boolean matchThis(String type, String id, String clazz) {
-        return mTag.equals(type);
+    public boolean matchThis(DomElement element) {
+        return element.getType().equals(mTag);
     }
 
     @Override
     public String selfToString() {
-        return "[Type=" + mTag + "]";
+        return mTag;
     }
 
     @Override

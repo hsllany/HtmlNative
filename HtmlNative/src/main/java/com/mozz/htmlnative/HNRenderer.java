@@ -12,15 +12,13 @@ import android.widget.AbsoluteLayout;
 import com.google.android.flexbox.FlexboxLayout;
 import com.mozz.htmlnative.attrs.AttrApplyException;
 import com.mozz.htmlnative.attrs.AttrsOwner;
-import com.mozz.htmlnative.common.Performance;
-import com.mozz.htmlnative.common.PerformanceWatcher;
 import com.mozz.htmlnative.css.CssSelector;
+import com.mozz.htmlnative.css.CssStack;
 import com.mozz.htmlnative.view.HNViewGroup;
 import com.mozz.htmlnative.view.HtmlLayout;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -50,9 +48,7 @@ public final class HNRenderer {
 
     private SelectorMapHolder mMapHolder;
 
-    private int[] parentCssStack = new int[50];
-    private int[] lastCssStackSize = new int[10];
-    private int parentIndex = 0;
+    private CssStack mCssStack;
 
     /**
      * level in Dom Tree
@@ -62,8 +58,7 @@ public final class HNRenderer {
 
     private HNRenderer() {
         mMapHolder = new SelectorMapHolder();
-
-        Arrays.fill(parentCssStack, -1);
+        mCssStack = new CssStack();
     }
 
     @NonNull
@@ -87,8 +82,10 @@ public final class HNRenderer {
          */
         level = -1;
 
+        mCssStack.reset();
+
         View v = renderInternal(context, sandBoxContext, segment.mRootTree, segment,
-                rootViewGroup, params, rootViewGroup, segment.mCss, mMapHolder.instance,
+                rootViewGroup, params, rootViewGroup, segment.mStyleSheet, mMapHolder.instance,
                 mMapHolder);
 
         if (v != null) {
@@ -102,37 +99,23 @@ public final class HNRenderer {
         return null;
     }
 
-    private void performCreate(HNSandBoxContext sandBoxContext) {
-        if (sandBoxContext != null) {
-            sandBoxContext.onViewCreate();
-        }
-    }
-
-    private void performCreated(HNSandBoxContext sandBoxContext) {
-        if (sandBoxContext != null) {
-            sandBoxContext.onViewLoaded();
-        }
-    }
-
     private View renderInternal(@NonNull Context context, @NonNull HNSandBoxContext
             sandBoxContext, HNDomTree tree, HNSegment segment, @NonNull ViewGroup parent,
                                 @NonNull ViewGroup.LayoutParams params, @NonNull HNViewGroup
-                                        root, Css css, Set<CssSelector> parentSelector,
-                                SelectorMapHolder holder) throws HNRenderException {
+                                        root, StyleSheet styleSheet, Set<CssSelector>
+                                        parentSelector, SelectorMapHolder holder) throws
+            HNRenderException {
 
         AttrsSet attrsSet = segment.mAttrs;
 
         if (tree.isLeaf()) {
             View v = createView(tree, sandBoxContext, parent, context, attrsSet, params, root,
-                    css, parentSelector, holder);
-            parentIndex -= lastCssStackSize[level];
-            lastCssStackSize[level] = 0;
-            level--;
-            debugCssParent("return as single");
+                    styleSheet, parentSelector, holder);
+            mCssStack.pop();
             return v;
         } else {
             View view = createView(tree, sandBoxContext, parent, context, attrsSet, params, root,
-                    css, parentSelector, holder);
+                    styleSheet, parentSelector, holder);
 
             if (view == null) {
                 return null;
@@ -140,7 +123,6 @@ public final class HNRenderer {
 
 
             if (view instanceof ViewGroup) {
-
                 Set<CssSelector> tempSelector = holder.instance;
 
                 final ViewGroup viewGroup = (ViewGroup) view;
@@ -148,24 +130,11 @@ public final class HNRenderer {
                 List<HNDomTree> children = tree.children();
                 for (HNDomTree child : children) {
 
-                    ViewGroup.LayoutParams layoutParams = null;
-                    if (view instanceof AbsoluteLayout) {
-                        layoutParams = new AbsoluteLayout.LayoutParams(ViewGroup.LayoutParams
-                                .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0, 0);
-                    } else if (view instanceof HtmlLayout) {
-                        layoutParams = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams
-                                .WRAP_CONTENT, ViewGroup.MarginLayoutParams.WRAP_CONTENT);
-                    } else if (view instanceof FlexboxLayout) {
-                        layoutParams = new FlexboxLayout.LayoutParams(ViewGroup.LayoutParams
-                                .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    } else {
-                        throw new HNRenderException("can't create related layoutParams, unknown " +
-                                "view type " + view.toString());
-                    }
+                    ViewGroup.LayoutParams layoutParams = createLayoutParams(viewGroup);
 
                     // Recursively render child.
                     final View v = renderInternal(context, sandBoxContext, child, segment,
-                            viewGroup, layoutParams, root, css, tempSelector, holder);
+                            viewGroup, layoutParams, root, styleSheet, tempSelector, holder);
 
                     if (v != null) {
                         viewGroup.addView(v, layoutParams);
@@ -181,10 +150,7 @@ public final class HNRenderer {
                         ", but related HNDomTree has children. Will ignore its children!");
             }
 
-            parentIndex -= lastCssStackSize[level];
-            lastCssStackSize[level] = 0;
-            level--;
-            debugCssParent("return as view group");
+            mCssStack.pop();
             return view;
         }
     }
@@ -193,17 +159,19 @@ public final class HNRenderer {
     private View createView(@NonNull HNDomTree tree, @NonNull HNSandBoxContext sandBoxContext,
                             @NonNull ViewGroup parent, @NonNull Context context, @NonNull
                                     AttrsSet attrsSet, @NonNull ViewGroup.LayoutParams params,
-                            @NonNull HNViewGroup root, Css css, Set<CssSelector> parentSelector,
-                            SelectorMapHolder outSelectors) throws HNRenderException {
+                            @NonNull HNViewGroup root, StyleSheet styleSheet, Set<CssSelector>
+                                    parentSelector, SelectorMapHolder outSelectors) throws
+            HNRenderException {
 
-        String tag = tree.getTag();
-        PerformanceWatcher watcher = Performance.newWatcher();
+        String type = tree.getTag();
 
         level++;
 
+        mCssStack.push();
+
         try {
             View v;
-            if (HtmlTag.isDivOrTemplate(tag)) {
+            if (HtmlTag.isDivOrTemplate(type)) {
                 Object displayObj = attrsSet.getAttr(tree, "display");
                 if (displayObj != null && displayObj instanceof String) {
                     String display = (String) displayObj;
@@ -228,29 +196,27 @@ public final class HNRenderer {
                 params.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
             } else {
-                v = createViewByTag(context, tag);
+                v = createViewByTag(context, type);
             }
 
             if (v == null) {
-                HNLog.e(HNLog.RENDER, "createView createDiv: view is null with tag " + tag);
+                HNLog.e(HNLog.RENDER, "createView createDiv: view is null with tag " + type);
                 return null;
             }
 
-            watcher.check("createContext view" + v.toString());
+            // ------- below starts the styleSheet process part -------
 
             try {
-                debugCssParent("before apply to " + tag);
-
                 /**
-                 * First apply the parent css style to it.
+                 * First apply the parent styleSheet style to it.
                  */
-                for (int i = 0; i < parentIndex; i++) {
-                    mParentCss.index = i;
+                for (int i = 0; i < mCssStack.size(); i++) {
+                    mParentCss.updateIndex(i);
                     AttrsSet attrs;
-                    if (parentCssStack[i] > 0) {
+                    if (mCssStack.css(i) > 0) {
                         attrs = attrsSet;
                     } else {
-                        attrs = css.mCssSet;
+                        attrs = styleSheet.mCssSet;
                     }
                     attrs.apply(context, sandBoxContext, v, mParentCss, null, tree.getTag(),
                             parent, params, false, true);
@@ -263,45 +229,41 @@ public final class HNRenderer {
                         parent, params, true, false);
             } catch (AttrApplyException e) {
                 e.printStackTrace();
+                HNLog.e(HNLog.RENDER, "wrong when apply attr to " + type);
             }
 
-            Set<CssSelector> cssSelectors = css.matchedSelector(tag, tree.getId(), tree.getClazz
-                    (), parentSelector);
-            outSelectors.instance = cssSelectors;
+            // core part to handle the styleSheet selectors
 
-            try {
-                for (CssSelector selector : cssSelectors) {
-                    if (selector.next() == null) {
-                        css.mCssSet.apply(context, sandBoxContext, v, selector, tree.getInner(),
-                                tree.getTag(), parent, params, false, false);
-                        parentCssStack[parentIndex++] = -selector.attrIndex();
-                        lastCssStackSize[level]++;
+            Set<CssSelector> matchedSelectors = styleSheet.matchedSelector(type, tree.getId(),
+                    tree.getClazz());
+
+            for (CssSelector selector : matchedSelectors) {
+                if (selector.matchBackword(tree)) {
+                    try {
+                        styleSheet.mCssSet.apply(context, sandBoxContext, v, selector, tree
+                                .getInner(), tree.getTag(), parent, params, false, false);
+                    } catch (AttrApplyException e) {
+                        e.printStackTrace();
                     }
-
                 }
-            } catch (AttrApplyException e) {
-                e.printStackTrace();
             }
-
-            debugCssParent("after apply");
-
-            watcher.checkDone("createContext view " + v.toString() + ", and give it attrs.");
             return v;
+
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-            throw new HNRenderException("class not found " + tag);
+            throw new HNRenderException("class not found " + type);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
-            throw new HNRenderException("class's constructor is missing " + tag);
+            throw new HNRenderException("class's constructor is missing " + type);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
-            throw new HNRenderException("class's constructor can not be accessed " + tag);
+            throw new HNRenderException("class's constructor can not be accessed " + type);
         } catch (InstantiationException e) {
             e.printStackTrace();
-            throw new HNRenderException("class's constructor can not be invoked " + tag);
+            throw new HNRenderException("class's constructor can not be invoked " + type);
         } catch (InvocationTargetException e) {
             e.printStackTrace();
-            throw new HNRenderException("class's method has something wrong " + tag);
+            throw new HNRenderException("class's method has something wrong " + type);
         }
 
     }
@@ -316,7 +278,7 @@ public final class HNRenderer {
             return null;
         }
 
-        HNLog.d(HNLog.ATTR, "createContext view" + viewClassName + " with tag" +
+        HNLog.d(HNLog.RENDER, "createContext view" + viewClassName + " with tag" +
                 tagName);
 
         // first let viewCreateHandler to createContext view
@@ -348,6 +310,19 @@ public final class HNRenderer {
         return null;
     }
 
+
+    private void performCreate(HNSandBoxContext sandBoxContext) {
+        if (sandBoxContext != null) {
+            sandBoxContext.onViewCreate();
+        }
+    }
+
+    private void performCreated(HNSandBoxContext sandBoxContext) {
+        if (sandBoxContext != null) {
+            sandBoxContext.onViewLoaded();
+        }
+    }
+
     static void setWebViewCreator(@NonNull WebViewCreator handler) {
         sWebViewHandler = handler;
     }
@@ -367,6 +342,23 @@ public final class HNRenderer {
     @NonNull
     public static ImageViewAdapter getImageViewAdpater() {
         return sImageViewAdapter;
+    }
+
+    public static ViewGroup.LayoutParams createLayoutParams(ViewGroup viewGroup) throws
+            HNRenderException {
+        if (viewGroup instanceof AbsoluteLayout) {
+            return new AbsoluteLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup
+                    .LayoutParams.WRAP_CONTENT, 0, 0);
+        } else if (viewGroup instanceof HtmlLayout) {
+            return new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.MarginLayoutParams.WRAP_CONTENT);
+        } else if (viewGroup instanceof FlexboxLayout) {
+            return new FlexboxLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup
+                    .LayoutParams.WRAP_CONTENT);
+        } else {
+            throw new HNRenderException("can't create related layoutParams, unknown " +
+                    "view type " + viewGroup.toString());
+        }
     }
 
 
@@ -392,24 +384,20 @@ public final class HNRenderer {
 
         private int index;
 
+        public void updateIndex(int index) {
+            this.index = index;
+        }
+
         @Override
         public int attrIndex() {
-            return parentCssStack[index] > 0 ? parentCssStack[index] : -parentCssStack[index];
+            int attrIndex = mCssStack.css(index);
+            return attrIndex > 0 ? attrIndex : -attrIndex;
         }
 
         @Override
         public void setAttrIndex(int newIndex) {
 
         }
-    }
-
-    private void debugCssParent(String msg) {
-        HNLog.d(HNLog.RENDER, "---------" + msg + "---------");
-        HNLog.d(HNLog.RENDER, "parentIndex=" + parentIndex);
-        HNLog.d(HNLog.RENDER, "level=" + level);
-        HNLog.d(HNLog.RENDER, "stackCss=" + Arrays.toString(parentCssStack));
-        HNLog.d(HNLog.RENDER, "stackSize=" + Arrays.toString(lastCssStackSize));
-        HNLog.d(HNLog.RENDER, "------------------");
     }
 
 

@@ -14,7 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-final class HNDomTree implements Parser.ParseCallback, AttrsOwner {
+final class HNDomTree implements Parser.ParseCallback, AttrsOwner, DomElement {
 
     static final String INNER_TREE_TAG = "inner";
 
@@ -155,7 +155,8 @@ final class HNDomTree implements Parser.ParseCallback, AttrsOwner {
 
     }
 
-    List<HNDomTree> children() {
+    @Override
+    public List<HNDomTree> children() {
         sortChildrenIfNecessary();
         return mChildren;
     }
@@ -228,6 +229,16 @@ final class HNDomTree implements Parser.ParseCallback, AttrsOwner {
     }
 
     @Override
+    public boolean hasClazz() {
+        return mClass != null;
+    }
+
+    @Override
+    public boolean hasId() {
+        return mId != null;
+    }
+
+    @Override
     public int attrIndex() {
         return mAttrIndex;
     }
@@ -243,6 +254,11 @@ final class HNDomTree implements Parser.ParseCallback, AttrsOwner {
 
     public void setId(String id) {
         this.mId = id;
+    }
+
+    @Override
+    public String getType() {
+        return mTag;
     }
 
     public String getClazz() {

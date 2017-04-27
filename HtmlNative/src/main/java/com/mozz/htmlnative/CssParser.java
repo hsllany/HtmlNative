@@ -22,7 +22,7 @@ class CssParser {
     private static final int SELECTOR_DOT = 1 << 8;
     private static final int SELECTOR_ID = 1;
     private static final int SELECTOR_CLASS = 1 << 1;
-    private static final int SELECTOR_TAG = 1 << 2;
+    private static final int SELECTOR_TYPE = 1 << 2;
     private static final int START_BRACE = 1 << 3;
     private static final int END_BRACE = 1 << 4;
     private static final int KEY = 1 << 5;
@@ -34,12 +34,19 @@ class CssParser {
     private static final int VALUE_END_PAREN = 1 << 13;
     private static final int COLON = 1 << 7;
     private static final int SEMICOLON = 1 << 8;
+    private static final int COMMA = 1 << 14;
+    private static final int END_ANGLE_BRACKET = 1 << 15;
 
-    private static final int SELECTOR_START = SELECTOR_HASH | SELECTOR_TAG | SELECTOR_DOT;
+    private static final int SELECTOR_START = SELECTOR_HASH | SELECTOR_TYPE | SELECTOR_DOT;
     private static final int VALUE = VALUE_STRING | VALUE_INT | VALUE_DOUBLE | VALUE_HASH |
             VALUE_START_PAREN | VALUE_END_PAREN;
 
     private int lookFor;
+
+    private static final int CHAIN_DESCENDANT = 0x01;
+    private static final int CHAIN_CHILD = 0x02;
+    private static final int CHAIN_GROUP = 0x03;
+
 
     @Nullable
     private Token mCurToken;
@@ -57,45 +64,80 @@ class CssParser {
 
         String keyCache = null;
 
+        int chainType = CHAIN_DESCENDANT;
+
         while (true) {
             scan();
 
             switch (mCurToken.type()) {
+                case Comma:
+                    check(COMMA);
+                    lookFor(SELECTOR_START);
+                    chainType = CHAIN_GROUP;
+                    break;
+
+                case EndAngleBracket:
+                    check(END_ANGLE_BRACKET);
+                    lookFor(SELECTOR_START);
+                    chainType = CHAIN_CHILD;
+                    break;
+
                 case Hash:
                     check(SELECTOR_HASH | VALUE);
                     lookFor(SELECTOR_ID);
                     break;
+
                 case Id:
+                    String idValue = mCurToken.stringValue();
                     // tag selector should be in the first position of whole if-statement
-                    if (isLookingFor(SELECTOR_TAG)) {
+                    if (isLookingFor(SELECTOR_TYPE)) {
                         if (cssSelector == null) {
-                            cssSelector = new TypeSelector(mCurToken.stringValue());
-                            segment.mCss.newAttr(cssSelector);
+                            cssSelector = new TypeSelector(idValue);
+                            segment.mStyleSheet.newAttr(cssSelector);
                         } else {
-                            cssSelector.chain(new TypeSelector(mCurToken.stringValue()));
+                            CssSelector groupOne = new TypeSelector(idValue);
+                            if (chain(cssSelector, groupOne, chainType)) {
+                                segment.mStyleSheet.putSelector(cssSelector);
+                                cssSelector = groupOne;
+                            }
                         }
-                        lookFor(START_BRACE | SELECTOR_START);
+                        lookFor(START_BRACE | SELECTOR_START | COMMA | END_ANGLE_BRACKET);
+                        chainType = CHAIN_DESCENDANT;
                     } else if (isLookingFor(SELECTOR_CLASS)) {
                         if (cssSelector == null) {
-                            cssSelector = new ClassSelector(mCurToken.stringValue());
-                            segment.mCss.newAttr(cssSelector);
+                            cssSelector = new ClassSelector(idValue);
+                            segment.mStyleSheet.newAttr(cssSelector);
                         } else {
-                            cssSelector.chain(new ClassSelector(mCurToken.stringValue()));
+
+                            CssSelector groupOne = new ClassSelector(idValue);
+                            if (chain(cssSelector, groupOne, chainType)) {
+                                segment.mStyleSheet.putSelector(cssSelector);
+                                cssSelector = groupOne;
+                            }
+
                         }
-                        lookFor(START_BRACE | SELECTOR_START);
+                        lookFor(START_BRACE | SELECTOR_START | COMMA | END_ANGLE_BRACKET);
+                        chainType = CHAIN_DESCENDANT;
                     } else if (isLookingFor(SELECTOR_ID)) {
                         if (cssSelector == null) {
-                            cssSelector = new IdSelector(mCurToken.stringValue());
-                            segment.mCss.newAttr(cssSelector);
+                            cssSelector = new IdSelector(idValue);
+                            segment.mStyleSheet.newAttr(cssSelector);
                         } else {
-                            cssSelector.chain(new IdSelector(mCurToken.stringValue()));
+
+                            CssSelector groupOne = new IdSelector(idValue);
+                            if (chain(cssSelector, groupOne, chainType)) {
+                                segment.mStyleSheet.putSelector(cssSelector);
+                                cssSelector = groupOne;
+                            }
                         }
-                        lookFor(START_BRACE | SELECTOR_START);
+                        lookFor(START_BRACE | SELECTOR_START | COMMA | END_ANGLE_BRACKET);
+                        chainType = CHAIN_DESCENDANT;
                     } else if (isLookingFor(KEY)) {
                         check(KEY);
-                        keyCache = mCurToken.stringValue();
+                        keyCache = idValue;
                         lookFor(COLON);
                     }
+
                     break;
                 case Dot:
                     check(SELECTOR_DOT);
@@ -116,13 +158,13 @@ class CssParser {
                 case EndBrace:
                     check(END_BRACE);
                     lookFor(SELECTOR_START);
-                    segment.mCss.putSelector(cssSelector);
+                    segment.mStyleSheet.putSelector(cssSelector);
                     cssSelector = null;
                     break;
 
                 case Value:
                     check(VALUE);
-                    segment.mCss.putAttr(cssSelector, keyCache, parseStyleSingle(keyCache,
+                    segment.mStyleSheet.putAttr(cssSelector, keyCache, parseStyleSingle(keyCache,
                             mCurToken.stringValue()));
                     lookFor(VALUE | END_BRACE | SEMICOLON);
                     break;
@@ -143,27 +185,39 @@ class CssParser {
                 case Style:
                 case Html:
                 case Title:
-                    check(SELECTOR_CLASS | SELECTOR_ID | SELECTOR_TAG);
+                    check(SELECTOR_CLASS | SELECTOR_ID | SELECTOR_TYPE);
                     if (isLookingFor(SELECTOR_CLASS)) {
                         if (cssSelector == null) {
                             cssSelector = new ClassSelector(mCurToken.stringValue());
-                            segment.mCss.newAttr(cssSelector);
+                            segment.mStyleSheet.newAttr(cssSelector);
                         } else {
-                            cssSelector.chain(new ClassSelector(mCurToken.stringValue()));
+                            CssSelector groupOne = new ClassSelector(mCurToken.stringValue());
+                            if (chain(cssSelector, groupOne, chainType)) {
+                                segment.mStyleSheet.putSelector(cssSelector);
+                                cssSelector = groupOne;
+                            }
                         }
                     } else if (isLookingFor(SELECTOR_ID)) {
                         if (cssSelector == null) {
                             cssSelector = new IdSelector(mCurToken.stringValue());
-                            segment.mCss.newAttr(cssSelector);
+                            segment.mStyleSheet.newAttr(cssSelector);
                         } else {
-                            cssSelector.chain(new IdSelector(mCurToken.stringValue()));
+                            CssSelector groupOne = new IdSelector(mCurToken.stringValue());
+                            if (chain(cssSelector, groupOne, chainType)) {
+                                segment.mStyleSheet.putSelector(cssSelector);
+                                cssSelector = groupOne;
+                            }
                         }
-                    } else if (isLookingFor(SELECTOR_TAG)) {
+                    } else if (isLookingFor(SELECTOR_TYPE)) {
                         if (cssSelector == null) {
                             cssSelector = new TypeSelector(mCurToken.stringValue());
-                            segment.mCss.newAttr(cssSelector);
+                            segment.mStyleSheet.newAttr(cssSelector);
                         } else {
-                            cssSelector.chain(new TypeSelector(mCurToken.stringValue()));
+                            CssSelector groupOne = new TypeSelector(mCurToken.stringValue());
+                            if (chain(cssSelector, groupOne, chainType)) {
+                                segment.mStyleSheet.putSelector(cssSelector);
+                                cssSelector = groupOne;
+                            }
                         }
                     }
                     lookFor(START_BRACE | SELECTOR_START);
@@ -173,7 +227,7 @@ class CssParser {
                     check(SELECTOR_START);
                     scan();
                     if (mCurToken.type() == TokenType.Slash) {
-                        HNLog.d(HNLog.CSS_PARSER, segment.mCss.toString());
+                        HNLog.d(HNLog.CSS_PARSER, segment.mStyleSheet.toString());
 
                         return;
                     }
@@ -202,7 +256,7 @@ class CssParser {
         }
         mCurToken = lexer.scan();
 
-        HNLog.e(HNLog.CSS_PARSER, "Css -> next is " + mCurToken.toString());
+        HNLog.e(HNLog.CSS_PARSER, "StyleSheet -> next is " + mCurToken.toString());
     }
 
     private boolean shouldScanValue = false;
@@ -277,6 +331,29 @@ class CssParser {
         }
     }
 
+    /**
+     * @param root
+     * @param newCss
+     * @param chainType
+     * @return switch Root With NewCss if true
+     */
+    private static boolean chain(CssSelector root, CssSelector newCss, int chainType) {
+        switch (chainType) {
+            case CHAIN_CHILD:
+                root.chainChild(newCss, false);
+                return false;
+            case CHAIN_GROUP:
+                // if chain group happens, should return true, than root will become the newCss
+                root.chainGroup(newCss);
+                return true;
+            case CHAIN_DESCENDANT:
+                root.chainChild(newCss, true);
+                return false;
+            default:
+                throw new IllegalStateException();
+        }
+    }
+
     private static String lookForToString(int lookFor) {
         StringBuilder sb = new StringBuilder("[ ");
 
@@ -296,7 +373,7 @@ class CssParser {
             sb.append("class ");
         }
 
-        if ((lookFor & SELECTOR_TAG) != 0) {
+        if ((lookFor & SELECTOR_TYPE) != 0) {
             sb.append("type ");
         }
 

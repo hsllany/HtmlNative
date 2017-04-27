@@ -104,6 +104,12 @@ class Lexer {
                 next();
                 return Token.obtainToken(TokenType.Hash, mReader.line(), mReader.column());
 
+            case ',':
+                mLookForScript = 0;
+                mLastCache.setLength(0);
+                next();
+                return Token.obtainToken(TokenType.Comma, mReader.line(), mReader.column());
+
             case '.':
                 mLookForScript = 0;
                 mLastCache.setLength(0);
@@ -539,7 +545,7 @@ class Lexer {
         return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
     }
 
-    protected void clearBuf() {
+    void clearBuf() {
         mBuffer.setLength(0);
         if (mLastCache.length() > 0) {
             mBuffer.append(mLastCache);

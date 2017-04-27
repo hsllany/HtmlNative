@@ -33,6 +33,7 @@ public class DemoApplication extends Application {
 
         HNLog.setDebugLevel(HNLog.PARSER);
         HNLog.setDebugLevel(HNLog.STYLE);
+        HNLog.setDebugLevel(HNLog.PROCESS_THREAD);
 
         HNative.getInstance().setImageViewAdapter(new ImageViewAdapter() {
             @Override

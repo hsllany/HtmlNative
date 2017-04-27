@@ -16,7 +16,7 @@ final class HNSegment {
     boolean mHasScriptEmbed;
     ScriptInfo mScriptInfo;
     HNHead mHead;
-    Css mCss;
+    StyleSheet mStyleSheet;
 
     @NonNull
     private static Map<String, HNSegment> sCache = new ArrayMap<>();
@@ -26,7 +26,7 @@ final class HNSegment {
         mAttrs = new AttrsSet("inLineStyle");
         mHead = new HNHead();
         mHasScriptEmbed = false;
-        mCss = new Css();
+        mStyleSheet = new StyleSheet();
     }
 
     @NonNull

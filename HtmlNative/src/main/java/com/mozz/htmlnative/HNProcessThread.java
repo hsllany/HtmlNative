@@ -66,7 +66,7 @@ final class HNProcessThread {
 
                 HNLog.d(HNLog.PROCESS_THREAD, "DOM: " + segment.mRootTree.wholeTreeToString());
                 HNLog.d(HNLog.PROCESS_THREAD, "HEAD: " + segment.mHead.toString());
-                HNLog.d(HNLog.PROCESS_THREAD, "CSS " + segment.mCss.mCssSet.toString());
+                HNLog.d(HNLog.PROCESS_THREAD, "CSS " + segment.mStyleSheet.toString());
                 if (segment.mScriptInfo != null) {
                     HNLog.d(HNLog.PROCESS_THREAD, "SCRIPT " + segment.mScriptInfo.toString());
                 }
