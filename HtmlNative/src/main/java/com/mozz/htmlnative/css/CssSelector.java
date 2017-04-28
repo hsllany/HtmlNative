@@ -1,7 +1,6 @@
 package com.mozz.htmlnative.css;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.mozz.htmlnative.DomElement;
 import com.mozz.htmlnative.attrs.AttrsOwner;
@@ -113,15 +112,16 @@ public abstract class CssSelector implements AttrsOwner {
                         curE = curE.getParent();
                     }
                 }
-
-                if (curS == null) {
-                    return true;
-                }
-
-                if (curE == null) {
-                    return false;
-                }
             }
+
+            if (curS == null) {
+                return true;
+            }
+
+            if (curE == null) {
+                return false;
+            }
+
         }
     }
 
