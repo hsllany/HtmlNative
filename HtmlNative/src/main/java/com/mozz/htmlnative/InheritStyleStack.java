@@ -1,7 +1,5 @@
 package com.mozz.htmlnative;
 
-import android.util.Log;
-
 import com.mozz.htmlnative.css.StyleEntry;
 
 import java.util.Arrays;

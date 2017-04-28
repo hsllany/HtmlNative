@@ -20,15 +20,15 @@
 
         <activity
             android:name="com.mozz.htmlnativedemo.LayoutExampleActivity"
-            android:label="RV Example"/>
+            android:label="Layout"/>
 
         <activity
             android:name="com.mozz.htmlnativedemo.ExampleListActivity"
-            android:label="RV Example List"/>
+            android:label="Example"/>
 
         <activity
             android:name=".WebViewActivity"
-            android:label="WebView"/>
+            android:label="Browser"/>
 
         <activity android:name=".TestActivity"/>
     </application>
