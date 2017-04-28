@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.flexbox.FlexboxLayout;
+import com.mozz.htmlnative.DomElement;
 
 /**
  * @author Yang Tao, 17/3/3.
@@ -13,9 +14,9 @@ import com.google.android.flexbox.FlexboxLayout;
 
 class FlexBoxLayoutAttrHandler extends LayoutAttrHandler {
     @Override
-    public void apply(Context context, String tag, View v, String params, Object value,
-                      CharSequence innerElement, ViewGroup.LayoutParams layoutParams, View
-                                  parent, boolean isParent) throws AttrApplyException {
+    public void apply(Context context, View v, DomElement domElement, View parent, ViewGroup
+            .LayoutParams layoutParams, String params, Object value, boolean isParent) throws
+            AttrApplyException {
         FlexboxLayout flexboxLayout = (FlexboxLayout) v;
 
         if (isParent) {
@@ -42,17 +43,14 @@ class FlexBoxLayoutAttrHandler extends LayoutAttrHandler {
     }
 
     @Override
-    public void applyToChild(Context context, String tag, View v, String params, Object value,
-                             CharSequence innerElement, ViewGroup.LayoutParams layoutParams, View
-                                         parent, boolean isParent) throws AttrApplyException {
+    public void applyToChild(Context context, View v, DomElement domElement, View parent, ViewGroup.LayoutParams layoutParams, String params, Object value, boolean isParent) throws AttrApplyException {
 
     }
 
     @Override
-    public void setDefault(Context context, String tag, View v, CharSequence innerElement,
-                           ViewGroup.LayoutParams layoutParams, View parent) throws
-            AttrApplyException {
-        super.setDefault(context, tag, v, innerElement, layoutParams, parent);
+    public void setDefault(Context context, View v, DomElement domElement, ViewGroup.LayoutParams
+            layoutParams, View parent) throws AttrApplyException {
+        super.setDefault(context, v, domElement, layoutParams, parent);
 
         layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
     }

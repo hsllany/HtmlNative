@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsoluteLayout;
@@ -12,7 +13,7 @@ import com.mozz.htmlnative.attrs.AttrApplyException;
 import com.mozz.htmlnative.attrs.AttrHandler;
 import com.mozz.htmlnative.attrs.AttrsHelper;
 import com.mozz.htmlnative.attrs.BackgroundStyle;
-import com.mozz.htmlnative.attrs.InheritAttrs;
+import com.mozz.htmlnative.attrs.InheritStylesRegistry;
 import com.mozz.htmlnative.attrs.LayoutAttrHandler;
 import com.mozz.htmlnative.attrs.PixelValue;
 import com.mozz.htmlnative.common.Utils;
@@ -57,44 +58,45 @@ public final class Styles {
     static final String VAL_DISPLAY_ABSOLUTE = "absolute";
 
     static {
-        InheritAttrs.inherit(ATTR_VISIBLE);
-        InheritAttrs.inherit(ATTR_DIRECTION);
+        InheritStylesRegistry.register(ATTR_VISIBLE);
+        InheritStylesRegistry.register(ATTR_DIRECTION);
     }
 
     /**
      * Apply a params with value to a view
      *
-     * @param context        {@link android.content.Context}
-     * @param tagName        TagName of this view in raw Dom
+     * @param context        {@link Context}
      * @param sandBoxContext {@link HNSandBoxContext}
-     * @param v              {@link android.view.View} view to be processed
-     * @param params         parameter name
-     * @param value          parameter value
-     * @param innerElement   inner String in this tag element
-     * @param parent         {@link android.view.ViewGroup}, parent of the view
-     * @param layoutParams   {@link android.view.ViewGroup.LayoutParams}, layoutParams for parent
+     * @param v              {@link View} view to be processed
+     * @param domElement
+     * @param layoutParams   {@link ViewGroup.LayoutParams}, layoutParams for parent
      *                       when add this view to parent
-     * @throws AttrApplyException
+     * @param parent         {@link ViewGroup}, parent of the view
+     * @param params         parameter name
+     * @param value          parameter value     @throws AttrApplyException
      */
-    public static void applyStyle(Context context, String tagName, final HNSandBoxContext
-            sandBoxContext, View v, String params, Object value, CharSequence innerElement,
-                                  @NonNull ViewGroup parent, @NonNull ViewGroup.LayoutParams
-                                          layoutParams, AttrHandler viewAttrHandler, AttrHandler
-                                          extraAttrHandler, LayoutAttrHandler parentAttr, boolean
-                                          isParent) throws AttrApplyException {
+    public static void applyStyle(Context context, final HNSandBoxContext sandBoxContext, View v,
+                                  DomElement domElement, @NonNull ViewGroup.LayoutParams
+                                          layoutParams, @NonNull ViewGroup parent, AttrHandler
+                                          viewAttrHandler, AttrHandler extraAttrHandler,
+                                  LayoutAttrHandler parentAttr, String params, Object value,
+                                  boolean isParent, InheritStyleStack stack) throws
+            AttrApplyException {
+
+        Log.d("ApplyHsl", "apply " + params + "=" + value.toString() + " to " + domElement
+                .getType());
 
         HNLog.d(HNLog.STYLE, "before apply " + params + " = " + value.toString() + " to " + v + "" +
-                "(" +
-                tagName + ")");
+                "(" + domElement.getType() + ")");
 
         if (isParent) {
-            if (!InheritAttrs.isInherit(params)) {
+            if (!InheritStylesRegistry.isInherit(params)) {
                 return;
             }
         }
 
         HNLog.d(HNLog.STYLE, "apply " + params + " = " + value.toString() + " to " + v + "(" +
-                tagName + ")");
+                domElement.getType() + ")");
 
         switch (params) {
             case ATTR_WIDTH: {
@@ -311,24 +313,28 @@ public final class Styles {
                 // 3. use parent view attr to this
 
                 if (viewAttrHandler != null) {
-                    viewAttrHandler.apply(context, tagName, v, params, value, innerElement,
-                            layoutParams, parent, isParent);
+                    viewAttrHandler.apply(context, v, domElement, parent, layoutParams, params,
+                            value, isParent);
                 }
 
                 // If there extra attr is set, then should be applied also.
                 if (extraAttrHandler != null) {
-                    extraAttrHandler.apply(context, tagName, v, params, value, innerElement,
-                            layoutParams, parent, isParent);
+                    extraAttrHandler.apply(context, v, domElement, parent, layoutParams, params,
+                            value, isParent);
                 }
 
                 // finally apply corresponding parent attr to child
                 if (parentAttr != null) {
-                    parentAttr.applyToChild(context, tagName, v, params, value, innerElement,
-                            layoutParams, parent, isParent);
+                    parentAttr.applyToChild(context, v, domElement, parent, layoutParams, params,
+                            value, isParent);
                 }
                 break;
         }
 
+        // Put inherit style into stack
+        if (stack != null && InheritStylesRegistry.isInherit(params)) {
+            stack.newStyle(params, value);
+        }
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)

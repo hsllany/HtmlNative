@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.mozz.htmlnative.DomElement;
 import com.mozz.htmlnative.HNRenderer;
 import com.mozz.htmlnative.HtmlTag;
 import com.mozz.htmlnative.common.Utils;
@@ -43,19 +44,19 @@ class TextViewAttrHandler extends AttrHandler {
     private static final int DEFAULT_P_PADDING = (int) Utils.dp2px(5);
 
     static {
-        InheritAttrs.inherit(FONT_SIZE);
-        InheritAttrs.inherit(COLOR);
-        InheritAttrs.inherit(LINE_HEIGHT);
-        InheritAttrs.inherit(FONT_STYLE);
-        InheritAttrs.inherit(FONT_WEIGHT);
-        InheritAttrs.inherit(TEXT_ALIGN);
-        InheritAttrs.inherit(TEXT_WORD_SPACING);
+        InheritStylesRegistry.register(FONT_SIZE);
+        InheritStylesRegistry.register(COLOR);
+        InheritStylesRegistry.register(LINE_HEIGHT);
+        InheritStylesRegistry.register(FONT_STYLE);
+        InheritStylesRegistry.register(FONT_WEIGHT);
+        InheritStylesRegistry.register(TEXT_ALIGN);
+        InheritStylesRegistry.register(TEXT_WORD_SPACING);
     }
 
     @Override
-    public void apply(Context context, String tag, View v, String params, final Object value,
-                      CharSequence innerElement, ViewGroup.LayoutParams layoutParams, View
-                                  parent, boolean isParent) throws AttrApplyException {
+    public void apply(Context context, View v, DomElement domElement, View parent, ViewGroup
+            .LayoutParams layoutParams, String params, final Object value, boolean isParent)
+            throws AttrApplyException {
 
         final TextView textView = (TextView) v;
         switch (params) {
@@ -120,7 +121,7 @@ class TextViewAttrHandler extends AttrHandler {
                 break;
 
             case HREF:
-                if (tag.equals(HtmlTag.A)) {
+                if (domElement.getType().equals(HtmlTag.A)) {
                     textView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -184,19 +185,18 @@ class TextViewAttrHandler extends AttrHandler {
     }
 
     @Override
-    public void setDefault(Context context, String tag, View v, CharSequence innerElement,
-                           ViewGroup.LayoutParams layoutParams, View parent) throws
-            AttrApplyException {
+    public void setDefault(Context context, View v, DomElement domElement, ViewGroup.LayoutParams
+            layoutParams, View parent) throws AttrApplyException {
 
         TextView textView = (TextView) v;
 
-        if (!TextUtils.isEmpty(innerElement) && TextUtils.isEmpty(textView.getText())) {
-            textView.setText(innerElement);
+        if (!TextUtils.isEmpty(domElement.getInner()) && TextUtils.isEmpty(textView.getText())) {
+            textView.setText(domElement.getInner());
         }
 
         textView.setTextSize(DEFAULT_SIZE);
 
-        switch (tag) {
+        switch (domElement.getType()) {
             case HtmlTag.H1:
                 textView.setTextSize(DEFAULT_H1_SIZE);
                 layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;

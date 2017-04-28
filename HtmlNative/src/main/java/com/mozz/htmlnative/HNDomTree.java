@@ -33,7 +33,7 @@ final class HNDomTree implements Parser.ParseCallback, AttrsOwner, DomElement {
     private LinkedList<HNDomTree> mChildren;
 
     @Nullable
-    String mTag;
+    String mType;
 
     private HNSegment mModule;
 
@@ -72,7 +72,7 @@ final class HNDomTree implements Parser.ParseCallback, AttrsOwner, DomElement {
     private HNDomTree(@NonNull HNSegment module, String tag, HNDomTree parent, int depth, int
             index) {
         mModule = module;
-        mTag = tag;
+        mType = tag;
         mDepth = depth;
         mParent = parent;
         mIndex = index;
@@ -170,11 +170,12 @@ final class HNDomTree implements Parser.ParseCallback, AttrsOwner, DomElement {
     }
 
     @Nullable
-    public String getTag() {
-        return mTag;
+    public String getType() {
+        return mType;
     }
 
     @Nullable
+    @Override
     public String getInner() {
         return mInnerText;
     }
@@ -221,7 +222,7 @@ final class HNDomTree implements Parser.ParseCallback, AttrsOwner, DomElement {
     public String toString() {
         String index = "@" + mIndex + ":" + mOrder + ", ";
         String text = (mInnerText == null ? "" : ", text=" + mInnerText);
-        return "[" + index + mTag + ", attrs=" + mModule.mAttrs.toString(this) + text + "]";
+        return "[" + index + mType + ", attrs=" + mModule.mAttrs.toString(this) + text + "]";
     }
 
     public HNDomTree getParent() {
@@ -254,11 +255,6 @@ final class HNDomTree implements Parser.ParseCallback, AttrsOwner, DomElement {
 
     public void setId(String id) {
         this.mId = id;
-    }
-
-    @Override
-    public String getType() {
-        return mTag;
     }
 
     public String getClazz() {

@@ -11,9 +11,11 @@ import android.widget.AbsoluteLayout;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.mozz.htmlnative.attrs.AttrApplyException;
-import com.mozz.htmlnative.attrs.AttrsOwner;
+import com.mozz.htmlnative.attrs.AttrHandler;
+import com.mozz.htmlnative.attrs.AttrsHelper;
+import com.mozz.htmlnative.attrs.LayoutAttrHandler;
 import com.mozz.htmlnative.css.CssSelector;
-import com.mozz.htmlnative.css.CssStack;
+import com.mozz.htmlnative.css.StyleEntry;
 import com.mozz.htmlnative.view.HNViewGroup;
 import com.mozz.htmlnative.view.HtmlLayout;
 
@@ -48,17 +50,16 @@ public final class HNRenderer {
 
     private SelectorMapHolder mMapHolder;
 
-    private CssStack mCssStack;
+    private InheritStyleStack mInheritStyleStack;
 
     /**
      * level in Dom Tree
      */
     private int level = 0;
-    private ParentCss mParentCss = new ParentCss();
 
     private HNRenderer() {
         mMapHolder = new SelectorMapHolder();
-        mCssStack = new CssStack();
+        mInheritStyleStack = new InheritStyleStack();
     }
 
     @NonNull
@@ -82,7 +83,7 @@ public final class HNRenderer {
          */
         level = -1;
 
-        mCssStack.reset();
+        mInheritStyleStack.reset();
 
         View v = renderInternal(context, sandBoxContext, segment.mRootTree, segment,
                 rootViewGroup, params, rootViewGroup, segment.mStyleSheet, mMapHolder.instance,
@@ -111,7 +112,7 @@ public final class HNRenderer {
         if (tree.isLeaf()) {
             View v = createView(tree, sandBoxContext, parent, context, attrsSet, params, root,
                     styleSheet, parentSelector, holder);
-            mCssStack.pop();
+            mInheritStyleStack.pop();
             return v;
         } else {
             View view = createView(tree, sandBoxContext, parent, context, attrsSet, params, root,
@@ -139,7 +140,7 @@ public final class HNRenderer {
                     if (v != null) {
                         viewGroup.addView(v, layoutParams);
                     } else {
-                        HNLog.e(HNLog.RENDER, "error when inflating " + child.getTag());
+                        HNLog.e(HNLog.RENDER, "error when inflating " + child.getType());
                     }
                 }
             } else {
@@ -150,7 +151,7 @@ public final class HNRenderer {
                         ", but related HNDomTree has children. Will ignore its children!");
             }
 
-            mCssStack.pop();
+            mInheritStyleStack.pop();
             return view;
         }
     }
@@ -163,11 +164,11 @@ public final class HNRenderer {
                                     parentSelector, SelectorMapHolder outSelectors) throws
             HNRenderException {
 
-        String type = tree.getTag();
+        String type = tree.getType();
 
         level++;
 
-        mCssStack.push();
+        mInheritStyleStack.push();
 
         try {
             View v;
@@ -206,27 +207,34 @@ public final class HNRenderer {
 
             // ------- below starts the styleSheet process part -------
 
+            // first find the related AttrHandler
+
+            AttrHandler viewAttrHandler = AttrsSet.getAttr(v.getClass());
+            AttrHandler extraAttrHandler = AttrsHelper.getExtraAttrFromView(v.getClass());
+            AttrHandler parentAttrHandler = AttrsSet.getAttr(parent.getClass());
+            LayoutAttrHandler parentLayoutAttr = null;
+            if (parentAttrHandler instanceof LayoutAttrHandler) {
+                parentLayoutAttr = (LayoutAttrHandler) parentAttrHandler;
+            }
+
             try {
                 /**
                  * First apply the parent styleSheet style to it.
                  */
-                for (int i = 0; i < mCssStack.size(); i++) {
-                    mParentCss.updateIndex(i);
-                    AttrsSet attrs;
-                    if (mCssStack.css(i) > 0) {
-                        attrs = attrsSet;
-                    } else {
-                        attrs = styleSheet.mCssSet;
-                    }
-                    attrs.apply(context, sandBoxContext, v, mParentCss, null, tree.getTag(),
-                            parent, params, false, true);
 
-                    if (tree.getId() != null) {
-                        sandBoxContext.saveId(tree.getId(), v);
-                    }
+                for (StyleEntry entry : mInheritStyleStack) {
+
+                    // here pass InheritStyleStack null to Styles, is to prevent Style being
+                    // stored in InheritStyleStack twice
+                    Styles.applyStyle(context, sandBoxContext, v, tree, params, parent,
+                            viewAttrHandler, extraAttrHandler, parentLayoutAttr, entry.getKey(),
+                            entry.getValue(), false, null);
                 }
-                attrsSet.apply(context, sandBoxContext, v, tree, tree.getInner(), tree.getTag(),
-                        parent, params, true, false);
+
+                attrsSet.apply(context, sandBoxContext, v, tree, tree, parent, params, true,
+                        false, viewAttrHandler, extraAttrHandler, parentLayoutAttr,
+                        mInheritStyleStack);
+
             } catch (AttrApplyException e) {
                 e.printStackTrace();
                 HNLog.e(HNLog.RENDER, "wrong when apply attr to " + type);
@@ -239,9 +247,11 @@ public final class HNRenderer {
 
             for (CssSelector selector : matchedSelectors) {
                 if (selector.matchBackword(tree)) {
+
                     try {
-                        styleSheet.mCssSet.apply(context, sandBoxContext, v, selector, tree
-                                .getInner(), tree.getTag(), parent, params, false, false);
+                        styleSheet.mCssSet.apply(context, sandBoxContext, v, selector, tree, parent,
+                                params, false, false, viewAttrHandler, extraAttrHandler,
+                                parentLayoutAttr, mInheritStyleStack);
                     } catch (AttrApplyException e) {
                         e.printStackTrace();
                     }
@@ -377,26 +387,6 @@ public final class HNRenderer {
 
         public HNRenderException(Throwable throwable) {
             super(throwable);
-        }
-    }
-
-    private class ParentCss implements AttrsOwner {
-
-        private int index;
-
-        public void updateIndex(int index) {
-            this.index = index;
-        }
-
-        @Override
-        public int attrIndex() {
-            int attrIndex = mCssStack.css(index);
-            return attrIndex > 0 ? attrIndex : -attrIndex;
-        }
-
-        @Override
-        public void setAttrIndex(int newIndex) {
-
         }
     }
 

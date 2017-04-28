@@ -112,44 +112,45 @@ public final class AttrsSet {
     /**
      * apply the attr to the view
      *
-     * @param context        {@link android.content.Context}
-     * @param sandBoxContext {@link HNSandBoxContext}
-     * @param v              {@link android.view.View}
-     * @param tree           {@link AttrsOwner}
-     * @param parent         {@link android.view.ViewGroup}, parent of the view
-     * @param layoutParams   {@link android.view.ViewGroup.LayoutParams}, layoutParams for parent
-     *                       when add this view to parent
-     * @throws AttrApplyException
+     * @param context           {@link Context}
+     * @param sandBoxContext    {@link HNSandBoxContext}
+     * @param v                 {@link View}
+     * @param tree              {@link AttrsOwner}
+     * @param parent            {@link ViewGroup}, parent of the view
+     * @param layoutParams      {@link ViewGroup.LayoutParams}, layoutParams for parent
+     *                          when add this view to parent
+     * @param viewAttrHandler
+     * @param extraAttrHandler
+     * @param parentAttrHandler @throws AttrApplyException
      */
     public void apply(Context context, @NonNull final HNSandBoxContext sandBoxContext, View v,
-                      @NonNull AttrsOwner tree, String innerText, String tagName, @NonNull
-                              ViewGroup parent, @NonNull ViewGroup.LayoutParams layoutParams,
-                      boolean applyDefault, boolean isParent) throws AttrApplyException {
+                      @NonNull AttrsOwner tree, DomElement domElement, @NonNull ViewGroup parent,
+                      @NonNull ViewGroup.LayoutParams layoutParams, boolean applyDefault, boolean
+                              isParent, AttrHandler viewAttrHandler, AttrHandler
+                              extraAttrHandler, LayoutAttrHandler parentAttrHandler,
+                      InheritStyleStack stack) throws AttrApplyException {
 
         int startPosition = tree.attrIndex();
         int treeAttrLength = mLength[startPosition];
 
         HNLog.d(HNLog.ATTR, "[" + mName + "]: apply to AttrsOwner " + tree.attrIndex() + ", to "
-                + tagName);
+                + domElement.getType());
 
-        AttrHandler viewAttrHandler = getAttr(v.getClass());
-        AttrHandler extraAttrHandler = AttrsHelper.getExtraAttrFromView(v.getClass());
-        AttrHandler parentAttrHandler = getAttr(parent.getClass());
-        LayoutAttrHandler parentLayoutAttr = null;
-        if (parentAttrHandler instanceof LayoutAttrHandler) {
-            parentLayoutAttr = (LayoutAttrHandler) parentAttrHandler;
-        }
+
         // Apply the default attr to view first;
         // Then process each parameter.
         if (applyDefault) {
-            applyDefaultStyle(context, tagName, sandBoxContext, v, innerText, parent,
-                    layoutParams, viewAttrHandler, extraAttrHandler, parentLayoutAttr);
+            applyDefaultStyle(context, sandBoxContext, v, domElement, parent, viewAttrHandler,
+                    extraAttrHandler, parentAttrHandler, layoutParams);
         }
 
         for (int i = startPosition; i < startPosition + treeAttrLength; i++) {
-            Styles.applyStyle(context, tagName, sandBoxContext, v, (String) mAttrs[i << 1],
-                    mAttrs[(i << 1) + 1], innerText, parent, layoutParams, viewAttrHandler,
-                    extraAttrHandler, parentLayoutAttr, isParent);
+            String param = (String) mAttrs[i << 1];
+            Object value = mAttrs[(i << 1) + 1];
+
+            Styles.applyStyle(context, sandBoxContext, v, domElement, layoutParams, parent,
+                    viewAttrHandler, extraAttrHandler, parentAttrHandler, param, value, isParent,
+                    stack);
         }
     }
 
@@ -176,20 +177,22 @@ public final class AttrsSet {
     /**
      * Apply a default style to view
      */
-    private static void applyDefaultStyle(Context context, String tagName, final HNSandBoxContext
-            sandBoxContext, View v, String innerElement, @NonNull ViewGroup parent, @NonNull
-            ViewGroup.LayoutParams layoutParams, AttrHandler viewAttrHandler, AttrHandler
-            extralAttrHandler, LayoutAttrHandler parentAttr) throws AttrApplyException {
+    private static void applyDefaultStyle(Context context, final HNSandBoxContext sandBoxContext,
+                                          View v, DomElement domElement, @NonNull ViewGroup
+                                                  parent, AttrHandler viewAttrHandler,
+                                          AttrHandler extralAttrHandler, LayoutAttrHandler
+                                                  parentAttr, @NonNull ViewGroup.LayoutParams
+                                                  layoutParams) throws AttrApplyException {
         if (viewAttrHandler != null) {
-            viewAttrHandler.setDefault(context, tagName, v, innerElement, layoutParams, parent);
+            viewAttrHandler.setDefault(context, v, domElement, layoutParams, parent);
         }
 
         if (extralAttrHandler != null) {
-            extralAttrHandler.setDefault(context, tagName, v, innerElement, layoutParams, parent);
+            extralAttrHandler.setDefault(context, v, domElement, layoutParams, parent);
         }
 
         if (parentAttr != null) {
-            parentAttr.setDefaultToChild(context, tagName, v, innerElement, layoutParams, parent);
+            parentAttr.setDefaultToChild(context, v, domElement, parent, layoutParams);
         }
     }
 
@@ -210,7 +213,7 @@ public final class AttrsSet {
     }
 
     @Nullable
-    private static AttrHandler getAttr(@NonNull Class<? extends View> clazz) {
+    public static AttrHandler getAttr(@NonNull Class<? extends View> clazz) {
         AttrHandler attrHandler = sCachedAttrs.get(clazz);
         if (attrHandler == null) {
             attrHandler = AttrsHandlerFactory.getAttrFromView(clazz);

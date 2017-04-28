@@ -7,15 +7,15 @@ import java.util.Set;
  * @author Yang Tao, 17/4/1.
  */
 
-public final class InheritAttrs {
+public final class InheritStylesRegistry {
 
-    private InheritAttrs() {
+    private InheritStylesRegistry() {
 
     }
 
     private static final Set<String> sInheritAttrs = new HashSet<>();
 
-    public static void inherit(String attr) {
+    public static void register(String attr) {
         sInheritAttrs.add(attr);
     }
 

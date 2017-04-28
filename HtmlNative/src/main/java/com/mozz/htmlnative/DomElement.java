@@ -13,6 +13,7 @@ public interface DomElement {
     List children();
     boolean hasClazz();
     boolean hasId();
+    CharSequence getInner();
 
 
 }

@@ -325,7 +325,7 @@ final class Parser {
                     (), mLexer.column());
         }
 
-        tree.mTag = mCurToken.stringValue();
+        tree.mType = mCurToken.stringValue();
         tree.mTagPair = 1;
         tree.mBracketPair = 1;
         processInternal(tree);
@@ -342,7 +342,7 @@ final class Parser {
      */
     private void processInternal(@NonNull HNDomTree tree, @NonNull ParseCallback callback) throws
             HNSyntaxError {
-        HNLog.d(HNLog.PARSER, "init to parse tree " + tree.getTag());
+        HNLog.d(HNLog.PARSER, "init to parse tree " + tree.getType());
         int index = 0;
 
         lookFor(LK_ID | LK_EndArrowBracket | LK_SLASH);
@@ -377,12 +377,12 @@ final class Parser {
                             scan();
 
                             // compare the tag string with tree.nodeName
-                            if (!tree.getTag().equals(mCurToken.value())) {
+                            if (!tree.getType().equals(mCurToken.value())) {
                                 Log.e(TAG, "View tag should be in pairs, current " +
-                                        "is<" + tree.getTag() + "></" + mCurToken.value() +
+                                        "is<" + tree.getType() + "></" + mCurToken.value() +
                                         ">");
                                 throw new HNSyntaxError("View tag should be in pairs, current " +
-                                        "is<" + tree.getTag() + "></" + mCurToken.value() +
+                                        "is<" + tree.getType() + "></" + mCurToken.value() +
                                         ">", mLexer.line(), mLexer.column());
                             }
 
@@ -406,7 +406,7 @@ final class Parser {
 
                             // handle the <br/> tag
                             if (HtmlTag.BR.equalsIgnoreCase(tag)) {
-                                if (isSwallowInnerTag(tree.getTag())) {
+                                if (isSwallowInnerTag(tree.getType())) {
                                     tree.appendText("\n");
                                 } else {
                                     tree.last().appendText("\n");
@@ -477,7 +477,7 @@ final class Parser {
 
                     case Inner:
                         check(LK_INNER);
-                        if (isSwallowInnerTag(tree.getTag())) {
+                        if (isSwallowInnerTag(tree.getType())) {
                             tree.appendText(mCurToken.stringValue());
                         } else {
                             HNDomTree innerChild = new HNDomTree(tree, HNDomTree.INNER_TREE_TAG,
