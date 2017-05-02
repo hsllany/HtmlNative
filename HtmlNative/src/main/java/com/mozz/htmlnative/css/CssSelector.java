@@ -84,7 +84,11 @@ public abstract class CssSelector implements AttrsOwner {
 
     public abstract boolean matchThis(DomElement element);
 
-    public boolean matchBackword(DomElement element) {
+    public final boolean matchWhole(DomElement element) {
+        return this.matchBackward(element);
+    }
+
+    private boolean matchBackward(DomElement element) {
         DomElement curE = element;
         CssSelector curS = this;
 
@@ -107,7 +111,7 @@ public abstract class CssSelector implements AttrsOwner {
                     curE = curE.getParent();
                 } else {
                     if (curS.matchDirectChild()) {
-                        return false;
+                        curS = curS.mNext;
                     } else {
                         curE = curE.getParent();
                     }
