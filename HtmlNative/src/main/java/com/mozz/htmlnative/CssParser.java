@@ -2,6 +2,7 @@ package com.mozz.htmlnative;
 
 import android.support.annotation.Nullable;
 
+import com.mozz.htmlnative.attrs.BackgroundStyle;
 import com.mozz.htmlnative.css.ClassSelector;
 import com.mozz.htmlnative.css.CssSelector;
 import com.mozz.htmlnative.css.IdSelector;
@@ -10,8 +11,10 @@ import com.mozz.htmlnative.token.Token;
 import com.mozz.htmlnative.token.TokenType;
 
 import java.io.EOFException;
+import java.util.Map;
 
-import static com.mozz.htmlnative.Styles.parseStyleSingle;
+import static com.mozz.htmlnative.CssParser.StyleItemParser.parseKey;
+import static com.mozz.htmlnative.CssParser.StyleItemParser.parseStyleSingle;
 
 /**
  * @author Yang Tao, 17/3/26.
@@ -53,8 +56,11 @@ class CssParser {
 
     private final CssLexer lexer;
 
-    CssParser(Lexer lexer) {
+    private Map<String, Object> styleCache;
+
+    CssParser(Lexer lexer, Parser parentParser) {
         this.lexer = new CssLexer(lexer);
+        this.styleCache = parentParser.styleCache;
     }
 
     public void process(HNSegment segment) throws EOFException, HNSyntaxError {
@@ -159,14 +165,29 @@ class CssParser {
                     check(END_BRACE);
                     lookFor(SELECTOR_START);
                     segment.mStyleSheet.putSelector(cssSelector);
+                    // put all the attr in styleSheet
+                    for (Map.Entry<String, Object> entry : styleCache.entrySet()) {
+                        segment.mStyleSheet.putAttr(cssSelector, entry.getKey(), entry.getValue());
+                    }
+
+                    styleCache.clear();
+
                     cssSelector = null;
                     break;
 
                 case Value:
                     check(VALUE);
-                    segment.mStyleSheet.putAttr(cssSelector, keyCache, parseStyleSingle(keyCache,
-                            mCurToken.stringValue()));
+
+                    Object value = styleCache.get(parseKey(keyCache));
+                    StyleHolder parsedStyle;
+                    if (value != null) {
+                        parsedStyle = parseStyleSingle(keyCache, mCurToken.stringValue(), value);
+                    } else {
+                        parsedStyle = parseStyleSingle(keyCache, mCurToken.stringValue(), null);
+                    }
+                    styleCache.put(parsedStyle.key, parsedStyle.obj);
                     lookFor(VALUE | END_BRACE | SEMICOLON);
+
                     break;
                 case Semicolon:
                     check(SEMICOLON);
@@ -256,7 +277,7 @@ class CssParser {
         }
         mCurToken = lexer.scan();
 
-        HNLog.e(HNLog.CSS_PARSER, "StyleSheet -> next is " + mCurToken.toString());
+        HNLog.d(HNLog.CSS_PARSER, "StyleSheet -> next is " + mCurToken.toString());
     }
 
     private boolean shouldScanValue = false;
@@ -405,5 +426,39 @@ class CssParser {
 
         return sb.toString();
 
+    }
+
+    static final class StyleItemParser {
+
+        private static final StyleHolder STYLE_HOLDER = new StyleHolder();
+
+        static StyleHolder parseStyleSingle(String styleName, String styleValue, Object oldOne) {
+            STYLE_HOLDER.key = null;
+            STYLE_HOLDER.obj = null;
+
+            if (styleName.startsWith(Styles.ATTR_BACKGROUND)) {
+                Object val = BackgroundStyle.createOrChange(styleName, styleValue, oldOne);
+                STYLE_HOLDER.key = Styles.ATTR_BACKGROUND;
+                STYLE_HOLDER.obj = val;
+                return STYLE_HOLDER;
+            } else {
+                STYLE_HOLDER.key = styleName;
+                STYLE_HOLDER.obj = styleValue.trim();
+                return STYLE_HOLDER;
+            }
+        }
+
+        static String parseKey(String key) {
+            if (key.startsWith(Styles.ATTR_BACKGROUND)) {
+                return Styles.ATTR_BACKGROUND;
+            } else {
+                return key;
+            }
+        }
+    }
+
+    static class StyleHolder {
+        String key;
+        Object obj;
     }
 }

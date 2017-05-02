@@ -2,7 +2,6 @@ package com.mozz.htmlnative;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -137,7 +136,7 @@ public final class Styles {
 
             case ATTR_MARGIN: {
                 if (layoutParams instanceof ViewGroup.MarginLayoutParams) {
-                    PixelValue[] pixelValues = Utils.pixelPairs(value.toString());
+                    PixelValue[] pixelValues = Utils.pixelGroups(value.toString());
                     int top = -1;
                     int bottom = -1;
                     int left = -1;
@@ -213,7 +212,7 @@ public final class Styles {
                 break;
 
             case ATTR_PADDING: {
-                PixelValue[] pixelValues = Utils.pixelPairs(value.toString());
+                PixelValue[] pixelValues = Utils.pixelGroups(value.toString());
                 int top = -1;
                 int bottom = -1;
                 int left = -1;
@@ -337,39 +336,6 @@ public final class Styles {
         }
     }
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
-    public static Object parseStyleSingle(String styleName, String styleValue) {
-        if (styleName.equals(ATTR_BACKGROUND)) {
-
-            BackgroundStyle style = new BackgroundStyle();
-
-            String[] subStrings = styleValue.split(" ");
-
-            for (String singleValue : subStrings) {
-                String trueValue = singleValue.trim();
-                if (trueValue.startsWith("url(")) {
-                    style.setUrl(trueValue.substring(trueValue.indexOf('(') + 1, trueValue
-                            .lastIndexOf(')')));
-                } else if (trueValue.startsWith("#")) {
-                    try {
-                        style.setColor(Utils.color(trueValue));
-                    } catch (AttrApplyException e) {
-
-                    }
-                } else if (trueValue.equals("no-repeat")) {
-
-                } else {
-                    try {
-                        style.setColor(Utils.color(trueValue));
-                    } catch (AttrApplyException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            return style;
-        } else {
-            return styleValue.trim();
-        }
-    }
 }
+
+

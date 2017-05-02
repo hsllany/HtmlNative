@@ -23,10 +23,10 @@ public class ParserTest {
 
     private void testBackground(String background, String url, int color) {
         String background1 = background;
-        Object b = Styles.parseStyleSingle("background", background1);
-        Assert.assertTrue(b instanceof BackgroundStyle);
+        CssParser.StyleHolder b = CssParser.StyleItemParser.parseStyleSingle("background", background1, null);
+        Assert.assertTrue(b.obj instanceof BackgroundStyle);
 
-        BackgroundStyle backgroundStyle = (BackgroundStyle) b;
+        BackgroundStyle backgroundStyle = (BackgroundStyle) b.obj;
         TestGlobal.toLog(b.toString());
 
         Assert.assertTrue(backgroundStyle.getUrl().equals(url));
@@ -80,19 +80,6 @@ public class ParserTest {
 
     private void debug(String msg) {
         System.out.println(msg);
-    }
-
-
-    @Test
-    public void parseStyleTest() {
-        String style = "a:  1;b:2";
-
-        HNSegment HNSegment = new HNSegment();
-        HNDomTree tree = new HNDomTree(HNSegment, null, 0, 0);
-
-        Parser.parseStyle(tree, style);
-
-        System.out.println(HNSegment.mAttrs.toString());
     }
 
 }

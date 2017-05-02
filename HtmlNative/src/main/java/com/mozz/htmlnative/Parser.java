@@ -10,7 +10,10 @@ import com.mozz.htmlnative.token.Token;
 import com.mozz.htmlnative.token.TokenType;
 
 import java.io.EOFException;
+import java.util.HashMap;
+import java.util.Map;
 
+import static com.mozz.htmlnative.CssParser.StyleItemParser.parseStyleSingle;
 import static com.mozz.htmlnative.HtmlTag.isSwallowInnerTag;
 import static com.mozz.htmlnative.token.TokenType.EndAngleBracket;
 import static com.mozz.htmlnative.token.TokenType.Equal;
@@ -33,7 +36,7 @@ final class Parser {
 
     private static final String ID = "id";
     private static final String CLAZZ = "class";
-    private static final String TAG = "Parser";
+    private static final String TAG = Parser.class.getSimpleName();
 
     @NonNull
     private final Lexer mLexer;
@@ -49,6 +52,8 @@ final class Parser {
     private Token mCurToken;
 
     private boolean mReserved = false;
+
+    Map<String, Object> styleCache = new HashMap<>();
 
     private static final int LK_StartArrowBracket = 1;
     private static final int LK_EndArrowBracket = 1 << 1;
@@ -66,7 +71,7 @@ final class Parser {
 
     Parser(TextReader reader) {
         mLexer = new Lexer(reader);
-        mCssParser = new CssParser(mLexer);
+        mCssParser = new CssParser(mLexer, this);
     }
 
     public HNSegment process() throws HNSyntaxError {
@@ -87,8 +92,8 @@ final class Parser {
             }
 
             scanFor(StartAngleBracket, Slash, Html, EndAngleBracket);
-        } catch (EOFException e) {
-            Log.w(TAG, "Reach the end of stream");
+        } catch (EOFException ignored) {
+
 
         } finally {
             mLexer.close();
@@ -538,9 +543,11 @@ final class Parser {
         }
     }
 
-    static void parseStyle(@NonNull HNDomTree tree, @NonNull String styleString) {
+    private void parseStyle(@NonNull HNDomTree tree, @NonNull String styleString) {
         StringBuilder sb = new StringBuilder();
         String key = null;
+
+        styleCache.clear();
 
         boolean inBracket = false;
         for (int i = 0; i < styleString.length(); i++) {
@@ -553,7 +560,14 @@ final class Parser {
                 inBracket = false;
                 sb.append(c);
             } else if (c == ';') {
-                tree.addAttr(key, Styles.parseStyleSingle(key, sb.toString()));
+                Object value = styleCache.get(CssParser.StyleItemParser.parseKey(key));
+                CssParser.StyleHolder parsedStyle;
+                if (value != null) {
+                    parsedStyle = parseStyleSingle(key, sb.toString(), value);
+                } else {
+                    parsedStyle = parseStyleSingle(key, sb.toString(), null);
+                }
+                styleCache.put(parsedStyle.key, parsedStyle.obj);
                 sb.setLength(0);
             } else if (c == ':' && !inBracket) {
                 key = sb.toString();
@@ -567,7 +581,18 @@ final class Parser {
         }
 
         if (key != null) {
-            tree.addAttr(key, Styles.parseStyleSingle(key, sb.toString()));
+            Object value = styleCache.get(CssParser.StyleItemParser.parseKey(key));
+            CssParser.StyleHolder parsedStyle;
+            if (value != null) {
+                parsedStyle = parseStyleSingle(key, sb.toString(), value);
+            } else {
+                parsedStyle = parseStyleSingle(key, sb.toString(), null);
+            }
+            styleCache.put(parsedStyle.key, parsedStyle.obj);
+        }
+
+        for (Map.Entry<String, Object> entry : styleCache.entrySet()) {
+            tree.addAttr(entry.getKey(), entry.getValue());
         }
     }
 
@@ -590,7 +615,6 @@ final class Parser {
             mCurToken.recycle();
         }
         mCurToken = mLexer.scan();
-
 
         HNLog.d(HNLog.PARSER, "Process token ->" + mCurToken);
 
@@ -629,7 +653,7 @@ final class Parser {
         }
     }
 
-    private static void parseValue(HNDomTree tree, String parameterName, String valueStr) {
+    private void parseValue(HNDomTree tree, String parameterName, String valueStr) {
         if (parameterName.equals(Styles.ATTR_STYLE)) {
             parseStyle(tree, valueStr);
         } else if (parameterName.equals(ID)) {

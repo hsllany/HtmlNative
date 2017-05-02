@@ -125,7 +125,15 @@ public final class Utils {
         }
     }
 
-    public static PixelValue[] pixelPairs(String ss) throws AttrApplyException {
+    public static float getPercent(String s) throws AttrApplyException {
+        if (s.endsWith("%")) {
+            return toInt(s.substring(0, s.length() - 2)) / 100.f;
+        } else {
+            throw new AttrApplyException("not a percent format " + s);
+        }
+    }
+
+    public static PixelValue[] pixelGroups(String ss) throws AttrApplyException {
         String[] single = ss.split(" ");
 
         PixelValue[] pixelValues = new PixelValue[single.length];

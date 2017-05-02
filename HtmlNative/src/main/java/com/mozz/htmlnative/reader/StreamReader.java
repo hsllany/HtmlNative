@@ -70,11 +70,12 @@ public class StreamReader implements TextReader {
             return ch;
 
         } catch (IOException e) {
-            Log.w(TAG, "IOException EOF " + e.getMessage());
-            e.printStackTrace();
+            close();
+            if (e instanceof EOFException) {
+                throw (EOFException) e;
+            }
             EOFException eofException = new EOFException();
             eofException.initCause(e);
-            close();
             throw eofException;
         }
     }

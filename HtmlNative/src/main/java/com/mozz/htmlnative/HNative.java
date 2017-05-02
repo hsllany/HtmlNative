@@ -116,7 +116,7 @@ public final class HNative {
      * @param tag
      * @param HNViewItem
      */
-    public static void registerRView(String tag, @NonNull HNViewItem HNViewItem) {
+    public static void registerHNiew(String tag, @NonNull HNViewItem HNViewItem) {
         ViewRelations.registerExtraView(tag, HNViewItem);
     }
 
