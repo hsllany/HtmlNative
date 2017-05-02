@@ -246,7 +246,7 @@ public final class HNRenderer {
                     tree.getClazz());
 
             for (CssSelector selector : matchedSelectors) {
-                if (selector.matchBackword(tree)) {
+                if (selector.matchWhole(tree)) {
 
                     try {
                         styleSheet.mCssSet.apply(context, sandBoxContext, v, selector, tree, parent,

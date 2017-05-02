@@ -8,7 +8,6 @@ import android.widget.AbsoluteLayout;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -56,6 +55,8 @@ public final class ViewRelations {
         sReservedTagClassTable.put(HtmlTag.H2, TextView.class.getName());
         sReservedTagClassTable.put(HtmlTag.H3, TextView.class.getName());
         sReservedTagClassTable.put(HtmlTag.H4, TextView.class.getName());
+        sReservedTagClassTable.put(HtmlTag.H5, TextView.class.getName());
+        sReservedTagClassTable.put(HtmlTag.H6, TextView.class.getName());
 
         sReservedTagClassTable.put(HNDomTree.INNER_TREE_TAG, TextView.class.getName());
     }

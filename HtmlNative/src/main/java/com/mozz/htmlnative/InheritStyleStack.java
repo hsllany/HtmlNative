@@ -15,7 +15,6 @@ public final class InheritStyleStack implements Iterable<StyleEntry> {
     private int[] cssCount;
     private Object[] values;
     private String[] params;
-
     private static final int MAX_DEPTH = 20;
 
     public InheritStyleStack() {

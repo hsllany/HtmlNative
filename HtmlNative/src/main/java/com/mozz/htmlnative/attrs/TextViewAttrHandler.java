@@ -41,6 +41,12 @@ class TextViewAttrHandler extends AttrHandler {
     private static final int DEFAULT_H4_SIZE = (int) Utils.em2px(1.f);
     private static final int DEFAULT_H4_PADDING = (int) Utils.em2px(1.12f);
 
+    private static final int DEFAULT_H5_SIZE = (int) Utils.em2px(0.8f);
+    private static final int DEFAULT_H5_PADDING = (int) Utils.em2px(1.12f);
+
+    private static final int DEFAULT_H6_SIZE = (int) Utils.em2px(.6f);
+    private static final int DEFAULT_H6_PADDING = (int) Utils.em2px(1.12f);
+
     private static final int DEFAULT_P_PADDING = (int) Utils.dp2px(5);
 
     static {
@@ -226,6 +232,22 @@ class TextViewAttrHandler extends AttrHandler {
                 layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 AttrsHelper.setPadding(textView, DEFAULT_H4_PADDING, textView.getPaddingLeft(),
                         DEFAULT_H4_PADDING, textView.getPaddingRight());
+                AttrsHelper.setBold(textView);
+                break;
+
+            case HtmlTag.H5:
+                textView.setTextSize(DEFAULT_H5_SIZE);
+                layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                AttrsHelper.setPadding(textView, DEFAULT_H5_PADDING, textView.getPaddingLeft(),
+                        DEFAULT_H5_PADDING, textView.getPaddingRight());
+                AttrsHelper.setBold(textView);
+                break;
+
+            case HtmlTag.H6:
+                textView.setTextSize(DEFAULT_H6_SIZE);
+                layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                AttrsHelper.setPadding(textView, DEFAULT_H6_PADDING, textView.getPaddingLeft(),
+                        DEFAULT_H6_PADDING, textView.getPaddingRight());
                 AttrsHelper.setBold(textView);
                 break;
 

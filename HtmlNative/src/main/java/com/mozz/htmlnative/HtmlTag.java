@@ -21,6 +21,8 @@ public final class HtmlTag {
     public static final String H2 = "h2";
     public static final String H3 = "h3";
     public static final String H4 = "h4";
+    public static final String H5 = "h5";
+    public static final String H6 = "h6";
     public static final String B = "b";
     public static final String INPUT = "input";
     public static final String IMG = "img";
@@ -52,6 +54,8 @@ public final class HtmlTag {
         sSwallowInnerTag.add(HtmlTag.H2);
         sSwallowInnerTag.add(HtmlTag.H3);
         sSwallowInnerTag.add(HtmlTag.H4);
+        sSwallowInnerTag.add(HtmlTag.H5);
+        sSwallowInnerTag.add(HtmlTag.H6);
         sSwallowInnerTag.add(HtmlTag.INPUT);
         sSwallowInnerTag.add(HtmlTag.P);
         sSwallowInnerTag.add(HtmlTag.TEXT);
