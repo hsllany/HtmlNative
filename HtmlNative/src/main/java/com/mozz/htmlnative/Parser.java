@@ -57,7 +57,6 @@ final class Parser {
 
     private static final int LK_StartArrowBracket = 1;
     private static final int LK_EndArrowBracket = 1 << 1;
-
     private static final int LK_ID = 1 << 2;
     private static final int LK_VALUE = 1 << 3;
     private static final int LK_SLASH = 1 << 4;
@@ -93,12 +92,10 @@ final class Parser {
 
             scanFor(StartAngleBracket, Slash, Html, EndAngleBracket);
         } catch (EOFException ignored) {
-
-
         } finally {
             mLexer.close();
-            return segment;
         }
+        return segment;
     }
 
     @NonNull
@@ -543,8 +540,11 @@ final class Parser {
         }
     }
 
+    private StringBuilder mStyleKeyCache = new StringBuilder();
+
     private void parseStyle(@NonNull HNDomTree tree, @NonNull String styleString) {
-        StringBuilder sb = new StringBuilder();
+        mStyleKeyCache.setLength(0);
+
         String key = null;
 
         styleCache.clear();
@@ -555,28 +555,28 @@ final class Parser {
 
             if (c == '(') {
                 inBracket = true;
-                sb.append(c);
+                mStyleKeyCache.append(c);
             } else if (c == ')') {
                 inBracket = false;
-                sb.append(c);
+                mStyleKeyCache.append(c);
             } else if (c == ';') {
                 Object value = styleCache.get(CssParser.StyleItemParser.parseKey(key));
                 CssParser.StyleHolder parsedStyle;
                 if (value != null) {
-                    parsedStyle = parseStyleSingle(key, sb.toString(), value);
+                    parsedStyle = parseStyleSingle(key, mStyleKeyCache.toString(), value);
                 } else {
-                    parsedStyle = parseStyleSingle(key, sb.toString(), null);
+                    parsedStyle = parseStyleSingle(key, mStyleKeyCache.toString(), null);
                 }
                 styleCache.put(parsedStyle.key, parsedStyle.obj);
-                sb.setLength(0);
+                mStyleKeyCache.setLength(0);
             } else if (c == ':' && !inBracket) {
-                key = sb.toString();
-                sb.setLength(0);
+                key = mStyleKeyCache.toString();
+                mStyleKeyCache.setLength(0);
             } else {
                 if (c == ' ' || c == '\r' || c == '\n' || c == '\t' || c == '\f' || c == '\b') {
                     continue;
                 }
-                sb.append(c);
+                mStyleKeyCache.append(c);
             }
         }
 
@@ -584,9 +584,9 @@ final class Parser {
             Object value = styleCache.get(CssParser.StyleItemParser.parseKey(key));
             CssParser.StyleHolder parsedStyle;
             if (value != null) {
-                parsedStyle = parseStyleSingle(key, sb.toString(), value);
+                parsedStyle = parseStyleSingle(key, mStyleKeyCache.toString(), value);
             } else {
-                parsedStyle = parseStyleSingle(key, sb.toString(), null);
+                parsedStyle = parseStyleSingle(key, mStyleKeyCache.toString(), null);
             }
             styleCache.put(parsedStyle.key, parsedStyle.obj);
         }
@@ -654,14 +654,19 @@ final class Parser {
     }
 
     private void parseValue(HNDomTree tree, String parameterName, String valueStr) {
-        if (parameterName.equals(Styles.ATTR_STYLE)) {
-            parseStyle(tree, valueStr);
-        } else if (parameterName.equals(ID)) {
-            tree.setId(valueStr);
-        } else if (parameterName.equals(CLAZZ)) {
-            tree.setClazz(valueStr);
-        } else {
-            tree.addAttr(parameterName, valueStr);
+        switch (parameterName) {
+            case Styles.ATTR_STYLE:
+                parseStyle(tree, valueStr);
+                break;
+            case ID:
+                tree.setId(valueStr);
+                break;
+            case CLAZZ:
+                tree.setClazz(valueStr);
+                break;
+            default:
+                tree.addAttr(parameterName, valueStr);
+                break;
         }
     }
 

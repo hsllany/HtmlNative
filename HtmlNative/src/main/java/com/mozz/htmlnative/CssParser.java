@@ -21,6 +21,7 @@ import static com.mozz.htmlnative.CssParser.StyleItemParser.parseStyleSingle;
  */
 
 class CssParser {
+    
     private static final int SELECTOR_HASH = 1 << 7;
     private static final int SELECTOR_DOT = 1 << 8;
     private static final int SELECTOR_ID = 1;
@@ -432,12 +433,24 @@ class CssParser {
 
         private static final StyleHolder STYLE_HOLDER = new StyleHolder();
 
-        static StyleHolder parseStyleSingle(String styleName, String styleValue, Object oldOne) {
+        /**
+         * to parse single style string into {@link StyleHolder}. For example, 'background:url
+         * (http://www.abc.com/efg.jpg)' will become :<br/>
+         * StyleHolder.key = background<br/>
+         * StyleHolder.obj = {@link BackgroundStyle}<br/>
+         *
+         * @param styleName,      raw style name
+         * @param styleValue,     raw style string
+         * @param oldStyleObject, old style object, if you have one; or null.
+         * @return StyleHolder
+         */
+        static StyleHolder parseStyleSingle(String styleName, String styleValue, Object
+                oldStyleObject) {
             STYLE_HOLDER.key = null;
             STYLE_HOLDER.obj = null;
 
             if (styleName.startsWith(Styles.ATTR_BACKGROUND)) {
-                Object val = BackgroundStyle.createOrChange(styleName, styleValue, oldOne);
+                Object val = BackgroundStyle.createOrChange(styleName, styleValue, oldStyleObject);
                 STYLE_HOLDER.key = Styles.ATTR_BACKGROUND;
                 STYLE_HOLDER.obj = val;
                 return STYLE_HOLDER;

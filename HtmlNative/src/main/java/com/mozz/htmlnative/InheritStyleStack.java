@@ -8,7 +8,7 @@ import java.util.Iterator;
 /**
  * @author Yang Tao, 17/4/25.
  */
-public final class InheritStyleStack implements Iterable<StyleEntry> {
+final class InheritStyleStack implements Iterable<StyleEntry> {
 
     private int level = 0;
     private int index = 0;
@@ -17,31 +17,31 @@ public final class InheritStyleStack implements Iterable<StyleEntry> {
     private String[] params;
     private static final int MAX_DEPTH = 20;
 
-    public InheritStyleStack() {
+    InheritStyleStack() {
         cssCount = new int[MAX_DEPTH];
         values = new Object[MAX_DEPTH * 4];
         params = new String[MAX_DEPTH * 4];
         reset();
     }
 
-    public void push() {
+    void push() {
         level++;
     }
 
-    public void newStyle(String param, Object value) {
+    void newStyle(String param, Object value) {
         values[index] = value;
         params[index] = param;
         index++;
         cssCount[level]++;
     }
 
-    public void pop() {
+    void pop() {
         this.index -= cssCount[level];
         cssCount[level] = 0;
         level--;
     }
 
-    public void reset() {
+    void reset() {
         level = -1;
         index = 0;
         Arrays.fill(values, null);
