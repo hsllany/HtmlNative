@@ -36,7 +36,7 @@ public final class BackgroundViewDelegate {
             }
             imageView.setImageBitmap(bitmap);
         } else {
-//            BitmapUtils.process(bitmap, new BackgroundProcessTask(mTransformMatrix, mView, mColor));
+            BitmapUtils.process(bitmap, new BackgroundProcessTask(mTransformMatrix, mView, mColor));
         }
     }
 

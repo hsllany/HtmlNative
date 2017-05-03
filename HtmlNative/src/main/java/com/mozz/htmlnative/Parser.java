@@ -346,7 +346,6 @@ final class Parser {
         int index = 0;
 
         int bracketPair = 1;
-        Log.d("BB", "1 bracketPair=" + bracketPair + ", tree=" + tree.getType());
 
         lookFor(LK_ID | LK_EndArrowBracket | LK_SLASH);
 
@@ -377,7 +376,6 @@ final class Parser {
 
                             meetEndTag = true;
                             bracketPair++;
-                            Log.d("BB", "5 bracketPair=" + bracketPair + ", tree=" + tree.getType());
                             check(LK_SLASH);
                             scan();
 
@@ -400,7 +398,6 @@ final class Parser {
                             }
 
                             bracketPair--;
-                            Log.d("BB", "2 bracketPair=" + bracketPair + ", tree=" + tree.getType());
                             if (bracketPair != 0) {
                                 Log.e(TAG, "< > must be in pairs, " + ", current bracket" +
                                         " pair is " + bracketPair);
@@ -444,7 +441,6 @@ final class Parser {
                         lookFor(LK_StartArrowBracket | LK_INNER);
 
                         bracketPair--;
-                        Log.d("BB", "3 bracketPair=" + bracketPair + ", tree=" + tree.getType());
 
                         break;
 
@@ -516,7 +512,6 @@ final class Parser {
                         }
 
                         bracketPair--;
-                        Log.d("BB", "4 bracketPair=" + bracketPair + ", tree=" + tree.getType());
                         if (bracketPair != 0) {
                             Log.e(TAG, "< > must be in pairs, " + ", current bracket" +
                                     " pair is " + bracketPair);
