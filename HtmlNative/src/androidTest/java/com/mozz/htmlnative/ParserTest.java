@@ -3,7 +3,7 @@ package com.mozz.htmlnative;
 import android.graphics.Color;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.mozz.htmlnative.attrs.BackgroundStyle;
+import com.mozz.htmlnative.attrs.Background;
 import com.mozz.htmlnative.reader.StringTextReader;
 
 import org.junit.Assert;
@@ -24,9 +24,9 @@ public class ParserTest {
     private void testBackground(String background, String url, int color) {
         String background1 = background;
         CssParser.StyleHolder b = CssParser.StyleItemParser.parseStyleSingle("background", background1, null);
-        Assert.assertTrue(b.obj instanceof BackgroundStyle);
+        Assert.assertTrue(b.obj instanceof Background);
 
-        BackgroundStyle backgroundStyle = (BackgroundStyle) b.obj;
+        Background backgroundStyle = (Background) b.obj;
         TestGlobal.toLog(b.toString());
 
         Assert.assertTrue(backgroundStyle.getUrl().equals(url));

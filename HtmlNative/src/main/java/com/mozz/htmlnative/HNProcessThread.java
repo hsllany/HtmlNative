@@ -26,22 +26,8 @@ final class HNProcessThread {
 
     }
 
-    // for running render task
-    @NonNull
-    private static HandlerThread mRenderThread = new HandlerThread("HNProcessThread");
-    private static Handler mRenderHandler;
-
-    static void init() {
-        mRenderThread.start();
-        mRenderHandler = new Handler(mRenderThread.getLooper());
-    }
-
-    static void quit() {
-        mRenderThread.quit();
-    }
-
     static void runRenderTask(@NonNull RenderTask r) {
-        mRenderHandler.post(r);
+        HNInternalThread.run(r);
     }
 
     static final class RenderTask extends WefRunnable<Context> {

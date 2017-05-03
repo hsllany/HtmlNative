@@ -23,7 +23,7 @@ public final class HNative {
     public static final String LUA_TAG = "HNLua";
 
     private HNative() {
-        HNProcessThread.init();
+        HNInternalThread.init();
         HNScriptRunnerThread.init();
     }
 
@@ -122,7 +122,7 @@ public final class HNative {
 
     public void onDestroy() {
         HNSegment.clearCache();
-        HNProcessThread.quit();
+        HNInternalThread.quit();
         HNScriptRunnerThread.quit();
     }
 

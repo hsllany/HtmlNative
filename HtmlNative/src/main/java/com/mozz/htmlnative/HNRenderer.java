@@ -15,7 +15,6 @@ import com.mozz.htmlnative.attrs.AttrHandler;
 import com.mozz.htmlnative.attrs.AttrsHelper;
 import com.mozz.htmlnative.attrs.LayoutAttrHandler;
 import com.mozz.htmlnative.css.CssSelector;
-import com.mozz.htmlnative.css.StyleEntry;
 import com.mozz.htmlnative.view.HNViewGroup;
 import com.mozz.htmlnative.view.HtmlLayout;
 
@@ -73,7 +72,7 @@ public final class HNRenderer {
         HNLog.d(HNLog.RENDER, "start to render " + segment.toString());
         HNViewGroup rootViewGroup = new HNViewGroup(context);
 
-        HNSandBoxContext sandBoxContext = SandBoxContextImpl.createContext(rootViewGroup,
+        HNSandBoxContext sandBoxContext = HNSandBoxContextImpl.createContext(rootViewGroup,
                 segment, context);
 
         this.performCreate(sandBoxContext);
@@ -222,7 +221,7 @@ public final class HNRenderer {
                  * First apply the parent styleSheet style to it.
                  */
 
-                for (StyleEntry entry : mInheritStyleStack) {
+                for (InheritStyleStack.StyleEntry entry : mInheritStyleStack) {
 
                     // here pass InheritStyleStack null to Styles, is to prevent Style being
                     // stored in InheritStyleStack twice
@@ -249,8 +248,8 @@ public final class HNRenderer {
                 if (selector.matchWhole(tree)) {
 
                     try {
-                        styleSheet.mCssSet.apply(context, sandBoxContext, v, selector, tree, parent,
-                                params, false, false, viewAttrHandler, extraAttrHandler,
+                        styleSheet.mCssSet.apply(context, sandBoxContext, v, selector, tree,
+                                parent, params, false, false, viewAttrHandler, extraAttrHandler,
                                 parentLayoutAttr, mInheritStyleStack);
                     } catch (AttrApplyException e) {
                         e.printStackTrace();
@@ -350,7 +349,7 @@ public final class HNRenderer {
     }
 
     @NonNull
-    public static ImageViewAdapter getImageViewAdpater() {
+    public static ImageViewAdapter getImageViewAdapter() {
         return sImageViewAdapter;
     }
 

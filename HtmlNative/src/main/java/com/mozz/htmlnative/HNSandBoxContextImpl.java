@@ -13,7 +13,7 @@ import com.mozz.htmlnative.view.HNViewGroup;
 /**
  * @author Yang Tao, 17/3/6.
  */
-final class SandBoxContextImpl implements HNSandBoxContext {
+final class HNSandBoxContextImpl implements HNSandBoxContext {
 
     private static boolean DEBUG = false;
 
@@ -29,7 +29,7 @@ final class SandBoxContextImpl implements HNSandBoxContext {
 
     private final Context mContext;
 
-    private SandBoxContextImpl(HNSegment segment, Context context, HNViewGroup rootView) {
+    private HNSandBoxContextImpl(HNSegment segment, Context context, HNViewGroup rootView) {
         mRootView = rootView;
         mSegment = segment;
         mContext = context;
@@ -123,7 +123,7 @@ final class SandBoxContextImpl implements HNSandBoxContext {
 
     @NonNull
     static HNSandBoxContext createContext(@NonNull HNViewGroup layout, HNSegment module, Context context) {
-        return new SandBoxContextImpl(module, context, layout);
+        return new HNSandBoxContextImpl(module, context, layout);
     }
 
 }

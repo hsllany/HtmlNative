@@ -52,11 +52,6 @@ final class HNDomTree implements Parser.ParseCallback, AttrsOwner, DomElement {
 
     private int mAttrIndex;
 
-    // for cache use
-    int mBracketPair;
-
-    int mTagPair;
-
     private int mOrder = -1;
 
     /**

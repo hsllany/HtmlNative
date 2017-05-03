@@ -16,7 +16,7 @@ import com.mozz.htmlnative.HNative;
 import com.mozz.htmlnative.HrefLinkHandler;
 import com.mozz.htmlnative.ImageViewAdapter;
 import com.mozz.htmlnative.WebViewCreator;
-import com.mozz.htmlnative.view.ViewImageAdapter;
+import com.mozz.htmlnative.view.BackgroundViewDelegate;
 import com.squareup.leakcanary.LeakCanary;
 
 /**
@@ -37,14 +37,14 @@ public class DemoApplication extends Application {
 
         HNative.getInstance().setImageViewAdapter(new ImageViewAdapter() {
             @Override
-            public void setImage(String src, final ViewImageAdapter imageView) {
+            public void setImage(String src, final BackgroundViewDelegate imageView) {
                 Glide.with(DemoApplication.this).load(src).asBitmap().into(new SimpleTarget<Bitmap>() {
 
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap>
                             glideAnimation) {
                         Log.d("GlideTest", "onResourceReady");
-                        imageView.setImage(resource);
+                        imageView.setBitmap(resource);
                     }
                 });
 

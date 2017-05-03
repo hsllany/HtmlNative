@@ -1,6 +1,6 @@
 package com.mozz.htmlnative;
 
-import com.mozz.htmlnative.view.ViewImageAdapter;
+import com.mozz.htmlnative.view.BackgroundViewDelegate;
 
 /**
  * @author Yang Tao, 17/3/10.
@@ -18,7 +18,7 @@ final class DefaultImageAdapter implements ImageViewAdapter {
     }
 
     @Override
-    public void setImage(String src, ViewImageAdapter imageView) {
+    public void setImage(String src, BackgroundViewDelegate imageView) {
         //do nothing
     }
 }

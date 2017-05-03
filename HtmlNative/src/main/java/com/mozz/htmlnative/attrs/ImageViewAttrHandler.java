@@ -1,12 +1,14 @@
 package com.mozz.htmlnative.attrs;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Matrix;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.mozz.htmlnative.DomElement;
 import com.mozz.htmlnative.HNRenderer;
-import com.mozz.htmlnative.view.ViewImageAdapter;
+import com.mozz.htmlnative.view.BackgroundViewDelegate;
 
 class ImageViewAttrHandler extends AttrHandler {
 
@@ -14,8 +16,18 @@ class ImageViewAttrHandler extends AttrHandler {
     public void apply(Context context, View v, DomElement domElement, View parent, ViewGroup
             .LayoutParams layoutParams, String params, Object value, boolean isParent) throws
             AttrApplyException {
-        if (params.equals("src") && HNRenderer.getImageViewAdpater() != null && !isParent) {
-            HNRenderer.getImageViewAdpater().setImage(value.toString(), new ViewImageAdapter(v));
+        if (params.equals("src") && HNRenderer.getImageViewAdapter() != null && !isParent) {
+            Matrix matrix = null;
+            String url = value.toString();
+            int color = Color.WHITE;
+            if (value instanceof Background) {
+                matrix = Background.createBitmapMatrix((Background) value);
+                url = ((Background) value).getUrl();
+                color = ((Background) value).getColor();
+            }
+
+            HNRenderer.getImageViewAdapter().setImage(url, new BackgroundViewDelegate(v, matrix,
+                    color));
         }
     }
 

@@ -1,9 +1,9 @@
 package com.mozz.htmlnative;
 
 import android.content.Context;
+import android.graphics.Matrix;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsoluteLayout;
@@ -11,12 +11,12 @@ import android.widget.AbsoluteLayout;
 import com.mozz.htmlnative.attrs.AttrApplyException;
 import com.mozz.htmlnative.attrs.AttrHandler;
 import com.mozz.htmlnative.attrs.AttrsHelper;
-import com.mozz.htmlnative.attrs.BackgroundStyle;
+import com.mozz.htmlnative.attrs.Background;
 import com.mozz.htmlnative.attrs.InheritStylesRegistry;
 import com.mozz.htmlnative.attrs.LayoutAttrHandler;
 import com.mozz.htmlnative.attrs.PixelValue;
 import com.mozz.htmlnative.common.Utils;
-import com.mozz.htmlnative.view.ViewImageAdapter;
+import com.mozz.htmlnative.view.BackgroundViewDelegate;
 
 /**
  * @author Yang Tao, 17/3/30.
@@ -82,9 +82,6 @@ public final class Styles {
                                   boolean isParent, InheritStyleStack stack) throws
             AttrApplyException {
 
-        Log.d("ApplyHsl", "apply " + params + "=" + value.toString() + " to " + domElement
-                .getType());
-
         HNLog.d(HNLog.STYLE, "before apply " + params + " = " + value.toString() + " to " + v + "" +
                 "(" + domElement.getType() + ")");
 
@@ -119,14 +116,15 @@ public final class Styles {
             break;
 
             case ATTR_BACKGROUND:
-                if (value instanceof BackgroundStyle) {
-                    BackgroundStyle backgroundStyle = (BackgroundStyle) value;
+                if (value instanceof Background) {
+                    Background background = (Background) value;
 
-                    if (!TextUtils.isEmpty(backgroundStyle.getUrl())) {
-                        HNRenderer.getImageViewAdpater().setImage(backgroundStyle.getUrl(), new
-                                ViewImageAdapter(v));
-                    } else if (backgroundStyle.isColorSet()) {
-                        v.setBackgroundColor(backgroundStyle.getColor());
+                    if (!TextUtils.isEmpty(background.getUrl())) {
+                        Matrix matrix = Background.createBitmapMatrix(background);
+                        HNRenderer.getImageViewAdapter().setImage(background.getUrl(), new
+                                BackgroundViewDelegate(v, matrix, background.getColor()));
+                    } else if (background.isColorSet()) {
+                        v.setBackgroundColor(background.getColor());
                     }
                 } else {
                     throw new AttrApplyException("Background style is wrong when parsing.");

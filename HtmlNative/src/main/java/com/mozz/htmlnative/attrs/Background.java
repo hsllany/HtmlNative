@@ -1,6 +1,7 @@
 package com.mozz.htmlnative.attrs;
 
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.util.Log;
 
 import com.mozz.htmlnative.common.Utils;
@@ -9,7 +10,7 @@ import com.mozz.htmlnative.common.Utils;
  * @author Yang Tao, 17/3/24.
  */
 
-public class BackgroundStyle {
+public class Background {
 
     public static final int REPEAT = 0x00000001;
     public static final int REPEAT_X = 0x00000002;
@@ -86,12 +87,12 @@ public class BackgroundStyle {
         this.y = y;
     }
 
-    public static BackgroundStyle createOrChange(String param, String val, Object oldOne) {
-        BackgroundStyle style;
+    public static Background createOrChange(String param, String val, Object oldOne) {
+        Background style;
         if (oldOne == null) {
-            style = new BackgroundStyle();
+            style = new Background();
         } else {
-            style = (BackgroundStyle) oldOne;
+            style = (Background) oldOne;
         }
 
         String[] subStrings = val.trim().split("\\s+");
@@ -210,12 +211,11 @@ public class BackgroundStyle {
                 if (subStrings.length >= 1) {
                     String image = subStrings[0];
                     if (image.startsWith("url(")) {
-                        style.setUrl(image.substring(image.indexOf('(') + 1, image.lastIndexOf(')')
-                        ).trim());
+                        style.setUrl(image.substring(image.indexOf('(') + 1,
+                                image.lastIndexOf(')')).trim());
                     }
                 }
-            }
-            break;
+            } break;
 
             case "background-position": {
 
@@ -296,5 +296,11 @@ public class BackgroundStyle {
 
         Log.d("StyleBackground", style.toString());
         return style;
+    }
+
+    public static Matrix createBitmapMatrix(Background background) {
+        Matrix matrix = new Matrix();
+        matrix.setTranslate(background.getX(), background.getY());
+        return matrix;
     }
 }

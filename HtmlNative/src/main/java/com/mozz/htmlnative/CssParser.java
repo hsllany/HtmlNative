@@ -2,7 +2,7 @@ package com.mozz.htmlnative;
 
 import android.support.annotation.Nullable;
 
-import com.mozz.htmlnative.attrs.BackgroundStyle;
+import com.mozz.htmlnative.attrs.Background;
 import com.mozz.htmlnative.css.ClassSelector;
 import com.mozz.htmlnative.css.CssSelector;
 import com.mozz.htmlnative.css.IdSelector;
@@ -21,7 +21,7 @@ import static com.mozz.htmlnative.CssParser.StyleItemParser.parseStyleSingle;
  */
 
 class CssParser {
-    
+
     private static final int SELECTOR_HASH = 1 << 7;
     private static final int SELECTOR_DOT = 1 << 8;
     private static final int SELECTOR_ID = 1;
@@ -437,7 +437,7 @@ class CssParser {
          * to parse single style string into {@link StyleHolder}. For example, 'background:url
          * (http://www.abc.com/efg.jpg)' will become :<br/>
          * StyleHolder.key = background<br/>
-         * StyleHolder.obj = {@link BackgroundStyle}<br/>
+         * StyleHolder.obj = {@link Background}<br/>
          *
          * @param styleName,      raw style name
          * @param styleValue,     raw style string
@@ -450,7 +450,7 @@ class CssParser {
             STYLE_HOLDER.obj = null;
 
             if (styleName.startsWith(Styles.ATTR_BACKGROUND)) {
-                Object val = BackgroundStyle.createOrChange(styleName, styleValue, oldStyleObject);
+                Object val = Background.createOrChange(styleName, styleValue, oldStyleObject);
                 STYLE_HOLDER.key = Styles.ATTR_BACKGROUND;
                 STYLE_HOLDER.obj = val;
                 return STYLE_HOLDER;

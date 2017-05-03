@@ -328,8 +328,6 @@ final class Parser {
         }
 
         tree.mType = mCurToken.stringValue();
-        tree.mTagPair = 1;
-        tree.mBracketPair = 1;
         processInternal(tree);
     }
 
@@ -346,6 +344,9 @@ final class Parser {
             HNSyntaxError {
         HNLog.d(HNLog.PARSER, "init to parse tree " + tree.getType());
         int index = 0;
+
+        int bracketPair = 1;
+        Log.d("BB", "1 bracketPair=" + bracketPair + ", tree=" + tree.getType());
 
         lookFor(LK_ID | LK_EndArrowBracket | LK_SLASH);
 
@@ -370,11 +371,13 @@ final class Parser {
 
                         scan();
 
+
+
                         if (mCurToken.type() == Slash) {
 
                             meetEndTag = true;
-
-                            tree.mBracketPair++;
+                            bracketPair++;
+                            Log.d("BB", "5 bracketPair=" + bracketPair + ", tree=" + tree.getType());
                             check(LK_SLASH);
                             scan();
 
@@ -396,11 +399,22 @@ final class Parser {
                                         .line(), mLexer.column());
                             }
 
+                            bracketPair--;
+                            Log.d("BB", "2 bracketPair=" + bracketPair + ", tree=" + tree.getType());
+                            if (bracketPair != 0) {
+                                Log.e(TAG, "< > must be in pairs, " + ", current bracket" +
+                                        " pair is " + bracketPair);
+                                throw new HNSyntaxError("< > must be in pairs, " + ", current " +
+                                        "bracket" +
+                                        " pair is " + bracketPair, mLexer.line(), mLexer.column());
+                            }
+
                             // here reach the end of the view tree, just return.
                             callback.onLeaveParse();
                             return;
 
-                        } else if (mCurToken.type() == Id) {
+                        } else if (mCurToken.type() == Id || mCurToken.type() == Script) {
+                            // "mCurToken.type() == Script" is to handle the <script> inside <body>
 
                             check(LK_ID);
 
@@ -419,8 +433,6 @@ final class Parser {
                             } else {
                                 HNDomTree child = new HNDomTree(tree, tag, index++);
                                 tree.addChild(child);
-                                child.mTagPair = 1;
-                                child.mBracketPair = 1;
                                 processInternal(child);
                                 lookFor(LK_StartArrowBracket);
                             }
@@ -431,14 +443,8 @@ final class Parser {
                         check(LK_EndArrowBracket);
                         lookFor(LK_StartArrowBracket | LK_INNER);
 
-                        tree.mBracketPair--;
-                        if (tree.mBracketPair != 0) {
-                            Log.e(TAG, "< > must be in pairs, " + ", current bracket" +
-                                    " pair is " + tree.mBracketPair);
-                            throw new HNSyntaxError("< > must be in pairs, " + ", current bracket" +
-                                    " pair is " + tree.mBracketPair, mLexer.line(), mLexer.column
-                                    ());
-                        }
+                        bracketPair--;
+                        Log.d("BB", "3 bracketPair=" + bracketPair + ", tree=" + tree.getType());
 
                         break;
 
@@ -493,8 +499,6 @@ final class Parser {
                     // for <a/> case
                     case Slash:
 
-                        tree.mTagPair--;
-
                         check(LK_SLASH);
 
                         lookFor(LK_EndArrowBracket);
@@ -511,13 +515,13 @@ final class Parser {
                                     .column());
                         }
 
-                        tree.mBracketPair--;
-                        if (tree.mBracketPair != 0) {
+                        bracketPair--;
+                        Log.d("BB", "4 bracketPair=" + bracketPair + ", tree=" + tree.getType());
+                        if (bracketPair != 0) {
                             Log.e(TAG, "< > must be in pairs, " + ", current bracket" +
-                                    " pair is " + tree.mBracketPair);
+                                    " pair is " + bracketPair);
                             throw new HNSyntaxError("< > must be in pairs, " + ", current bracket" +
-                                    " pair is " + tree.mBracketPair, mLexer.line(), mLexer.column
-                                    ());
+                                    " pair is " + bracketPair, mLexer.line(), mLexer.column());
                         }
                         callback.onLeaveParse();
                         return;
