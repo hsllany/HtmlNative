@@ -94,8 +94,8 @@ final class Parser {
         } catch (EOFException ignored) {
         } finally {
             mLexer.close();
+            return segment;
         }
-        return segment;
     }
 
     @NonNull
