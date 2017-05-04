@@ -4,9 +4,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.mozz.htmlnative.common.CharQueue;
+import com.mozz.htmlnative.reader.TextReader;
 import com.mozz.htmlnative.token.Token;
 import com.mozz.htmlnative.token.TokenType;
-import com.mozz.htmlnative.reader.TextReader;
 
 import java.io.EOFException;
 
@@ -34,11 +34,20 @@ class Lexer {
 
     private boolean mIsInStyle = false;
 
-    // Add for recognize code from Inner Element. If < script > is meet, than mLookForScript==3,
-    // otherwise, mLookForScript < 3.
+    /**
+     * Add for recognize code from Inner Element. If < script > is meet, than mLookForScript==3.
+     * <p>
+     * otherwise, mLookForScript < 3.
+     * <p>
+     * When met <, mLookForScript = 1;
+     * <p>
+     * When met Script, mLookForScript++;
+     * <p>
+     * When met >, mLookForScript++;
+     * <p>
+     * Otherwise, mLookForScript = 0;
+     */
     private int mLookForScript = 0;
-
-    private StringBuilder mLastCache = new StringBuilder();
 
     Lexer(TextReader reader) {
         mReader = reader;
@@ -52,11 +61,10 @@ class Lexer {
     Token scan() throws EOFException, HNSyntaxError {
         this.skipWhiteSpace();
 
-        switch (peekWithLastCache()) {
+        switch (peek()) {
             case '<':
                 mLookForScript = 1;
                 lookFor(LK_NOTHING);
-                mLastCache.setLength(0);
                 next();
                 return Token.obtainToken(TokenType.StartAngleBracket, mReader.line(), mReader
                         .column());
@@ -64,79 +72,66 @@ class Lexer {
             case '"':
                 next();
                 mLookForScript = 0;
-                mLastCache.setLength(0);
                 return scanValue();
             case '>':
                 mLookForScript++;
                 lookFor(LK_INNER);
-                mLastCache.setLength(0);
                 next();
                 return Token.obtainToken(TokenType.EndAngleBracket, mReader.line(), mReader
                         .column());
 
             case '/':
                 mLookForScript = 0;
-                mLastCache.setLength(0);
                 next();
                 return Token.obtainToken(TokenType.Slash, mReader.line(), mReader.column());
 
             case '=':
                 mLookForScript = 0;
-                mLastCache.setLength(0);
                 next();
                 return Token.obtainToken(TokenType.Equal, mReader.line(), mReader.column());
 
             case '{':
                 mLookForScript = 0;
-                mLastCache.setLength(0);
                 next();
                 return Token.obtainToken(TokenType.StartBrace, mReader.line(), mReader.column());
 
             case '}':
                 mLookForScript = 0;
-                mLastCache.setLength(0);
                 next();
                 return Token.obtainToken(TokenType.EndBrace, mReader.line(), mReader.column());
 
             case '#':
                 mLookForScript = 0;
-                mLastCache.setLength(0);
                 next();
                 return Token.obtainToken(TokenType.Hash, mReader.line(), mReader.column());
 
             case ',':
                 mLookForScript = 0;
-                mLastCache.setLength(0);
                 next();
                 return Token.obtainToken(TokenType.Comma, mReader.line(), mReader.column());
 
             case '.':
                 mLookForScript = 0;
-                mLastCache.setLength(0);
                 next();
                 return Token.obtainToken(TokenType.Dot, mReader.line(), mReader.column());
 
             case ':':
                 mLookForScript = 0;
-                mLastCache.setLength(0);
                 next();
                 return Token.obtainToken(TokenType.Colon, mReader.line(), mReader.column());
 
             case ';':
                 mLookForScript = 0;
-                mLastCache.setLength(0);
                 next();
                 return Token.obtainToken(TokenType.Semicolon, mReader.line(), mReader.column());
 
             case '(':
                 mLookForScript = 0;
-                mLastCache.setLength(0);
                 next();
                 return Token.obtainToken(TokenType.StartParen, mReader.line(), mReader.column());
 
             case ')':
                 mLookForScript = 0;
-                mLastCache.setLength(0);
                 next();
                 return Token.obtainToken(TokenType.EndParen, mReader.line(), mReader.column());
 
@@ -162,7 +157,6 @@ class Lexer {
 
     @Nullable
     Token scanNumber() throws EOFException, HNSyntaxError {
-        mLastCache.setLength(0);
         long startColumn = mReader.column();
         long line = mReader.line();
         int v = 0;
@@ -211,8 +205,12 @@ class Lexer {
                     startColumn, Token.EXTRA_NUMBER_PERSENTAGE);
         }
 
-        mLastCache.append(peek());
+        mReserved = 1;
         if (peek() == 'e' || peek() == 'E') {
+
+            //consume the e or E
+            next();
+
             next();
 
             if (!Lexer.isDigit(peek()) && peek() != '-') {
@@ -406,7 +404,28 @@ class Lexer {
 
         clearBuf();
 
+        /*
+         * to handle the case <script></script>, in this case, before 2 next(), peek() is already
+          * point to '<'
+         */
+        int meetEndTagFirst = 0;
+
+        if (peek() == '<') {
+            meetEndTagFirst++;
+        }
+
         next();
+
+        if (peek() == '/') {
+            meetEndTagFirst++;
+        }
+
+        if (meetEndTagFirst == 2) {
+            mReserved = 2;
+            next();
+            return Token.obtainToken(TokenType.ScriptCode, "", line, startColumn);
+        }
+
         next();
 
         // 0 no in any quota, 1 for quotation, 2 for single quotation
@@ -414,9 +433,10 @@ class Lexer {
         while (true) {
             if (inQuotation == 0 && peekHistory(0) == '/' && peekHistory(1) == '<') {
                 mReserved = 2;
+                next();
                 break;
             }
-            char ch = peekHistory(2);
+            char ch = peekHistory(1);
 
             if (inQuotation == 0) {
                 if (ch == '"') {
@@ -440,7 +460,7 @@ class Lexer {
             next();
         }
 
-        return Token.obtainToken(TokenType.Script, mBuffer.toString(), line, startColumn);
+        return Token.obtainToken(TokenType.ScriptCode, mBuffer.toString(), line, startColumn);
     }
 
 
@@ -491,13 +511,6 @@ class Lexer {
         return mCurrent;
     }
 
-    protected char peekWithLastCache() {
-        if (mLastCache.length() > 0) {
-            return mLastCache.charAt(0);
-        }
-        return mCurrent;
-    }
-
     private long currentPositionInFile() {
         return mReader.countOfRead();
     }
@@ -518,7 +531,7 @@ class Lexer {
 
     void next() throws EOFException {
         if (mReserved > 0) {
-            mCurrent = mCacheQueue.peek(CACHE_SIZE - mReserved - 1);
+            mCurrent = mCacheQueue.peek(CACHE_SIZE - mReserved);
             mReserved--;
             return;
         }
@@ -547,9 +560,5 @@ class Lexer {
 
     void clearBuf() {
         mBuffer.setLength(0);
-        if (mLastCache.length() > 0) {
-            mBuffer.append(mLastCache);
-            mLastCache.setLength(0);
-        }
     }
 }

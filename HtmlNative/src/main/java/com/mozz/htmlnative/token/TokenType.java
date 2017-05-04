@@ -58,7 +58,9 @@ public enum TokenType {
 
     Comma(","),
 
-    EndBrace("}");
+    EndBrace("}"),
+
+    ScriptCode("ScriptCode");
 
     private String value;
 

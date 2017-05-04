@@ -63,8 +63,6 @@ public class HtmlLayout extends ViewGroup {
 
             MarginLayoutParams lp = (MarginLayoutParams) child.getLayoutParams();
 
-            Log.d(TAG, child.getMeasuredHeight() + "  " + child.getClass().getSimpleName());
-
             int childWidth = child.getMeasuredWidth() + lp.leftMargin + lp.rightMargin;
             int childHeight = child.getMeasuredHeight() + lp.topMargin + lp.bottomMargin;
 
@@ -143,8 +141,6 @@ public class HtmlLayout extends ViewGroup {
         // 记录最后一行
         mLineLength.add(lineHeight);
         mAllViews.add(lineViews);
-
-        Log.d(TAG, "mAllViews" + mAllViews);
 
         int left = paddingLeft;
         int top = paddingTop;

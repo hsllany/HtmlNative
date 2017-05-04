@@ -52,7 +52,6 @@ public class StreamReader implements TextReader {
         try {
             if (tempPos == tempCount - 1) {
                 if (meetEof) {
-                    Log.w(TAG, "reach the end of the stream!");
                     throw new EOFException("Reach the end of stream!");
                 }
                 fillInCache();

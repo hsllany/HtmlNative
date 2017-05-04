@@ -92,6 +92,7 @@ final class Parser {
 
             scanFor(StartAngleBracket, Slash, Html, EndAngleBracket);
         } catch (EOFException ignored) {
+            Log.w(TAG, "Reach the end of file!");
         } finally {
             mLexer.close();
             return segment;
@@ -159,6 +160,10 @@ final class Parser {
                     check(LK_EndArrowBracket);
 
                     Token scriptToken = mLexer.scanScript();
+                    if (scriptToken.type() != TokenType.ScriptCode) {
+                        throw new HNSyntaxError("Expect code, but meet " + scriptToken.type()
+                                .toString(), mLexer.line(), mLexer.column());
+                    }
                     segment.mHasScriptEmbed = true;
 
                     segment.mScriptInfo = new ScriptInfo(scriptToken, type);
@@ -365,12 +370,8 @@ final class Parser {
                     case StartAngleBracket:
 
                         check(LK_StartArrowBracket);
-
                         lookFor(LK_SLASH | LK_ID);
-
                         scan();
-
-
 
                         if (mCurToken.type() == Slash) {
 
