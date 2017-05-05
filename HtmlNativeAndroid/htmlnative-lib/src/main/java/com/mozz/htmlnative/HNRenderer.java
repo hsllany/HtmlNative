@@ -77,7 +77,7 @@ public final class HNRenderer {
 
         mInheritStyleStack.reset();
 
-        View v = renderInternal(context, sandBoxContext, segment.mRootTree, segment,
+        View v = renderInternal(context, sandBoxContext, segment.mDom, segment,
                 rootViewGroup, params, rootViewGroup, segment.mStyleSheet);
 
         if (v != null) {
@@ -96,7 +96,7 @@ public final class HNRenderer {
                                 @NonNull ViewGroup.LayoutParams params, @NonNull HNViewGroup
                                         root, StyleSheet styleSheet) throws HNRenderException {
 
-        AttrsSet attrsSet = segment.mAttrs;
+        AttrsSet attrsSet = segment.mInlineStyles;
 
         if (tree.isLeaf()) {
             View v = createView(tree, sandBoxContext, parent, context, attrsSet, params, root,

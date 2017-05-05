@@ -16,11 +16,12 @@ import java.util.Map;
 
 public final class HNSegment {
 
-    HNDomTree mRootTree;
-    AttrsSet mAttrs;
+    HNDomTree mDom;
     boolean mHasScriptEmbed;
     ScriptInfo mScriptInfo;
     HNHead mHead;
+
+    AttrsSet mInlineStyles;
     StyleSheet mStyleSheet;
 
     @NonNull
@@ -28,7 +29,7 @@ public final class HNSegment {
     private static final Object sCacheLock = new Object();
 
     HNSegment() {
-        mAttrs = new AttrsSet("inLineStyle");
+        mInlineStyles = new AttrsSet("Inline-Style");
         mHead = new HNHead();
         mHasScriptEmbed = false;
         mStyleSheet = new StyleSheet();
@@ -68,14 +69,14 @@ public final class HNSegment {
     }
 
     public void newAttr(@NonNull AttrsSet.AttrsOwner tree) {
-        mAttrs.register(tree);
+        mInlineStyles.register(tree);
     }
 
     public void put(@NonNull AttrsSet.AttrsOwner tree, String paramsKey, @NonNull Object value) {
-        mAttrs.put(tree, paramsKey, value);
+        mInlineStyles.put(tree, paramsKey, value);
     }
 
-    public String attrToString(AttrsSet.AttrsOwner owner){
-        return mAttrs.toString(owner);
+    public String attrToString(AttrsSet.AttrsOwner owner) {
+        return mInlineStyles.toString(owner);
     }
 }

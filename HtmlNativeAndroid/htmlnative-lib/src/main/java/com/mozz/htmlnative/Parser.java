@@ -79,7 +79,7 @@ final class Parser {
 
     public HNSegment process() throws HNSyntaxError {
         HNSegment segment = new HNSegment();
-        segment.mRootTree = new HNDomTree(segment, null, 0, 0);
+        segment.mDom = new HNDomTree(segment, null, 0, 0);
 
         try {
             scanFor(StartAngleBracket);
@@ -106,7 +106,7 @@ final class Parser {
     @NonNull
     private void processHtmlInside(HNSegment segment) throws HNSyntaxError, EOFException {
 
-        HNDomTree currentTree = segment.mRootTree;
+        HNDomTree currentTree = segment.mDom;
 
         // Look ahead to determine whether current is script or template
         scan();

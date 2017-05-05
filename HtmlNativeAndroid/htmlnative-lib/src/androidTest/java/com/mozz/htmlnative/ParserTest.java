@@ -67,7 +67,7 @@ public class ParserTest {
         try {
             HNSegment rootTree = parser.process();
             debug("\ntree is :");
-            debug(rootTree.mRootTree.wholeTreeToString());
+            debug(rootTree.mDom.wholeTreeToString());
 
             debug("\nfunction is :");
             debug(rootTree.toString());

@@ -49,7 +49,7 @@ final class HNProcessThread {
 
                 final HNSegment segment = HNSegment.load(mFileSource);
 
-                HNLog.d(HNLog.PROCESS_THREAD, "DOM: " + segment.mRootTree.wholeTreeToString());
+                HNLog.d(HNLog.PROCESS_THREAD, "DOM: " + segment.mDom.wholeTreeToString());
                 HNLog.d(HNLog.PROCESS_THREAD, "HEAD: " + segment.mHead.toString());
                 HNLog.d(HNLog.PROCESS_THREAD, "CSS " + segment.mStyleSheet.toString());
                 if (segment.mScriptInfo != null) {
