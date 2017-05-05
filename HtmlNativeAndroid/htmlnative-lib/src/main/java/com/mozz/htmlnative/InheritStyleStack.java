@@ -1,13 +1,14 @@
 package com.mozz.htmlnative;
 
+import com.mozz.htmlnative.css.Styles;
+
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.Map;
 
 /**
  * @author Yang Tao, 17/4/25.
  */
-public final class InheritStyleStack implements Iterable<InheritStyleStack.StyleEntry> {
+public final class InheritStyleStack implements Iterable<Styles.StyleEntry> {
 
     private int level = 0;
     private int index = 0;
@@ -63,11 +64,11 @@ public final class InheritStyleStack implements Iterable<InheritStyleStack.Style
     }
 
     @Override
-    public Iterator<StyleEntry> iterator() {
+    public Iterator<Styles.StyleEntry> iterator() {
         return new InheritStyleIterator();
     }
 
-    private class InheritStyleIterator implements Iterator<StyleEntry> {
+    private class InheritStyleIterator implements Iterator<Styles.StyleEntry> {
         private int index = 0;
         private int size = InheritStyleStack.this.index;
 
@@ -77,51 +78,16 @@ public final class InheritStyleStack implements Iterable<InheritStyleStack.Style
         }
 
         @Override
-        public StyleEntry next() {
+        public Styles.StyleEntry next() {
             if (index > size) {
                 return null;
             }
 
-            StyleEntry entry = new StyleEntry(InheritStyleStack.this.params[index],
+            Styles.StyleEntry entry = new Styles.StyleEntry(InheritStyleStack.this.params[index],
                     InheritStyleStack.this.values[index]);
             index++;
             return entry;
         }
     }
 
-    /**
-     * @author Yang Tao, 17/4/28.
-     */
-    static class StyleEntry implements Map.Entry<String, Object> {
-
-        private String mStyleName;
-        private Object mStyleValue;
-
-        public StyleEntry(String param, Object value) {
-            this.mStyleName = param;
-            this.mStyleValue = value;
-        }
-
-        @Override
-        public String getKey() {
-            return mStyleName;
-        }
-
-        @Override
-        public Object getValue() {
-            return mStyleValue;
-        }
-
-        @Override
-        public Object setValue(Object value) {
-            Object oldVal = mStyleValue;
-            mStyleValue = value;
-            return oldVal;
-        }
-
-        @Override
-        public String toString() {
-            return mStyleName + "=" + mStyleValue;
-        }
-    }
 }

@@ -68,7 +68,7 @@ public final class HNSegment {
     }
 
     public void newAttr(@NonNull AttrsSet.AttrsOwner tree) {
-        mAttrs.newAttr(tree);
+        mAttrs.register(tree);
     }
 
     public void put(@NonNull AttrsSet.AttrsOwner tree, String paramsKey, @NonNull Object value) {

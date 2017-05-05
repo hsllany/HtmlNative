@@ -102,7 +102,7 @@ class CssParser {
                     if (isLookingFor(SELECTOR_TYPE)) {
                         if (cssSelector == null) {
                             cssSelector = new TypeSelector(idValue);
-                            segment.mStyleSheet.newAttr(cssSelector);
+                            segment.mStyleSheet.register(cssSelector);
                         } else {
                             CssSelector groupOne = new TypeSelector(idValue);
                             if (chain(cssSelector, groupOne, chainType)) {
@@ -115,7 +115,7 @@ class CssParser {
                     } else if (isLookingFor(SELECTOR_CLASS)) {
                         if (cssSelector == null) {
                             cssSelector = new ClassSelector(idValue);
-                            segment.mStyleSheet.newAttr(cssSelector);
+                            segment.mStyleSheet.register(cssSelector);
                         } else {
 
                             CssSelector groupOne = new ClassSelector(idValue);
@@ -130,7 +130,7 @@ class CssParser {
                     } else if (isLookingFor(SELECTOR_ID)) {
                         if (cssSelector == null) {
                             cssSelector = new IdSelector(idValue);
-                            segment.mStyleSheet.newAttr(cssSelector);
+                            segment.mStyleSheet.register(cssSelector);
                         } else {
 
                             CssSelector groupOne = new IdSelector(idValue);
@@ -213,7 +213,7 @@ class CssParser {
                     if (isLookingFor(SELECTOR_CLASS)) {
                         if (cssSelector == null) {
                             cssSelector = new ClassSelector(mCurToken.stringValue());
-                            segment.mStyleSheet.newAttr(cssSelector);
+                            segment.mStyleSheet.register(cssSelector);
                         } else {
                             CssSelector groupOne = new ClassSelector(mCurToken.stringValue());
                             if (chain(cssSelector, groupOne, chainType)) {
@@ -224,7 +224,7 @@ class CssParser {
                     } else if (isLookingFor(SELECTOR_ID)) {
                         if (cssSelector == null) {
                             cssSelector = new IdSelector(mCurToken.stringValue());
-                            segment.mStyleSheet.newAttr(cssSelector);
+                            segment.mStyleSheet.register(cssSelector);
                         } else {
                             CssSelector groupOne = new IdSelector(mCurToken.stringValue());
                             if (chain(cssSelector, groupOne, chainType)) {
@@ -235,7 +235,7 @@ class CssParser {
                     } else if (isLookingFor(SELECTOR_TYPE)) {
                         if (cssSelector == null) {
                             cssSelector = new TypeSelector(mCurToken.stringValue());
-                            segment.mStyleSheet.newAttr(cssSelector);
+                            segment.mStyleSheet.register(cssSelector);
                         } else {
                             CssSelector groupOne = new TypeSelector(mCurToken.stringValue());
                             if (chain(cssSelector, groupOne, chainType)) {

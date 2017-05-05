@@ -33,6 +33,8 @@ public class Background {
     private int repeat = REPEAT;
     private float x;
     private float y;
+    private int width;
+    private int height;
     private int positionXMode = POSITION_MODE_PERCENTAGE;
     private int positionYMode = POSITION_MODE_PERCENTAGE;
 
@@ -151,7 +153,7 @@ public class Background {
                                 style.setX(.5f);
                                 style.positionXMode = POSITION_MODE_PERCENTAGE;
                             } else {
-                                style.setX(Utils.toFloat(item));
+                                style.setX((float) Utils.toPixel(item).getPxValue());
                                 style.positionXMode = POSITION_MODE_LENGTH;
                             }
                         } catch (IllegalArgumentException e) {
@@ -175,7 +177,7 @@ public class Background {
                                 style.setY(.5f);
                                 style.positionYMode = POSITION_MODE_PERCENTAGE;
                             } else {
-                                style.setY(Utils.toFloat(item));
+                                style.setY((float) Utils.toPixel(item).getPxValue());
                                 style.positionYMode = POSITION_MODE_LENGTH;
                             }
                         } catch (IllegalArgumentException e) {
@@ -211,11 +213,13 @@ public class Background {
                 if (subStrings.length >= 1) {
                     String image = subStrings[0];
                     if (image.startsWith("url(")) {
-                        style.setUrl(image.substring(image.indexOf('(') + 1,
-                                image.lastIndexOf(')')).trim());
+                        int parenStart = image.indexOf('(');
+                        int parenEnd = image.indexOf(')');
+                        style.setUrl(image.substring(parenStart + 1, parenEnd).trim());
                     }
                 }
-            } break;
+            }
+            break;
 
             case "background-position": {
 
@@ -237,7 +241,7 @@ public class Background {
                                 style.positionXMode = POSITION_MODE_PERCENTAGE;
                             } else {
                                 style.positionXMode = POSITION_MODE_LENGTH;
-                                style.setX(Utils.toFloat(item));
+                                style.setX((float) Utils.toPixel(item).getPxValue());
                             }
                         } else if (lookFor == LK_Y) {
                             if (item.endsWith("%")) {
@@ -254,7 +258,7 @@ public class Background {
                                 style.positionYMode = POSITION_MODE_PERCENTAGE;
                             } else {
                                 style.positionYMode = POSITION_MODE_LENGTH;
-                                style.setY(Utils.toFloat(item));
+                                style.setY((float) Utils.toPixel(item).getPxValue());
                             }
                         } else {
                             break;
@@ -288,6 +292,16 @@ public class Background {
                         default:
 
                     }
+                }
+            }
+            break;
+
+            case "background-size": {
+                if (subStrings.length >= 2) {
+                    String width = subStrings[0];
+                    String height = subStrings[1];
+
+
                 }
             }
             break;

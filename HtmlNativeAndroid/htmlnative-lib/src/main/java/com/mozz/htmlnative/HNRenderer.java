@@ -43,13 +43,6 @@ public final class HNRenderer {
 
     private static final Class<?>[] sConstructorSignature = new Class[]{Context.class};
 
-
-    private static class SelectorMapHolder {
-        Set<CssSelector> instance;
-    }
-
-    private SelectorMapHolder mMapHolder;
-
     private InheritStyleStack mInheritStyleStack;
 
     /**
@@ -58,7 +51,6 @@ public final class HNRenderer {
     private int level = 0;
 
     private HNRenderer() {
-        mMapHolder = new SelectorMapHolder();
         mInheritStyleStack = new InheritStyleStack();
     }
 
@@ -86,8 +78,7 @@ public final class HNRenderer {
         mInheritStyleStack.reset();
 
         View v = renderInternal(context, sandBoxContext, segment.mRootTree, segment,
-                rootViewGroup, params, rootViewGroup, segment.mStyleSheet, mMapHolder.instance,
-                mMapHolder);
+                rootViewGroup, params, rootViewGroup, segment.mStyleSheet);
 
         if (v != null) {
             rootViewGroup.addContent(v, params);
@@ -103,20 +94,18 @@ public final class HNRenderer {
     private View renderInternal(@NonNull Context context, @NonNull HNSandBoxContext
             sandBoxContext, HNDomTree tree, HNSegment segment, @NonNull ViewGroup parent,
                                 @NonNull ViewGroup.LayoutParams params, @NonNull HNViewGroup
-                                        root, StyleSheet styleSheet, Set<CssSelector>
-                                        parentSelector, SelectorMapHolder holder) throws
-            HNRenderException {
+                                        root, StyleSheet styleSheet) throws HNRenderException {
 
         AttrsSet attrsSet = segment.mAttrs;
 
         if (tree.isLeaf()) {
             View v = createView(tree, sandBoxContext, parent, context, attrsSet, params, root,
-                    styleSheet, parentSelector, holder);
+                    styleSheet);
             mInheritStyleStack.pop();
             return v;
         } else {
             View view = createView(tree, sandBoxContext, parent, context, attrsSet, params, root,
-                    styleSheet, parentSelector, holder);
+                    styleSheet);
 
             if (view == null) {
                 return null;
@@ -124,7 +113,6 @@ public final class HNRenderer {
 
 
             if (view instanceof ViewGroup) {
-                Set<CssSelector> tempSelector = holder.instance;
 
                 final ViewGroup viewGroup = (ViewGroup) view;
 
@@ -135,7 +123,7 @@ public final class HNRenderer {
 
                     // Recursively render child.
                     final View v = renderInternal(context, sandBoxContext, child, segment,
-                            viewGroup, layoutParams, root, styleSheet, tempSelector, holder);
+                            viewGroup, layoutParams, root, styleSheet);
 
                     if (v != null) {
                         viewGroup.addView(v, layoutParams);
@@ -159,10 +147,9 @@ public final class HNRenderer {
 
     private View createView(@NonNull HNDomTree tree, @NonNull HNSandBoxContext sandBoxContext,
                             @NonNull ViewGroup parent, @NonNull Context context, @NonNull
-                                    AttrsSet attrsSet, @NonNull ViewGroup.LayoutParams params,
-                            @NonNull HNViewGroup root, StyleSheet styleSheet, Set<CssSelector>
-                                    parentSelector, SelectorMapHolder outSelectors) throws
-            HNRenderException {
+                                    AttrsSet attrsSet, @NonNull ViewGroup.LayoutParams
+                                    layoutParams, @NonNull HNViewGroup root, StyleSheet
+                                    styleSheet) throws HNRenderException {
 
         String type = tree.getType();
 
@@ -173,7 +160,7 @@ public final class HNRenderer {
         try {
             View v;
             if (HtmlTag.isDivOrTemplate(type)) {
-                Object displayObj = attrsSet.getAttr(tree, "display");
+                Object displayObj = attrsSet.getStyle(tree, "display");
                 if (displayObj != null && displayObj instanceof String) {
                     String display = (String) displayObj;
                     switch (display) {
@@ -194,8 +181,8 @@ public final class HNRenderer {
                 }
 
                 // set the <body> width to 100%
-                params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-                params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
             } else {
                 v = createViewByTag(context, type);
             }
@@ -223,18 +210,19 @@ public final class HNRenderer {
                  * First apply the parent styleSheet style to it.
                  */
 
-                for (InheritStyleStack.StyleEntry entry : mInheritStyleStack) {
+                for (Styles.StyleEntry entry : mInheritStyleStack) {
 
                     // here pass InheritStyleStack null to Styles, is to prevent Style being
                     // stored in InheritStyleStack twice
-                    Styles.applyStyle(context, sandBoxContext, v, tree, params, parent,
-                            viewAttrHandler, extraAttrHandler, parentLayoutAttr, entry.getKey(),
-                            entry.getValue(), false, null);
+                    Styles.applyStyle(context, sandBoxContext, v, tree, layoutParams, parent,
+                            viewAttrHandler, extraAttrHandler, parentLayoutAttr, entry, false,
+                            null);
                 }
 
-                attrsSet.apply(context, sandBoxContext, v, tree, tree, parent, params, true,
-                        false, viewAttrHandler, extraAttrHandler, parentLayoutAttr,
-                        mInheritStyleStack);
+
+                Styles.apply(context, sandBoxContext, attrsSet, v, tree, tree, parent,
+                        layoutParams, true, false, viewAttrHandler, extraAttrHandler,
+                        parentLayoutAttr, mInheritStyleStack);
 
             } catch (AttrApplyException e) {
                 e.printStackTrace();
@@ -250,9 +238,9 @@ public final class HNRenderer {
                 if (selector.matchWhole(tree)) {
 
                     try {
-                        styleSheet.apply(context, sandBoxContext, v, selector, tree, parent,
-                                params, false, false, viewAttrHandler, extraAttrHandler,
-                                parentLayoutAttr, mInheritStyleStack);
+                        Styles.apply(context, sandBoxContext, styleSheet, v, selector, tree,
+                                parent, layoutParams, false, false, viewAttrHandler,
+                                extraAttrHandler, parentLayoutAttr, mInheritStyleStack);
                     } catch (AttrApplyException e) {
                         e.printStackTrace();
                     }
