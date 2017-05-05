@@ -1,1 +1,1 @@
-include ':app', ':HtmlNative'
+include ':htmlnative-demo', ':htmlnative-lib'

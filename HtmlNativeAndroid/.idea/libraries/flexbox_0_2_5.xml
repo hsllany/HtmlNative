@@ -1,11 +1,11 @@
 <component name="libraryTable">
   <library name="flexbox-0.2.5">
     <ANNOTATIONS>
-      <root url="jar://$PROJECT_DIR$/HtmlNative/build/intermediates/exploded-aar/com.google.android/flexbox/0.2.5/annotations.zip!/" />
+      <root url="jar://$PROJECT_DIR$/htmlnative-lib/build/intermediates/exploded-aar/com.google.android/flexbox/0.2.5/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/HtmlNative/build/intermediates/exploded-aar/com.google.android/flexbox/0.2.5/jars/classes.jar!/" />
-      <root url="file://$PROJECT_DIR$/HtmlNative/build/intermediates/exploded-aar/com.google.android/flexbox/0.2.5/res" />
+      <root url="jar://$PROJECT_DIR$/htmlnative-lib/build/intermediates/exploded-aar/com.google.android/flexbox/0.2.5/jars/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/htmlnative-lib/build/intermediates/exploded-aar/com.google.android/flexbox/0.2.5/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
