@@ -3,8 +3,6 @@ package com.mozz.htmlnative.common;
 import android.graphics.Color;
 import android.util.TypedValue;
 
-import com.mozz.htmlnative.attrs.PixelValue;
-
 import junit.framework.Assert;
 
 import org.junit.Test;

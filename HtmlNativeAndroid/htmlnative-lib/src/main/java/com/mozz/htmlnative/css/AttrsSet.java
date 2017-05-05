@@ -1,10 +1,14 @@
-package com.mozz.htmlnative;
+package com.mozz.htmlnative.css;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.mozz.htmlnative.dom.DomElement;
+import com.mozz.htmlnative.HNLog;
+import com.mozz.htmlnative.HNSandBoxContext;
+import com.mozz.htmlnative.InheritStyleStack;
 import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.attrs.AttrHandler;
 import com.mozz.htmlnative.attrs.LayoutAttrHandler;
@@ -167,7 +171,7 @@ public class AttrsSet {
         }
     }
 
-    final Object getAttr(AttrsOwner owner, String attrName) {
+    public final Object getAttr(AttrsOwner owner, String attrName) {
         int startPosition = owner.attrIndex();
         int treeAttrLength = mLength[startPosition];
 

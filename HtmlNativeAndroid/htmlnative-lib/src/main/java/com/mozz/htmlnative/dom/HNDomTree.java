@@ -1,9 +1,13 @@
-package com.mozz.htmlnative;
+package com.mozz.htmlnative.dom;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.mozz.htmlnative.HNLog;
+import com.mozz.htmlnative.HNSegment;
+import com.mozz.htmlnative.ParseCallback;
 import com.mozz.htmlnative.common.Utils;
+import com.mozz.htmlnative.css.AttrsSet;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -12,9 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-final class HNDomTree implements Parser.ParseCallback, AttrsSet.AttrsOwner, DomElement {
-
-    static final String INNER_TREE_TAG = "inner";
+public final class HNDomTree implements ParseCallback, AttrsSet.AttrsOwner, DomElement {
 
     private static final String TREE_ORDER_PARAMETER = "order";
 
@@ -31,7 +33,7 @@ final class HNDomTree implements Parser.ParseCallback, AttrsSet.AttrsOwner, DomE
     private LinkedList<HNDomTree> mChildren;
 
     @Nullable
-    String mType;
+    private String mType;
 
     private HNSegment mModule;
 
@@ -58,7 +60,7 @@ final class HNDomTree implements Parser.ParseCallback, AttrsSet.AttrsOwner, DomE
      */
     private boolean mIsInOrder = true;
 
-    HNDomTree(@NonNull HNSegment context, HNDomTree parent, int depth, int index) {
+    public HNDomTree(@NonNull HNSegment context, HNDomTree parent, int depth, int index) {
         this(context, null, parent, depth, index);
     }
 
@@ -71,14 +73,14 @@ final class HNDomTree implements Parser.ParseCallback, AttrsSet.AttrsOwner, DomE
         mIndex = index;
         mChildren = new LinkedList<>();
 
-        module.mAttrs.newAttr(this);
+        module.newAttr(this);
     }
 
-    HNDomTree(@NonNull HNDomTree parent, String nodeName, int index) {
+    public HNDomTree(@NonNull HNDomTree parent, String nodeName, int index) {
         this(parent.mModule, nodeName, parent, parent.mDepth + 1, index);
     }
 
-    void addAttr(String attrName, @NonNull Object value) {
+    public void addAttr(String attrName, @NonNull Object value) {
         if (TREE_ORDER_PARAMETER.equalsIgnoreCase(attrName)) {
             try {
                 mOrder = Utils.toInt(value);
@@ -91,7 +93,7 @@ final class HNDomTree implements Parser.ParseCallback, AttrsSet.AttrsOwner, DomE
                         ", " + value.getClass().toString());
             }
         }
-        mModule.mAttrs.put(this, attrName, value);
+        mModule.put(this, attrName, value);
     }
 
     private void onChangeChildOrder() {
@@ -100,7 +102,7 @@ final class HNDomTree implements Parser.ParseCallback, AttrsSet.AttrsOwner, DomE
         }
     }
 
-    void appendText(String text) {
+    public void appendText(String text) {
         if (mInnerText == null) {
             mInnerText = text;
         } else {
@@ -108,7 +110,7 @@ final class HNDomTree implements Parser.ParseCallback, AttrsSet.AttrsOwner, DomE
         }
     }
 
-    void addChild(HNDomTree child) {
+    public void addChild(HNDomTree child) {
         if (child.mOrder != -1) {
             if (mIsInOrder) {
                 mIsInOrder = false;
@@ -117,7 +119,7 @@ final class HNDomTree implements Parser.ParseCallback, AttrsSet.AttrsOwner, DomE
         mChildren.add(child);
     }
 
-    boolean isLeaf() {
+    public boolean isLeaf() {
         return mChildren.isEmpty();
     }
 
@@ -173,16 +175,21 @@ final class HNDomTree implements Parser.ParseCallback, AttrsSet.AttrsOwner, DomE
         return mInnerText;
     }
 
+    @Override
+    public void setType(String type) {
+        this.mType = type;
+    }
+
     public int getDepth() {
         return mDepth;
     }
 
-    HNDomTree last() {
+    public HNDomTree last() {
         return mChildren.getLast();
     }
 
 
-    String wholeTreeToString() {
+    public String wholeTreeToString() {
         final StringBuilder sb = new StringBuilder();
         this.walkThrough(new WalkAction() {
             @Override
@@ -206,7 +213,7 @@ final class HNDomTree implements Parser.ParseCallback, AttrsSet.AttrsOwner, DomE
     @Override
     public void onLeaveParse() {
         if (mInnerText != null) {
-            mModule.mAttrs.put(this, "text", mInnerText);
+            mModule.put(this, "text", mInnerText);
         }
     }
 
@@ -215,7 +222,7 @@ final class HNDomTree implements Parser.ParseCallback, AttrsSet.AttrsOwner, DomE
     public String toString() {
         String index = "@" + mIndex + ":" + mOrder + ", ";
         String text = (mInnerText == null ? "" : ", text=" + mInnerText);
-        return "[" + index + mType + ", attrs=" + mModule.mAttrs.toString(this) + text + "]";
+        return "[" + index + mType + ", attrs=" + mModule.attrToString(this) + text + "]";
     }
 
     public HNDomTree getParent() {

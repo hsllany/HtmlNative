@@ -14,7 +14,7 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.mozz.htmlnative.HNHead;
+import com.mozz.htmlnative.dom.HNHead;
 import com.mozz.htmlnative.HNative;
 
 import static com.mozz.htmlnativedemo.WebViewActivity.EXTAL_URL;

@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
-import com.mozz.htmlnative.HNHead;
+import com.mozz.htmlnative.dom.HNHead;
 import com.mozz.htmlnative.HNative;
 
 import java.io.IOException;

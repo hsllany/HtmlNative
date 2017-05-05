@@ -1,4 +1,4 @@
-package com.mozz.htmlnative;
+package com.mozz.htmlnative.dom;
 
 /**
  * @author Yang Tao, 17/3/21.

@@ -1,9 +1,9 @@
-package com.mozz.htmlnative.selector;
+package com.mozz.htmlnative.css.selector;
 
 import android.support.annotation.NonNull;
 
-import com.mozz.htmlnative.AttrsSet;
-import com.mozz.htmlnative.DomElement;
+import com.mozz.htmlnative.css.AttrsSet;
+import com.mozz.htmlnative.dom.DomElement;
 
 /**
  * @author Yang Tao, 17/3/27.

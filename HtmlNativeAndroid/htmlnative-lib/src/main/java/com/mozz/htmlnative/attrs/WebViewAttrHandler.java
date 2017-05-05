@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 
-import com.mozz.htmlnative.DomElement;
+import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.exception.AttrApplyException;
 
 /**

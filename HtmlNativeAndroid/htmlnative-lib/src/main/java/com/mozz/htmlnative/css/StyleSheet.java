@@ -1,9 +1,9 @@
-package com.mozz.htmlnative;
+package com.mozz.htmlnative.css;
 
-import com.mozz.htmlnative.selector.ClassSelector;
-import com.mozz.htmlnative.selector.CssSelector;
-import com.mozz.htmlnative.selector.IdSelector;
-import com.mozz.htmlnative.selector.TypeSelector;
+import com.mozz.htmlnative.css.selector.ClassSelector;
+import com.mozz.htmlnative.css.selector.CssSelector;
+import com.mozz.htmlnative.css.selector.IdSelector;
+import com.mozz.htmlnative.css.selector.TypeSelector;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,7 +14,7 @@ import java.util.Set;
  * @author Yang Tao, 17/3/27.
  */
 
-final class StyleSheet extends AttrsSet {
+public final class StyleSheet extends AttrsSet {
 
     private SelectorHolder mClassSelectors;
     private SelectorHolder mIdSelectors;

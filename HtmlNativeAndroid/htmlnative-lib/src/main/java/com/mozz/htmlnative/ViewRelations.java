@@ -58,7 +58,8 @@ public final class ViewRelations {
         sReservedTagClassTable.put(HtmlTag.H5, TextView.class.getName());
         sReservedTagClassTable.put(HtmlTag.H6, TextView.class.getName());
 
-        sReservedTagClassTable.put(HNDomTree.INNER_TREE_TAG, TextView.class.getName());
+        // for inner element only
+        sReservedTagClassTable.put(HtmlTag.INNER_TREE_TAG, TextView.class.getName());
     }
 
     /**

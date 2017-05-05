@@ -6,8 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.TypedValue;
 
-import com.mozz.htmlnative.attrs.PixelValue;
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.HashMap;

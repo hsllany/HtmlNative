@@ -4,6 +4,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.mozz.htmlnative.css.Styles;
+import com.mozz.htmlnative.dom.HNDomTree;
+import com.mozz.htmlnative.dom.Meta;
 import com.mozz.htmlnative.exception.HNSyntaxError;
 import com.mozz.htmlnative.reader.TextReader;
 import com.mozz.htmlnative.script.ScriptInfo;
@@ -300,10 +303,10 @@ final class Parser {
 
                 case Value:
                     check(LK_VALUE);
-                    if (com.mozz.htmlnative.Meta.ID_NAME.equalsIgnoreCase(idCache)) {
-                        meta.name = mCurToken.stringValue();
-                    } else if (com.mozz.htmlnative.Meta.ID_CONTENT.equals(idCache)) {
-                        meta.content = mCurToken.stringValue();
+                    if (com.mozz.htmlnative.dom.Meta.ID_NAME.equalsIgnoreCase(idCache)) {
+                        meta.setName(mCurToken.stringValue());
+                    } else if (com.mozz.htmlnative.dom.Meta.ID_CONTENT.equals(idCache)) {
+                        meta.setName(mCurToken.stringValue());
                     }
 
                     lookFor(LK_ID | LK_SLASH);
@@ -333,7 +336,7 @@ final class Parser {
                     (), mLexer.column());
         }
 
-        tree.mType = mCurToken.stringValue();
+        tree.setType(mCurToken.stringValue());
         processInternal(tree);
     }
 
@@ -486,7 +489,7 @@ final class Parser {
                         if (isSwallowInnerTag(tree.getType())) {
                             tree.appendText(mCurToken.stringValue());
                         } else {
-                            HNDomTree innerChild = new HNDomTree(tree, HNDomTree.INNER_TREE_TAG,
+                            HNDomTree innerChild = new HNDomTree(tree, HtmlTag.INNER_TREE_TAG,
                                     innerCount++);
                             tree.addChild(innerChild);
                             innerChild.appendText(mCurToken.stringValue());
@@ -716,9 +719,4 @@ final class Parser {
 
     }
 
-    interface ParseCallback {
-        void onStartParse();
-
-        void onLeaveParse();
-    }
 }

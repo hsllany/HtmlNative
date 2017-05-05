@@ -12,6 +12,17 @@ import java.util.Set;
  */
 
 public final class HtmlTag {
+
+    /**
+     * for inner element only. Inner element example:<br/>
+     * #div#<br/>
+     *  -> nihao<br/>
+     *  -> #img<br/>
+     *
+     * then 'nihao' will become an inner element.
+     */
+    public static final String INNER_TREE_TAG = "inner";
+
     private HtmlTag() {
     }
 

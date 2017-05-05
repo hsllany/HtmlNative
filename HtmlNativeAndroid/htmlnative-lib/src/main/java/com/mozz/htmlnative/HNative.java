@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.mozz.htmlnative.attrs.AttrsHelper;
 import com.mozz.htmlnative.common.Utils;
+import com.mozz.htmlnative.dom.HNHead;
 
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
@@ -22,6 +23,10 @@ import static com.mozz.htmlnative.HNLog.STYLE;
 public final class HNative {
 
     public static final String LUA_TAG = "HNLua";
+
+    private static WebViewCreator sWebViewHandler = DefaultWebViewCreator.sInstance;
+    private static ImageViewAdapter sImageViewAdapter = DefaultImageAdapter.sInstance;
+    private static HrefLinkHandler sHrefLinkHandler = DefaultHrefLinkHandler.sInstance;
 
     private HNative() {
         HNInternalThread.init();
@@ -129,15 +134,27 @@ public final class HNative {
     }
 
     public void setImageViewAdapter(@NonNull ImageViewAdapter adapter) {
-        HNRenderer.setImageViewAdapter(adapter);
+        sImageViewAdapter = adapter;
+    }
+
+    public static ImageViewAdapter getImageViewAdapter() {
+        return sImageViewAdapter;
     }
 
     public void setWebviewCreator(@NonNull WebViewCreator creator) {
-        HNRenderer.setWebViewCreator(creator);
+        sWebViewHandler = creator;
+    }
+
+    public static WebViewCreator getWebviewCreator() {
+        return sWebViewHandler;
     }
 
     public void setHrefLinkHandler(@NonNull HrefLinkHandler handler) {
-        HNRenderer.setHrefLinkHandler(handler);
+        sHrefLinkHandler = handler;
+    }
+
+    public static HrefLinkHandler getHrefLinkHandler() {
+        return sHrefLinkHandler;
     }
 
     public interface OnHNViewLoaded {

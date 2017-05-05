@@ -1,4 +1,4 @@
-package com.mozz.htmlnative;
+package com.mozz.htmlnative.css;
 
 import android.content.Context;
 import android.graphics.Matrix;
@@ -8,14 +8,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsoluteLayout;
 
-import com.mozz.htmlnative.exception.AttrApplyException;
+import com.mozz.htmlnative.dom.DomElement;
+import com.mozz.htmlnative.HNLog;
+import com.mozz.htmlnative.HNSandBoxContext;
+import com.mozz.htmlnative.HNative;
+import com.mozz.htmlnative.InheritStyleStack;
 import com.mozz.htmlnative.attrs.AttrHandler;
 import com.mozz.htmlnative.attrs.AttrsHelper;
 import com.mozz.htmlnative.attrs.Background;
-import com.mozz.htmlnative.attrs.InheritStylesRegistry;
 import com.mozz.htmlnative.attrs.LayoutAttrHandler;
-import com.mozz.htmlnative.attrs.PixelValue;
+import com.mozz.htmlnative.common.PixelValue;
 import com.mozz.htmlnative.common.Utils;
+import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.view.BackgroundViewDelegate;
 
 /**
@@ -28,33 +32,33 @@ public final class Styles {
     private Styles() {
     }
 
-    static final String ATTR_STYLE = "style";
-    static final String ATTR_WIDTH = "width";
-    static final String ATTR_HEIGHT = "height";
-    static final String ATTR_BACKGROUND = "background";
-    static final String ATTR_PADDING = "padding";
-    static final String ATTR_PADDING_LEFT = "padding-left";
-    static final String ATTR_PADDING_RIGHT = "padding-right";
-    static final String ATTR_PADDING_TOP = "padding-top";
-    static final String ATTR_PADDING_BOTTOM = "padding-bottom";
-    static final String ATTR_MARGIN = "margin";
-    static final String ATTR_MARGIN_LEFT = "margin-left";
-    static final String ATTR_MARGIN_RIGHT = "margin-right";
-    static final String ATTR_MARGIN_TOP = "margin-top";
-    static final String ATTR_MARGIN_BOTTOM = "margin-bottom";
-    static final String ATTR_LEFT = "left";
-    static final String ATTR_TOP = "top";
-    static final String ATTR_ALPHA = "alpha";
-    static final String ATTR_ONCLICK = "onclick";
-    static final String ATTR_VISIBLE = "visibility";
-    static final String ATTR_DISPLAY = "display";
-    static final String ATTR_DIRECTION = "direction";
+    public static final String ATTR_STYLE = "style";
+    public static final String ATTR_WIDTH = "width";
+    public static final String ATTR_HEIGHT = "height";
+    public static final String ATTR_BACKGROUND = "background";
+    public static final String ATTR_PADDING = "padding";
+    public static final String ATTR_PADDING_LEFT = "padding-left";
+    public static final String ATTR_PADDING_RIGHT = "padding-right";
+    public static final String ATTR_PADDING_TOP = "padding-top";
+    public static final String ATTR_PADDING_BOTTOM = "padding-bottom";
+    public static final String ATTR_MARGIN = "margin";
+    public static final String ATTR_MARGIN_LEFT = "margin-left";
+    public static final String ATTR_MARGIN_RIGHT = "margin-right";
+    public static final String ATTR_MARGIN_TOP = "margin-top";
+    public static final String ATTR_MARGIN_BOTTOM = "margin-bottom";
+    public static final String ATTR_LEFT = "left";
+    public static final String ATTR_TOP = "top";
+    public static final String ATTR_ALPHA = "alpha";
+    public static final String ATTR_ONCLICK = "onclick";
+    public static final String ATTR_VISIBLE = "visibility";
+    public static final String ATTR_DISPLAY = "display";
+    public static final String ATTR_DIRECTION = "direction";
 
-    static final String VAL_FILL_PARENT = "100%";
+    public static final String VAL_FILL_PARENT = "100%";
 
-    static final String VAL_DISPLAY_FLEX = "flex";
-    static final String VAL_DISPLAY_BOX = "box";
-    static final String VAL_DISPLAY_ABSOLUTE = "absolute";
+    public static final String VAL_DISPLAY_FLEX = "flex";
+    public static final String VAL_DISPLAY_BOX = "box";
+    public static final String VAL_DISPLAY_ABSOLUTE = "absolute";
 
     static {
         InheritStylesRegistry.register(ATTR_VISIBLE);
@@ -121,7 +125,7 @@ public final class Styles {
 
                     if (!TextUtils.isEmpty(background.getUrl())) {
                         Matrix matrix = Background.createBitmapMatrix(background);
-                        HNRenderer.getImageViewAdapter().setImage(background.getUrl(), new
+                        HNative.getImageViewAdapter().setImage(background.getUrl(), new
                                 BackgroundViewDelegate(v, matrix, background.getColor()));
                     } else if (background.isColorSet()) {
                         v.setBackgroundColor(background.getColor());

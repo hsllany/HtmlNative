@@ -3,6 +3,10 @@ package com.mozz.htmlnative;
 import android.support.annotation.NonNull;
 import android.util.ArrayMap;
 
+import com.mozz.htmlnative.css.AttrsSet;
+import com.mozz.htmlnative.css.StyleSheet;
+import com.mozz.htmlnative.dom.HNDomTree;
+import com.mozz.htmlnative.dom.HNHead;
 import com.mozz.htmlnative.exception.HNSyntaxError;
 import com.mozz.htmlnative.reader.FileTextReader;
 import com.mozz.htmlnative.script.ScriptInfo;
@@ -10,7 +14,7 @@ import com.mozz.htmlnative.script.ScriptInfo;
 import java.io.InputStream;
 import java.util.Map;
 
-final class HNSegment {
+public final class HNSegment {
 
     HNDomTree mRootTree;
     AttrsSet mAttrs;
@@ -61,5 +65,17 @@ final class HNSegment {
     public String toString() {
         //TODO
         return mHead.toString();
+    }
+
+    public void newAttr(@NonNull AttrsSet.AttrsOwner tree) {
+        mAttrs.newAttr(tree);
+    }
+
+    public void put(@NonNull AttrsSet.AttrsOwner tree, String paramsKey, @NonNull Object value) {
+        mAttrs.put(tree, paramsKey, value);
+    }
+
+    public String attrToString(AttrsSet.AttrsOwner owner){
+        return mAttrs.toString(owner);
     }
 }

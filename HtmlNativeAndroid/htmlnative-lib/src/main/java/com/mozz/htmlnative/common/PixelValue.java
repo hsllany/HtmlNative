@@ -1,4 +1,4 @@
-package com.mozz.htmlnative.attrs;
+package com.mozz.htmlnative.common;
 
 import android.support.annotation.IntDef;
 import android.util.TypedValue;

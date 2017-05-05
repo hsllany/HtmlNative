@@ -1,4 +1,4 @@
-package com.mozz.htmlnative;
+package com.mozz.htmlnative.dom;
 
 import java.util.List;
 
@@ -14,6 +14,9 @@ public interface DomElement {
     boolean hasClazz();
     boolean hasId();
     CharSequence getInner();
+    void setType(String type);
+    void setClazz(String clazz);
+    void setId(String id);
 
 
 }

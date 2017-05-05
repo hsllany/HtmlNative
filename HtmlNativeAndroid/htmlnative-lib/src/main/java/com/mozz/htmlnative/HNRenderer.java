@@ -10,11 +10,15 @@ import android.webkit.WebView;
 import android.widget.AbsoluteLayout;
 
 import com.google.android.flexbox.FlexboxLayout;
-import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.attrs.AttrHandler;
 import com.mozz.htmlnative.attrs.AttrsHelper;
 import com.mozz.htmlnative.attrs.LayoutAttrHandler;
-import com.mozz.htmlnative.selector.CssSelector;
+import com.mozz.htmlnative.css.AttrsSet;
+import com.mozz.htmlnative.css.StyleSheet;
+import com.mozz.htmlnative.css.Styles;
+import com.mozz.htmlnative.css.selector.CssSelector;
+import com.mozz.htmlnative.dom.HNDomTree;
+import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.view.HNViewGroup;
 import com.mozz.htmlnative.view.HtmlLayout;
 
@@ -39,9 +43,6 @@ public final class HNRenderer {
 
     private static final Class<?>[] sConstructorSignature = new Class[]{Context.class};
 
-    private static WebViewCreator sWebViewHandler = DefaultWebViewCreator.sInstance;
-    private static ImageViewAdapter sImageViewAdapter = DefaultImageAdapter.sInstance;
-    private static HrefLinkHandler sHrefLinkHandler = DefaultHrefLinkHandler.sInstance;
 
     private static class SelectorMapHolder {
         Set<CssSelector> instance;
@@ -313,8 +314,8 @@ public final class HNRenderer {
     }
 
     private View createViewByViewHandler(Context context, @NonNull String viewClassName) {
-        if (viewClassName.equals(WebView.class.getName()) && sWebViewHandler != null) {
-            return sWebViewHandler.create(context);
+        if (viewClassName.equals(WebView.class.getName()) && HNative.getWebviewCreator() != null) {
+            return HNative.getWebviewCreator().create(context);
         }
 
         return null;
@@ -331,27 +332,6 @@ public final class HNRenderer {
         if (sandBoxContext != null) {
             sandBoxContext.onViewLoaded();
         }
-    }
-
-    static void setWebViewCreator(@NonNull WebViewCreator handler) {
-        sWebViewHandler = handler;
-    }
-
-    static void setImageViewAdapter(@NonNull ImageViewAdapter adapter) {
-        sImageViewAdapter = adapter;
-    }
-
-    static void setHrefLinkHandler(HrefLinkHandler handler) {
-        sHrefLinkHandler = handler;
-    }
-
-    public static HrefLinkHandler getHrefLinkHandler() {
-        return sHrefLinkHandler;
-    }
-
-    @NonNull
-    public static ImageViewAdapter getImageViewAdapter() {
-        return sImageViewAdapter;
     }
 
     public static ViewGroup.LayoutParams createLayoutParams(ViewGroup viewGroup) throws

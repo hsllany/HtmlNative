@@ -1,6 +1,6 @@
-package com.mozz.htmlnative.selector;
+package com.mozz.htmlnative.css.selector;
 
-import com.mozz.htmlnative.DomElement;
+import com.mozz.htmlnative.dom.DomElement;
 
 /**
  * @author Yang Tao, 17/3/27.

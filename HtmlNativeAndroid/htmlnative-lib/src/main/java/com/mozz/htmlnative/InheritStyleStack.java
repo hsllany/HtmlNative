@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * @author Yang Tao, 17/4/25.
  */
-final class InheritStyleStack implements Iterable<InheritStyleStack.StyleEntry> {
+public final class InheritStyleStack implements Iterable<InheritStyleStack.StyleEntry> {
 
     private int level = 0;
     private int index = 0;
@@ -23,24 +23,24 @@ final class InheritStyleStack implements Iterable<InheritStyleStack.StyleEntry> 
         reset();
     }
 
-    void push() {
+    public void push() {
         level++;
     }
 
-    void newStyle(String param, Object value) {
+    public void newStyle(String param, Object value) {
         values[index] = value;
         params[index] = param;
         index++;
         cssCount[level]++;
     }
 
-    void pop() {
+    public void pop() {
         this.index -= cssCount[level];
         cssCount[level] = 0;
         level--;
     }
 
-    void reset() {
+    public void reset() {
         level = -1;
         index = 0;
         Arrays.fill(values, null);

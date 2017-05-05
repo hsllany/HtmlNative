@@ -1,4 +1,4 @@
-package com.mozz.htmlnative;
+package com.mozz.htmlnative.dom;
 
 import android.util.ArrayMap;
 
@@ -16,7 +16,7 @@ final class Metas {
     }
 
     public boolean contains(Meta key) {
-        return metaMap.containsKey(key.name);
+        return metaMap.containsKey(key.getName());
     }
 
     public Meta get(String metaName) {
@@ -24,7 +24,7 @@ final class Metas {
     }
 
     public Meta put(Meta value) {
-        return metaMap.put(value.name, value);
+        return metaMap.put(value.getName(), value);
     }
 
     public Meta remove(Meta key) {
