@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.TypedValue;
 
-import com.mozz.htmlnative.attrs.AttrApplyException;
 import com.mozz.htmlnative.attrs.PixelValue;
 
 import java.io.Closeable;
@@ -46,40 +45,33 @@ public final class Utils {
         }
     }
 
-    public static int toInt(Object object) throws AttrApplyException {
+    public static int toInt(Object object) throws IllegalArgumentException {
         if (object instanceof Integer) {
             return (int) object;
         } else {
-            try {
-                int i = Integer.valueOf(object.toString());
-                return i;
-            } catch (NumberFormatException e) {
-                throw new AttrApplyException("can't read int from " + object);
-            }
+            int i = Integer.valueOf(object.toString());
+            return i;
         }
     }
 
-    public static float toFloat(Object object) throws AttrApplyException {
+    public static float toFloat(Object object) throws IllegalArgumentException {
         if (object instanceof Float) {
             return (float) object;
         } else {
-            try {
-                String fStr = object.toString();
-                boolean isPercentage = false;
-                if (fStr.endsWith("%")) {
-                    fStr = fStr.substring(0, fStr.length() - 1);
-                    isPercentage = true;
-                }
-                float f = Float.valueOf(fStr);
-
-                return isPercentage ? f / 100 : f;
-            } catch (NumberFormatException e) {
-                throw new AttrApplyException("can't read float from " + object);
+            String fStr = object.toString();
+            boolean isPercentage = false;
+            if (fStr.endsWith("%")) {
+                fStr = fStr.substring(0, fStr.length() - 1);
+                isPercentage = true;
             }
+            float f = Float.valueOf(fStr);
+
+            return isPercentage ? f / 100 : f;
+
         }
     }
 
-    public static PixelValue toPixel(Object object) throws AttrApplyException {
+    public static PixelValue toPixel(Object object) throws IllegalArgumentException {
         int unit = TypedValue.COMPLEX_UNIT_PX;
         if (object instanceof String) {
             String string = (String) object;
@@ -95,10 +87,7 @@ public final class Utils {
                 }
             }
 
-            try {
-                unit = getUnit(unitString.reverse().toString());
-            } catch (AttrApplyException e) {
-            }
+            unit = getUnit(unitString.reverse().toString());
 
             float value = toFloat(string.substring(0, i + 1));
             return new PixelValue(value, unit);
@@ -108,7 +97,8 @@ public final class Utils {
         }
     }
 
-    public static int getUnit(String s) throws AttrApplyException {
+    @PixelValue.PixelUnit
+    public static int getUnit(String s) {
         switch (s.toLowerCase()) {
             case "px":
                 return TypedValue.COMPLEX_UNIT_PX;
@@ -125,15 +115,15 @@ public final class Utils {
         }
     }
 
-    public static float getPercent(String s) throws AttrApplyException {
+    public static float getPercent(String s) throws IllegalArgumentException {
         if (s.endsWith("%")) {
             return toInt(s.substring(0, s.length() - 2)) / 100.f;
         } else {
-            throw new AttrApplyException("not a percent format " + s);
+            throw new IllegalArgumentException("not a percent format " + s);
         }
     }
 
-    public static PixelValue[] pixelGroups(String ss) throws AttrApplyException {
+    public static PixelValue[] pixelGroups(String ss) throws IllegalArgumentException {
         String[] single = ss.split(" ");
 
         PixelValue[] pixelValues = new PixelValue[single.length];
@@ -149,7 +139,7 @@ public final class Utils {
         return pixelValues;
     }
 
-    public static float px(Object object) throws AttrApplyException {
+    public static float px(Object object) throws IllegalArgumentException {
         if (object instanceof String) {
             String s = (String) object;
 
@@ -164,18 +154,18 @@ public final class Utils {
     }
 
 
-    public static boolean toBoolean(Object object) throws AttrApplyException {
+    public static boolean toBoolean(Object object) throws IllegalArgumentException {
         if (object instanceof Boolean) {
             return (boolean) object;
         } else {
-            throw new AttrApplyException("can't read boolean from " + object);
+            throw new IllegalArgumentException("can't read boolean from " + object);
         }
     }
 
-    public static int color(@NonNull Object colorObj) throws AttrApplyException {
+    public static int color(@NonNull Object colorObj) throws IllegalArgumentException {
         String colorString = colorObj.toString().trim();
         if (colorString.length() == 0) {
-            throw new AttrApplyException("empty color string for parse");
+            throw new IllegalArgumentException("empty color string for parse");
         }
 
         // handle the #* like color
@@ -183,13 +173,7 @@ public final class Utils {
 
             // handle the #000000 like color string
             if (colorString.length() > 4) {
-                try {
-                    return Color.parseColor(colorString);
-                } catch (IllegalArgumentException e) {
-                    throw new AttrApplyException(e);
-                }
-
-
+                return Color.parseColor(colorString);
             } else if (colorString.length() == 4) {
                 long color = 0;
                 for (int i = 0; i < 3; i++) {
@@ -202,7 +186,7 @@ public final class Utils {
                     } else if (c >= '0' && c <= '9') {
                         cI = c - '0';
                     } else {
-                        throw new AttrApplyException("unknown color string " + colorString);
+                        throw new IllegalArgumentException("unknown color string " + colorString);
                     }
 
                     color |= (cI * 16 + cI) << (3 - i - 1) * 8;
@@ -210,7 +194,7 @@ public final class Utils {
 
                 return (int) (color | 0x00000000ff000000);
             } else {
-                throw new AttrApplyException("unknown color string " + colorString);
+                throw new IllegalArgumentException("unknown color string " + colorString);
             }
 
         } else {
@@ -218,11 +202,9 @@ public final class Utils {
              handle the color like 'red', 'green' ect. see {@link https://www.w3.org/TR/CSS2/syndata
             .html#tokenization}
              */
-            try {
-                return Color.parseColor(colorString);
-            } catch (IllegalArgumentException e) {
-                throw new AttrApplyException("can't read color from " + colorString, e);
-            }
+
+            return Color.parseColor(colorString);
+
         }
     }
 

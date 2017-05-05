@@ -1,9 +1,9 @@
 package com.mozz.htmlnative;
 
-import com.mozz.htmlnative.css.ClassSelector;
-import com.mozz.htmlnative.css.CssSelector;
-import com.mozz.htmlnative.css.IdSelector;
-import com.mozz.htmlnative.css.TypeSelector;
+import com.mozz.htmlnative.selector.ClassSelector;
+import com.mozz.htmlnative.selector.CssSelector;
+import com.mozz.htmlnative.selector.IdSelector;
+import com.mozz.htmlnative.selector.TypeSelector;
 
 import java.util.HashMap;
 import java.util.HashSet;

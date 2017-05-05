@@ -3,8 +3,6 @@ package com.mozz.htmlnative;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.mozz.htmlnative.attrs.AttrApplyException;
-import com.mozz.htmlnative.attrs.AttrsOwner;
 import com.mozz.htmlnative.common.Utils;
 
 import java.util.Collections;
@@ -14,7 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-final class HNDomTree implements Parser.ParseCallback, AttrsOwner, DomElement {
+final class HNDomTree implements Parser.ParseCallback, AttrsSet.AttrsOwner, DomElement {
 
     static final String INNER_TREE_TAG = "inner";
 
@@ -87,7 +85,7 @@ final class HNDomTree implements Parser.ParseCallback, AttrsOwner, DomElement {
                 if (mParent != null && mOrder != -1) {
                     mParent.onChangeChildOrder();
                 }
-            } catch (AttrApplyException e) {
+            } catch (IllegalArgumentException e) {
                 HNLog.e(HNLog.DOM, "Wrong when read order, expecting integer while actual is " +
                         value +
                         ", " + value.getClass().toString());

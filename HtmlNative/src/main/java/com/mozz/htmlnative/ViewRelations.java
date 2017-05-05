@@ -12,7 +12,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
-import com.mozz.htmlnative.attrs.AttrHandler;
+import com.mozz.htmlnative.attrs.AttrsHelper;
 import com.mozz.htmlnative.view.HtmlLayout;
 
 import java.util.Map;
@@ -89,20 +89,12 @@ public final class ViewRelations {
         return null;
     }
 
-    @Nullable
-    public static AttrHandler findAttrFromExtraByType(String type) {
-        if (sExtraTagClassTable == null) {
-            sExtraTagClassTable = new ArrayMap<>();
-        }
-
-        return sExtraTagClassTable.get(type);
-    }
-
     public static void registerExtraView(String tag, @NonNull HNViewItem HNViewItem) {
         if (sExtraTagClassTable == null) {
             sExtraTagClassTable = new ArrayMap<>();
         }
 
         sExtraTagClassTable.put(tag, HNViewItem);
+        AttrsHelper.registerExtraAttrHandler(HNViewItem.getViewClass(), HNViewItem.getHandler());
     }
 }

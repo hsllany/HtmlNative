@@ -3,10 +3,10 @@ package com.mozz.htmlnative;
 import android.support.annotation.Nullable;
 
 import com.mozz.htmlnative.attrs.Background;
-import com.mozz.htmlnative.css.ClassSelector;
-import com.mozz.htmlnative.css.CssSelector;
-import com.mozz.htmlnative.css.IdSelector;
-import com.mozz.htmlnative.css.TypeSelector;
+import com.mozz.htmlnative.selector.ClassSelector;
+import com.mozz.htmlnative.selector.CssSelector;
+import com.mozz.htmlnative.selector.IdSelector;
+import com.mozz.htmlnative.selector.TypeSelector;
 import com.mozz.htmlnative.token.Token;
 import com.mozz.htmlnative.token.TokenType;
 

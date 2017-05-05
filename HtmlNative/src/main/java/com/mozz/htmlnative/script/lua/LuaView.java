@@ -3,11 +3,11 @@ package com.mozz.htmlnative.script.lua;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.mozz.htmlnative.AttrsSet;
 import com.mozz.htmlnative.HNSandBoxContext;
 import com.mozz.htmlnative.Styles;
 import com.mozz.htmlnative.attrs.AttrApplyException;
 import com.mozz.htmlnative.attrs.AttrHandler;
+import com.mozz.htmlnative.attrs.AttrsHelper;
 import com.mozz.htmlnative.attrs.LayoutAttrHandler;
 import com.mozz.htmlnative.common.MainHandler;
 import com.mozz.htmlnative.common.Utils;
@@ -40,9 +40,9 @@ public class LuaView extends LuaTable {
 
                 final Map<String, String> params = Utils.parseStyle(style);
 
-                final AttrHandler viewAttrHandler = AttrsSet.getViewAttr(v);
-                final AttrHandler extraAttrHandler = AttrsSet.getExtraAttr(v);
-                final LayoutAttrHandler parentAttr = AttrsSet.getParentAttr(v.getParent());
+                final AttrHandler viewAttrHandler = AttrsHelper.getAttrHandler(v);
+                final AttrHandler extraAttrHandler = AttrsHelper.getExtraAttrHandler(v);
+                final LayoutAttrHandler parentAttr = AttrsHelper.getParentAttrHandler(v);
                 MainHandler.instance().post(new Runnable() {
                     @Override
                     public void run() {

@@ -76,6 +76,6 @@ public class DemoApplication extends Application {
     @Override
     public void onTerminate() {
         super.onTerminate();
-        HNative.getInstance().onDestroy();
+        HNative.getInstance().destroy();
     }
 }

@@ -110,7 +110,7 @@ public class Background {
                     } else if (item.startsWith("#") && lk == LK_COLOR) {
                         try {
                             style.setColor(Utils.color(item));
-                        } catch (AttrApplyException ignored) {
+                        } catch (IllegalArgumentException ignored) {
 
                         }
 
@@ -154,7 +154,7 @@ public class Background {
                                 style.setX(Utils.toFloat(item));
                                 style.positionXMode = POSITION_MODE_LENGTH;
                             }
-                        } catch (AttrApplyException e) {
+                        } catch (IllegalArgumentException e) {
                             e.printStackTrace();
                         }
 
@@ -178,7 +178,7 @@ public class Background {
                                 style.setY(Utils.toFloat(item));
                                 style.positionYMode = POSITION_MODE_LENGTH;
                             }
-                        } catch (AttrApplyException e) {
+                        } catch (IllegalArgumentException e) {
                             e.printStackTrace();
                         }
 
@@ -187,7 +187,7 @@ public class Background {
                     } else if (lk == LK_COLOR) {
                         try {
                             style.setColor(Utils.color(item));
-                        } catch (AttrApplyException e) {
+                        } catch (IllegalArgumentException e) {
                             e.printStackTrace();
                         }
 
@@ -201,7 +201,7 @@ public class Background {
                 if (subStrings.length >= 1) {
                     try {
                         style.setColor(Utils.color(subStrings[0]));
-                    } catch (AttrApplyException ignored) {
+                    } catch (IllegalArgumentException ignored) {
                     }
                 }
             }
@@ -259,7 +259,7 @@ public class Background {
                         } else {
                             break;
                         }
-                    } catch (AttrApplyException e) {
+                    } catch (IllegalArgumentException e) {
                         e.printStackTrace();
                     }
 

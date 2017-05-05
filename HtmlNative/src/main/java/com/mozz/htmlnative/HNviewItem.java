@@ -9,7 +9,15 @@ import com.mozz.htmlnative.attrs.AttrHandler;
  * @author Yang Tao, 17/3/3.
  */
 
-public abstract class HNViewItem extends AttrHandler {
+public abstract class HNViewItem {
     @NonNull
     public abstract Class<? extends View> onGetViewClassName();
+
+    public AttrHandler getHandler() {
+        return null;
+    }
+
+    public Class<? extends View> getViewClass(){
+        return null;
+    }
 }

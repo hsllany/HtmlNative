@@ -1,15 +1,15 @@
-package com.mozz.htmlnative.css;
+package com.mozz.htmlnative.selector;
 
 import android.support.annotation.NonNull;
 
+import com.mozz.htmlnative.AttrsSet;
 import com.mozz.htmlnative.DomElement;
-import com.mozz.htmlnative.attrs.AttrsOwner;
 
 /**
  * @author Yang Tao, 17/3/27.
  */
 
-public abstract class CssSelector implements AttrsOwner {
+public abstract class CssSelector implements AttrsSet.AttrsOwner {
     /**
      * chain the selector together which css is a b > c {***}
      */

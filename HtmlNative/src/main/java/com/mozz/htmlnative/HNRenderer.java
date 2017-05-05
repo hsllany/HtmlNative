@@ -14,7 +14,7 @@ import com.mozz.htmlnative.attrs.AttrApplyException;
 import com.mozz.htmlnative.attrs.AttrHandler;
 import com.mozz.htmlnative.attrs.AttrsHelper;
 import com.mozz.htmlnative.attrs.LayoutAttrHandler;
-import com.mozz.htmlnative.css.CssSelector;
+import com.mozz.htmlnative.selector.CssSelector;
 import com.mozz.htmlnative.view.HNViewGroup;
 import com.mozz.htmlnative.view.HtmlLayout;
 
@@ -208,9 +208,10 @@ public final class HNRenderer {
 
             // first find the related AttrHandler
 
-            AttrHandler viewAttrHandler = AttrsSet.getAttr(v.getClass());
-            AttrHandler extraAttrHandler = AttrsHelper.getExtraAttrFromView(v.getClass());
-            AttrHandler parentAttrHandler = AttrsSet.getAttr(parent.getClass());
+            AttrHandler viewAttrHandler = AttrsHelper.getAttrHandler(v);
+            AttrHandler extraAttrHandler = AttrsHelper.getExtraAttrHandler(v);
+            AttrHandler parentAttrHandler = AttrsHelper.getAttrHandler(v);
+
             LayoutAttrHandler parentLayoutAttr = null;
             if (parentAttrHandler instanceof LayoutAttrHandler) {
                 parentLayoutAttr = (LayoutAttrHandler) parentAttrHandler;
@@ -248,8 +249,8 @@ public final class HNRenderer {
                 if (selector.matchWhole(tree)) {
 
                     try {
-                        styleSheet.apply(context, sandBoxContext, v, selector, tree,
-                                parent, params, false, false, viewAttrHandler, extraAttrHandler,
+                        styleSheet.apply(context, sandBoxContext, v, selector, tree, parent,
+                                params, false, false, viewAttrHandler, extraAttrHandler,
                                 parentLayoutAttr, mInheritStyleStack);
                     } catch (AttrApplyException e) {
                         e.printStackTrace();

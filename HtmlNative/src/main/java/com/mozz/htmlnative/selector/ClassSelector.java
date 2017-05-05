@@ -1,4 +1,4 @@
-package com.mozz.htmlnative.css;
+package com.mozz.htmlnative.selector;
 
 import com.mozz.htmlnative.DomElement;
 

@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.mozz.htmlnative.attrs.AttrsHelper;
 import com.mozz.htmlnative.common.Utils;
 
 import java.io.InputStream;
@@ -120,10 +121,11 @@ public final class HNative {
         ViewRelations.registerExtraView(tag, HNViewItem);
     }
 
-    public void onDestroy() {
+    public void destroy() {
         HNSegment.clearCache();
         HNInternalThread.quit();
         HNScriptRunnerThread.quit();
+        AttrsHelper.clear();
     }
 
     public void setImageViewAdapter(@NonNull ImageViewAdapter adapter) {

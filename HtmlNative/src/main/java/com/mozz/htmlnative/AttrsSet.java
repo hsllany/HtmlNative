@@ -2,21 +2,14 @@ package com.mozz.htmlnative;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 
 import com.mozz.htmlnative.attrs.AttrApplyException;
 import com.mozz.htmlnative.attrs.AttrHandler;
-import com.mozz.htmlnative.attrs.AttrsHandlerFactory;
-import com.mozz.htmlnative.attrs.AttrsHelper;
-import com.mozz.htmlnative.attrs.AttrsOwner;
 import com.mozz.htmlnative.attrs.LayoutAttrHandler;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author YangTao7
@@ -27,8 +20,6 @@ public class AttrsSet {
 
     private static final String TAG = AttrsSet.class.getSimpleName();
 
-    @NonNull
-    private static Map<Class<? extends View>, AttrHandler> sCachedAttrs = new HashMap<>();
 
     private Object[] mAttrs;
     private int[] mLength;
@@ -154,26 +145,6 @@ public class AttrsSet {
         }
     }
 
-    public static AttrHandler getViewAttr(View v) {
-        return getAttr(v.getClass());
-    }
-
-    public static AttrHandler getExtraAttr(View v) {
-        return AttrsHelper.getExtraAttrFromView(v.getClass());
-    }
-
-    public static LayoutAttrHandler getParentAttr(ViewParent parent) {
-        if (parent instanceof ViewGroup) {
-            AttrHandler parentAttrHandler = getAttr(((ViewGroup) parent).getClass());
-            LayoutAttrHandler parentLayoutAttr = null;
-            if (parentAttrHandler instanceof LayoutAttrHandler) {
-                parentLayoutAttr = (LayoutAttrHandler) parentAttrHandler;
-            }
-            return parentLayoutAttr;
-        }
-        return null;
-    }
-
     /**
      * Apply a default style to view
      */
@@ -196,7 +167,7 @@ public class AttrsSet {
         }
     }
 
-    public final Object getAttr(AttrsOwner owner, String attrName) {
+    final Object getAttr(AttrsOwner owner, String attrName) {
         int startPosition = owner.attrIndex();
         int treeAttrLength = mLength[startPosition];
 
@@ -212,17 +183,15 @@ public class AttrsSet {
         return null;
     }
 
-    @Nullable
-    public static AttrHandler getAttr(@NonNull Class<? extends View> clazz) {
-        AttrHandler attrHandler = sCachedAttrs.get(clazz);
-        if (attrHandler == null) {
-            attrHandler = AttrsHandlerFactory.getAttrFromView(clazz);
-            if (attrHandler != null) {
-                sCachedAttrs.put(clazz, attrHandler);
-            }
-        }
 
-        return attrHandler;
+    /**
+     * @author Yang Tao, 17/3/27.
+     */
+
+    public interface AttrsOwner {
+
+        int attrIndex();
+
+        void setAttrIndex(int newIndex);
     }
-
 }

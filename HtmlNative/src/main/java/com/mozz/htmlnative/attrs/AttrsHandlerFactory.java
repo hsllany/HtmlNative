@@ -28,7 +28,7 @@ public final class AttrsHandlerFactory {
     }
 
     //TODO there is much can be done when dealing with the AttrHandler
-    public static AttrHandler getAttrFromView(@NonNull Class<? extends View> clazz) {
+    public static AttrHandler getAttrHandlerFromView(@NonNull Class<? extends View> clazz) {
 
         if (TextView.class.isAssignableFrom(clazz)) {
             return sText;
