@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.mozz.htmlnative.attrs.AttrApplyException;
+import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.attrs.AttrHandler;
 import com.mozz.htmlnative.attrs.LayoutAttrHandler;
 

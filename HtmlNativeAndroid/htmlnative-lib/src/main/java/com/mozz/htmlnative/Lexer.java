@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.mozz.htmlnative.common.CharQueue;
+import com.mozz.htmlnative.exception.HNSyntaxError;
 import com.mozz.htmlnative.reader.TextReader;
 import com.mozz.htmlnative.token.Token;
 import com.mozz.htmlnative.token.TokenType;

@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.mozz.htmlnative.attrs.Background;
+import com.mozz.htmlnative.exception.HNSyntaxError;
 import com.mozz.htmlnative.reader.StringTextReader;
 
 import org.junit.Assert;

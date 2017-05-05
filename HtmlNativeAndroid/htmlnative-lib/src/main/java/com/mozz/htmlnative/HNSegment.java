@@ -3,6 +3,7 @@ package com.mozz.htmlnative;
 import android.support.annotation.NonNull;
 import android.util.ArrayMap;
 
+import com.mozz.htmlnative.exception.HNSyntaxError;
 import com.mozz.htmlnative.reader.FileTextReader;
 import com.mozz.htmlnative.script.ScriptInfo;
 

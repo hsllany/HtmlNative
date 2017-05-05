@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.mozz.htmlnative.DomElement;
+import com.mozz.htmlnative.exception.AttrApplyException;
 
 class HtmlLayoutAttrHandler extends AttrHandler {
     @Override

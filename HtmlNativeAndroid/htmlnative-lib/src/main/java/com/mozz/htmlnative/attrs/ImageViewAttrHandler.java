@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.mozz.htmlnative.DomElement;
 import com.mozz.htmlnative.HNRenderer;
+import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.view.BackgroundViewDelegate;
 
 class ImageViewAttrHandler extends AttrHandler {

@@ -1,4 +1,4 @@
-package com.mozz.htmlnative.attrs;
+package com.mozz.htmlnative.exception;
 
 /**
  * @author Yang Tao, 17/3/3.

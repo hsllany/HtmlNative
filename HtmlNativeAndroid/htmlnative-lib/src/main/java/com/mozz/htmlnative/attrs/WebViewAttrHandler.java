@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 
 import com.mozz.htmlnative.DomElement;
+import com.mozz.htmlnative.exception.AttrApplyException;
 
 /**
  * @author Yang Tao, 17/3/6.

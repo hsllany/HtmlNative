@@ -10,7 +10,7 @@ import android.webkit.WebView;
 import android.widget.AbsoluteLayout;
 
 import com.google.android.flexbox.FlexboxLayout;
-import com.mozz.htmlnative.attrs.AttrApplyException;
+import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.attrs.AttrHandler;
 import com.mozz.htmlnative.attrs.AttrsHelper;
 import com.mozz.htmlnative.attrs.LayoutAttrHandler;

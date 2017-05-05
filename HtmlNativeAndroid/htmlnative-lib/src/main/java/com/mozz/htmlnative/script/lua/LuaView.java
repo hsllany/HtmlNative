@@ -5,7 +5,7 @@ import android.view.ViewGroup;
 
 import com.mozz.htmlnative.HNSandBoxContext;
 import com.mozz.htmlnative.Styles;
-import com.mozz.htmlnative.attrs.AttrApplyException;
+import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.attrs.AttrHandler;
 import com.mozz.htmlnative.attrs.AttrsHelper;
 import com.mozz.htmlnative.attrs.LayoutAttrHandler;

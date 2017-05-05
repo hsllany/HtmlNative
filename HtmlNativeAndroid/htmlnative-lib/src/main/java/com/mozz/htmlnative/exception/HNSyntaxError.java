@@ -1,4 +1,4 @@
-package com.mozz.htmlnative;
+package com.mozz.htmlnative.exception;
 
 import android.support.annotation.NonNull;
 

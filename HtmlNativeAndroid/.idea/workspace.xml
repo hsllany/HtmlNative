@@ -2,266 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ec8c0ca4-be4b-4fda-8fb1-969df68a22b5" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/intermediates/dex-cache/cache.xml" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/.gitignore" afterPath="$PROJECT_DIR$/htmlnative-demo/.gitignore" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/build.gradle" afterPath="$PROJECT_DIR$/htmlnative-lib/build.gradle" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/proguard-rules.pro" afterPath="$PROJECT_DIR$/htmlnative-demo/proguard-rules.pro" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/androidTest/AndroidManifest.xml" afterPath="$PROJECT_DIR$/htmlnative-lib/src/androidTest/AndroidManifest.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/androidTest/assets/example.luav" afterPath="$PROJECT_DIR$/htmlnative-lib/src/androidTest/assets/example.luav" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/androidTest/java/com/mozz/htmlnative/ParserTest.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/androidTest/java/com/mozz/htmlnative/ParserTest.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/androidTest/java/com/mozz/htmlnative/TestActivity.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/androidTest/java/com/mozz/htmlnative/TestActivity.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/androidTest/java/com/mozz/htmlnative/TestGlobal.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/androidTest/java/com/mozz/htmlnative/TestGlobal.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/androidTest/java/com/mozz/htmlnative/attrs/BackgroundTest.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/androidTest/java/com/mozz/htmlnative/attrs/BackgroundTest.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/androidTest/java/com/mozz/htmlnative/common/UtilsTest.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/androidTest/java/com/mozz/htmlnative/common/UtilsTest.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/androidTest/java/com/mozz/htmlnative/parser/LexerAndroidTest.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/androidTest/java/com/mozz/htmlnative/parser/LexerAndroidTest.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/androidTest/java/com/mozz/htmlnative/token/TokenTest.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/androidTest/java/com/mozz/htmlnative/token/TokenTest.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/AndroidManifest.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/AttrsSet.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/AttrsSet.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/CssParser.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/CssParser.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/DefaultHrefLinkHandler.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/DefaultHrefLinkHandler.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/DefaultImageAdapter.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/DefaultImageAdapter.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/DefaultWebViewCreator.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/DefaultWebViewCreator.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/DomElement.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/DomElement.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/HNDomTree.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HNDomTree.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/HNEnvironment.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HNEnvironment.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/HNHead.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HNHead.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/HNInternalThread.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HNInternalThread.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/HNLog.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HNLog.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/HNProcessThread.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HNProcessThread.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/HNRenderer.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HNRenderer.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/HNSandBoxContext.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HNSandBoxContext.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/HNSandBoxContextImpl.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HNSandBoxContextImpl.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/HNScriptRunnerThread.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HNScriptRunnerThread.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/HNSegment.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HNSegment.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/HNSyntaxError.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HNSyntaxError.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/HNViewItem.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HNViewItem.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/HNative.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HNative.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/HrefLinkHandler.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HrefLinkHandler.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/HtmlTag.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HtmlTag.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/ImageViewAdapter.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/ImageViewAdapter.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/InheritStyleStack.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/InheritStyleStack.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/Lexer.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/Lexer.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/Meta.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/Meta.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/Metas.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/Metas.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/Parser.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/Parser.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/StyleSheet.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/StyleSheet.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/Styles.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/Styles.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/VariablePool.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/VariablePool.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/VariablePoolImpl.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/VariablePoolImpl.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/ViewCreator.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/ViewCreator.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/ViewRelations.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/ViewRelations.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/WebViewCreator.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/WebViewCreator.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/attrs/AbsoluteAttrHandler.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/AbsoluteAttrHandler.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/attrs/AttrApplyException.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/AttrApplyException.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/attrs/AttrHandler.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/AttrHandler.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/attrs/AttrsHandlerFactory.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/AttrsHandlerFactory.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/attrs/AttrsHelper.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/AttrsHelper.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/attrs/Background.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/Background.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/attrs/FlexBoxLayoutAttrHandler.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/FlexBoxLayoutAttrHandler.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/attrs/HtmlLayoutAttrHandler.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/HtmlLayoutAttrHandler.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/attrs/ImageViewAttrHandler.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/ImageViewAttrHandler.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/attrs/InheritStylesRegistry.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/InheritStylesRegistry.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/attrs/LayoutAttrHandler.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/LayoutAttrHandler.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/attrs/PixelValue.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/PixelValue.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/attrs/TextViewAttrHandler.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/TextViewAttrHandler.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/attrs/WebViewAttrHandler.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/WebViewAttrHandler.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/common/BitmapUtils.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/common/BitmapUtils.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/common/CharQueue.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/common/CharQueue.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/common/MainHandler.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/common/MainHandler.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/common/Utils.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/common/Utils.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/common/WefRunnable.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/common/WefRunnable.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/reader/FileTextReader.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/reader/FileTextReader.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/reader/StreamReader.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/reader/StreamReader.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/reader/StringTextReader.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/reader/StringTextReader.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/reader/TextReader.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/reader/TextReader.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/script/FuncParams.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/script/FuncParams.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/script/ScriptInfo.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/script/ScriptInfo.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/script/ScriptRunner.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/script/ScriptRunner.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/script/ScriptRunnerFactory.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/script/ScriptRunnerFactory.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/script/lua/LuaFuncParams.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/script/lua/LuaFuncParams.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/script/lua/LuaRunner.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/script/lua/LuaRunner.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/script/lua/LuaView.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/script/lua/LuaView.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/script/lua/ViewBy.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/script/lua/ViewBy.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/script/lua/callback.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/script/lua/callback.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/script/lua/logcat.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/script/lua/logcat.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/script/lua/toast.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/script/lua/toast.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/selector/ClassSelector.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/selector/ClassSelector.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/selector/CssSelector.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/selector/CssSelector.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/selector/IdSelector.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/selector/IdSelector.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/selector/TypeSelector.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/selector/TypeSelector.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/token/Token.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/token/Token.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/token/TokenType.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/token/TokenType.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/view/BackgroundViewDelegate.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/view/BackgroundViewDelegate.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/view/HNViewGroup.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/view/HNViewGroup.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/com/mozz/htmlnative/view/HtmlLayout.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/view/HtmlLayout.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/Buffer.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/Buffer.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/Globals.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/Globals.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/LoadState.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/LoadState.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/LocVars.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/LocVars.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/Lua.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/Lua.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/LuaBoolean.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/LuaBoolean.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/LuaClosure.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/LuaClosure.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/LuaDouble.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/LuaDouble.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/LuaError.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/LuaError.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/LuaFunction.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/LuaFunction.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/LuaInteger.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/LuaInteger.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/LuaNil.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/LuaNil.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/LuaNumber.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/LuaNumber.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/LuaString.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/LuaString.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/LuaTable.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/LuaTable.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/LuaThread.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/LuaThread.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/LuaUserdata.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/LuaUserdata.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/LuaValue.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/LuaValue.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/Metatable.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/Metatable.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/NonTableMetatable.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/NonTableMetatable.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/OrphanedThread.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/OrphanedThread.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/Print.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/Print.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/Prototype.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/Prototype.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/RVersion.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/RVersion.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/TailcallVarargs.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/TailcallVarargs.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/UpValue.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/UpValue.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/Upvaldesc.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/Upvaldesc.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/Varargs.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/Varargs.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/WeakTable.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/WeakTable.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/ast/Block.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/ast/Block.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/ast/Chunk.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/ast/Chunk.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/ast/Exp.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/ast/Exp.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/ast/FuncArgs.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/ast/FuncArgs.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/ast/FuncBody.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/ast/FuncBody.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/ast/FuncName.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/ast/FuncName.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/ast/Name.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/ast/Name.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/ast/NameResolver.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/ast/NameResolver.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/ast/NameScope.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/ast/NameScope.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/ast/ParList.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/ast/ParList.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/ast/Stat.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/ast/Stat.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/ast/Str.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/ast/Str.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/ast/SyntaxElement.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/ast/SyntaxElement.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/ast/TableConstructor.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/ast/TableConstructor.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/ast/TableField.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/ast/TableField.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/ast/Variable.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/ast/Variable.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/ast/Visitor.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/ast/Visitor.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/compiler/Constants.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/compiler/Constants.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/compiler/DumpState.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/compiler/DumpState.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/compiler/FuncState.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/compiler/FuncState.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/compiler/InstructionPtr.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/compiler/InstructionPtr.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/compiler/IntPtr.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/compiler/IntPtr.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/compiler/LexState.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/compiler/LexState.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/compiler/LuaC.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/compiler/LuaC.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/BaseLib.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/BaseLib.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/Bit32Lib.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/Bit32Lib.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/CoroutineLib.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/CoroutineLib.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/DebugLib.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/DebugLib.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/IoLib.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/IoLib.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/LibFunction.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/LibFunction.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/MathLib.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/MathLib.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/OneArgFunction.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/OneArgFunction.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/OsLib.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/OsLib.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/PackageLib.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/PackageLib.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/ResourceFinder.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/ResourceFinder.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/StringLib.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/StringLib.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/TableLib.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/TableLib.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/ThreeArgFunction.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/ThreeArgFunction.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/TwoArgFunction.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/TwoArgFunction.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/VarArgFunction.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/VarArgFunction.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/ZeroArgFunction.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/ZeroArgFunction.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/jse/CoerceJavaToLua.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/jse/CoerceJavaToLua.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/jse/CoerceLuaToJava.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/jse/CoerceLuaToJava.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/jse/JavaArray.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/jse/JavaArray.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/jse/JavaClass.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/jse/JavaClass.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/jse/JavaConstructor.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/jse/JavaConstructor.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/jse/JavaInstance.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/jse/JavaInstance.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/jse/JavaMember.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/jse/JavaMember.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/jse/JavaMethod.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/jse/JavaMethod.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/jse/JseBaseLib.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/jse/JseBaseLib.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/jse/JseIoLib.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/jse/JseIoLib.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/jse/JseMathLib.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/jse/JseMathLib.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/jse/JseOsLib.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/jse/JseOsLib.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/jse/JsePlatform.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/jse/JsePlatform.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/jse/JseProcess.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/jse/JseProcess.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/lib/jse/LuajavaLib.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/lib/jse/LuajavaLib.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/luajc/BasicBlock.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/luajc/BasicBlock.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/luajc/ProtoInfo.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/luajc/ProtoInfo.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/luajc/UpvalInfo.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/luajc/UpvalInfo.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/luajc/VarInfo.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/luajc/VarInfo.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/parser/LuaParser.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/parser/LuaParser.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/parser/LuaParserConstants.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/parser/LuaParserConstants.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/parser/LuaParserTokenManager.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/parser/LuaParserTokenManager.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/parser/ParseException.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/parser/ParseException.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/parser/SimpleCharStream.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/parser/SimpleCharStream.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/parser/Token.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/parser/Token.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/main/java/org/luaj/vm2/parser/TokenMgrError.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/org/luaj/vm2/parser/TokenMgrError.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/test/java/com/mozz/htmlnative/CharQueueTest.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/test/java/com/mozz/htmlnative/CharQueueTest.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/test/java/com/mozz/htmlnative/CodeToTest.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/test/java/com/mozz/htmlnative/CodeToTest.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/test/java/com/mozz/htmlnative/LexerTest.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/test/java/com/mozz/htmlnative/LexerTest.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/test/java/com/mozz/htmlnative/LuaValueTest.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/test/java/com/mozz/htmlnative/LuaValueTest.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/test/java/com/mozz/htmlnative/ScriptTest.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/test/java/com/mozz/htmlnative/ScriptTest.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/test/java/com/mozz/htmlnative/SyntaxTreeTest.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/test/java/com/mozz/htmlnative/SyntaxTreeTest.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/test/java/com/mozz/htmlnative/reader/StringScriptReaderTest.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/test/java/com/mozz/htmlnative/reader/StringScriptReaderTest.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/HtmlNative/src/test/java/com/mozz/htmlnative/script/LuaRunnerTest.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/test/java/com/mozz/htmlnative/script/LuaRunnerTest.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/.gitignore" afterPath="$PROJECT_DIR$/htmlnative-lib/.gitignore" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/build.gradle" afterPath="$PROJECT_DIR$/htmlnative-demo/build.gradle" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/proguard-rules.pro" afterPath="$PROJECT_DIR$/htmlnative-lib/proguard-rules.pro" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/androidTest/java/com/mozz/htmlnative/ExampleInstrumentedTest.java" afterPath="$PROJECT_DIR$/htmlnative-demo/src/androidTest/java/com/mozz/htmlnative/ExampleInstrumentedTest.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/AndroidManifest.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/assets/article.html" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/assets/article.html" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/assets/background.html" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/assets/background.html" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/assets/css.html" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/assets/css.html" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/assets/flex.html" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/assets/flex.html" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/assets/iframe.html" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/assets/iframe.html" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/assets/img.html" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/assets/img.html" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/assets/text.html" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/assets/text.html" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/assets/text2.html" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/assets/text2.html" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/com/mozz/htmlnativedemo/AssetsUtils.java" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/java/com/mozz/htmlnativedemo/AssetsUtils.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/com/mozz/htmlnativedemo/AssetsViewLoader.java" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/java/com/mozz/htmlnativedemo/AssetsViewLoader.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/com/mozz/htmlnativedemo/DemoApplication.java" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/java/com/mozz/htmlnativedemo/DemoApplication.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/com/mozz/htmlnativedemo/ExampleListActivity.java" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/java/com/mozz/htmlnativedemo/ExampleListActivity.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/com/mozz/htmlnativedemo/LayoutExampleActivity.java" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/java/com/mozz/htmlnativedemo/LayoutExampleActivity.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/com/mozz/htmlnativedemo/MainActivity.java" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/java/com/mozz/htmlnativedemo/MainActivity.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/com/mozz/htmlnativedemo/RemoteViewLoader.java" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/java/com/mozz/htmlnativedemo/RemoteViewLoader.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/com/mozz/htmlnativedemo/TestActivity.java" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/java/com/mozz/htmlnativedemo/TestActivity.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/com/mozz/htmlnativedemo/WebViewActivity.java" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/java/com/mozz/htmlnativedemo/WebViewActivity.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/res/drawable/a_webp.webp" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/res/drawable/a_webp.webp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/res/layout/activity_main.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_test.xml" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/res/layout/activity_test.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_test2.xml" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/res/layout/activity_test2.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_webview.xml" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/res/layout/activity_webview.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/res/layout/example_list_item.xml" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/res/layout/example_list_item.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/res/layout/test_layout.xml" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/res/layout/test_layout.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/res/menu/menu_layout_example.xml" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/res/menu/menu_layout_example.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/res/menu/menu_main_actionbar.xml" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/res/menu/menu_main_actionbar.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-hdpi/ic_launcher.png" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/res/mipmap-hdpi/ic_launcher.png" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-mdpi/ic_launcher.png" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/res/mipmap-mdpi/ic_launcher.png" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-xhdpi/ic_launcher.png" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/res/mipmap-xhdpi/ic_launcher.png" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-xxhdpi/ic_launcher.png" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/res/mipmap-xxhdpi/ic_launcher.png" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/res/mipmap-xxxhdpi/ic_launcher.png" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/res/values-w820dp/dimens.xml" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/res/values-w820dp/dimens.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/res/values/colors.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/res/values/dimens.xml" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/res/values/dimens.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/res/values/strings.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/res/values/styles.xml" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/res/values/styles.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/test/java/com/mozz/htmlnative/ExampleUnitTest.java" afterPath="$PROJECT_DIR$/htmlnative-demo/src/test/java/com/mozz/htmlnative/ExampleUnitTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/generated/mockable-android-25.jar" afterPath="$PROJECT_DIR$/build/generated/mockable-android-25.jar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/gradle.xml" afterPath="$PROJECT_DIR$/.idea/gradle.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/animated_vector_drawable_25_1_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/animated_vector_drawable_25_1_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/appcompat_v7_25_1_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/appcompat_v7_25_1_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/espresso_core_2_2_2.xml" afterPath="$PROJECT_DIR$/.idea/libraries/espresso_core_2_2_2.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/espresso_idling_resource_2_2_2.xml" afterPath="$PROJECT_DIR$/.idea/libraries/espresso_idling_resource_2_2_2.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/exposed_instrumentation_api_publish_0_5.xml" afterPath="$PROJECT_DIR$/.idea/libraries/exposed_instrumentation_api_publish_0_5.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/flexbox_0_2_5.xml" afterPath="$PROJECT_DIR$/.idea/libraries/flexbox_0_2_5.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/leakcanary_android_1_5.xml" afterPath="$PROJECT_DIR$/.idea/libraries/leakcanary_android_1_5.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/rules_0_5.xml" afterPath="$PROJECT_DIR$/.idea/libraries/rules_0_5.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/runner_0_5.xml" afterPath="$PROJECT_DIR$/.idea/libraries/runner_0_5.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/support_compat_25_1_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/support_compat_25_1_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/support_core_ui_25_1_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/support_core_ui_25_1_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/support_core_utils_25_1_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/support_core_utils_25_1_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/support_fragment_25_1_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/support_fragment_25_1_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/support_media_compat_25_1_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/support_media_compat_25_1_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/support_v4_25_1_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/support_v4_25_1_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/support_vector_drawable_25_1_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/support_vector_drawable_25_1_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/settings.gradle" afterPath="$PROJECT_DIR$/settings.gradle" />
     </list>
     <ignored path="HtmlNativeAndroid.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -4527,6 +4268,52 @@
               <option name="myItemId" value="HtmlNativeAndroid" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="htmlnative-lib" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HtmlNativeAndroid" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="htmlnative-lib" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HtmlNativeAndroid" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="htmlnative-lib" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="htmlnative" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HtmlNativeAndroid" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="htmlnative-demo" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
@@ -4929,7 +4716,7 @@
       <option name="ACTIVITY_CLASS" value="" />
       <method />
     </configuration>
-    <configuration default="false" name="htmlnative-demo" type="AndroidRunConfigurationType" factoryName="Android App">
+    <configuration default="false" name="htmlnative-demo" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
       <module name="htmlnative-demo" />
       <option name="DEPLOY" value="true" />
       <option name="ARTIFACT_NAME" value="" />

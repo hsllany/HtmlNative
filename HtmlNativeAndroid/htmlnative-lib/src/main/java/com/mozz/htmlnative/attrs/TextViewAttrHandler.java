@@ -13,6 +13,7 @@ import com.mozz.htmlnative.DomElement;
 import com.mozz.htmlnative.HNRenderer;
 import com.mozz.htmlnative.HtmlTag;
 import com.mozz.htmlnative.common.Utils;
+import com.mozz.htmlnative.exception.AttrApplyException;
 
 class TextViewAttrHandler extends AttrHandler {
 
