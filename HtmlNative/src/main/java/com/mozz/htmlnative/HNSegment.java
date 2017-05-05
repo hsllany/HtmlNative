@@ -36,14 +36,14 @@ final class HNSegment {
     }
 
     //TODO finish the cache of HNSegment
-    public static HNSegment load(@NonNull InputStream stream, String tag) throws HNSyntaxError {
+    public static HNSegment load(@NonNull InputStream stream, String type) throws HNSyntaxError {
         synchronized (sCacheLock) {
-            HNSegment module = sCache.get(tag);
+            HNSegment module = sCache.get(type);
             if (module != null) {
                 return module;
             } else {
                 module = load(stream);
-                sCache.put(tag, module);
+                sCache.put(type, module);
                 return module;
             }
         }

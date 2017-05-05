@@ -248,7 +248,7 @@ public final class HNRenderer {
                 if (selector.matchWhole(tree)) {
 
                     try {
-                        styleSheet.mCssSet.apply(context, sandBoxContext, v, selector, tree,
+                        styleSheet.apply(context, sandBoxContext, v, selector, tree,
                                 parent, params, false, false, viewAttrHandler, extraAttrHandler,
                                 parentLayoutAttr, mInheritStyleStack);
                     } catch (AttrApplyException e) {
@@ -282,7 +282,7 @@ public final class HNRenderer {
             ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
             InvocationTargetException, InstantiationException {
 
-        String viewClassName = ViewRelations.findClassByTag(tagName);
+        String viewClassName = ViewRelations.findClassByType(tagName);
         if (viewClassName == null) {
             return null;
         }

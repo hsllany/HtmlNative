@@ -9,21 +9,21 @@ import java.io.EOFException;
 import java.io.IOException;
 
 public class LexerTest {
-
-    private static final String TAG = "RV_LexerTest";
-
+    
     private static final String testCode = "<body>\n" +
             "    <iframe a=123.4e5/>\n" +
             "</body>";
 
-    private static final String testScriptCode = "<script> hello world; 1 < 2; /n</script>";
+    private static final String testScriptCode = "<script> \nhello world; 1 < 2; /n</script>";
+    private static final String testScriptCode2 = "<script></script>";
+    private static final String testScriptCode3 = "<script> </script>";
 
     @Test
     public void testLexerSimple() throws Exception {
         LexerDebugger(testCode);
     }
 
-    private void LexerDebugger(String code) throws IOException, HNSyntaxError {
+    private static void LexerDebugger(String code) throws IOException, HNSyntaxError {
 
         debug("code:");
         debug(code + "\n\ntoken list is:\n");
@@ -44,13 +44,19 @@ public class LexerTest {
         }
     }
 
-    private void debug(String msg) {
+    private static void debug(String msg) {
         System.out.println(msg);
     }
 
     @Test
-    public void testScript() throws EOFException, HNSyntaxError {
-        Lexer lexer = new Lexer(new StringTextReader(testScriptCode));
+    public void testScript() throws HNSyntaxError {
+        LexerScriptDebugger(testScriptCode);
+        LexerScriptDebugger(testScriptCode2);
+        LexerScriptDebugger(testScriptCode3);
+    }
+
+    public static void LexerScriptDebugger(String codeSample) throws HNSyntaxError {
+        Lexer lexer = new Lexer(new StringTextReader(codeSample));
 
         try {
             Token t01 = lexer.scan();
@@ -71,7 +77,9 @@ public class LexerTest {
             System.out.println(t2.toString());
             System.out.println(t3.toString());
             System.out.println(t4.toString());
-        }catch (EOFException e){
+
+            System.out.println("----------");
+        } catch (EOFException e) {
 
         }
 

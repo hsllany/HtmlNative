@@ -66,12 +66,12 @@ public final class ViewRelations {
      * {@link ViewRelations#sReservedTagClassTable}, if not found, will continuously look in
      * {@link ViewRelations#sExtraTagClassTable}
      *
-     * @param tag tag name found in .layout file
+     * @param type tag name found in .layout file
      * @return corresponding class name, or null if not found
      */
     @Nullable
-    public static String findClassByTag(@NonNull String tag) {
-        String viewClassName = sReservedTagClassTable.get(tag.toLowerCase());
+    public static String findClassByType(@NonNull String type) {
+        String viewClassName = sReservedTagClassTable.get(type.toLowerCase());
 
         if (viewClassName != null) {
             return viewClassName;
@@ -81,7 +81,7 @@ public final class ViewRelations {
             return null;
         }
 
-        HNViewItem HNViewItem = sExtraTagClassTable.get(tag);
+        HNViewItem HNViewItem = sExtraTagClassTable.get(type);
         if (HNViewItem != null) {
             return HNViewItem.onGetViewClassName().getName();
         }
@@ -90,12 +90,12 @@ public final class ViewRelations {
     }
 
     @Nullable
-    public static AttrHandler findAttrFromExtraByTag(String tag) {
+    public static AttrHandler findAttrFromExtraByType(String type) {
         if (sExtraTagClassTable == null) {
             sExtraTagClassTable = new ArrayMap<>();
         }
 
-        return sExtraTagClassTable.get(tag);
+        return sExtraTagClassTable.get(type);
     }
 
     public static void registerExtraView(String tag, @NonNull HNViewItem HNViewItem) {

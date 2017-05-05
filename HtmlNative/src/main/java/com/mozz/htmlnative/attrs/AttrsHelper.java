@@ -20,7 +20,7 @@ public final class AttrsHelper {
 
     @Nullable
     public static AttrHandler getExtraAttrFromView(@NonNull Class<? extends View> clazz) {
-        return ViewRelations.findAttrFromExtraByTag(clazz.getName());
+        return ViewRelations.findAttrFromExtraByType(clazz.getName());
     }
 
     public static void setPadding(View view, int padding) {

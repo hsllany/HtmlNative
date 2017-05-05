@@ -23,7 +23,7 @@ import java.util.Map;
  *         NOT THREAD SAFE
  */
 
-public final class AttrsSet {
+public class AttrsSet {
 
     private static final String TAG = AttrsSet.class.getSimpleName();
 

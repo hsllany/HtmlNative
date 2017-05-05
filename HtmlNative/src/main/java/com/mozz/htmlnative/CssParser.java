@@ -168,7 +168,7 @@ class CssParser {
                     segment.mStyleSheet.putSelector(cssSelector);
                     // put all the attr in styleSheet
                     for (Map.Entry<String, Object> entry : styleCache.entrySet()) {
-                        segment.mStyleSheet.putAttr(cssSelector, entry.getKey(), entry.getValue());
+                        segment.mStyleSheet.put(cssSelector, entry.getKey(), entry.getValue());
                     }
 
                     styleCache.clear();
