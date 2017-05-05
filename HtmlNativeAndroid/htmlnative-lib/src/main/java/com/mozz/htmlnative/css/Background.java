@@ -1,4 +1,4 @@
-package com.mozz.htmlnative.attrs;
+package com.mozz.htmlnative.css;
 
 import android.graphics.Color;
 import android.graphics.Matrix;

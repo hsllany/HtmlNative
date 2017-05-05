@@ -2,7 +2,7 @@ package com.mozz.htmlnative;
 
 import android.support.annotation.Nullable;
 
-import com.mozz.htmlnative.attrs.Background;
+import com.mozz.htmlnative.css.Background;
 import com.mozz.htmlnative.css.Styles;
 import com.mozz.htmlnative.exception.HNSyntaxError;
 import com.mozz.htmlnative.css.selector.ClassSelector;

@@ -2,45 +2,19 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ec8c0ca4-be4b-4fda-8fb1-969df68a22b5" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/ParseCallback.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/AttrsSet.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/css/AttrsSet.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/DomElement.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/dom/DomElement.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HNDomTree.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/dom/HNDomTree.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HNHead.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/dom/HNHead.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/Meta.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/dom/Meta.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/Metas.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/dom/Metas.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/StyleSheet.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/css/StyleSheet.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/Styles.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/css/Styles.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/InheritStylesRegistry.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/css/InheritStylesRegistry.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/PixelValue.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/common/PixelValue.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/selector/ClassSelector.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/css/selector/ClassSelector.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/selector/CssSelector.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/css/selector/CssSelector.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/selector/IdSelector.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/css/selector/IdSelector.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/selector/TypeSelector.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/css/selector/TypeSelector.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/DefaultHrefLinkHandler.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/DefaultImageAdapter.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/DefaultWebViewCreator.java" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/Background.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/css/Background.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/intermediates/dex-cache/cache.xml" afterPath="$PROJECT_DIR$/build/intermediates/dex-cache/cache.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/htmlnative-demo/src/main/java/com/mozz/htmlnativedemo/AssetsViewLoader.java" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/java/com/mozz/htmlnativedemo/AssetsViewLoader.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/htmlnative-demo/src/main/java/com/mozz/htmlnativedemo/MainActivity.java" afterPath="$PROJECT_DIR$/htmlnative-demo/src/main/java/com/mozz/htmlnativedemo/MainActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/htmlnative-lib/src/androidTest/java/com/mozz/htmlnative/common/UtilsTest.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/androidTest/java/com/mozz/htmlnative/common/UtilsTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/htmlnative-lib/src/androidTest/java/com/mozz/htmlnative/ParserTest.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/androidTest/java/com/mozz/htmlnative/ParserTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/htmlnative-lib/src/androidTest/java/com/mozz/htmlnative/attrs/BackgroundTest.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/androidTest/java/com/mozz/htmlnative/attrs/BackgroundTest.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/CssParser.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/CssParser.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HNRenderer.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HNRenderer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HNSegment.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HNSegment.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HNative.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HNative.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HtmlTag.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HtmlTag.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/InheritStyleStack.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/InheritStyleStack.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/Parser.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/Parser.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/ViewRelations.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/ViewRelations.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/AbsoluteAttrHandler.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/AbsoluteAttrHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/AttrHandler.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/AttrHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/FlexBoxLayoutAttrHandler.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/FlexBoxLayoutAttrHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/HtmlLayoutAttrHandler.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/HtmlLayoutAttrHandler.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/ImageViewAttrHandler.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/ImageViewAttrHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/LayoutAttrHandler.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/LayoutAttrHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/TextViewAttrHandler.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/TextViewAttrHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/WebViewAttrHandler.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/WebViewAttrHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/common/Utils.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/common/Utils.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/script/lua/LuaView.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/script/lua/LuaView.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/css/AttrsSet.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/css/AttrsSet.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/css/Styles.java" afterPath="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/css/Styles.java" />
     </list>
     <ignored path="HtmlNativeAndroid.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -76,82 +50,20 @@
       <file leaf-file-name="DomElement.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/dom/DomElement.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="91">
-              <caret line="7" column="17" selection-start-line="7" selection-start-column="17" selection-end-line="7" selection-end-column="17" />
+            <state relative-caret-position="260">
+              <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Parser.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/Parser.java">
+      <file leaf-file-name="Background.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/css/Background.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="171">
-              <caret line="491" column="79" selection-start-line="491" selection-start-column="79" selection-end-line="491" selection-end-column="79" />
+            <state relative-caret-position="-533">
+              <caret line="12" column="13" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
               <folding>
                 <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="HNative.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HNative.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="362">
-              <caret line="139" column="35" selection-start-line="139" selection-start-column="35" selection-end-line="139" selection-end-column="35" />
-              <folding>
-                <element signature="e#3798#3799#0" expanded="true" />
-                <element signature="e#3838#3839#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="HNDomTree.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/dom/HNDomTree.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="162">
-              <caret line="20" column="4" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="4" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#4455#4456#0" expanded="true" />
-                <element signature="e#4488#4489#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="HtmlTag.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HtmlTag.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="169">
-              <caret line="18" column="11" selection-start-line="18" selection-start-column="11" selection-end-line="18" selection-end-column="11" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ViewRelations.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/ViewRelations.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="184">
-              <caret line="61" column="53" selection-start-line="61" selection-start-column="53" selection-end-line="61" selection-end-column="53" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="HNSegment.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HNSegment.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="52">
-              <caret line="16" column="7" selection-start-line="16" selection-start-column="7" selection-end-line="16" selection-end-column="7" />
-              <folding>
-                <element signature="e#1901#1902#0" expanded="true" />
-                <element signature="e#1937#1938#0" expanded="true" />
-                <element signature="e#2146#2147#0" expanded="true" />
-                <element signature="e#2191#2192#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -160,35 +72,24 @@
       <file leaf-file-name="AttrsSet.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/css/AttrsSet.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="233">
-              <caret line="46" column="88" selection-start-line="46" selection-start-column="16" selection-end-line="46" selection-end-column="88" />
+            <state relative-caret-position="290">
+              <caret line="142" column="0" selection-start-line="142" selection-start-column="0" selection-end-line="142" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#881#882#0" expanded="true" />
-                <element signature="e#911#912#0" expanded="true" />
+                <element signature="e#6378#6379#0" expanded="true" />
+                <element signature="e#6426#6427#0" expanded="true" />
+                <element signature="e#6474#6475#0" expanded="true" />
+                <element signature="e#6519#6520#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Metas.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/dom/Metas.java">
+      <file leaf-file-name="HNative.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HNative.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="247">
-              <caret line="26" column="42" selection-start-line="26" selection-start-column="42" selection-end-line="26" selection-end-column="42" />
-              <folding>
-                <element signature="e#290#291#0" expanded="true" />
-                <element signature="e#347#348#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ParseCallback.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/ParseCallback.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="65">
-              <caret line="5" column="7" selection-start-line="5" selection-start-column="7" selection-end-line="5" selection-end-column="7" />
+            <state relative-caret-position="446">
+              <caret line="227" column="46" selection-start-line="227" selection-start-column="46" selection-end-line="227" selection-end-column="46" />
               <folding />
             </state>
           </provider>
@@ -4396,14 +4297,12 @@
         <option value="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/exception/AttrApplyException.java" />
         <option value="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/exception/HNSyntaxError.java" />
         <option value="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/AttrsSet.java" />
-        <option value="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/css/AttrsSet.java" />
         <option value="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/StyleSheet.java" />
         <option value="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/css/StyleSheet.java" />
         <option value="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/common/Utils.java" />
         <option value="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HrefLinkHandler.java" />
         <option value="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/InheritStyleStack.java" />
         <option value="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HrefLinkHandlerManager.java" />
-        <option value="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HNative.java" />
         <option value="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HNRenderer.java" />
         <option value="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/TextViewAttrHandler.java" />
         <option value="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/ImageViewAttrHandler.java" />
@@ -4421,6 +4320,9 @@
         <option value="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/Parser.java" />
         <option value="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/ViewRelations.java" />
         <option value="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HtmlTag.java" />
+        <option value="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/css/Background.java" />
+        <option value="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/css/AttrsSet.java" />
+        <option value="$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HNative.java" />
       </list>
     </option>
   </component>
@@ -4525,7 +4427,139 @@
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="view" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HtmlNativeAndroid" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="htmlnative-lib" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="htmlnative" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="reader" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HtmlNativeAndroid" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="htmlnative-lib" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="htmlnative" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="exception" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HtmlNativeAndroid" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="htmlnative-lib" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="htmlnative" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="dom" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HtmlNativeAndroid" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="htmlnative-lib" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="htmlnative" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="css" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HtmlNativeAndroid" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="htmlnative-lib" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="htmlnative" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="common" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HtmlNativeAndroid" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="htmlnative-lib" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="htmlnative" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="attrs" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -5049,11 +5083,11 @@
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3287841" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.089330025" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24964234" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3287841" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3287841" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
@@ -5249,14 +5283,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/ImageViewAttrHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="273">
-          <caret line="30" column="28" selection-start-line="30" selection-start-column="28" selection-end-line="30" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/Library/Android/sdk/sources/android-25/android/view/Gravity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1430">
@@ -5313,14 +5339,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="104">
           <caret line="9" column="19" selection-start-line="9" selection-start-column="19" selection-end-line="9" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/Background.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="104">
-          <caret line="12" column="13" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
           <folding />
         </state>
       </provider>
@@ -5382,18 +5400,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/css/AttrsSet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="233">
-          <caret line="46" column="88" selection-start-line="46" selection-start-column="16" selection-end-line="46" selection-end-column="88" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#881#882#0" expanded="true" />
-            <element signature="e#911#912#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HNSegment.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="52">
@@ -5407,22 +5413,31 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HNative.java">
+    <entry file="file://$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HtmlTag.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="362">
-          <caret line="139" column="35" selection-start-line="139" selection-start-column="35" selection-end-line="139" selection-end-column="35" />
-          <folding>
-            <element signature="e#3798#3799#0" expanded="true" />
-            <element signature="e#3838#3839#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="-436">
+          <caret line="20" column="6" selection-start-line="20" selection-start-column="6" selection-end-line="20" selection-end-column="6" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/ParseCallback.java">
+    <entry file="file://$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/ViewRelations.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="65">
-          <caret line="5" column="7" selection-start-line="5" selection-start-column="7" selection-end-line="5" selection-end-column="7" />
+        <state relative-caret-position="184">
+          <caret line="61" column="53" selection-start-line="61" selection-start-column="53" selection-end-line="61" selection-end-column="53" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/dom/HNDomTree.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="213">
+          <caret line="262" column="0" selection-start-line="262" selection-start-column="0" selection-end-line="262" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#4455#4456#0" expanded="true" />
+            <element signature="e#4488#4489#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -5437,10 +5452,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/dom/DomElement.java">
+    <entry file="file://$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/ParseCallback.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="91">
-          <caret line="7" column="17" selection-start-line="7" selection-start-column="17" selection-end-line="7" selection-end-column="17" />
+        <state relative-caret-position="65">
+          <caret line="5" column="7" selection-start-line="5" selection-start-column="7" selection-end-line="5" selection-end-column="7" />
           <folding />
         </state>
       </provider>
@@ -5455,30 +5470,50 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/dom/HNDomTree.java">
+    <entry file="file://$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/dom/DomElement.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="20" column="4" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="4" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#4455#4456#0" expanded="true" />
-            <element signature="e#4488#4489#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/ViewRelations.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="184">
-          <caret line="61" column="53" selection-start-line="61" selection-start-column="53" selection-end-line="61" selection-end-column="53" />
+        <state relative-caret-position="260">
+          <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HtmlTag.java">
+    <entry file="file://$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/attrs/ImageViewAttrHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="169">
-          <caret line="18" column="11" selection-start-line="18" selection-start-column="11" selection-end-line="18" selection-end-column="11" />
+        <state relative-caret-position="260">
+          <caret line="30" column="28" selection-start-line="30" selection-start-column="28" selection-end-line="30" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/css/Background.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-533">
+          <caret line="12" column="13" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/css/AttrsSet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="290">
+          <caret line="142" column="0" selection-start-line="142" selection-start-column="0" selection-end-line="142" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#6378#6379#0" expanded="true" />
+            <element signature="e#6426#6427#0" expanded="true" />
+            <element signature="e#6474#6475#0" expanded="true" />
+            <element signature="e#6519#6520#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/htmlnative-lib/src/main/java/com/mozz/htmlnative/HNative.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="446">
+          <caret line="227" column="46" selection-start-line="227" selection-start-column="46" selection-end-line="227" selection-end-column="46" />
           <folding />
         </state>
       </provider>

@@ -15,7 +15,6 @@ import com.mozz.htmlnative.HNative;
 import com.mozz.htmlnative.InheritStyleStack;
 import com.mozz.htmlnative.attrs.AttrHandler;
 import com.mozz.htmlnative.attrs.AttrsHelper;
-import com.mozz.htmlnative.attrs.Background;
 import com.mozz.htmlnative.attrs.LayoutAttrHandler;
 import com.mozz.htmlnative.common.PixelValue;
 import com.mozz.htmlnative.common.Utils;

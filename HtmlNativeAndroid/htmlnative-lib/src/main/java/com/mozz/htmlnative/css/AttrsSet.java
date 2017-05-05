@@ -5,13 +5,13 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.HNLog;
 import com.mozz.htmlnative.HNSandBoxContext;
 import com.mozz.htmlnative.InheritStyleStack;
-import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.attrs.AttrHandler;
 import com.mozz.htmlnative.attrs.LayoutAttrHandler;
+import com.mozz.htmlnative.dom.DomElement;
+import com.mozz.htmlnative.exception.AttrApplyException;
 
 import java.util.Arrays;
 
@@ -140,11 +140,8 @@ public class AttrsSet {
         }
 
         for (int i = startPosition; i < startPosition + treeAttrLength; i++) {
-            String param = (String) mAttrs[i << 1];
-            Object value = mAttrs[(i << 1) + 1];
-
             Styles.applyStyle(context, sandBoxContext, v, domElement, layoutParams, parent,
-                    viewAttrHandler, extraAttrHandler, parentAttrHandler, param, value, isParent,
+                    viewAttrHandler, extraAttrHandler, parentAttrHandler, getStyleName(i), getStyle(i), isParent,
                     stack);
         }
     }
@@ -185,6 +182,14 @@ public class AttrsSet {
         }
 
         return null;
+    }
+
+    protected final String getStyleName(int pos) {
+        return (String) mAttrs[pos << 1];
+    }
+
+    protected final Object getStyle(int pos) {
+        return mAttrs[(pos << 1) + 1];
     }
 
 

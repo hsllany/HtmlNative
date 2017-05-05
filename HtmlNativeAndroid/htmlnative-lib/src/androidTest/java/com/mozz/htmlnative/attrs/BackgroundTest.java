@@ -2,6 +2,8 @@ package com.mozz.htmlnative.attrs;
 
 import android.graphics.Color;
 
+import com.mozz.htmlnative.css.Background;
+
 import org.junit.Assert;
 import org.junit.Test;
 

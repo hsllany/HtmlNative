@@ -6,6 +6,7 @@ import android.graphics.Matrix;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.mozz.htmlnative.css.Background;
 import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.HNative;
 import com.mozz.htmlnative.exception.AttrApplyException;
