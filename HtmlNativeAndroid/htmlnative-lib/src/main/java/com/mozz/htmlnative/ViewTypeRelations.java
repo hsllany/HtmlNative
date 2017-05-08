@@ -21,7 +21,7 @@ import java.util.Map;
  * @author Yang Tao, 17/3/3.
  */
 
-public final class ViewRelations {
+public final class ViewTypeRelations {
 
     /**
      * Relate the tag and class.
@@ -63,9 +63,9 @@ public final class ViewRelations {
     }
 
     /**
-     * Looking for related class name via tag. ViewRelations will first look in
-     * {@link ViewRelations#sReservedTagClassTable}, if not found, will continuously look in
-     * {@link ViewRelations#sExtraTagClassTable}
+     * Looking for related class name via tag. ViewTypeRelations will first look in
+     * {@link ViewTypeRelations#sReservedTagClassTable}, if not found, will continuously look in
+     * {@link ViewTypeRelations#sExtraTagClassTable}
      *
      * @param type tag name found in .layout file
      * @return corresponding class name, or null if not found

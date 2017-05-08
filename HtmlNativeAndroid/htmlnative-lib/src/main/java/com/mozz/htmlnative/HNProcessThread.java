@@ -7,9 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.mozz.htmlnative.utils.MainHandlerUtils;
 import com.mozz.htmlnative.common.WefRunnable;
 import com.mozz.htmlnative.exception.HNSyntaxError;
+import com.mozz.htmlnative.utils.MainHandlerUtils;
 
 import java.io.InputStream;
 
@@ -49,17 +49,17 @@ final class HNProcessThread {
 
                 final HNSegment segment = HNSegment.load(mFileSource);
 
-                HNLog.d(HNLog.PROCESS_THREAD, "DOM: " + segment.mDom.wholeTreeToString());
-                HNLog.d(HNLog.PROCESS_THREAD, "HEAD: " + segment.mHead.toString());
-                HNLog.d(HNLog.PROCESS_THREAD, "CSS " + segment.mStyleSheet.toString());
-                if (segment.mScriptInfo != null) {
-                    HNLog.d(HNLog.PROCESS_THREAD, "SCRIPT " + segment.mScriptInfo.toString());
+                HNLog.d(HNLog.PROCESS_THREAD, "DOM: " + segment.getDom().wholeTreeToString());
+                HNLog.d(HNLog.PROCESS_THREAD, "HEAD: " + segment.getHead().toString());
+                HNLog.d(HNLog.PROCESS_THREAD, "CSS " + segment.getStyleSheet().toString());
+                if (segment.getScriptInfo() != null) {
+                    HNLog.d(HNLog.PROCESS_THREAD, "SCRIPT " + segment.getScriptInfo().toString());
                 }
 
                 MainHandlerUtils.instance().post(new Runnable() {
                     @Override
                     public void run() {
-                        mCallback.onHead(segment.mHead);
+                        mCallback.onHead(segment.getHead());
                     }
                 });
 

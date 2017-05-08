@@ -15,8 +15,6 @@ import com.mozz.htmlnative.view.HNViewGroup;
  */
 final class HNSandBoxContextImpl implements HNSandBoxContext {
 
-    private static boolean DEBUG = false;
-
     private static final String TAG = HNSandBoxContext.class.getSimpleName();
 
     private HNViewGroup mRootView;
@@ -79,8 +77,8 @@ final class HNSandBoxContextImpl implements HNSandBoxContext {
     @Override
     public void onViewCreate() {
         // if there is script code in layout file, then initContextScriptRunner
-        if (mSegment.mHasScriptEmbed) {
-            mRunner = ScriptRunnerFactory.createRunner(mSegment.mScriptInfo.type(), this);
+        if (mSegment.hasSetScript()) {
+            mRunner = ScriptRunnerFactory.createRunner(mSegment.getScriptInfo().type(), this);
         }
 
         initVariablePool();
@@ -93,8 +91,8 @@ final class HNSandBoxContextImpl implements HNSandBoxContext {
     }
 
     private void callCreate() {
-        if (mSegment.mScriptInfo != null) {
-            execute(mSegment.mScriptInfo.code());
+        if (mSegment.hasSetScript()) {
+            execute(mSegment.getScriptInfo().code());
         }
     }
 
@@ -122,7 +120,8 @@ final class HNSandBoxContextImpl implements HNSandBoxContext {
     }
 
     @NonNull
-    static HNSandBoxContext createContext(@NonNull HNViewGroup layout, HNSegment module, Context context) {
+    static HNSandBoxContext createContext(@NonNull HNViewGroup layout, HNSegment module, Context
+            context) {
         return new HNSandBoxContextImpl(module, context, layout);
     }
 

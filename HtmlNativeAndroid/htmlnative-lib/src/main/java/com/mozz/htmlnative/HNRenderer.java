@@ -77,8 +77,8 @@ public final class HNRenderer {
 
         mInheritStyleStack.reset();
 
-        View v = renderInternal(context, sandBoxContext, segment.mDom, segment,
-                rootViewGroup, params, rootViewGroup, segment.mStyleSheet);
+        View v = renderInternal(context, sandBoxContext, segment.getDom(), segment,
+                rootViewGroup, params, rootViewGroup, segment.getStyleSheet());
 
         if (v != null) {
             rootViewGroup.addContent(v, params);
@@ -96,7 +96,7 @@ public final class HNRenderer {
                                 @NonNull ViewGroup.LayoutParams params, @NonNull HNViewGroup
                                         root, StyleSheet styleSheet) throws HNRenderException {
 
-        AttrsSet attrsSet = segment.mInlineStyles;
+        AttrsSet attrsSet = segment.getInlineStyles();
 
         if (tree.isLeaf()) {
             View v = createView(tree, sandBoxContext, parent, context, attrsSet, params, root,
@@ -272,7 +272,7 @@ public final class HNRenderer {
             ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
             InvocationTargetException, InstantiationException {
 
-        String viewClassName = ViewRelations.findClassByType(tagName);
+        String viewClassName = ViewTypeRelations.findClassByType(tagName);
         if (viewClassName == null) {
             return null;
         }
@@ -302,7 +302,8 @@ public final class HNRenderer {
     }
 
     private View createViewByViewHandler(Context context, @NonNull String viewClassName) {
-        if (viewClassName.equals(WebView.class.getName()) && HNativeEngine.getWebviewCreator() != null) {
+        if (viewClassName.equals(WebView.class.getName()) && HNativeEngine.getWebviewCreator() !=
+                null) {
             return HNativeEngine.getWebviewCreator().create(context);
         }
 

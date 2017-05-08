@@ -22,14 +22,16 @@ class ImageViewAttrHandler extends AttrHandler {
             Matrix matrix = null;
             String url = value.toString();
             int color = Color.WHITE;
+            Background background = null;
             if (value instanceof Background) {
                 matrix = Background.createBitmapMatrix((Background) value);
                 url = ((Background) value).getUrl();
                 color = ((Background) value).getColor();
+                background = (Background) value;
             }
 
-            HNativeEngine.getImageViewAdapter().setImage(url, new BackgroundViewDelegate(v, matrix,
-                    color));
+            HNativeEngine.getImageViewAdapter().setImage(url, new BackgroundViewDelegate(v,
+                    matrix, color, background));
         }
     }
 

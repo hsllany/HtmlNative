@@ -127,7 +127,7 @@ public final class HNativeEngine {
      * @param HNViewItem
      */
     public static void registerHNiew(String tag, @NonNull HNViewItem HNViewItem) {
-        ViewRelations.registerExtraView(tag, HNViewItem);
+        ViewTypeRelations.registerExtraView(tag, HNViewItem);
     }
 
     public void destroy() {

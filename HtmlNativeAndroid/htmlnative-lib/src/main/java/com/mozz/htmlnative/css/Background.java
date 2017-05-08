@@ -17,8 +17,8 @@ public class Background {
     public static final int REPEAT_Y = 0x00000003;
     public static final int NO_REPEAT = 0x00000004;
 
-    public static final int POSITION_MODE_LENGTH = 0x00000001;
-    public static final int POSITION_MODE_PERCENTAGE = 0x00000002;
+    public static final int LENGTH = 0x00000001;
+    public static final int PERCENTAGE = 0x00000002;
 
     private static final int LK_COLOR = 0;
     private static final int LK_URL = 1;
@@ -33,16 +33,27 @@ public class Background {
     private int repeat = REPEAT;
     private float x;
     private float y;
-    private int width;
-    private int height;
+    private float width;
+    private float height;
 
-    private int widthMode = POSITION_MODE_PERCENTAGE;
-    private int heightMode = POSITION_MODE_PERCENTAGE;
+    private boolean widthSet = false;
+    private boolean heightSet = false;
+
+    private int xMode = PERCENTAGE;
+    private int yMode = PERCENTAGE;
+    private int widthMode = PERCENTAGE;
+    private int heightMode = PERCENTAGE;
 
 
     @Override
     public String toString() {
-        return "background:" + color + " url(" + url + ") repeat=" + repeat + " x=" + x + " y=" + y;
+        String widthStr = widthMode == PERCENTAGE ? width + "%" : width + "";
+        String heightStr = heightMode == PERCENTAGE ? height + "%" : height + "";
+        String xStr = xMode == PERCENTAGE ? x + "%" : x + "";
+        String yStr = yMode == PERCENTAGE ? y + "%" : y + "";
+
+        return "background:" + color + " url(" + url + ") repeat=" + repeat + " x=" + xStr + " y=" +
+                yStr + ", width=" + widthStr + ", height=" + heightStr;
     }
 
     public void setColor(int color) {
@@ -88,6 +99,46 @@ public class Background {
 
     public void setY(float y) {
         this.y = y;
+    }
+
+    public float getWidth() {
+        if (!widthSet) {
+            throw new IllegalStateException("Background's width hasn't been set. Please check " +
+                    "with isWidthSet()");
+        }
+        return width;
+    }
+
+    public boolean isWidthSet() {
+        return widthSet;
+    }
+
+    public boolean isHeightSet() {
+        return heightSet;
+    }
+
+    public float getHeight() {
+        if (!heightSet) {
+            throw new IllegalStateException("Background's height hasn't been set. Please check "
+                    + "with isHeightSet()");
+        }
+        return height;
+    }
+
+    public int getXMode() {
+        return xMode;
+    }
+
+    public int getyMode() {
+        return yMode;
+    }
+
+    public int getWidthMode() {
+        return widthMode;
+    }
+
+    public int getHeightMode() {
+        return heightMode;
     }
 
     public static Background createOrChange(String param, String val, Object oldOne) {
@@ -143,19 +194,19 @@ public class Background {
                         try {
                             if (item.endsWith("%")) {
                                 style.setX(ParametersUtils.getPercent(item));
-                                style.widthMode = POSITION_MODE_PERCENTAGE;
+                                style.xMode = PERCENTAGE;
                             } else if (item.equals("left")) {
                                 style.setX(0f);
-                                style.widthMode = POSITION_MODE_PERCENTAGE;
+                                style.xMode = PERCENTAGE;
                             } else if (item.equals("right")) {
-                                style.setX(1.f);
-                                style.widthMode = POSITION_MODE_PERCENTAGE;
+                                style.setX(100f);
+                                style.xMode = PERCENTAGE;
                             } else if (item.equals("center")) {
-                                style.setX(.5f);
-                                style.widthMode = POSITION_MODE_PERCENTAGE;
+                                style.setX(50f);
+                                style.xMode = PERCENTAGE;
                             } else {
                                 style.setX((float) ParametersUtils.toPixel(item).getPxValue());
-                                style.widthMode = POSITION_MODE_LENGTH;
+                                style.xMode = LENGTH;
                             }
                         } catch (IllegalArgumentException e) {
                             e.printStackTrace();
@@ -167,19 +218,19 @@ public class Background {
                         try {
                             if (item.endsWith("%")) {
                                 style.setY(ParametersUtils.getPercent(item));
-                                style.heightMode = POSITION_MODE_PERCENTAGE;
+                                style.yMode = PERCENTAGE;
                             } else if (item.equals("top")) {
                                 style.setY(0f);
-                                style.heightMode = POSITION_MODE_PERCENTAGE;
+                                style.yMode = PERCENTAGE;
                             } else if (item.equals("bottom")) {
-                                style.setY(1.f);
-                                style.heightMode = POSITION_MODE_PERCENTAGE;
+                                style.setY(100);
+                                style.yMode = PERCENTAGE;
                             } else if (item.equals("center")) {
-                                style.setY(.5f);
-                                style.heightMode = POSITION_MODE_PERCENTAGE;
+                                style.setY(50);
+                                style.yMode = PERCENTAGE;
                             } else {
                                 style.setY((float) ParametersUtils.toPixel(item).getPxValue());
-                                style.heightMode = POSITION_MODE_LENGTH;
+                                style.yMode = LENGTH;
                             }
                         } catch (IllegalArgumentException e) {
                             e.printStackTrace();
@@ -229,36 +280,36 @@ public class Background {
                     try {
                         if (lookFor == LK_X) {
                             if (item.endsWith("%")) {
-                                style.widthMode = POSITION_MODE_PERCENTAGE;
+                                style.xMode = PERCENTAGE;
                                 style.setX(ParametersUtils.getPercent(item));
                             } else if (item.equals("left")) {
                                 style.setX(0f);
-                                style.widthMode = POSITION_MODE_PERCENTAGE;
+                                style.xMode = PERCENTAGE;
                             } else if (item.equals("right")) {
-                                style.setX(1.f);
-                                style.widthMode = POSITION_MODE_PERCENTAGE;
+                                style.setX(100);
+                                style.xMode = PERCENTAGE;
                             } else if (item.equals("center")) {
-                                style.setX(.5f);
-                                style.widthMode = POSITION_MODE_PERCENTAGE;
+                                style.setX(50);
+                                style.xMode = PERCENTAGE;
                             } else {
-                                style.widthMode = POSITION_MODE_LENGTH;
+                                style.xMode = LENGTH;
                                 style.setX((float) ParametersUtils.toPixel(item).getPxValue());
                             }
                         } else if (lookFor == LK_Y) {
                             if (item.endsWith("%")) {
-                                style.heightMode = POSITION_MODE_PERCENTAGE;
+                                style.yMode = PERCENTAGE;
                                 style.setY(ParametersUtils.getPercent(item));
                             } else if (item.equals("top")) {
                                 style.setY(0f);
-                                style.heightMode = POSITION_MODE_PERCENTAGE;
+                                style.yMode = PERCENTAGE;
                             } else if (item.equals("bottom")) {
-                                style.setY(1.f);
-                                style.heightMode = POSITION_MODE_PERCENTAGE;
+                                style.setY(100);
+                                style.yMode = PERCENTAGE;
                             } else if (item.equals("center")) {
-                                style.setY(.5f);
-                                style.heightMode = POSITION_MODE_PERCENTAGE;
+                                style.setY(50);
+                                style.yMode = PERCENTAGE;
                             } else {
-                                style.heightMode = POSITION_MODE_LENGTH;
+                                style.yMode = LENGTH;
                                 style.setY((float) ParametersUtils.toPixel(item).getPxValue());
                             }
                         } else {
@@ -302,7 +353,25 @@ public class Background {
                     String width = subStrings[0];
                     String height = subStrings[1];
 
+                    if (width.endsWith("%")) {
+                        style.width = ParametersUtils.getPercent(width);
+                        style.widthMode = PERCENTAGE;
+                    } else {
+                        style.width = (float) ParametersUtils.toPixel(width).getPxValue();
+                        style.widthMode = LENGTH;
+                    }
 
+                    style.widthSet = true;
+
+                    if (height.endsWith("%")) {
+                        style.height = ParametersUtils.getPercent(height);
+                        style.heightMode = PERCENTAGE;
+                    } else {
+                        style.height = (float) ParametersUtils.toPixel(height).getPxValue();
+                        style.heightMode = LENGTH;
+                    }
+
+                    style.heightSet = true;
                 }
             }
             break;

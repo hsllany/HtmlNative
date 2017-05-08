@@ -1,9 +1,12 @@
-package com.mozz.htmlnative;
+package com.mozz.htmlnative.parser;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.mozz.htmlnative.HNLog;
+import com.mozz.htmlnative.HNSegment;
+import com.mozz.htmlnative.HtmlTag;
 import com.mozz.htmlnative.css.Styles;
 import com.mozz.htmlnative.dom.HNDomTree;
 import com.mozz.htmlnative.dom.Meta;
@@ -17,8 +20,8 @@ import java.io.EOFException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.mozz.htmlnative.CssParser.StyleItemParser.parseStyleSingle;
 import static com.mozz.htmlnative.HtmlTag.isSwallowInnerTag;
+import static com.mozz.htmlnative.parser.CssParser.StyleItemParser.parseStyleSingle;
 import static com.mozz.htmlnative.token.TokenType.EndAngleBracket;
 import static com.mozz.htmlnative.token.TokenType.Equal;
 import static com.mozz.htmlnative.token.TokenType.Head;
@@ -36,7 +39,7 @@ import static com.mozz.htmlnative.token.TokenType.Title;
 /**
  * @author YangTao7
  */
-final class Parser {
+public final class Parser {
 
     private static final String ID = "id";
     private static final String CLAZZ = "class";
@@ -57,7 +60,7 @@ final class Parser {
 
     private boolean mReserved = false;
 
-    Map<String, Object> styleCache = new HashMap<>();
+    private Map<String, Object> styleCache = new HashMap<>();
 
     private static final int LK_StartArrowBracket = 1;
     private static final int LK_EndArrowBracket = 1 << 1;
@@ -72,14 +75,14 @@ final class Parser {
     private static final int LK_NUMBER = LK_INT | LK_DOUBLE;
 
 
-    Parser(TextReader reader) {
+    public Parser(TextReader reader) {
         mLexer = new Lexer(reader);
         mCssParser = new CssParser(mLexer, this);
     }
 
     public HNSegment process() throws HNSyntaxError {
         HNSegment segment = new HNSegment();
-        segment.mDom = new HNDomTree(segment, null, 0, 0);
+        segment.setDom(new HNDomTree(segment.getInlineStyles(), null, 0, 0));
 
         try {
             scanFor(StartAngleBracket);
@@ -106,7 +109,7 @@ final class Parser {
     @NonNull
     private void processHtmlInside(HNSegment segment) throws HNSyntaxError, EOFException {
 
-        HNDomTree currentTree = segment.mDom;
+        HNDomTree currentTree = segment.getDom();
 
         // Look ahead to determine whether current is script or template
         scan();
@@ -168,9 +171,8 @@ final class Parser {
                         throw new HNSyntaxError("Expect code, but meet " + scriptToken.type()
                                 .toString(), mLexer.line(), mLexer.column());
                     }
-                    segment.mHasScriptEmbed = true;
 
-                    segment.mScriptInfo = new ScriptInfo(scriptToken, type);
+                    segment.setScriptInfo(new ScriptInfo(scriptToken, type));
                     scanFor(StartAngleBracket, Slash, Script, EndAngleBracket);
                     return;
                 }
@@ -272,7 +274,7 @@ final class Parser {
         scanFor(Inner);
 
         String title = mCurToken.stringValue();
-        segment.mHead.setTitle(title);
+        segment.getHead().setTitle(title);
 
         scanFor(StartAngleBracket, Slash, Title, EndAngleBracket);
     }
@@ -312,7 +314,7 @@ final class Parser {
                     lookFor(LK_ID | LK_SLASH);
                     break;
                 case Slash:
-                    segment.mHead.putMeta(meta);
+                    segment.getHead().putMeta(meta);
                     check(LK_SLASH);
                     scanFor(EndAngleBracket);
                     return;
@@ -474,13 +476,13 @@ final class Parser {
 
                     case Int:
                         check(LK_INT);
-                        tree.addAttr(attrName, mCurToken.intValue());
+                        tree.addInlineStyle(attrName, mCurToken.intValue());
                         lookFor(LK_ID | LK_EndArrowBracket);
                         break;
 
                     case Double:
                         check(LK_DOUBLE);
-                        tree.addAttr(attrName, mCurToken.doubleValue());
+                        tree.addInlineStyle(attrName, mCurToken.doubleValue());
                         lookFor(LK_ID | LK_EndArrowBracket);
                         break;
 
@@ -596,7 +598,7 @@ final class Parser {
         }
 
         for (Map.Entry<String, Object> entry : styleCache.entrySet()) {
-            tree.addAttr(entry.getKey(), entry.getValue());
+            tree.addInlineStyle(entry.getKey(), entry.getValue());
         }
     }
 
@@ -669,9 +671,13 @@ final class Parser {
                 tree.setClazz(valueStr);
                 break;
             default:
-                tree.addAttr(parameterName, valueStr);
+                tree.addInlineStyle(parameterName, valueStr);
                 break;
         }
+    }
+
+    public Map<String, Object> getStyleCache() {
+        return styleCache;
     }
 
     private static String lookForToString(int lookFor) {

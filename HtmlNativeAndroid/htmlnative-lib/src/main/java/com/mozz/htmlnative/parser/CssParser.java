@@ -1,28 +1,31 @@
-package com.mozz.htmlnative;
+package com.mozz.htmlnative.parser;
 
 import android.support.annotation.Nullable;
 
+import com.mozz.htmlnative.HNLog;
+import com.mozz.htmlnative.HNSegment;
 import com.mozz.htmlnative.css.Background;
+import com.mozz.htmlnative.css.StyleSheet;
 import com.mozz.htmlnative.css.Styles;
-import com.mozz.htmlnative.exception.HNSyntaxError;
 import com.mozz.htmlnative.css.selector.ClassSelector;
 import com.mozz.htmlnative.css.selector.CssSelector;
 import com.mozz.htmlnative.css.selector.IdSelector;
 import com.mozz.htmlnative.css.selector.TypeSelector;
+import com.mozz.htmlnative.exception.HNSyntaxError;
 import com.mozz.htmlnative.token.Token;
 import com.mozz.htmlnative.token.TokenType;
 
 import java.io.EOFException;
 import java.util.Map;
 
-import static com.mozz.htmlnative.CssParser.StyleItemParser.parseKey;
-import static com.mozz.htmlnative.CssParser.StyleItemParser.parseStyleSingle;
+import static com.mozz.htmlnative.parser.CssParser.StyleItemParser.parseKey;
+import static com.mozz.htmlnative.parser.CssParser.StyleItemParser.parseStyleSingle;
 
 /**
  * @author Yang Tao, 17/3/26.
  */
 
-class CssParser {
+final class CssParser {
 
     private static final int SELECTOR_HASH = 1 << 7;
     private static final int SELECTOR_DOT = 1 << 8;
@@ -61,12 +64,14 @@ class CssParser {
 
     private Map<String, Object> styleCache;
 
-    CssParser(Lexer lexer, Parser parentParser) {
+    public CssParser(Lexer lexer, Parser parentParser) {
         this.lexer = new CssLexer(lexer);
-        this.styleCache = parentParser.styleCache;
+        this.styleCache = parentParser.getStyleCache();
     }
 
     public void process(HNSegment segment) throws EOFException, HNSyntaxError {
+        StyleSheet styleSheet = segment.getStyleSheet();
+
         lookFor(SELECTOR_START);
 
         CssSelector cssSelector = null;
@@ -102,11 +107,11 @@ class CssParser {
                     if (isLookingFor(SELECTOR_TYPE)) {
                         if (cssSelector == null) {
                             cssSelector = new TypeSelector(idValue);
-                            segment.mStyleSheet.register(cssSelector);
+                            styleSheet.register(cssSelector);
                         } else {
                             CssSelector groupOne = new TypeSelector(idValue);
                             if (chain(cssSelector, groupOne, chainType)) {
-                                segment.mStyleSheet.putSelector(cssSelector);
+                                styleSheet.putSelector(cssSelector);
                                 cssSelector = groupOne;
                             }
                         }
@@ -115,12 +120,12 @@ class CssParser {
                     } else if (isLookingFor(SELECTOR_CLASS)) {
                         if (cssSelector == null) {
                             cssSelector = new ClassSelector(idValue);
-                            segment.mStyleSheet.register(cssSelector);
+                            styleSheet.register(cssSelector);
                         } else {
 
                             CssSelector groupOne = new ClassSelector(idValue);
                             if (chain(cssSelector, groupOne, chainType)) {
-                                segment.mStyleSheet.putSelector(cssSelector);
+                                styleSheet.putSelector(cssSelector);
                                 cssSelector = groupOne;
                             }
 
@@ -130,12 +135,12 @@ class CssParser {
                     } else if (isLookingFor(SELECTOR_ID)) {
                         if (cssSelector == null) {
                             cssSelector = new IdSelector(idValue);
-                            segment.mStyleSheet.register(cssSelector);
+                            styleSheet.register(cssSelector);
                         } else {
 
                             CssSelector groupOne = new IdSelector(idValue);
                             if (chain(cssSelector, groupOne, chainType)) {
-                                segment.mStyleSheet.putSelector(cssSelector);
+                                styleSheet.putSelector(cssSelector);
                                 cssSelector = groupOne;
                             }
                         }
@@ -167,10 +172,10 @@ class CssParser {
                 case EndBrace:
                     check(END_BRACE);
                     lookFor(SELECTOR_START);
-                    segment.mStyleSheet.putSelector(cssSelector);
+                    styleSheet.putSelector(cssSelector);
                     // put all the attr in styleSheet
                     for (Map.Entry<String, Object> entry : styleCache.entrySet()) {
-                        segment.mStyleSheet.put(cssSelector, entry.getKey(), entry.getValue());
+                        styleSheet.put(cssSelector, entry.getKey(), entry.getValue());
                     }
 
                     styleCache.clear();
@@ -213,33 +218,33 @@ class CssParser {
                     if (isLookingFor(SELECTOR_CLASS)) {
                         if (cssSelector == null) {
                             cssSelector = new ClassSelector(mCurToken.stringValue());
-                            segment.mStyleSheet.register(cssSelector);
+                            styleSheet.register(cssSelector);
                         } else {
                             CssSelector groupOne = new ClassSelector(mCurToken.stringValue());
                             if (chain(cssSelector, groupOne, chainType)) {
-                                segment.mStyleSheet.putSelector(cssSelector);
+                                styleSheet.putSelector(cssSelector);
                                 cssSelector = groupOne;
                             }
                         }
                     } else if (isLookingFor(SELECTOR_ID)) {
                         if (cssSelector == null) {
                             cssSelector = new IdSelector(mCurToken.stringValue());
-                            segment.mStyleSheet.register(cssSelector);
+                            styleSheet.register(cssSelector);
                         } else {
                             CssSelector groupOne = new IdSelector(mCurToken.stringValue());
                             if (chain(cssSelector, groupOne, chainType)) {
-                                segment.mStyleSheet.putSelector(cssSelector);
+                                styleSheet.putSelector(cssSelector);
                                 cssSelector = groupOne;
                             }
                         }
                     } else if (isLookingFor(SELECTOR_TYPE)) {
                         if (cssSelector == null) {
                             cssSelector = new TypeSelector(mCurToken.stringValue());
-                            segment.mStyleSheet.register(cssSelector);
+                            styleSheet.register(cssSelector);
                         } else {
                             CssSelector groupOne = new TypeSelector(mCurToken.stringValue());
                             if (chain(cssSelector, groupOne, chainType)) {
-                                segment.mStyleSheet.putSelector(cssSelector);
+                                styleSheet.putSelector(cssSelector);
                                 cssSelector = groupOne;
                             }
                         }
@@ -251,7 +256,7 @@ class CssParser {
                     check(SELECTOR_START);
                     scan();
                     if (mCurToken.type() == TokenType.Slash) {
-                        HNLog.d(HNLog.CSS_PARSER, segment.mStyleSheet.toString());
+                        HNLog.d(HNLog.CSS_PARSER, styleSheet.toString());
 
                         return;
                     }
@@ -289,6 +294,8 @@ class CssParser {
 
         private Lexer lexer;
 
+        private StringBuilder buffer = new StringBuilder();
+
         CssLexer(Lexer lexer) {
             super();
             this.lexer = lexer;
@@ -313,7 +320,7 @@ class CssParser {
 
             lexer.skipWhiteSpace();
 
-            lexer.clearBuf();
+            buffer.setLength(0);
 
             if (peek() == ';') {
                 lexer.next();
@@ -321,7 +328,7 @@ class CssParser {
             }
 
             do {
-                lexer.mBuffer.append(peek());
+                buffer.append(peek());
                 lexer.next();
 
                 if (peek() == ';' || peek() == '}') {
@@ -331,7 +338,7 @@ class CssParser {
 
             shouldScanValue = false;
 
-            return Token.obtainToken(TokenType.Value, lexer.mBuffer.toString(), line, startColumn);
+            return Token.obtainToken(TokenType.Value, buffer.toString(), line, startColumn);
         }
 
         long line() {
@@ -431,7 +438,7 @@ class CssParser {
 
     }
 
-    static final class StyleItemParser {
+    public static final class StyleItemParser {
 
         private static final StyleHolder STYLE_HOLDER = new StyleHolder();
 
@@ -446,7 +453,7 @@ class CssParser {
          * @param oldStyleObject, old style object, if you have one; or null.
          * @return StyleHolder
          */
-        static StyleHolder parseStyleSingle(String styleName, String styleValue, Object
+        public static StyleHolder parseStyleSingle(String styleName, String styleValue, Object
                 oldStyleObject) {
             STYLE_HOLDER.key = null;
             STYLE_HOLDER.obj = null;
@@ -463,7 +470,7 @@ class CssParser {
             }
         }
 
-        static String parseKey(String key) {
+        public static String parseKey(String key) {
             if (key.startsWith(Styles.ATTR_BACKGROUND)) {
                 return Styles.ATTR_BACKGROUND;
             } else {
@@ -472,8 +479,8 @@ class CssParser {
         }
     }
 
-    static class StyleHolder {
-        String key;
-        Object obj;
+    public static class StyleHolder {
+        public String key;
+        public Object obj;
     }
 }

@@ -5,6 +5,8 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.mozz.htmlnative.css.Background;
 import com.mozz.htmlnative.exception.HNSyntaxError;
+import com.mozz.htmlnative.parser.CssParser;
+import com.mozz.htmlnative.parser.Parser;
 import com.mozz.htmlnative.reader.StringTextReader;
 
 import org.junit.Assert;

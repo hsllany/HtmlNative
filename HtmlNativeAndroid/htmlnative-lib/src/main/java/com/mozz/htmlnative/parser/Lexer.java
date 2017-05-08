@@ -1,8 +1,10 @@
-package com.mozz.htmlnative;
+package com.mozz.htmlnative.parser;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.mozz.htmlnative.HNLog;
+import com.mozz.htmlnative.HNSegment;
 import com.mozz.htmlnative.common.CharQueue;
 import com.mozz.htmlnative.exception.HNSyntaxError;
 import com.mozz.htmlnative.reader.TextReader;
@@ -14,12 +16,12 @@ import java.io.EOFException;
 import static com.mozz.htmlnative.HNLog.LEXER;
 
 
-class Lexer {
+final class Lexer {
 
     private TextReader mReader;
 
     @NonNull
-    StringBuilder mBuffer = new StringBuilder();
+    private StringBuilder mBuffer = new StringBuilder();
 
     private int mLookFor = 0;
 
@@ -50,7 +52,7 @@ class Lexer {
      */
     private int mLookForScript = 0;
 
-    Lexer(TextReader reader) {
+    public Lexer(TextReader reader) {
         mReader = reader;
 
         mCacheQueue = new CharQueue(CACHE_SIZE);
@@ -59,7 +61,7 @@ class Lexer {
     }
 
     @Nullable
-    Token scan() throws EOFException, HNSyntaxError {
+    public Token scan() throws EOFException, HNSyntaxError {
         this.skipWhiteSpace();
 
         switch (peek()) {
@@ -157,7 +159,7 @@ class Lexer {
     }
 
     @Nullable
-    Token scanNumber() throws EOFException, HNSyntaxError {
+    private Token scanNumber() throws EOFException, HNSyntaxError {
         long startColumn = mReader.column();
         long line = mReader.line();
         int v = 0;
@@ -241,7 +243,7 @@ class Lexer {
     }
 
     @Nullable
-    Token scanId() throws EOFException {
+    private Token scanId() throws EOFException {
         long startColumn = mReader.column();
         long line = mReader.line();
 
@@ -313,7 +315,7 @@ class Lexer {
     }
 
     @Nullable
-    Token scanValue() throws EOFException {
+    private Token scanValue() throws EOFException {
         long startColumn = mReader.column();
         long line = mReader.line();
 
@@ -346,7 +348,7 @@ class Lexer {
     }
 
     @Nullable
-    Token scanInner() throws EOFException {
+    private Token scanInner() throws EOFException {
         long startColumn = mReader.column();
         long line = mReader.line();
 
@@ -394,7 +396,7 @@ class Lexer {
      * @throws EOFException
      * @throws HNSyntaxError
      */
-    Token scanScript() throws EOFException, HNSyntaxError {
+    public final Token scanScript() throws EOFException, HNSyntaxError {
         long startColumn = mReader.column();
         long line = mReader.line();
 
@@ -483,7 +485,7 @@ class Lexer {
     }
 
 
-    protected void skipWhiteSpace() throws EOFException {
+    public void skipWhiteSpace() throws EOFException {
         for (; ; ) {
             char ch = peek();
             if (ch == ' ' || ch == '\r' || ch == '\n' || ch == '\t' || ch == '\f' || ch == '\b') {
@@ -494,21 +496,21 @@ class Lexer {
         }
     }
 
-    void close() {
+    public void close() {
         if (mReader != null) {
             mReader.close();
         }
     }
 
-    long line() {
+    public long line() {
         return mReader.line();
     }
 
-    long column() {
+    public long column() {
         return mReader.column();
     }
 
-    protected char peek() {
+    public char peek() {
         return mCurrent;
     }
 
@@ -530,7 +532,7 @@ class Lexer {
         return mCacheQueue.peek(CACHE_SIZE - historyBackCount - 1);
     }
 
-    void next() throws EOFException {
+    public void next() throws EOFException {
         if (mReserved > 0) {
             mCurrent = mCacheQueue.peek(CACHE_SIZE - mReserved);
             mReserved--;
@@ -559,7 +561,7 @@ class Lexer {
         return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
     }
 
-    void clearBuf() {
+    public void clearBuf() {
         mBuffer.setLength(0);
     }
 }

@@ -16,9 +16,9 @@ public final class HtmlTag {
     /**
      * for inner element only. Inner element example:<br/>
      * #div#<br/>
-     *  -> nihao<br/>
-     *  -> #img<br/>
-     *
+     * -> nihao<br/>
+     * -> #img<br/>
+     * <p>
      * then 'nihao' will become an inner element.
      */
     public static final String INNER_TREE_TAG = "inner";
@@ -76,11 +76,11 @@ public final class HtmlTag {
 
     ;
 
-    static boolean isSwallowInnerTag(@NonNull String tag) {
+    public static boolean isSwallowInnerTag(@NonNull String tag) {
         return sSwallowInnerTag.contains(tag.toLowerCase());
     }
 
-    static boolean isDivOrTemplate(@NonNull String tag) {
+    public static boolean isDivOrTemplate(@NonNull String tag) {
         return tag.equalsIgnoreCase(HtmlTag.DIV) || tag.equalsIgnoreCase(HtmlTag.TEMPLATE);
     }
 

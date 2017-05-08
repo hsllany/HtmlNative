@@ -1,4 +1,4 @@
-package com.mozz.htmlnative;
+package com.mozz.htmlnative.parser;
 
 /**
  * @author Yang Tao, 17/5/5.

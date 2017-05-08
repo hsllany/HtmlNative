@@ -8,6 +8,7 @@ import com.mozz.htmlnative.css.StyleSheet;
 import com.mozz.htmlnative.dom.HNDomTree;
 import com.mozz.htmlnative.dom.HNHead;
 import com.mozz.htmlnative.exception.HNSyntaxError;
+import com.mozz.htmlnative.parser.Parser;
 import com.mozz.htmlnative.reader.FileTextReader;
 import com.mozz.htmlnative.script.ScriptInfo;
 
@@ -16,19 +17,19 @@ import java.util.Map;
 
 public final class HNSegment {
 
-    HNDomTree mDom;
-    boolean mHasScriptEmbed;
-    ScriptInfo mScriptInfo;
-    HNHead mHead;
+    private HNDomTree mDom;
+    private boolean mHasScriptEmbed;
+    private ScriptInfo mScriptInfo;
+    private HNHead mHead;
 
-    AttrsSet mInlineStyles;
-    StyleSheet mStyleSheet;
+    private AttrsSet mInlineStyles;
+    private StyleSheet mStyleSheet;
 
     @NonNull
     private static Map<String, HNSegment> sCache = new ArrayMap<>();
     private static final Object sCacheLock = new Object();
 
-    HNSegment() {
+    public HNSegment() {
         mInlineStyles = new AttrsSet("Inline-Style");
         mHead = new HNHead();
         mHasScriptEmbed = false;
@@ -67,16 +68,43 @@ public final class HNSegment {
         //TODO
         return mHead.toString();
     }
-
-    public void newAttr(@NonNull AttrsSet.AttrsOwner tree) {
-        mInlineStyles.register(tree);
+    
+    public StyleSheet getStyleSheet() {
+        return mStyleSheet;
     }
 
-    public void put(@NonNull AttrsSet.AttrsOwner tree, String paramsKey, @NonNull Object value) {
-        mInlineStyles.put(tree, paramsKey, value);
+    public HNDomTree getDom() {
+        return mDom;
     }
 
-    public String attrToString(AttrsSet.AttrsOwner owner) {
-        return mInlineStyles.toString(owner);
+    public void setDom(HNDomTree mDom) {
+        this.mDom = mDom;
+    }
+
+    public HNHead getHead() {
+        return mHead;
+    }
+
+    public void setHead(HNHead head) {
+        mHead = head;
+    }
+
+    public AttrsSet getInlineStyles() {
+        return mInlineStyles;
+    }
+
+    public ScriptInfo getScriptInfo() {
+        return mScriptInfo;
+    }
+
+    public void setScriptInfo(ScriptInfo scriptInfo) {
+        if (scriptInfo != null) {
+            mScriptInfo = scriptInfo;
+            mHasScriptEmbed = true;
+        }
+    }
+
+    public boolean hasSetScript() {
+        return mHasScriptEmbed;
     }
 }
