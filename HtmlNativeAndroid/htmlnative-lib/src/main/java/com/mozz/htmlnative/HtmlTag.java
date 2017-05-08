@@ -13,19 +13,18 @@ import java.util.Set;
 
 public final class HtmlTag {
 
-    /**
-     * for inner element only. Inner element example:<br/>
-     * #div#<br/>
-     * -> nihao<br/>
-     * -> #img<br/>
-     * <p>
-     * then 'nihao' will become an inner element.
-     */
-    public static final String INNER_TREE_TAG = "inner";
-
     private HtmlTag() {
     }
 
+    /**
+     * for inner element only. Inner element example:<br/>
+     * #div#<br/>
+     * -> hello-world<br/>
+     * -> #img<br/>
+     * <p>
+     * then 'hello-world' which is plain text, will become an inner element.
+     */
+    public static final String INNER_TREE_TAG = "inner";
     public static final String A = "a";
     public static final String P = "p";
     public static final String H1 = "h1";

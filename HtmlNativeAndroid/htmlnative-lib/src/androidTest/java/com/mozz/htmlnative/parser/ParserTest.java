@@ -1,8 +1,10 @@
-package com.mozz.htmlnative;
+package com.mozz.htmlnative.parser;
 
 import android.graphics.Color;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.mozz.htmlnative.HNSegment;
+import com.mozz.htmlnative.TestGlobal;
 import com.mozz.htmlnative.css.Background;
 import com.mozz.htmlnative.exception.HNSyntaxError;
 import com.mozz.htmlnative.parser.CssParser;
