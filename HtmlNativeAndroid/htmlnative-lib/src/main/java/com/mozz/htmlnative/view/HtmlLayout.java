@@ -1,10 +1,17 @@
 package com.mozz.htmlnative.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.mozz.htmlnative.css.Background;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,21 +26,32 @@ public class HtmlLayout extends ViewGroup {
 
     private List<List<View>> mAllViews = new ArrayList<>();
     private List<Integer> mLineLength = new ArrayList<>();
+    private Rect mRect = new Rect();
+    private Paint mPaint = new Paint();
+    private Bitmap mBackgroundBitmap;
+    private int mLeft, mTop, mWidth, mHeight;
+    private int mColor = Color.TRANSPARENT;
+    private Background mBackground;
 
     public HtmlLayout(Context context) {
         super(context);
+        setWillNotDraw(false);
     }
 
     public HtmlLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
+        setWillNotDraw(false);
     }
 
     public HtmlLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        setWillNotDraw(false);
     }
+
 
     public HtmlLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        setWillNotDraw(false);
     }
 
     @Override
@@ -179,6 +197,71 @@ public class HtmlLayout extends ViewGroup {
     protected ViewGroup.LayoutParams generateDefaultLayoutParams() {
         return new MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams
                 .WRAP_CONTENT);
+    }
+
+    public void setHtmlBackground(Bitmap bitmap, Background background) {
+        mBackgroundBitmap = bitmap;
+        mColor = background.getColor();
+        mBackground = background;
+
+        invalidate();
+    }
+
+    private void measuredBackground() {
+        if (mBackground == null) {
+            return;
+        }
+
+        if (mBackground.getXMode() == Background.LENGTH) {
+            mLeft = (int) mBackground.getX();
+        } else {
+            mLeft = (int) (mBackground.getX() * getMeasuredWidth());
+        }
+
+        if (mBackground.getYMode() == Background.LENGTH) {
+            mTop = (int) mBackground.getY();
+        } else {
+            mTop = (int) (mBackground.getY() * getMeasuredHeight());
+        }
+
+        if (mBackground.isWidthSet()) {
+            if (mBackground.getWidthMode() == Background.LENGTH) {
+                mWidth = (int) mBackground.getWidth();
+            } else {
+                mWidth = (int) (mBackground.getWidth() * getMeasuredWidth());
+            }
+        } else {
+            mWidth = getMeasuredWidth();
+        }
+
+        if (mBackground.isHeightSet()) {
+            if (mBackground.getHeightMode() == Background.LENGTH) {
+                mHeight = (int) mBackground.getHeight();
+            } else {
+                mHeight = (int) (mBackground.getHeight() * getMeasuredHeight());
+            }
+        } else {
+            mWidth = getMeasuredWidth();
+        }
+
+        Log.d(TAG, "CalculateResult: mLeft=" + mLeft + ", mTop=" + mTop + ", mWidth=" + mWidth +
+                ", mHeight=" + mHeight + ", mBackground=" + mBackground);
+    }
+
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+        measuredBackground();
+
+        mPaint.setColor(mColor);
+        canvas.drawRect(mLeft, mTop, mLeft + mWidth, mTop + mHeight, mPaint);
+        
+        if (mBackgroundBitmap != null) {
+            mRect.set(mLeft, mTop, mLeft + mWidth, mTop + mHeight);
+            canvas.drawBitmap(mBackgroundBitmap, null, mRect, null);
+        }
     }
 
     @Override

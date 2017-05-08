@@ -322,7 +322,7 @@
         jumboMode="false"
         optimize="true"
         revision="25.0.2"
-        sha1="6e65dcd6e7d62f6f26736c75da3e63a9038e1115">
+        sha1="72814a28afc691bdf51ebc8633d8e5a71bebec90">
         <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/pre-dexed/debug/HtmlNativeAndroid-htmlnative-lib-unspecified_9cf633ae587d6eb40eba3872fc6b2fe7463a2e08.jar" />
     </item>
     <item

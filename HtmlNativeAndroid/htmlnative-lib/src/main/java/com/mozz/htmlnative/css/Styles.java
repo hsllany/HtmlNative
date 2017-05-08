@@ -20,6 +20,7 @@ import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.utils.ParametersUtils;
 import com.mozz.htmlnative.view.BackgroundViewDelegate;
+import com.mozz.htmlnative.view.HtmlLayout;
 
 import java.util.Iterator;
 
@@ -143,7 +144,11 @@ public final class Styles {
                                 BackgroundViewDelegate(v, matrix, background.getColor(),
                                 background));
                     } else if (background.isColorSet()) {
-                        v.setBackgroundColor(background.getColor());
+                        if (v instanceof HtmlLayout) {
+                            ((HtmlLayout) v).setHtmlBackground(null, background);
+                        } else {
+                            v.setBackgroundColor(background.getColor());
+                        }
                     }
                 } else {
                     throw new AttrApplyException("Background style is wrong when parsing.");

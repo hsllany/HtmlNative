@@ -49,8 +49,8 @@ public class Background {
     public String toString() {
         String widthStr = widthMode == PERCENTAGE ? width + "%" : width + "";
         String heightStr = heightMode == PERCENTAGE ? height + "%" : height + "";
-        String xStr = xMode == PERCENTAGE ? x + "%" : x + "";
-        String yStr = yMode == PERCENTAGE ? y + "%" : y + "";
+        String xStr = xMode == PERCENTAGE ? (x * 100) + "%" : x + "";
+        String yStr = yMode == PERCENTAGE ? (y * 100) + "%" : y + "";
 
         return "background:" + color + " url(" + url + ") repeat=" + repeat + " x=" + xStr + " y=" +
                 yStr + ", width=" + widthStr + ", height=" + heightStr;
@@ -129,7 +129,7 @@ public class Background {
         return xMode;
     }
 
-    public int getyMode() {
+    public int getYMode() {
         return yMode;
     }
 
@@ -199,10 +199,10 @@ public class Background {
                                 style.setX(0f);
                                 style.xMode = PERCENTAGE;
                             } else if (item.equals("right")) {
-                                style.setX(100f);
+                                style.setX(1);
                                 style.xMode = PERCENTAGE;
                             } else if (item.equals("center")) {
-                                style.setX(50f);
+                                style.setX(0.5f);
                                 style.xMode = PERCENTAGE;
                             } else {
                                 style.setX((float) ParametersUtils.toPixel(item).getPxValue());
@@ -223,10 +223,10 @@ public class Background {
                                 style.setY(0f);
                                 style.yMode = PERCENTAGE;
                             } else if (item.equals("bottom")) {
-                                style.setY(100);
+                                style.setY(1f);
                                 style.yMode = PERCENTAGE;
                             } else if (item.equals("center")) {
-                                style.setY(50);
+                                style.setY(0.5f);
                                 style.yMode = PERCENTAGE;
                             } else {
                                 style.setY((float) ParametersUtils.toPixel(item).getPxValue());

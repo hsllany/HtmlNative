@@ -103,7 +103,7 @@ public final class ParametersUtils {
 
     public static float getPercent(String s) throws IllegalArgumentException {
         if (s.endsWith("%")) {
-            return toInt(s.substring(0, s.length() - 2)) / 100.f;
+            return toInt(s.substring(0, s.length() - 1)) / 100.f;
         } else {
             throw new IllegalArgumentException("not a percent format " + s);
         }

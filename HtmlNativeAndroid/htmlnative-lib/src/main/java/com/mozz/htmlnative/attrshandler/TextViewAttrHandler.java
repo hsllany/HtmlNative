@@ -87,7 +87,7 @@ class TextViewAttrHandler extends AttrHandler {
                 break;
 
             case LINE_HEIGHT:
-                float lineHeight = ParametersUtils.toFloat(value);
+                float lineHeight = (float) ParametersUtils.toPixel(value).getPxValue();
                 textView.setLineSpacing(0, lineHeight);
                 break;
 

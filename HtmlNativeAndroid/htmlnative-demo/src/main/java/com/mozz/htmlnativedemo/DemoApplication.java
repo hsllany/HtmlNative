@@ -2,7 +2,9 @@ package com.mozz.htmlnativedemo;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
@@ -55,6 +57,10 @@ public class DemoApplication extends Application {
             @Override
             public void onHref(String url, View view) {
                 Toast.makeText(DemoApplication.this, url, Toast.LENGTH_SHORT).show();
+
+                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
             }
         });
 
