@@ -4,7 +4,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.util.Log;
 
-import com.mozz.htmlnative.common.Utils;
+import com.mozz.htmlnative.common.ParametersUtils;
 
 /**
  * @author Yang Tao, 17/3/24.
@@ -111,7 +111,7 @@ public class Background {
 
                     } else if (item.startsWith("#") && lk == LK_COLOR) {
                         try {
-                            style.setColor(Utils.color(item));
+                            style.setColor(ParametersUtils.toColor(item));
                         } catch (IllegalArgumentException ignored) {
 
                         }
@@ -141,7 +141,7 @@ public class Background {
                     } else if (lk == LK_X) {
                         try {
                             if (item.endsWith("%")) {
-                                style.setX(Utils.getPercent(item));
+                                style.setX(ParametersUtils.getPercent(item));
                                 style.positionXMode = POSITION_MODE_PERCENTAGE;
                             } else if (item.equals("left")) {
                                 style.setX(0f);
@@ -153,7 +153,7 @@ public class Background {
                                 style.setX(.5f);
                                 style.positionXMode = POSITION_MODE_PERCENTAGE;
                             } else {
-                                style.setX((float) Utils.toPixel(item).getPxValue());
+                                style.setX((float) ParametersUtils.toPixel(item).getPxValue());
                                 style.positionXMode = POSITION_MODE_LENGTH;
                             }
                         } catch (IllegalArgumentException e) {
@@ -165,7 +165,7 @@ public class Background {
                     } else if (lk == LK_Y) {
                         try {
                             if (item.endsWith("%")) {
-                                style.setY(Utils.getPercent(item));
+                                style.setY(ParametersUtils.getPercent(item));
                                 style.positionYMode = POSITION_MODE_PERCENTAGE;
                             } else if (item.equals("top")) {
                                 style.setY(0f);
@@ -177,7 +177,7 @@ public class Background {
                                 style.setY(.5f);
                                 style.positionYMode = POSITION_MODE_PERCENTAGE;
                             } else {
-                                style.setY((float) Utils.toPixel(item).getPxValue());
+                                style.setY((float) ParametersUtils.toPixel(item).getPxValue());
                                 style.positionYMode = POSITION_MODE_LENGTH;
                             }
                         } catch (IllegalArgumentException e) {
@@ -188,7 +188,7 @@ public class Background {
 
                     } else if (lk == LK_COLOR) {
                         try {
-                            style.setColor(Utils.color(item));
+                            style.setColor(ParametersUtils.toColor(item));
                         } catch (IllegalArgumentException e) {
                             e.printStackTrace();
                         }
@@ -202,7 +202,7 @@ public class Background {
             case "background-color": {
                 if (subStrings.length >= 1) {
                     try {
-                        style.setColor(Utils.color(subStrings[0]));
+                        style.setColor(ParametersUtils.toColor(subStrings[0]));
                     } catch (IllegalArgumentException ignored) {
                     }
                 }
@@ -229,7 +229,7 @@ public class Background {
                         if (lookFor == LK_X) {
                             if (item.endsWith("%")) {
                                 style.positionXMode = POSITION_MODE_PERCENTAGE;
-                                style.setX(Utils.getPercent(item));
+                                style.setX(ParametersUtils.getPercent(item));
                             } else if (item.equals("left")) {
                                 style.setX(0f);
                                 style.positionXMode = POSITION_MODE_PERCENTAGE;
@@ -241,12 +241,12 @@ public class Background {
                                 style.positionXMode = POSITION_MODE_PERCENTAGE;
                             } else {
                                 style.positionXMode = POSITION_MODE_LENGTH;
-                                style.setX((float) Utils.toPixel(item).getPxValue());
+                                style.setX((float) ParametersUtils.toPixel(item).getPxValue());
                             }
                         } else if (lookFor == LK_Y) {
                             if (item.endsWith("%")) {
                                 style.positionYMode = POSITION_MODE_PERCENTAGE;
-                                style.setY(Utils.getPercent(item));
+                                style.setY(ParametersUtils.getPercent(item));
                             } else if (item.equals("top")) {
                                 style.setY(0f);
                                 style.positionYMode = POSITION_MODE_PERCENTAGE;
@@ -258,7 +258,7 @@ public class Background {
                                 style.positionYMode = POSITION_MODE_PERCENTAGE;
                             } else {
                                 style.positionYMode = POSITION_MODE_LENGTH;
-                                style.setY((float) Utils.toPixel(item).getPxValue());
+                                style.setY((float) ParametersUtils.toPixel(item).getPxValue());
                             }
                         } else {
                             break;

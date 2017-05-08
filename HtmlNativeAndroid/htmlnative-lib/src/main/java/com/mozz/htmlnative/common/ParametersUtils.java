@@ -3,11 +3,8 @@ package com.mozz.htmlnative.common;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.TypedValue;
 
-import java.io.Closeable;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,11 +12,11 @@ import java.util.Map;
  * @author Yang Tao, 17/2/24.
  */
 
-public final class Utils {
+public final class ParametersUtils {
 
-    private static final String TAG = Utils.class.getSimpleName();
+    private static final String TAG = ParametersUtils.class.getSimpleName();
 
-    private Utils() {
+    private ParametersUtils() {
     }
 
     private static float screenDensity = -1.f;
@@ -29,18 +26,8 @@ public final class Utils {
         updateScreenDensity(density);
     }
 
-    public static void updateScreenDensity(float density) {
+    private static void updateScreenDensity(float density) {
         screenDensity = density;
-    }
-
-    public static void closeQuietly(@Nullable Closeable closeable) {
-        if (closeable != null) {
-            try {
-                closeable.close();
-            } catch (IOException ignored) {
-                // do nothing
-            }
-        }
     }
 
     public static int toInt(Object object) throws IllegalArgumentException {
@@ -121,7 +108,7 @@ public final class Utils {
         }
     }
 
-    public static PixelValue[] pixelGroups(String ss) throws IllegalArgumentException {
+    public static PixelValue[] toPixels(String ss) throws IllegalArgumentException {
         String[] single = ss.split(" ");
 
         PixelValue[] pixelValues = new PixelValue[single.length];
@@ -137,20 +124,6 @@ public final class Utils {
         return pixelValues;
     }
 
-    public static float px(Object object) throws IllegalArgumentException {
-        if (object instanceof String) {
-            String s = (String) object;
-
-            if (s.endsWith("px")) {
-                return toFloat(s.substring(0, s.length() - 2));
-            } else {
-                return toFloat(s);
-            }
-        } else {
-            return toFloat(object);
-        }
-    }
-
 
     public static boolean toBoolean(Object object) throws IllegalArgumentException {
         if (object instanceof Boolean) {
@@ -160,7 +133,7 @@ public final class Utils {
         }
     }
 
-    public static int color(@NonNull Object colorObj) throws IllegalArgumentException {
+    public static int toColor(@NonNull Object colorObj) throws IllegalArgumentException {
         String colorString = colorObj.toString().trim();
         if (colorString.length() == 0) {
             throw new IllegalArgumentException("empty color string for parse");
@@ -235,25 +208,25 @@ public final class Utils {
         return pas;
     }
 
-    public static float dp2px(float px) {
+    public static float dpToPx(float px) {
         if (screenDensity == -1.f) {
             throw new IllegalStateException("you must call init() first");
         }
         return (int) (screenDensity * px + 0.5f);
     }
 
-    public static float px2dp(float dp) {
+    public static float pxToDp(float dp) {
         if (screenDensity == -1.f) {
             throw new IllegalStateException("you must call init() first");
         }
         return dp / screenDensity;
     }
 
-    public static int em2px(float em) {
+    public static int emToPx(float em) {
         return (int) (em * 16.f);
     }
 
-    public static float px2em(int px) {
+    public static float pxToEm(int px) {
         return px / 16.f;
     }
 }

@@ -13,11 +13,11 @@ import java.io.IOException;
 /**
  * @author Yang Tao, 17/3/13.
  */
-public class UtilsTest {
+public class ParametersUtilsTest {
     @Test
     public void closeQuitely() throws Exception {
         Closeable closeable = null;
-        Utils.closeQuietly(closeable);
+        IOUtils.closeQuietly(closeable);
 
         closeable = new Closeable() {
             @Override
@@ -26,19 +26,19 @@ public class UtilsTest {
             }
         };
 
-        Utils.closeQuietly(closeable);
+        IOUtils.closeQuietly(closeable);
     }
 
     @Test
     public void color() throws Exception {
         String color1 = "#ff0000";
-        Assert.assertTrue(Utils.color(color1) == Color.RED);
+        Assert.assertTrue(ParametersUtils.color(color1) == Color.RED);
 
         String color2 = "#f00";
-        Assert.assertTrue(Utils.color(color2) == Color.RED);
+        Assert.assertTrue(ParametersUtils.color(color2) == Color.RED);
 
         String color3 = "#ffff0000";
-        Assert.assertTrue(Utils.color(color3) == Color.RED);
+        Assert.assertTrue(ParametersUtils.color(color3) == Color.RED);
     }
 
     @Test
@@ -64,19 +64,19 @@ public class UtilsTest {
     @Test
     public void toPixel() throws Exception {
         String a = "1px";
-        PixelValue p = Utils.toPixel(a);
+        PixelValue p = ParametersUtils.toPixel(a);
 
         org.junit.Assert.assertTrue(p.getUnit() == TypedValue.COMPLEX_UNIT_PX);
         org.junit.Assert.assertTrue(p.getValue() == 23);
 
         a = "123.5dp";
-        p = Utils.toPixel(a);
+        p = ParametersUtils.toPixel(a);
 
         org.junit.Assert.assertTrue(p.getUnit() == TypedValue.COMPLEX_UNIT_DIP);
         org.junit.Assert.assertTrue(p.getValue() == 123.5);
 
         a = "123.5";
-        p = Utils.toPixel(a);
+        p = ParametersUtils.toPixel(a);
 
         org.junit.Assert.assertTrue(p.getUnit() == TypedValue.COMPLEX_UNIT_PX);
         org.junit.Assert.assertTrue(p.getValue() == 123.5);

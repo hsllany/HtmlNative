@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 
 import com.mozz.htmlnative.attrs.AttrsHelper;
-import com.mozz.htmlnative.common.Utils;
+import com.mozz.htmlnative.common.ParametersUtils;
 import com.mozz.htmlnative.dom.HNHead;
 import com.mozz.htmlnative.view.BackgroundViewDelegate;
 
@@ -64,7 +64,7 @@ public final class HNative {
     }
 
     private void initScreenMetrics(@NonNull Context context) {
-        Utils.init(context);
+        ParametersUtils.init(context);
     }
 
     public final void loadView(final Context context, final InputStream inputStream, final

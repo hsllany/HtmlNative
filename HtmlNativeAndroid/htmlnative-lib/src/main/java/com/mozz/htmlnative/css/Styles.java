@@ -16,7 +16,7 @@ import com.mozz.htmlnative.attrs.AttrHandler;
 import com.mozz.htmlnative.attrs.AttrsHelper;
 import com.mozz.htmlnative.attrs.LayoutAttrHandler;
 import com.mozz.htmlnative.common.PixelValue;
-import com.mozz.htmlnative.common.Utils;
+import com.mozz.htmlnative.common.ParametersUtils;
 import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.view.BackgroundViewDelegate;
@@ -117,7 +117,7 @@ public final class Styles {
                 if (style.toString().equalsIgnoreCase(VAL_FILL_PARENT)) {
                     layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 } else {
-                    PixelValue pixel = Utils.toPixel(style);
+                    PixelValue pixel = ParametersUtils.toPixel(style);
                     layoutParams.width = (int) pixel.getPxValue();
                 }
             }
@@ -127,7 +127,7 @@ public final class Styles {
                 if (style.toString().equalsIgnoreCase(VAL_FILL_PARENT)) {
                     layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
                 } else {
-                    PixelValue pixel = Utils.toPixel(style);
+                    PixelValue pixel = ParametersUtils.toPixel(style);
                     layoutParams.height = (int) pixel.getPxValue();
                 }
             }
@@ -152,7 +152,7 @@ public final class Styles {
 
             case ATTR_MARGIN: {
                 if (layoutParams instanceof ViewGroup.MarginLayoutParams) {
-                    PixelValue[] pixelValues = Utils.pixelGroups(style.toString());
+                    PixelValue[] pixelValues = ParametersUtils.toPixels(style.toString());
                     int top = -1;
                     int bottom = -1;
                     int left = -1;
@@ -181,7 +181,7 @@ public final class Styles {
                     ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup
                             .MarginLayoutParams) layoutParams;
                     int left = marginLayoutParams.leftMargin;
-                    int right = Utils.toInt(style);
+                    int right = ParametersUtils.toInt(style);
                     int top = marginLayoutParams.topMargin;
                     int bottom = marginLayoutParams.bottomMargin;
 
@@ -193,7 +193,7 @@ public final class Styles {
                 if (layoutParams instanceof ViewGroup.MarginLayoutParams) {
                     ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup
                             .MarginLayoutParams) layoutParams;
-                    int left = Utils.toInt(style);
+                    int left = ParametersUtils.toInt(style);
                     int right = marginLayoutParams.rightMargin;
                     int top = marginLayoutParams.topMargin;
                     int bottom = marginLayoutParams.bottomMargin;
@@ -207,7 +207,7 @@ public final class Styles {
                             .MarginLayoutParams) layoutParams;
                     int left = marginLayoutParams.leftMargin;
                     int right = marginLayoutParams.rightMargin;
-                    int top = Utils.toInt(style);
+                    int top = ParametersUtils.toInt(style);
                     int bottom = marginLayoutParams.bottomMargin;
 
                     marginLayoutParams.setMargins(left, top, right, bottom);
@@ -221,14 +221,14 @@ public final class Styles {
                     int left = marginLayoutParams.leftMargin;
                     int right = marginLayoutParams.rightMargin;
                     int top = marginLayoutParams.topMargin;
-                    int bottom = Utils.toInt(style);
+                    int bottom = ParametersUtils.toInt(style);
 
                     marginLayoutParams.setMargins(left, top, right, bottom);
                 }
                 break;
 
             case ATTR_PADDING: {
-                PixelValue[] pixelValues = Utils.pixelGroups(style.toString());
+                PixelValue[] pixelValues = ParametersUtils.toPixels(style.toString());
                 int top = -1;
                 int bottom = -1;
                 int left = -1;
@@ -251,39 +251,39 @@ public final class Styles {
             break;
 
             case ATTR_PADDING_LEFT:
-                int paddingLeft = Utils.toInt(style);
+                int paddingLeft = ParametersUtils.toInt(style);
                 AttrsHelper.setLeftPadding(v, paddingLeft);
                 break;
 
             case ATTR_PADDING_RIGHT:
-                int paddingRight = Utils.toInt(style);
+                int paddingRight = ParametersUtils.toInt(style);
                 AttrsHelper.setRightPadding(v, paddingRight);
                 break;
 
             case ATTR_PADDING_TOP:
-                int paddingTop = Utils.toInt(style);
+                int paddingTop = ParametersUtils.toInt(style);
                 AttrsHelper.setTopPadding(v, paddingTop);
                 break;
 
             case ATTR_PADDING_BOTTOM:
-                int paddingBottom = Utils.toInt(style);
+                int paddingBottom = ParametersUtils.toInt(style);
                 AttrsHelper.setBottomPadding(v, paddingBottom);
                 break;
 
             case ATTR_LEFT:
                 if (layoutParams instanceof AbsoluteLayout.LayoutParams) {
-                    ((AbsoluteLayout.LayoutParams) layoutParams).x = Utils.toInt(style);
+                    ((AbsoluteLayout.LayoutParams) layoutParams).x = ParametersUtils.toInt(style);
                 }
                 break;
 
             case ATTR_TOP:
                 if (layoutParams instanceof AbsoluteLayout.LayoutParams) {
-                    ((AbsoluteLayout.LayoutParams) layoutParams).y = Utils.toInt(style);
+                    ((AbsoluteLayout.LayoutParams) layoutParams).y = ParametersUtils.toInt(style);
                 }
                 break;
 
             case ATTR_ALPHA:
-                float alpha = Utils.toFloat(style);
+                float alpha = ParametersUtils.toFloat(style);
                 v.setAlpha(alpha);
                 break;
 
@@ -409,9 +409,9 @@ public final class Styles {
 
         Iterator<StyleEntry> itr = source.iterator(tree);
         while (itr.hasNext()) {
-            Styles.StyleEntry styleEntry = itr.next();
+            StyleEntry styleEntry = itr.next();
 
-            Styles.applyStyle(context, sandBoxContext, v, domElement, layoutParams, parent,
+            applyStyle(context, sandBoxContext, v, domElement, layoutParams, parent,
                     viewAttrHandler, extraAttrHandler, parentAttrHandler, styleEntry.getStyleName
                             (), styleEntry.getStyle(), isParent, stack);
 

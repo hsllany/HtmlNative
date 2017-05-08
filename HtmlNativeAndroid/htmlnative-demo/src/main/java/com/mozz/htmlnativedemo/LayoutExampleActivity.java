@@ -11,7 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.mozz.htmlnative.common.Utils;
+import com.mozz.htmlnative.common.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -99,7 +99,7 @@ public class LayoutExampleActivity extends AppCompatActivity {
         InputStream s = getAssets().open(fileName);
         byte[] buffer = new byte[s.available()];
         s.read(buffer);
-        Utils.closeQuietly(s);
+        IOUtils.closeQuietly(s);
 
         return new String(buffer);
     }

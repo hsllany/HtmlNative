@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import com.mozz.htmlnative.HNLog;
 import com.mozz.htmlnative.HNSegment;
 import com.mozz.htmlnative.ParseCallback;
-import com.mozz.htmlnative.common.Utils;
+import com.mozz.htmlnative.common.ParametersUtils;
 import com.mozz.htmlnative.css.AttrsSet;
 
 import java.util.Collections;
@@ -83,7 +83,7 @@ public final class HNDomTree implements ParseCallback, AttrsSet.AttrsOwner, DomE
     public void addAttr(String attrName, @NonNull Object value) {
         if (TREE_ORDER_PARAMETER.equalsIgnoreCase(attrName)) {
             try {
-                mOrder = Utils.toInt(value);
+                mOrder = ParametersUtils.toInt(value);
                 if (mParent != null && mOrder != -1) {
                     mParent.onChangeChildOrder();
                 }

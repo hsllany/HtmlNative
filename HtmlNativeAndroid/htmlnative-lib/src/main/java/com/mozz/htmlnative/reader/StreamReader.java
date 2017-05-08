@@ -3,7 +3,7 @@ package com.mozz.htmlnative.reader;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.mozz.htmlnative.common.Utils;
+import com.mozz.htmlnative.common.IOUtils;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -117,7 +117,7 @@ public class StreamReader implements TextReader {
 
     @Override
     public void close() {
-        Utils.closeQuietly(mInputStream);
+        IOUtils.closeQuietly(mInputStream);
     }
 
     @Override

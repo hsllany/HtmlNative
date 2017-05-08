@@ -1,6 +1,6 @@
 package com.mozz.htmlnative.reader;
 
-import com.mozz.htmlnative.common.Utils;
+import com.mozz.htmlnative.common.IOUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -18,7 +18,7 @@ public class StringTextReader extends StreamReader {
 
     @Override
     public void close() {
-        Utils.closeQuietly(inputStream);
+        IOUtils.closeQuietly(inputStream);
         super.close();
     }
 }

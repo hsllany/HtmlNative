@@ -10,7 +10,7 @@ import com.mozz.htmlnative.attrs.AttrHandler;
 import com.mozz.htmlnative.attrs.AttrsHelper;
 import com.mozz.htmlnative.attrs.LayoutAttrHandler;
 import com.mozz.htmlnative.common.MainHandler;
-import com.mozz.htmlnative.common.Utils;
+import com.mozz.htmlnative.common.ParametersUtils;
 
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
@@ -38,7 +38,7 @@ public class LuaView extends LuaTable {
             public LuaValue call(LuaValue arg) {
                 String style = arg.tojstring();
 
-                final Map<String, String> params = Utils.parseStyle(style);
+                final Map<String, String> params = ParametersUtils.parseStyle(style);
 
                 final AttrHandler viewAttrHandler = AttrsHelper.getAttrHandler(v);
                 final AttrHandler extraAttrHandler = AttrsHelper.getExtraAttrHandler(v);

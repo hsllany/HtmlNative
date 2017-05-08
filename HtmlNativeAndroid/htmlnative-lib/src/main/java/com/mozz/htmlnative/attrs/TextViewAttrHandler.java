@@ -13,7 +13,7 @@ import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.HNative;
 import com.mozz.htmlnative.HtmlTag;
 import com.mozz.htmlnative.common.PixelValue;
-import com.mozz.htmlnative.common.Utils;
+import com.mozz.htmlnative.common.ParametersUtils;
 import com.mozz.htmlnative.css.InheritStylesRegistry;
 import com.mozz.htmlnative.exception.AttrApplyException;
 
@@ -32,25 +32,25 @@ class TextViewAttrHandler extends AttrHandler {
     private static final String TEXT_TRANSFORM = "text-transform";
 
     private static final int DEFAULT_SIZE = 14;
-    private static final int DEFAULT_H1_SIZE = Utils.em2px(2);
-    private static final int DEFAULT_H1_PADDING = Utils.em2px(0.67f);
+    private static final int DEFAULT_H1_SIZE = ParametersUtils.emToPx(2);
+    private static final int DEFAULT_H1_PADDING = ParametersUtils.emToPx(0.67f);
 
-    private static final int DEFAULT_H2_SIZE = Utils.em2px(1.5f);
-    private static final int DEFAULT_H2_PADDING = (int) Utils.em2px(.75f);
+    private static final int DEFAULT_H2_SIZE = ParametersUtils.emToPx(1.5f);
+    private static final int DEFAULT_H2_PADDING = (int) ParametersUtils.emToPx(.75f);
 
-    private static final int DEFAULT_H3_SIZE = (int) Utils.em2px(1.17f);
-    private static final int DEFAULT_H3_PADDING = (int) Utils.em2px(.83f);
+    private static final int DEFAULT_H3_SIZE = (int) ParametersUtils.emToPx(1.17f);
+    private static final int DEFAULT_H3_PADDING = (int) ParametersUtils.emToPx(.83f);
 
-    private static final int DEFAULT_H4_SIZE = (int) Utils.em2px(1.f);
-    private static final int DEFAULT_H4_PADDING = (int) Utils.em2px(1.12f);
+    private static final int DEFAULT_H4_SIZE = (int) ParametersUtils.emToPx(1.f);
+    private static final int DEFAULT_H4_PADDING = (int) ParametersUtils.emToPx(1.12f);
 
-    private static final int DEFAULT_H5_SIZE = (int) Utils.em2px(0.8f);
-    private static final int DEFAULT_H5_PADDING = (int) Utils.em2px(1.12f);
+    private static final int DEFAULT_H5_SIZE = (int) ParametersUtils.emToPx(0.8f);
+    private static final int DEFAULT_H5_PADDING = (int) ParametersUtils.emToPx(1.12f);
 
-    private static final int DEFAULT_H6_SIZE = (int) Utils.em2px(.6f);
-    private static final int DEFAULT_H6_PADDING = (int) Utils.em2px(1.12f);
+    private static final int DEFAULT_H6_SIZE = (int) ParametersUtils.emToPx(.6f);
+    private static final int DEFAULT_H6_PADDING = (int) ParametersUtils.emToPx(1.12f);
 
-    private static final int DEFAULT_P_PADDING = (int) Utils.dp2px(5);
+    private static final int DEFAULT_P_PADDING = (int) ParametersUtils.dpToPx(5);
 
     static {
         InheritStylesRegistry.register(FONT_SIZE);
@@ -70,7 +70,7 @@ class TextViewAttrHandler extends AttrHandler {
         final TextView textView = (TextView) v;
         switch (params) {
             case COLOR:
-                textView.setTextColor(Utils.color(value));
+                textView.setTextColor(ParametersUtils.toColor(value));
                 break;
 
             case TEXT:
@@ -78,7 +78,7 @@ class TextViewAttrHandler extends AttrHandler {
                 break;
 
             case FONT_SIZE:
-                PixelValue size = Utils.toPixel(value);
+                PixelValue size = ParametersUtils.toPixel(value);
                 if (size.getUnit() == PixelValue.UNSET) {
                     textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, (float) size.getValue());
                 } else {
@@ -87,7 +87,7 @@ class TextViewAttrHandler extends AttrHandler {
                 break;
 
             case LINE_HEIGHT:
-                float lineHeight = Utils.toFloat(value);
+                float lineHeight = ParametersUtils.toFloat(value);
                 textView.setLineSpacing(0, lineHeight);
                 break;
 
@@ -164,7 +164,7 @@ class TextViewAttrHandler extends AttrHandler {
                 if (ss.equals("normal")) {
                     textView.setLetterSpacing(textView.getLetterSpacing());
                 } else {
-                    PixelValue f = Utils.toPixel(value);
+                    PixelValue f = ParametersUtils.toPixel(value);
                     textView.setLetterSpacing((float) f.getEmValue());
                 }
                 break;
