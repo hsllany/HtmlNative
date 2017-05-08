@@ -6,7 +6,7 @@ import android.util.Log;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.OneArgFunction;
 
-import static com.mozz.htmlnative.HNative.LUA_TAG;
+import static com.mozz.htmlnative.HNativeEngine.LUA_TAG;
 
 /**
  * @author Yang Tao, 17/2/28.

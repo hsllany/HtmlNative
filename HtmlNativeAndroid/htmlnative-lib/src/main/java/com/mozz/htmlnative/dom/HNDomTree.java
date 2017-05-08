@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import com.mozz.htmlnative.HNLog;
 import com.mozz.htmlnative.HNSegment;
 import com.mozz.htmlnative.ParseCallback;
-import com.mozz.htmlnative.common.ParametersUtils;
+import com.mozz.htmlnative.utils.ParametersUtils;
 import com.mozz.htmlnative.css.AttrsSet;
 
 import java.util.Collections;
@@ -25,7 +25,7 @@ public final class HNDomTree implements ParseCallback, AttrsSet.AttrsOwner, DomE
     private HNDomTree mParent;
 
     /**
-     * Represent the appearance position in HNative file.
+     * Represent the appearance position in HNativeEngine file.
      * Notice this is not the actual position in tree's children. See {@link HNDomTree#mOrder}
      */
     private int mIndex;

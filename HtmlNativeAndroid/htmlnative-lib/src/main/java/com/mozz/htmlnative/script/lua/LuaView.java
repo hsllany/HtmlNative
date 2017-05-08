@@ -9,8 +9,8 @@ import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.attrs.AttrHandler;
 import com.mozz.htmlnative.attrs.AttrsHelper;
 import com.mozz.htmlnative.attrs.LayoutAttrHandler;
-import com.mozz.htmlnative.common.MainHandler;
-import com.mozz.htmlnative.common.ParametersUtils;
+import com.mozz.htmlnative.utils.MainHandlerUtils;
+import com.mozz.htmlnative.utils.ParametersUtils;
 
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
@@ -43,7 +43,7 @@ public class LuaView extends LuaTable {
                 final AttrHandler viewAttrHandler = AttrsHelper.getAttrHandler(v);
                 final AttrHandler extraAttrHandler = AttrsHelper.getExtraAttrHandler(v);
                 final LayoutAttrHandler parentAttr = AttrsHelper.getParentAttrHandler(v);
-                MainHandler.instance().post(new Runnable() {
+                MainHandlerUtils.instance().post(new Runnable() {
                     @Override
                     public void run() {
                         for (Map.Entry<String, String> entry : params.entrySet()) {

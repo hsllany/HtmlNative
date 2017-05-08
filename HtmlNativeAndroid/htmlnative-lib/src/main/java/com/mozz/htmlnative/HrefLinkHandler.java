@@ -4,7 +4,7 @@ import android.view.View;
 
 /**
  * called when tag a with a href property is clicked.
- * You should set this via {@link HNative#setHrefLinkHandler(HrefLinkHandler)}
+ * You should set this via {@link HNativeEngine#setHrefLinkHandler(HrefLinkHandler)}
  *
  * @author Yang Tao, 17/3/10.
  */

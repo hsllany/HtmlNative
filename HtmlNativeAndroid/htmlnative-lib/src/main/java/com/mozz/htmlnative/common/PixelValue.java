@@ -3,6 +3,8 @@ package com.mozz.htmlnative.common;
 import android.support.annotation.IntDef;
 import android.util.TypedValue;
 
+import com.mozz.htmlnative.utils.ParametersUtils;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 

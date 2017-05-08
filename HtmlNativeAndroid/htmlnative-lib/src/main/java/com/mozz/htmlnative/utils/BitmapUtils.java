@@ -1,4 +1,4 @@
-package com.mozz.htmlnative.common;
+package com.mozz.htmlnative.utils;
 
 import android.graphics.Bitmap;
 import android.support.annotation.MainThread;
@@ -19,7 +19,7 @@ public class BitmapUtils {
             @Override
             public void run() {
                 final Bitmap bitmap1 = task.process(bitmap);
-                MainHandler.instance().post(new Runnable() {
+                MainHandlerUtils.instance().post(new Runnable() {
                     @Override
                     public void run() {
                         task.done(bitmap1);

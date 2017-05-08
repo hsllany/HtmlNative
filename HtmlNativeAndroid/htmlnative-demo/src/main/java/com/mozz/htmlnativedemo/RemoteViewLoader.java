@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
 
-import com.mozz.htmlnative.HNative;
+import com.mozz.htmlnative.HNativeEngine;
 
 import java.io.IOException;
 
@@ -30,7 +30,7 @@ public class RemoteViewLoader {
         mHandler = new Handler(mThread.getLooper());
     }
 
-    public void load(final String url, final HNative.OnHNViewLoaded callback) {
+    public void load(final String url, final HNativeEngine.OnHNViewLoaded callback) {
         Runnable r = new Runnable() {
             @Override
             public void run() {
@@ -40,7 +40,7 @@ public class RemoteViewLoader {
                 Response r = null;
                 try {
                     r = okHttpClient.newCall(request).execute();
-                    HNative.getInstance().loadView(mContext, r.body().byteStream(), callback);
+                    HNativeEngine.getInstance().loadView(mContext, r.body().byteStream(), callback);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

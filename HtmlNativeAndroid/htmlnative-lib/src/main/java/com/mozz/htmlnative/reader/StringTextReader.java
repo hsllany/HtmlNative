@@ -1,6 +1,6 @@
 package com.mozz.htmlnative.reader;
 
-import com.mozz.htmlnative.common.IOUtils;
+import com.mozz.htmlnative.utils.IOUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

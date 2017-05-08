@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 
-import com.mozz.htmlnative.common.MainHandler;
+import com.mozz.htmlnative.utils.MainHandlerUtils;
 
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.OneArgFunction;
@@ -23,7 +23,7 @@ public class toast extends OneArgFunction {
 
     @Override
     public LuaValue call(@NonNull final LuaValue luaValue) {
-        MainHandler.instance().post(new Runnable() {
+        MainHandlerUtils.instance().post(new Runnable() {
             @Override
             public void run() {
                 Context context = mContext.get();

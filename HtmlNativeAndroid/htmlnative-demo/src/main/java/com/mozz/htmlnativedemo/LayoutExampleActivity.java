@@ -11,7 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.mozz.htmlnative.common.IOUtils;
+import com.mozz.htmlnative.utils.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;

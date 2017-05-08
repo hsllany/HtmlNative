@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.mozz.htmlnative.HNLog;
-import com.mozz.htmlnative.HNative;
+import com.mozz.htmlnative.HNativeEngine;
 import com.mozz.htmlnative.HrefLinkHandler;
 import com.mozz.htmlnative.ImageViewAdapter;
 import com.mozz.htmlnative.WebViewCreator;
@@ -28,14 +28,14 @@ public class DemoApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        HNative.getInstance().init(this);
-        HNative.getInstance().debugAll();
+        HNativeEngine.getInstance().init(this);
+        HNativeEngine.getInstance().debugAll();
 
         HNLog.setDebugLevel(HNLog.PARSER);
         HNLog.setDebugLevel(HNLog.STYLE);
         HNLog.setDebugLevel(HNLog.PROCESS_THREAD);
 
-        HNative.getInstance().setImageViewAdapter(new ImageViewAdapter() {
+        HNativeEngine.getInstance().setImageViewAdapter(new ImageViewAdapter() {
             @Override
             public void setImage(String src, final BackgroundViewDelegate imageView) {
                 Glide.with(DemoApplication.this).load(src).asBitmap().into(new SimpleTarget<Bitmap>() {
@@ -51,14 +51,14 @@ public class DemoApplication extends Application {
             }
         });
 
-        HNative.getInstance().setHrefLinkHandler(new HrefLinkHandler() {
+        HNativeEngine.getInstance().setHrefLinkHandler(new HrefLinkHandler() {
             @Override
             public void onHref(String url, View view) {
                 Toast.makeText(DemoApplication.this, url, Toast.LENGTH_SHORT).show();
             }
         });
 
-        HNative.getInstance().setWebviewCreator(new WebViewCreator() {
+        HNativeEngine.getInstance().setWebviewCreator(new WebViewCreator() {
             @Override
             public WebView create(Context context) {
                 return new WebView(context);
@@ -76,6 +76,6 @@ public class DemoApplication extends Application {
     @Override
     public void onTerminate() {
         super.onTerminate();
-        HNative.getInstance().destroy();
+        HNativeEngine.getInstance().destroy();
     }
 }

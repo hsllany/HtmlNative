@@ -10,13 +10,13 @@ import android.widget.AbsoluteLayout;
 
 import com.mozz.htmlnative.HNLog;
 import com.mozz.htmlnative.HNSandBoxContext;
-import com.mozz.htmlnative.HNative;
+import com.mozz.htmlnative.HNativeEngine;
 import com.mozz.htmlnative.InheritStyleStack;
 import com.mozz.htmlnative.attrs.AttrHandler;
 import com.mozz.htmlnative.attrs.AttrsHelper;
 import com.mozz.htmlnative.attrs.LayoutAttrHandler;
 import com.mozz.htmlnative.common.PixelValue;
-import com.mozz.htmlnative.common.ParametersUtils;
+import com.mozz.htmlnative.utils.ParametersUtils;
 import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.view.BackgroundViewDelegate;
@@ -139,7 +139,7 @@ public final class Styles {
 
                     if (!TextUtils.isEmpty(background.getUrl())) {
                         Matrix matrix = Background.createBitmapMatrix(background);
-                        HNative.getImageViewAdapter().setImage(background.getUrl(), new
+                        HNativeEngine.getImageViewAdapter().setImage(background.getUrl(), new
                                 BackgroundViewDelegate(v, matrix, background.getColor()));
                     } else if (background.isColorSet()) {
                         v.setBackgroundColor(background.getColor());

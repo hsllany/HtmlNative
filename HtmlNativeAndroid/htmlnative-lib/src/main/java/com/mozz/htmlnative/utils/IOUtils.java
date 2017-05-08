@@ -1,4 +1,4 @@
-package com.mozz.htmlnative.common;
+package com.mozz.htmlnative.utils;
 
 import android.support.annotation.Nullable;
 

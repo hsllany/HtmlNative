@@ -4,7 +4,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.util.Log;
 
-import com.mozz.htmlnative.common.ParametersUtils;
+import com.mozz.htmlnative.utils.ParametersUtils;
 
 /**
  * @author Yang Tao, 17/3/24.
@@ -35,8 +35,9 @@ public class Background {
     private float y;
     private int width;
     private int height;
-    private int positionXMode = POSITION_MODE_PERCENTAGE;
-    private int positionYMode = POSITION_MODE_PERCENTAGE;
+
+    private int widthMode = POSITION_MODE_PERCENTAGE;
+    private int heightMode = POSITION_MODE_PERCENTAGE;
 
 
     @Override
@@ -142,19 +143,19 @@ public class Background {
                         try {
                             if (item.endsWith("%")) {
                                 style.setX(ParametersUtils.getPercent(item));
-                                style.positionXMode = POSITION_MODE_PERCENTAGE;
+                                style.widthMode = POSITION_MODE_PERCENTAGE;
                             } else if (item.equals("left")) {
                                 style.setX(0f);
-                                style.positionXMode = POSITION_MODE_PERCENTAGE;
+                                style.widthMode = POSITION_MODE_PERCENTAGE;
                             } else if (item.equals("right")) {
                                 style.setX(1.f);
-                                style.positionXMode = POSITION_MODE_PERCENTAGE;
+                                style.widthMode = POSITION_MODE_PERCENTAGE;
                             } else if (item.equals("center")) {
                                 style.setX(.5f);
-                                style.positionXMode = POSITION_MODE_PERCENTAGE;
+                                style.widthMode = POSITION_MODE_PERCENTAGE;
                             } else {
                                 style.setX((float) ParametersUtils.toPixel(item).getPxValue());
-                                style.positionXMode = POSITION_MODE_LENGTH;
+                                style.widthMode = POSITION_MODE_LENGTH;
                             }
                         } catch (IllegalArgumentException e) {
                             e.printStackTrace();
@@ -166,19 +167,19 @@ public class Background {
                         try {
                             if (item.endsWith("%")) {
                                 style.setY(ParametersUtils.getPercent(item));
-                                style.positionYMode = POSITION_MODE_PERCENTAGE;
+                                style.heightMode = POSITION_MODE_PERCENTAGE;
                             } else if (item.equals("top")) {
                                 style.setY(0f);
-                                style.positionYMode = POSITION_MODE_PERCENTAGE;
+                                style.heightMode = POSITION_MODE_PERCENTAGE;
                             } else if (item.equals("bottom")) {
                                 style.setY(1.f);
-                                style.positionYMode = POSITION_MODE_PERCENTAGE;
+                                style.heightMode = POSITION_MODE_PERCENTAGE;
                             } else if (item.equals("center")) {
                                 style.setY(.5f);
-                                style.positionYMode = POSITION_MODE_PERCENTAGE;
+                                style.heightMode = POSITION_MODE_PERCENTAGE;
                             } else {
                                 style.setY((float) ParametersUtils.toPixel(item).getPxValue());
-                                style.positionYMode = POSITION_MODE_LENGTH;
+                                style.heightMode = POSITION_MODE_LENGTH;
                             }
                         } catch (IllegalArgumentException e) {
                             e.printStackTrace();
@@ -228,36 +229,36 @@ public class Background {
                     try {
                         if (lookFor == LK_X) {
                             if (item.endsWith("%")) {
-                                style.positionXMode = POSITION_MODE_PERCENTAGE;
+                                style.widthMode = POSITION_MODE_PERCENTAGE;
                                 style.setX(ParametersUtils.getPercent(item));
                             } else if (item.equals("left")) {
                                 style.setX(0f);
-                                style.positionXMode = POSITION_MODE_PERCENTAGE;
+                                style.widthMode = POSITION_MODE_PERCENTAGE;
                             } else if (item.equals("right")) {
                                 style.setX(1.f);
-                                style.positionXMode = POSITION_MODE_PERCENTAGE;
+                                style.widthMode = POSITION_MODE_PERCENTAGE;
                             } else if (item.equals("center")) {
                                 style.setX(.5f);
-                                style.positionXMode = POSITION_MODE_PERCENTAGE;
+                                style.widthMode = POSITION_MODE_PERCENTAGE;
                             } else {
-                                style.positionXMode = POSITION_MODE_LENGTH;
+                                style.widthMode = POSITION_MODE_LENGTH;
                                 style.setX((float) ParametersUtils.toPixel(item).getPxValue());
                             }
                         } else if (lookFor == LK_Y) {
                             if (item.endsWith("%")) {
-                                style.positionYMode = POSITION_MODE_PERCENTAGE;
+                                style.heightMode = POSITION_MODE_PERCENTAGE;
                                 style.setY(ParametersUtils.getPercent(item));
                             } else if (item.equals("top")) {
                                 style.setY(0f);
-                                style.positionYMode = POSITION_MODE_PERCENTAGE;
+                                style.heightMode = POSITION_MODE_PERCENTAGE;
                             } else if (item.equals("bottom")) {
                                 style.setY(1.f);
-                                style.positionYMode = POSITION_MODE_PERCENTAGE;
+                                style.heightMode = POSITION_MODE_PERCENTAGE;
                             } else if (item.equals("center")) {
                                 style.setY(.5f);
-                                style.positionYMode = POSITION_MODE_PERCENTAGE;
+                                style.heightMode = POSITION_MODE_PERCENTAGE;
                             } else {
-                                style.positionYMode = POSITION_MODE_LENGTH;
+                                style.heightMode = POSITION_MODE_LENGTH;
                                 style.setY((float) ParametersUtils.toPixel(item).getPxValue());
                             }
                         } else {

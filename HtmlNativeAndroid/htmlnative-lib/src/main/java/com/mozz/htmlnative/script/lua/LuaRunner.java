@@ -6,7 +6,7 @@ import android.widget.Toast;
 
 import com.mozz.htmlnative.HNLog;
 import com.mozz.htmlnative.HNSandBoxContext;
-import com.mozz.htmlnative.common.MainHandler;
+import com.mozz.htmlnative.utils.MainHandlerUtils;
 import com.mozz.htmlnative.script.ScriptRunner;
 
 import org.luaj.vm2.Globals;
@@ -51,7 +51,7 @@ public class LuaRunner extends ScriptRunner {
             e.printStackTrace();
             Log.e(TAG, "LuaScriptRun");
 
-            MainHandler.instance().post(new Runnable() {
+            MainHandlerUtils.instance().post(new Runnable() {
                 @Override
                 public void run() {
                     Toast.makeText(mSandbox.getAndroidContext(), "LuaScript Wrong:\n" + e

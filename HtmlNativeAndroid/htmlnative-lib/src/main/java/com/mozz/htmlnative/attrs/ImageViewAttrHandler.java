@@ -6,9 +6,9 @@ import android.graphics.Matrix;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.mozz.htmlnative.HNativeEngine;
 import com.mozz.htmlnative.css.Background;
 import com.mozz.htmlnative.dom.DomElement;
-import com.mozz.htmlnative.HNative;
 import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.view.BackgroundViewDelegate;
 
@@ -18,7 +18,7 @@ class ImageViewAttrHandler extends AttrHandler {
     public void apply(Context context, View v, DomElement domElement, View parent, ViewGroup
             .LayoutParams layoutParams, String params, Object value, boolean isParent) throws
             AttrApplyException {
-        if (params.equals("src") && HNative.getImageViewAdapter() != null && !isParent) {
+        if (params.equals("src") && HNativeEngine.getImageViewAdapter() != null && !isParent) {
             Matrix matrix = null;
             String url = value.toString();
             int color = Color.WHITE;
@@ -28,7 +28,7 @@ class ImageViewAttrHandler extends AttrHandler {
                 color = ((Background) value).getColor();
             }
 
-            HNative.getImageViewAdapter().setImage(url, new BackgroundViewDelegate(v, matrix,
+            HNativeEngine.getImageViewAdapter().setImage(url, new BackgroundViewDelegate(v, matrix,
                     color));
         }
     }

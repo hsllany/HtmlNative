@@ -8,7 +8,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.mozz.htmlnative.common.BitmapUtils;
+import com.mozz.htmlnative.utils.BitmapUtils;
 
 import java.lang.ref.WeakReference;
 

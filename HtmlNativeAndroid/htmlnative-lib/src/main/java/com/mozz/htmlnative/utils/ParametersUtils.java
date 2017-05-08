@@ -1,9 +1,11 @@
-package com.mozz.htmlnative.common;
+package com.mozz.htmlnative.utils;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.util.TypedValue;
+
+import com.mozz.htmlnative.common.PixelValue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,8 +36,7 @@ public final class ParametersUtils {
         if (object instanceof Integer) {
             return (int) object;
         } else {
-            int i = Integer.valueOf(object.toString());
-            return i;
+            return Integer.valueOf(object.toString());
         }
     }
 

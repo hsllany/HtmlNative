@@ -14,8 +14,8 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.mozz.htmlnative.HNativeEngine;
 import com.mozz.htmlnative.dom.HNHead;
-import com.mozz.htmlnative.HNative;
 
 import static com.mozz.htmlnativedemo.WebViewActivity.EXTAL_URL;
 
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String url = mSearch.getText().toString();
 
         if (URLUtil.isValidUrl(url)) {
-            mLoader.load(url, new HNative.OnHNViewLoaded() {
+            mLoader.load(url, new HNativeEngine.OnHNViewLoaded() {
                 @Override
                 public void onViewLoaded(View v) {
                     mContainer.removeAllViews();

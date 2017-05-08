@@ -3,7 +3,7 @@ package com.mozz.htmlnative.reader;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.mozz.htmlnative.common.IOUtils;
+import com.mozz.htmlnative.utils.IOUtils;
 
 import java.io.EOFException;
 import java.io.IOException;

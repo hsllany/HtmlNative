@@ -5,8 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
+import com.mozz.htmlnative.HNativeEngine;
 import com.mozz.htmlnative.dom.HNHead;
-import com.mozz.htmlnative.HNative;
 
 import java.io.IOException;
 
@@ -23,8 +23,8 @@ public class AssetsViewLoader {
 
     public void load(final String fileName) {
         try {
-            HNative.getInstance().loadView(mActivity, mActivity.getAssets().open(fileName), new
-                    HNative.OnHNViewLoaded() {
+            HNativeEngine.getInstance().loadView(mActivity, mActivity.getAssets().open(fileName), new
+                    HNativeEngine.OnHNViewLoaded() {
 
                 @Override
                 public void onViewLoaded(View v) {

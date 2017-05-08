@@ -3,21 +3,21 @@
 
     <item
         is-multidex="false"
+        jar="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/exploded-aar/com.android.support/support-core-utils/25.1.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="0a0ef86b7fa568a52bf6214a0326ca1f1d618da7">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/pre-dexed/androidTest/debug/com.android.support-support-core-utils-25.1.0_3ba209d45e98ca5400222dff1db51605e39f03f9.jar" />
+    </item>
+    <item
+        is-multidex="false"
         jar="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/exploded-aar/com.android.support/support-fragment/25.1.0/jars/classes.jar"
         jumboMode="false"
         optimize="true"
         revision="25.0.2"
         sha1="2a53c4f3518116b8c6aee0e477233f0f7da8616f">
         <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/pre-dexed/debug/com.android.support-support-fragment-25.1.0_6790c873815d2cc93ac24c1828ac71cfb08dc65c.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/exploded-aar/com.android.support/support-compat/25.1.0/jars/classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="25.0.2"
-        sha1="ca3c7aa31e2726a400a6e552b93cb9f63c9a1e6d">
-        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/pre-dexed/debug/com.android.support-support-compat-25.1.0_e366366c731738a699dea9207c08eee8d8e594e3.jar" />
     </item>
     <item
         is-multidex="false"
@@ -30,6 +30,24 @@
     </item>
     <item
         is-multidex="false"
+        jar="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/25.1.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="e79aa3d9a16f8c9f16377c0608de70a8f31e5d80">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/pre-dexed/androidTest/debug/com.android.support-support-vector-drawable-25.1.0_49c940b841e74dad3f2091a2cbc702f0850aa929.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.1.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="1630658fbc2d222b988603c27b4a4249586fbfe7">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/pre-dexed/androidTest/debug/com.android.support-appcompat-v7-25.1.0_b3a3cb1a28eeb570a15bcc8c4226b922c965f8b9.jar" />
+    </item>
+    <item
+        is-multidex="false"
         jar="/Users/leeco/.gradle/caches/modules-2/files-2.1/com.squareup.haha/haha/2.0.3/640a438d2d415c056ca6a673ac26b183b044e160/haha-2.0.3.jar"
         jumboMode="false"
         optimize="true"
@@ -39,57 +57,84 @@
     </item>
     <item
         is-multidex="false"
-        jar="/Users/leeco/.gradle/caches/modules-2/files-2.1/com.github.bumptech.glide/glide/3.7.0/9e9eeaf9948ee4d6c3ab354e8dc14368f16994a4/glide-3.7.0.jar"
+        jar="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/exploded-aar/com.android.support.test/exposed-instrumentation-api-publish/0.5/jars/classes.jar"
         jumboMode="false"
         optimize="true"
         revision="25.0.2"
-        sha1="9e9eeaf9948ee4d6c3ab354e8dc14368f16994a4">
-        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/pre-dexed/debug/glide-3.7.0_7ea3de0887d44685fba9a2128f2f97879d3f0d38.jar" />
+        sha1="905f3e63973d47fedf2d945fa31d8c0f0c98816e">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/pre-dexed/androidTest/debug/com.android.support.test-exposed-instrumentation-api-publish-0.5_74897fc5977d2220cf2f8d53858f0d0cde265a4b.jar" />
     </item>
     <item
         is-multidex="false"
-        jar="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/exploded-aar/com.android.support/support-core-utils/25.1.0/jars/classes.jar"
+        jar="/Users/leeco/.gradle/caches/modules-2/files-2.1/org.hamcrest/hamcrest-library/1.3/4785a3c21320980282f9f33d0d1264a69040538f/hamcrest-library-1.3.jar"
         jumboMode="false"
         optimize="true"
         revision="25.0.2"
-        sha1="0a0ef86b7fa568a52bf6214a0326ca1f1d618da7">
-        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/pre-dexed/debug/com.android.support-support-core-utils-25.1.0_6bc5a2fc94c915343b6981dacb6a506f5103c2ee.jar" />
+        sha1="4785a3c21320980282f9f33d0d1264a69040538f">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/pre-dexed/androidTest/debug/hamcrest-library-1.3_888cf2f2e8b797476be30e6a5b048115245ed54b.jar" />
     </item>
     <item
         is-multidex="false"
-        jar="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/exploded-aar/com.android.support/support-media-compat/25.1.0/jars/classes.jar"
+        jar="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/exploded-aar/com.android.support.test.espresso/espresso-idling-resource/2.2.2/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="a890ee8445927649d9ed50f625a315d8758688be">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/pre-dexed/androidTest/debug/com.android.support.test.espresso-espresso-idling-resource-2.2.2_197479da80de50d855104b70e3f3c4121b114172.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/exploded-aar/com.android.support/animated-vector-drawable/25.1.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="6fb6ac3e8d3b9013819920d9ea11f3803c4c0033">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/pre-dexed/androidTest/debug/com.android.support-animated-vector-drawable-25.1.0_506819a30e674cd5cd673bb06f73e975ba06444f.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/leeco/.gradle/caches/modules-2/files-2.1/com.squareup/javawriter/2.1.1/67ff45d9ae02e583d0f9b3432a5ebbe05c30c966/javawriter-2.1.1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="67ff45d9ae02e583d0f9b3432a5ebbe05c30c966">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/pre-dexed/androidTest/debug/javawriter-2.1.1_f67b8812980c9f4028faec672aba6e9ebcc2214c.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/exploded-aar/com.android.support/support-v4/25.1.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="d7c42c80f6509b9ea4db28ca7859ffae08ec5741">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/pre-dexed/androidTest/debug/com.android.support-support-v4-25.1.0_814ae257bed9f07286850025fcfa6c3e4d2fd48a.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/leeco/.gradle/caches/modules-2/files-2.1/junit/junit/4.12/2973d150c0dc1fefe998f834810d68f278ea58ec/junit-4.12.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="2973d150c0dc1fefe998f834810d68f278ea58ec">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/pre-dexed/androidTest/debug/junit-4.12_cbe532824100366ca778f50b3112f9fcb92940f0.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/exploded-aar/com.android.support/support-media-compat/25.1.0/jars/classes.jar"
         jumboMode="false"
         optimize="true"
         revision="25.0.2"
         sha1="f02263e35e52668dd17b73bf961437e3d562b35f">
-        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/pre-dexed/debug/com.android.support-support-media-compat-25.1.0_2ee9c64ba32b680f4550200a380086617ffed982.jar" />
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/pre-dexed/androidTest/debug/com.android.support-support-media-compat-25.1.0_4f38d108e7348eef2ebb67db53d5a71ed51f332d.jar" />
     </item>
     <item
         is-multidex="false"
-        jar="/Users/leeco/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio/1.11.0/840897fcd7223a8143f1d9b6f69714e7be34fd50/okio-1.11.0.jar"
+        jar="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/exploded-aar/com.android.support.test.espresso/espresso-core/2.2.2/jars/classes.jar"
         jumboMode="false"
         optimize="true"
         revision="25.0.2"
-        sha1="840897fcd7223a8143f1d9b6f69714e7be34fd50">
-        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/pre-dexed/debug/okio-1.11.0_60669f73aa21674a6891c4d9ae10c23f91a5981e.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/exploded-aar/com.squareup.leakcanary/leakcanary-android/1.5/jars/classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="25.0.2"
-        sha1="c7a2672b3122b897a0751f327929ae405ea02bf7">
-        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/pre-dexed/debug/com.squareup.leakcanary-leakcanary-android-1.5_64c1595e5fbf887fbab39c43af7d32989f8a76df.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/exploded-aar/HtmlNativeAndroid/htmlnative-lib/unspecified/jars/classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="25.0.2"
-        sha1="d9eb1104bf49327b58083ea3eeb614a1054d5b3e">
-        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/pre-dexed/debug/HtmlNativeAndroid-htmlnative-lib-unspecified_9cf633ae587d6eb40eba3872fc6b2fe7463a2e08.jar" />
+        sha1="d115b0e9e1501135fe91254ba884fcbd83d374c0">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/pre-dexed/androidTest/debug/com.android.support.test.espresso-espresso-core-2.2.2_3b1758c8ada701027ba642c23a7f920d8d05b04d.jar" />
     </item>
     <item
         is-multidex="false"
@@ -111,12 +156,12 @@
     </item>
     <item
         is-multidex="false"
-        jar="/Users/leeco/.gradle/caches/modules-2/files-2.1/com.squareup.leakcanary/leakcanary-analyzer/1.5/3277b0b0c2ace34a2edb5ddf9d1f67829561fb8f/leakcanary-analyzer-1.5.jar"
+        jar="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/exploded-aar/com.android.support/support-fragment/25.1.0/jars/classes.jar"
         jumboMode="false"
         optimize="true"
         revision="25.0.2"
-        sha1="3277b0b0c2ace34a2edb5ddf9d1f67829561fb8f">
-        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/pre-dexed/debug/leakcanary-analyzer-1.5_4d23dd9f23b4049400450d6cb5098d4dbdb220d3.jar" />
+        sha1="2a53c4f3518116b8c6aee0e477233f0f7da8616f">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/pre-dexed/androidTest/debug/com.android.support-support-fragment-25.1.0_435d8a6aab009bb33a53732c09da71431d4f3b70.jar" />
     </item>
     <item
         is-multidex="false"
@@ -138,6 +183,24 @@
     </item>
     <item
         is-multidex="false"
+        jar="/Users/leeco/.gradle/caches/modules-2/files-2.1/org.hamcrest/hamcrest-core/1.3/42a25dc3219429f0e5d060061f71acb49bf010a0/hamcrest-core-1.3.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="42a25dc3219429f0e5d060061f71acb49bf010a0">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/pre-dexed/androidTest/debug/hamcrest-core-1.3_e76464dcc5c56f690be499432a5c1a4f167cf7c6.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/leeco/.gradle/caches/modules-2/files-2.1/org.hamcrest/hamcrest-integration/1.3/5de0c73fef18917cd85d0ab70bb23818685e4dfd/hamcrest-integration-1.3.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="5de0c73fef18917cd85d0ab70bb23818685e4dfd">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/pre-dexed/androidTest/debug/hamcrest-integration-1.3_b22f1e5606b300ed34cc3d9b5dc0eaba68200d8f.jar" />
+    </item>
+    <item
+        is-multidex="false"
         jar="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/exploded-aar/com.android.support/support-core-ui/25.1.0/jars/classes.jar"
         jumboMode="false"
         optimize="true"
@@ -156,21 +219,174 @@
     </item>
     <item
         is-multidex="false"
-        jar="/Users/leeco/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp3/okhttp/3.6.0/69edde9fc4b01c9fd51d25b83428837478c27254/okhttp-3.6.0.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="25.0.2"
-        sha1="69edde9fc4b01c9fd51d25b83428837478c27254">
-        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/pre-dexed/debug/okhttp-3.6.0_294b3f6e46b2b86393cc40179460f618b29e74fe.jar" />
-    </item>
-    <item
-        is-multidex="false"
         jar="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/exploded-aar/com.android.support/animated-vector-drawable/25.1.0/jars/classes.jar"
         jumboMode="false"
         optimize="true"
         revision="25.0.2"
         sha1="6fb6ac3e8d3b9013819920d9ea11f3803c4c0033">
         <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/pre-dexed/debug/com.android.support-animated-vector-drawable-25.1.0_d37cd1c22d3f94a2fe805155c4defe71c9a81d19.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/exploded-aar/com.android.support/support-compat/25.1.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="ca3c7aa31e2726a400a6e552b93cb9f63c9a1e6d">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/pre-dexed/debug/com.android.support-support-compat-25.1.0_e366366c731738a699dea9207c08eee8d8e594e3.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/exploded-aar/com.google.android/flexbox/0.2.5/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="775715f20fc19479343592af2fa4d46c7d00fa5e">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/pre-dexed/androidTest/debug/com.google.android-flexbox-0.2.5_7ce2cb0e79cb864233c6300eaf8986e6c04318ac.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/leeco/.gradle/caches/modules-2/files-2.1/com.github.bumptech.glide/glide/3.7.0/9e9eeaf9948ee4d6c3ab354e8dc14368f16994a4/glide-3.7.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="9e9eeaf9948ee4d6c3ab354e8dc14368f16994a4">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/pre-dexed/debug/glide-3.7.0_7ea3de0887d44685fba9a2128f2f97879d3f0d38.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/exploded-aar/com.android.support/support-core-utils/25.1.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="0a0ef86b7fa568a52bf6214a0326ca1f1d618da7">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/pre-dexed/debug/com.android.support-support-core-utils-25.1.0_6bc5a2fc94c915343b6981dacb6a506f5103c2ee.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/exploded-aar/com.android.support.test/runner/0.5/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="796f9229948e907471c5595fbe94655ccf03ff73">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/pre-dexed/androidTest/debug/com.android.support.test-runner-0.5_e26e1c788df19b0ee903dd6233b9a289abae662c.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/exploded-aar/com.android.support/support-media-compat/25.1.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="f02263e35e52668dd17b73bf961437e3d562b35f">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/pre-dexed/debug/com.android.support-support-media-compat-25.1.0_2ee9c64ba32b680f4550200a380086617ffed982.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/leeco/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio/1.11.0/840897fcd7223a8143f1d9b6f69714e7be34fd50/okio-1.11.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="840897fcd7223a8143f1d9b6f69714e7be34fd50">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/pre-dexed/debug/okio-1.11.0_60669f73aa21674a6891c4d9ae10c23f91a5981e.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/bundles/debug/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="09e0282c5334a77127bdff39dbea2cc872ede240">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/pre-dexed/androidTest/debug/classes_0a363966618b7553309b2c79fca42d3af5f93d91.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/exploded-aar/com.android.support.test/rules/0.5/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="7e11799d8a26bfa5d48acafe012ee5545b9bf468">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/pre-dexed/androidTest/debug/com.android.support.test-rules-0.5_568695cd8b93db224a02f7dbc2716349bd725fe2.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/exploded-aar/com.squareup.leakcanary/leakcanary-android/1.5/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="c7a2672b3122b897a0751f327929ae405ea02bf7">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/pre-dexed/debug/com.squareup.leakcanary-leakcanary-android-1.5_64c1595e5fbf887fbab39c43af7d32989f8a76df.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/exploded-aar/HtmlNativeAndroid/htmlnative-lib/unspecified/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="d9eb1104bf49327b58083ea3eeb614a1054d5b3e">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/pre-dexed/debug/HtmlNativeAndroid-htmlnative-lib-unspecified_9cf633ae587d6eb40eba3872fc6b2fe7463a2e08.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/leeco/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/jsr305/2.0.1/516c03b21d50a644d538de0f0369c620989cd8f0/jsr305-2.0.1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="516c03b21d50a644d538de0f0369c620989cd8f0">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/pre-dexed/androidTest/debug/jsr305-2.0.1_1319bb3b01770fcacae9ec0426c1ee5671b1d85d.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/leeco/.gradle/caches/modules-2/files-2.1/javax.inject/javax.inject/1/6975da39a7040257bd51d21a231b76c915872d38/javax.inject-1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="6975da39a7040257bd51d21a231b76c915872d38">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/pre-dexed/androidTest/debug/javax.inject-1_0fd2d9d4041185c02ca281a57ce6f2c7129b653d.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/leeco/.gradle/caches/modules-2/files-2.1/javax.annotation/javax.annotation-api/1.2/479c1e06db31c432330183f5cae684163f186146/javax.annotation-api-1.2.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="479c1e06db31c432330183f5cae684163f186146">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/pre-dexed/androidTest/debug/javax.annotation-api-1.2_1e095cfa1b17cde4e08398a4a7d25607fdbc7ce3.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/leeco/.gradle/caches/modules-2/files-2.1/com.squareup.leakcanary/leakcanary-analyzer/1.5/3277b0b0c2ace34a2edb5ddf9d1f67829561fb8f/leakcanary-analyzer-1.5.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="3277b0b0c2ace34a2edb5ddf9d1f67829561fb8f">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/pre-dexed/debug/leakcanary-analyzer-1.5_4d23dd9f23b4049400450d6cb5098d4dbdb220d3.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/exploded-aar/com.android.support/support-core-ui/25.1.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="aee64634871d88a419d59eb743c1258a60f19700">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/pre-dexed/androidTest/debug/com.android.support-support-core-ui-25.1.0_f7fd6bcec0ae1afc7217c6c1c24e5413b5031344.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/exploded-aar/com.android.support/support-compat/25.1.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="ca3c7aa31e2726a400a6e552b93cb9f63c9a1e6d">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-lib/build/intermediates/pre-dexed/androidTest/debug/com.android.support-support-compat-25.1.0_c17147cb65c996b99bdce17435631c714e9bbb94.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/leeco/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp3/okhttp/3.6.0/69edde9fc4b01c9fd51d25b83428837478c27254/okhttp-3.6.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="69edde9fc4b01c9fd51d25b83428837478c27254">
+        <dex dex="/Users/leeco/Documents/RemoteView/HtmlNativeAndroid/htmlnative-demo/build/intermediates/pre-dexed/debug/okhttp-3.6.0_294b3f6e46b2b86393cc40179460f618b29e74fe.jar" />
     </item>
 
 </items>

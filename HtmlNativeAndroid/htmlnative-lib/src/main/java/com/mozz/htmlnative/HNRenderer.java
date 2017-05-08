@@ -302,8 +302,8 @@ public final class HNRenderer {
     }
 
     private View createViewByViewHandler(Context context, @NonNull String viewClassName) {
-        if (viewClassName.equals(WebView.class.getName()) && HNative.getWebviewCreator() != null) {
-            return HNative.getWebviewCreator().create(context);
+        if (viewClassName.equals(WebView.class.getName()) && HNativeEngine.getWebviewCreator() != null) {
+            return HNativeEngine.getWebviewCreator().create(context);
         }
 
         return null;

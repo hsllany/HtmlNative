@@ -3,52 +3,46 @@ package com.mozz.htmlnative.common;
 import android.graphics.Color;
 import android.util.TypedValue;
 
+import com.mozz.htmlnative.utils.ParametersUtils;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
-
-import java.io.Closeable;
-import java.io.IOException;
 
 /**
  * @author Yang Tao, 17/3/13.
  */
 public class ParametersUtilsTest {
-    @Test
-    public void closeQuitely() throws Exception {
-        Closeable closeable = null;
-        IOUtils.closeQuietly(closeable);
-
-        closeable = new Closeable() {
-            @Override
-            public void close() throws IOException {
-
-            }
-        };
-
-        IOUtils.closeQuietly(closeable);
-    }
 
     @Test
     public void color() throws Exception {
         String color1 = "#ff0000";
-        Assert.assertTrue(ParametersUtils.color(color1) == Color.RED);
+        Assert.assertTrue(ParametersUtils.toColor(color1) == Color.RED);
 
         String color2 = "#f00";
-        Assert.assertTrue(ParametersUtils.color(color2) == Color.RED);
+        Assert.assertTrue(ParametersUtils.toColor(color2) == Color.RED);
 
         String color3 = "#ffff0000";
-        Assert.assertTrue(ParametersUtils.color(color3) == Color.RED);
+        Assert.assertTrue(ParametersUtils.toColor(color3) == Color.RED);
     }
 
     @Test
     public void toInt() throws Exception {
+        String i1 = "123";
+        Assert.assertTrue(ParametersUtils.toInt(i1) == 123);
+
+        int i2 = 123;
+        Assert.assertTrue(ParametersUtils.toInt(i2) == 123);
 
     }
 
     @Test
     public void toFloat() throws Exception {
+        String i1 = "123.3f";
+        Assert.assertTrue(Float.compare(ParametersUtils.toFloat(i1), 123.3f) == 0);
 
+        float i2 = 123.3f;
+        Assert.assertTrue(Float.compare(ParametersUtils.toFloat(i2), 123.3f) == 0);
     }
 
     @Test

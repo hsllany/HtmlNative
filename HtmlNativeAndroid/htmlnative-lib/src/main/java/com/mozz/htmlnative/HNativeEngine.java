@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 
 import com.mozz.htmlnative.attrs.AttrsHelper;
-import com.mozz.htmlnative.common.ParametersUtils;
+import com.mozz.htmlnative.utils.ParametersUtils;
 import com.mozz.htmlnative.dom.HNHead;
 import com.mozz.htmlnative.view.BackgroundViewDelegate;
 
@@ -24,7 +24,7 @@ import static com.mozz.htmlnative.HNLog.STYLE;
  * @author Yang Tao, 17/2/21.
  */
 
-public final class HNative {
+public final class HNativeEngine {
 
     public static final String LUA_TAG = "HNLua";
 
@@ -32,20 +32,20 @@ public final class HNative {
     private static ImageViewAdapter sImageViewAdapter = DefaultImageAdapter.sInstance;
     private static HrefLinkHandler sHrefLinkHandler = DefaultHrefLinkHandler.sInstance;
 
-    private HNative() {
+    private HNativeEngine() {
         HNInternalThread.init();
         HNScriptRunnerThread.init();
     }
 
     @Nullable
-    private static HNative sInstance = null;
+    private static HNativeEngine sInstance = null;
 
     @Nullable
-    public static HNative getInstance() {
+    public static HNativeEngine getInstance() {
         if (sInstance == null) {
-            synchronized (HNative.class) {
+            synchronized (HNativeEngine.class) {
                 if (sInstance == null) {
-                    sInstance = new HNative();
+                    sInstance = new HNativeEngine();
                 }
             }
         }

@@ -9,11 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.mozz.htmlnative.HNativeEngine;
 import com.mozz.htmlnative.dom.DomElement;
-import com.mozz.htmlnative.HNative;
 import com.mozz.htmlnative.HtmlTag;
 import com.mozz.htmlnative.common.PixelValue;
-import com.mozz.htmlnative.common.ParametersUtils;
+import com.mozz.htmlnative.utils.ParametersUtils;
 import com.mozz.htmlnative.css.InheritStylesRegistry;
 import com.mozz.htmlnative.exception.AttrApplyException;
 
@@ -134,8 +134,8 @@ class TextViewAttrHandler extends AttrHandler {
                     textView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (HNative.getHrefLinkHandler() != null) {
-                                HNative.getHrefLinkHandler().onHref(value.toString
+                            if (HNativeEngine.getHrefLinkHandler() != null) {
+                                HNativeEngine.getHrefLinkHandler().onHref(value.toString
                                         (), textView);
                             }
                         }

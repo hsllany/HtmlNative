@@ -1,15 +1,15 @@
-package com.mozz.htmlnative.common;
+package com.mozz.htmlnative.utils;
 
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 
-public final class MainHandler {
+public final class MainHandlerUtils {
 
     @NonNull
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
-    private MainHandler() {
+    private MainHandlerUtils() {
 
     }
 
@@ -22,10 +22,10 @@ public final class MainHandler {
     }
 
     @NonNull
-    private static MainHandler sInstance = new MainHandler();
+    private static MainHandlerUtils sInstance = new MainHandlerUtils();
 
     @NonNull
-    public static MainHandler instance() {
+    public static MainHandlerUtils instance() {
         return sInstance;
     }
 }

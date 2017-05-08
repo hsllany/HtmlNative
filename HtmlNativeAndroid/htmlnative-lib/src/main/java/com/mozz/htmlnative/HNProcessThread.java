@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.mozz.htmlnative.common.MainHandler;
+import com.mozz.htmlnative.utils.MainHandlerUtils;
 import com.mozz.htmlnative.common.WefRunnable;
 import com.mozz.htmlnative.exception.HNSyntaxError;
 
@@ -32,9 +32,9 @@ final class HNProcessThread {
     static final class RenderTask extends WefRunnable<Context> {
 
         private InputStream mFileSource;
-        private final HNative.OnHNViewLoaded mCallback;
+        private final HNativeEngine.OnHNViewLoaded mCallback;
 
-        RenderTask(Context context, InputStream fileSource, HNative.OnHNViewLoaded callback) {
+        RenderTask(Context context, InputStream fileSource, HNativeEngine.OnHNViewLoaded callback) {
             super(context);
             mFileSource = fileSource;
             mCallback = callback;
@@ -56,7 +56,7 @@ final class HNProcessThread {
                     HNLog.d(HNLog.PROCESS_THREAD, "SCRIPT " + segment.mScriptInfo.toString());
                 }
 
-                MainHandler.instance().post(new Runnable() {
+                MainHandlerUtils.instance().post(new Runnable() {
                     @Override
                     public void run() {
                         mCallback.onHead(segment.mHead);
@@ -65,7 +65,7 @@ final class HNProcessThread {
 
                 final ViewGroup.LayoutParams layoutParams = new FrameLayout.LayoutParams
                         (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                MainHandler.instance().post(new Runnable() {
+                MainHandlerUtils.instance().post(new Runnable() {
                     @Override
                     public void run() {
                         View v = null;
@@ -81,7 +81,7 @@ final class HNProcessThread {
             } catch (@NonNull final HNSyntaxError e) {
                 e.printStackTrace();
                 if (mCallback != null) {
-                    MainHandler.instance().post(new Runnable() {
+                    MainHandlerUtils.instance().post(new Runnable() {
                         @Override
                         public void run() {
                             if (mCallback != null) {
