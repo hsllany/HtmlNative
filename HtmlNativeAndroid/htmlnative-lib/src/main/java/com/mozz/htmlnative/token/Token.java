@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 public final class Token {
 
     public static final int EXTRA_NUMBER_EM = 1;
-    public static final int EXTRA_NUMBER_PERSENTAGE = 2;
+    public static final int EXTRA_NUMBER_PERCENTAGE = 2;
 
     private long startColumn;
 
@@ -160,7 +160,7 @@ public final class Token {
         return r;
     }
 
-    public long getStartColumn() {
+    public long getColumn() {
         return startColumn;
     }
 

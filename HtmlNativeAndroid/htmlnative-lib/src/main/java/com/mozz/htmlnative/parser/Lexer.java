@@ -186,7 +186,7 @@ final class Lexer {
         if (peek() == '%') {
             next();
             return Token.obtainToken(TokenType.Double, negative ? -v / 100.f : v / 100.f, line,
-                    startColumn, Token.EXTRA_NUMBER_PERSENTAGE);
+                    startColumn, Token.EXTRA_NUMBER_PERCENTAGE);
         }
 
         double x = v, d = 10;
@@ -205,7 +205,7 @@ final class Lexer {
         if (peek() == '%') {
             next();
             return Token.obtainToken(TokenType.Double, negative ? -x / 100.f : x / 100.f, line,
-                    startColumn, Token.EXTRA_NUMBER_PERSENTAGE);
+                    startColumn, Token.EXTRA_NUMBER_PERCENTAGE);
         }
 
         mReserved = 1;
