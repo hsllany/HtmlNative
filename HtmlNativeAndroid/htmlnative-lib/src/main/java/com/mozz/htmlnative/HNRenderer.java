@@ -10,9 +10,9 @@ import android.webkit.WebView;
 import android.widget.AbsoluteLayout;
 
 import com.google.android.flexbox.FlexboxLayout;
-import com.mozz.htmlnative.attrs.AttrHandler;
-import com.mozz.htmlnative.attrs.AttrsHelper;
-import com.mozz.htmlnative.attrs.LayoutAttrHandler;
+import com.mozz.htmlnative.attrshandler.AttrHandler;
+import com.mozz.htmlnative.attrshandler.AttrsHelper;
+import com.mozz.htmlnative.attrshandler.LayoutAttrHandler;
 import com.mozz.htmlnative.css.AttrsSet;
 import com.mozz.htmlnative.css.StyleSheet;
 import com.mozz.htmlnative.css.Styles;

@@ -12,7 +12,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
-import com.mozz.htmlnative.attrs.AttrsHelper;
+import com.mozz.htmlnative.attrshandler.AttrsHelper;
 import com.mozz.htmlnative.view.HtmlLayout;
 
 import java.util.Map;

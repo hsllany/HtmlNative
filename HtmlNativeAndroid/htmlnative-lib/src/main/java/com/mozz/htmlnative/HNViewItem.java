@@ -3,7 +3,7 @@ package com.mozz.htmlnative;
 import android.support.annotation.NonNull;
 import android.view.View;
 
-import com.mozz.htmlnative.attrs.AttrHandler;
+import com.mozz.htmlnative.attrshandler.AttrHandler;
 
 /**
  * @author Yang Tao, 17/3/3.

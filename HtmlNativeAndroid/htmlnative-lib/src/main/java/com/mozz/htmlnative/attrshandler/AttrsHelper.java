@@ -1,4 +1,4 @@
-package com.mozz.htmlnative.attrs;
+package com.mozz.htmlnative.attrshandler;
 
 import android.graphics.Paint;
 import android.support.annotation.NonNull;

@@ -1,29 +1,21 @@
-package com.mozz.htmlnative.attrs;
+package com.mozz.htmlnative.attrshandler;
 
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 
 import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.exception.AttrApplyException;
 
 /**
- * @author Yang Tao, 17/3/6.
+ * @author Yang Tao, 17/4/17.
  */
 
-class WebViewAttrHandler extends AttrHandler {
-
-    private static final String ATTR_SRC = "src";
-
+public class AbsoluteAttrHandler extends AttrHandler {
     @Override
     public void apply(Context context, View v, DomElement domElement, View parent, ViewGroup
             .LayoutParams layoutParams, String params, Object value, boolean isParent) throws
             AttrApplyException {
-        final WebView webView = (WebView) v;
 
-        if (params.equals(ATTR_SRC) && !isParent) {
-            webView.loadUrl(value.toString());
-        }
     }
 }
