@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -248,6 +249,10 @@ public class HtmlLayout extends ViewGroup {
                 ", mHeight=" + mHeight + ", mBackground=" + mBackground);
     }
 
+    @Override
+    public void setBackground(Drawable background) {
+        // don't support the background!! Use setHtmlBackground instead
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -257,7 +262,7 @@ public class HtmlLayout extends ViewGroup {
 
         mPaint.setColor(mColor);
         canvas.drawRect(mLeft, mTop, mLeft + mWidth, mTop + mHeight, mPaint);
-        
+
         if (mBackgroundBitmap != null) {
             mRect.set(mLeft, mTop, mLeft + mWidth, mTop + mHeight);
             canvas.drawBitmap(mBackgroundBitmap, null, mRect, null);
