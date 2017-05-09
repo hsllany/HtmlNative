@@ -18,18 +18,18 @@ import java.util.Map;
  * @author Yang Tao, 17/3/8.
  */
 
-public final class HNViewGroup extends ScrollView {
+public final class HNRootView extends ScrollView {
 
     private final Map<String, View> mViewWithId = new ArrayMap<>();
 
-    private static final String TAG = HNViewGroup.class.getSimpleName();
+    private static final String TAG = HNRootView.class.getSimpleName();
 
     private FrameLayout mContentView;
 
     @NonNull
     private List<WebView> mWebViewList = new LinkedList<>();
 
-    public HNViewGroup(@NonNull Context context) {
+    public HNRootView(@NonNull Context context) {
         super(context);
         mContentView = new FrameLayout(context);
         super.addView(mContentView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams

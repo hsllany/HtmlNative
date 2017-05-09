@@ -13,7 +13,8 @@ import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.mozz.htmlnative.attrshandler.AttrsHelper;
-import com.mozz.htmlnative.view.HtmlLayout;
+import com.mozz.htmlnative.view.HNText;
+import com.mozz.htmlnative.view.HNDiv;
 
 import java.util.Map;
 
@@ -35,28 +36,28 @@ public final class ViewTypeRelations {
 
     static {
         sReservedTagClassTable.put("box", AbsoluteLayout.class.getName());
-        sReservedTagClassTable.put("linearbox", HtmlLayout.class.getName());
+        sReservedTagClassTable.put("linearbox", HNDiv.class.getName());
         sReservedTagClassTable.put("flexbox", FlexboxLayout.class.getName());
 
-        sReservedTagClassTable.put(HtmlTag.BODY, HtmlLayout.class.getName());
-        sReservedTagClassTable.put(HtmlTag.TEMPLATE, HtmlLayout.class.getName());
+        sReservedTagClassTable.put(HtmlTag.BODY, HNDiv.class.getName());
+        sReservedTagClassTable.put(HtmlTag.TEMPLATE, HNDiv.class.getName());
 
-        sReservedTagClassTable.put(HtmlTag.P, TextView.class.getName());
-        sReservedTagClassTable.put(HtmlTag.TEXT, TextView.class.getName());
+        sReservedTagClassTable.put(HtmlTag.P, HNText.class.getName());
+        sReservedTagClassTable.put(HtmlTag.TEXT, HNText.class.getName());
         sReservedTagClassTable.put(HtmlTag.IMG, ImageView.class.getName());
         sReservedTagClassTable.put(HtmlTag.INPUT, EditText.class.getName());
         sReservedTagClassTable.put(HtmlTag.BUTTON, Button.class.getName());
         sReservedTagClassTable.put(HtmlTag.SCROLLER, ScrollView.class.getName());
         sReservedTagClassTable.put(HtmlTag.IFRAME, WebView.class.getName());
         sReservedTagClassTable.put(HtmlTag.WEB, WebView.class.getName());
-        sReservedTagClassTable.put(HtmlTag.A, TextView.class.getName());
-        sReservedTagClassTable.put(HtmlTag.SPAN, TextView.class.getName());
-        sReservedTagClassTable.put(HtmlTag.H1, TextView.class.getName());
-        sReservedTagClassTable.put(HtmlTag.H2, TextView.class.getName());
-        sReservedTagClassTable.put(HtmlTag.H3, TextView.class.getName());
-        sReservedTagClassTable.put(HtmlTag.H4, TextView.class.getName());
-        sReservedTagClassTable.put(HtmlTag.H5, TextView.class.getName());
-        sReservedTagClassTable.put(HtmlTag.H6, TextView.class.getName());
+        sReservedTagClassTable.put(HtmlTag.A, HNText.class.getName());
+        sReservedTagClassTable.put(HtmlTag.SPAN, HNText.class.getName());
+        sReservedTagClassTable.put(HtmlTag.H1, HNText.class.getName());
+        sReservedTagClassTable.put(HtmlTag.H2, HNText.class.getName());
+        sReservedTagClassTable.put(HtmlTag.H3, HNText.class.getName());
+        sReservedTagClassTable.put(HtmlTag.H4, HNText.class.getName());
+        sReservedTagClassTable.put(HtmlTag.H5, HNText.class.getName());
+        sReservedTagClassTable.put(HtmlTag.H6, HNText.class.getName());
 
         // for inner element only
         sReservedTagClassTable.put(HtmlTag.INNER_TREE_TAG, TextView.class.getName());

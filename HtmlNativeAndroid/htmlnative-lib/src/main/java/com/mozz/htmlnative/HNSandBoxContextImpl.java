@@ -8,7 +8,7 @@ import android.view.View;
 
 import com.mozz.htmlnative.script.ScriptRunner;
 import com.mozz.htmlnative.script.ScriptRunnerFactory;
-import com.mozz.htmlnative.view.HNViewGroup;
+import com.mozz.htmlnative.view.HNRootView;
 
 /**
  * @author Yang Tao, 17/3/6.
@@ -17,7 +17,7 @@ final class HNSandBoxContextImpl implements HNSandBoxContext {
 
     private static final String TAG = HNSandBoxContext.class.getSimpleName();
 
-    private HNViewGroup mRootView;
+    private HNRootView mRootView;
 
     private final VariablePoolImpl mPool = new VariablePoolImpl();
 
@@ -27,7 +27,7 @@ final class HNSandBoxContextImpl implements HNSandBoxContext {
 
     private final Context mContext;
 
-    private HNSandBoxContextImpl(HNSegment segment, Context context, HNViewGroup rootView) {
+    private HNSandBoxContextImpl(HNSegment segment, Context context, HNRootView rootView) {
         mRootView = rootView;
         mSegment = segment;
         mContext = context;
@@ -120,7 +120,7 @@ final class HNSandBoxContextImpl implements HNSandBoxContext {
     }
 
     @NonNull
-    static HNSandBoxContext createContext(@NonNull HNViewGroup layout, HNSegment module, Context
+    static HNSandBoxContext createContext(@NonNull HNRootView layout, HNSegment module, Context
             context) {
         return new HNSandBoxContextImpl(module, context, layout);
     }

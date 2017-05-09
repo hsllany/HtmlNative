@@ -19,8 +19,8 @@ import com.mozz.htmlnative.css.Styles;
 import com.mozz.htmlnative.css.selector.CssSelector;
 import com.mozz.htmlnative.dom.HNDomTree;
 import com.mozz.htmlnative.exception.AttrApplyException;
-import com.mozz.htmlnative.view.HNViewGroup;
-import com.mozz.htmlnative.view.HtmlLayout;
+import com.mozz.htmlnative.view.HNRootView;
+import com.mozz.htmlnative.view.HNDiv;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -62,7 +62,7 @@ public final class HNRenderer {
     final View render(@NonNull Context context, @NonNull HNSegment segment, @NonNull ViewGroup
             .LayoutParams params) throws HNRenderException {
         HNLog.d(HNLog.RENDER, "start to render " + segment.toString());
-        HNViewGroup rootViewGroup = new HNViewGroup(context);
+        HNRootView rootViewGroup = new HNRootView(context);
 
         HNSandBoxContext sandBoxContext = HNSandBoxContextImpl.createContext(rootViewGroup,
                 segment, context);
@@ -92,7 +92,7 @@ public final class HNRenderer {
 
     private View renderInternal(@NonNull Context context, @NonNull HNSandBoxContext
             sandBoxContext, HNDomTree tree, HNSegment segment, @NonNull ViewGroup parent,
-                                @NonNull ViewGroup.LayoutParams params, @NonNull HNViewGroup
+                                @NonNull ViewGroup.LayoutParams params, @NonNull HNRootView
                                         root, StyleSheet styleSheet) throws HNRenderException {
 
         AttrsSet attrsSet = segment.getInlineStyles();
@@ -147,7 +147,7 @@ public final class HNRenderer {
     private View createView(@NonNull HNDomTree tree, @NonNull HNSandBoxContext sandBoxContext,
                             @NonNull ViewGroup parent, @NonNull Context context, @NonNull
                                     AttrsSet attrsSet, @NonNull ViewGroup.LayoutParams
-                                    layoutParams, @NonNull HNViewGroup root, StyleSheet
+                                    layoutParams, @NonNull HNRootView root, StyleSheet
                                     styleSheet) throws HNRenderException {
 
         String type = tree.getType();
@@ -330,7 +330,7 @@ public final class HNRenderer {
         if (viewGroup instanceof AbsoluteLayout) {
             return new AbsoluteLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup
                     .LayoutParams.WRAP_CONTENT, 0, 0);
-        } else if (viewGroup instanceof HtmlLayout) {
+        } else if (viewGroup instanceof HNDiv) {
             return new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.MarginLayoutParams.WRAP_CONTENT);
         } else if (viewGroup instanceof FlexboxLayout) {

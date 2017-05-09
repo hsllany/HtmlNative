@@ -20,7 +20,7 @@ import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.utils.ParametersUtils;
 import com.mozz.htmlnative.view.BackgroundViewDelegate;
-import com.mozz.htmlnative.view.HtmlLayout;
+import com.mozz.htmlnative.view.IBackgroundView;
 
 import java.util.Iterator;
 
@@ -138,14 +138,14 @@ public final class Styles {
                 if (style instanceof Background) {
                     Background background = (Background) style;
 
-                    if (!TextUtils.isEmpty(background.getUrl())) {
+                    if (!TextUtils.isEmpty(background.getUrl()) && v instanceof IBackgroundView) {
                         Matrix matrix = Background.createBitmapMatrix(background);
                         HNativeEngine.getImageViewAdapter().setImage(background.getUrl(), new
                                 BackgroundViewDelegate(v, matrix, background.getColor(),
                                 background));
                     } else if (background.isColorSet()) {
-                        if (v instanceof HtmlLayout) {
-                            ((HtmlLayout) v).setHtmlBackground(null, background);
+                        if (v instanceof IBackgroundView) {
+                            ((IBackgroundView) v).setHtmlBackground(null, background);
                         } else {
                             v.setBackgroundColor(background.getColor());
                         }

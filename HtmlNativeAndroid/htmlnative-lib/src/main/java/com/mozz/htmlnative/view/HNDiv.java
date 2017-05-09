@@ -3,12 +3,8 @@ package com.mozz.htmlnative.view;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -21,39 +17,38 @@ import java.util.List;
  * @author Yang Tao, 17/4/18.
  */
 
-public class HtmlLayout extends ViewGroup {
+public class HNDiv extends ViewGroup implements IBackgroundView {
 
-    private static final String TAG = HtmlLayout.class.getSimpleName();
+    private static final String TAG = HNDiv.class.getSimpleName();
 
     private List<List<View>> mAllViews = new ArrayList<>();
     private List<Integer> mLineLength = new ArrayList<>();
-    private Rect mRect = new Rect();
-    private Paint mPaint = new Paint();
-    private Bitmap mBackgroundBitmap;
-    private int mLeft, mTop, mWidth, mHeight;
-    private int mColor = Color.TRANSPARENT;
-    private Background mBackground;
-    private int mSetBackgroundCount, mMeasureBackgroundCount;
 
-    public HtmlLayout(Context context) {
+    private BackgroundManager mBackgroundMgr;
+
+    public HNDiv(Context context) {
         super(context);
-        setWillNotDraw(false);
+        mBackgroundMgr = new BackgroundManager(this);
+        mBackgroundMgr.init();
     }
 
-    public HtmlLayout(Context context, AttributeSet attrs) {
+    public HNDiv(Context context, AttributeSet attrs) {
         super(context, attrs);
-        setWillNotDraw(false);
+        mBackgroundMgr = new BackgroundManager(this);
+        mBackgroundMgr.init();
     }
 
-    public HtmlLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public HNDiv(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setWillNotDraw(false);
+        mBackgroundMgr = new BackgroundManager(this);
+        mBackgroundMgr.init();
     }
 
 
-    public HtmlLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public HNDiv(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        setWillNotDraw(false);
+        mBackgroundMgr = new BackgroundManager(this);
+        mBackgroundMgr.init();
     }
 
     @Override
@@ -202,61 +197,7 @@ public class HtmlLayout extends ViewGroup {
     }
 
     public void setHtmlBackground(Bitmap bitmap, Background background) {
-        mBackgroundBitmap = bitmap;
-        mColor = background.getColor();
-        mBackground = background;
-
-        mSetBackgroundCount++;
-
-        invalidate();
-    }
-
-    private void measuredBackground() {
-
-        if (mMeasureBackgroundCount == mSetBackgroundCount) {
-            return;
-        }
-
-        if (mBackground == null) {
-            return;
-        }
-
-        if (mBackground.getXMode() == Background.LENGTH) {
-            mLeft = (int) mBackground.getX();
-        } else {
-            mLeft = (int) (mBackground.getX() * getMeasuredWidth());
-        }
-
-        if (mBackground.getYMode() == Background.LENGTH) {
-            mTop = (int) mBackground.getY();
-        } else {
-            mTop = (int) (mBackground.getY() * getMeasuredHeight());
-        }
-
-        if (mBackground.getWidthMode() == Background.LENGTH) {
-            mWidth = (int) mBackground.getWidth();
-        } else if (mBackground.getWidthMode() == Background.AUTO && mBackgroundBitmap != null) {
-            mWidth = mBackgroundBitmap.getWidth();
-        } else if (mBackground.getWidthMode() == Background.PERCENTAGE) {
-            mWidth = (int) (mBackground.getWidth() * getMeasuredWidth());
-        } else {
-            mWidth = getMeasuredWidth();
-        }
-
-        if (mBackground.getHeightMode() == Background.LENGTH) {
-            mHeight = (int) mBackground.getHeight();
-        } else if (mBackground.getHeightMode() == Background.AUTO && mBackgroundBitmap != null) {
-            mHeight = mBackgroundBitmap.getHeight();
-        } else if (mBackground.getHeightMode() == Background.PERCENTAGE) {
-            mHeight = (int) (mBackground.getHeight() * getMeasuredHeight());
-        } else {
-            mHeight = getMeasuredHeight();
-        }
-
-        Log.d(TAG, "CalculateResult: mLeft=" + mLeft + ", mTop=" + mTop + ", mWidth=" + mWidth +
-                ", mHeight=" + mHeight + ", mBackground=" + mBackground);
-
-        mMeasureBackgroundCount++;
+        mBackgroundMgr.setHtmlBackground(bitmap, background);
     }
 
     @Override
@@ -266,18 +207,9 @@ public class HtmlLayout extends ViewGroup {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        mBackgroundMgr.onDraw(canvas);
         super.onDraw(canvas);
 
-        measuredBackground();
-
-        mPaint.setColor(mColor);
-        // FIXME: 17/5/9 如何处理color的绘制，以及background重复绘制的问题
-        canvas.drawRect(mLeft, mTop, mLeft + mWidth, mTop + mHeight, mPaint);
-
-        if (mBackgroundBitmap != null) {
-            mRect.set(mLeft, mTop, mLeft + mWidth, mTop + mHeight);
-            canvas.drawBitmap(mBackgroundBitmap, null, mRect, null);
-        }
     }
 
     @Override
