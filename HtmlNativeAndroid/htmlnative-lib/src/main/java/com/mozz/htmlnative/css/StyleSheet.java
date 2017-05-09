@@ -1,5 +1,7 @@
 package com.mozz.htmlnative.css;
 
+import android.util.Log;
+
 import com.mozz.htmlnative.css.selector.AnySelector;
 import com.mozz.htmlnative.css.selector.ClassSelector;
 import com.mozz.htmlnative.css.selector.CssSelector;
@@ -24,6 +26,13 @@ public final class StyleSheet extends AttrsSet {
     private StringSelectorHolder mTypeSelectors;
     private AnySelectorHolder mAnySelectors;
 
+    /**
+     * used to store the css selector order in file
+     */
+    private Map<CssSelector, Integer> mSelectorOrderMap = new HashMap<>();
+
+    private int mInsertOrderSave = 0;
+
     public StyleSheet() {
         super("StyleSheet");
 
@@ -38,6 +47,9 @@ public final class StyleSheet extends AttrsSet {
     }
 
     private void putSingleSelector(CssSelector cssSelector) {
+
+        mSelectorOrderMap.put(cssSelector, mInsertOrderSave++);
+
         if (cssSelector.getClass().equals(ClassSelector.class)) {
             ClassSelector classSelector = (ClassSelector) cssSelector;
             mClassSelectors.put(classSelector.getName(), classSelector);
@@ -52,10 +64,21 @@ public final class StyleSheet extends AttrsSet {
         }
     }
 
-    public Set<CssSelector> matchedSelector(String type, String id, String clazz) {
+    /**
+     * Find selectors according to type, id and class. All selectors found will be stored in
+     * insert order.
+     *
+     * @param type  type of element
+     * @param id    id of element if have
+     * @param clazz class name of element if have
+     * @return List containing all the selectors matched in insert order.
+     */
+    public CssSelector[] matchedSelector(String type, String id, String clazz) {
 
-        // FIXME: 17/5/9 次序问题
-        Set<CssSelector> matchedSelector = new HashSet<>();
+        // Pass mSelectorOrderMap.size() to make sure that matchedSelector is big enough to hold
+        // all the selectors found.
+        CssSelector[] matchedSelector = new CssSelector[mSelectorOrderMap.size()];
+
         mClassSelectors.matches(clazz, matchedSelector);
         mIdSelectors.matches(id, matchedSelector);
         mTypeSelectors.matches(type, matchedSelector);
@@ -73,7 +96,7 @@ public final class StyleSheet extends AttrsSet {
      * @author Yang Tao, 17/3/30.
      */
 
-    private static final class StringSelectorHolder {
+    private final class StringSelectorHolder {
         private Map<String, Set<CssSelector>> mSelectors = new HashMap<>();
 
         public void put(String key, CssSelector selector) {
@@ -86,10 +109,17 @@ public final class StyleSheet extends AttrsSet {
             sets.add(selector);
         }
 
-        void matches(String key, Set<CssSelector> outSelectors) {
+        void matches(String key, CssSelector[] outSelectors) {
             Set<CssSelector> sets = mSelectors.get(key);
-            if (sets != null && !sets.isEmpty()) {
-                outSelectors.addAll(sets);
+
+            if (sets != null) {
+                for (CssSelector selector : sets) {
+                    Integer index = mSelectorOrderMap.get(selector);
+
+                    Log.d("InsertBug", index + ", " + outSelectors.length + ", map=" +
+                            mSelectorOrderMap.size());
+                    outSelectors[index] = selector;
+                }
             }
         }
 
@@ -99,15 +129,18 @@ public final class StyleSheet extends AttrsSet {
         }
     }
 
-    private static final class AnySelectorHolder {
+    private final class AnySelectorHolder {
         private List<CssSelector> mSelectors = new ArrayList<>();
 
         public void put(AnySelector selector) {
             mSelectors.add(selector);
         }
 
-        void matches(Set<CssSelector> outSelectors) {
-            outSelectors.addAll(mSelectors);
+        void matches(CssSelector[] outSelectors) {
+            for (CssSelector selector : mSelectors) {
+                Integer index = mSelectorOrderMap.get(selector);
+                outSelectors[index] = selector;
+            }
         }
 
         @Override

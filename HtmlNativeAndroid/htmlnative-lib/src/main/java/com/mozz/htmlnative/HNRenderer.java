@@ -26,7 +26,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Render views
@@ -231,18 +230,21 @@ public final class HNRenderer {
 
             // core part to handle the styleSheet selectors
 
-            Set<CssSelector> matchedSelectors = styleSheet.matchedSelector(type, tree.getId(),
-                    tree.getClazz());
+            CssSelector[] matchedSelectors = styleSheet.matchedSelector(type, tree.getId(), tree
+                    .getClazz());
 
             for (CssSelector selector : matchedSelectors) {
-                if (selector.matchWhole(tree)) {
+                if (selector != null) {
+                    if (selector.matchWhole(tree)) {
 
-                    try {
-                        Styles.apply(context, sandBoxContext, styleSheet, v, selector, tree,
-                                parent, layoutParams, false, false, viewAttrHandler,
-                                extraAttrHandler, parentLayoutAttr, mInheritStyleStack);
-                    } catch (AttrApplyException e) {
-                        e.printStackTrace();
+                        try {
+                            Styles.apply(context, sandBoxContext, styleSheet, v, selector, tree,
+                                    parent, layoutParams, false, false, viewAttrHandler,
+                                    extraAttrHandler, parentLayoutAttr, mInheritStyleStack);
+
+                        } catch (AttrApplyException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }

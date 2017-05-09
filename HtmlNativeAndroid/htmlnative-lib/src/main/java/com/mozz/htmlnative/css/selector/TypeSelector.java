@@ -11,6 +11,7 @@ public class TypeSelector extends CssSelector {
     protected String mTag;
 
     public TypeSelector(String tag) {
+        super();
         mTag = tag;
     }
 

@@ -7,6 +7,7 @@ import com.mozz.htmlnative.dom.DomElement;
  */
 
 public class AnySelector extends CssSelector {
+
     @Override
     public boolean matchThis(DomElement element) {
         return true;
