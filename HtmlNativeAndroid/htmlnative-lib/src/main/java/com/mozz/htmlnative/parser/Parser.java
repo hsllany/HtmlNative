@@ -1,5 +1,6 @@
 package com.mozz.htmlnative.parser;
 
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -7,6 +8,7 @@ import android.util.Log;
 import com.mozz.htmlnative.HNLog;
 import com.mozz.htmlnative.HNSegment;
 import com.mozz.htmlnative.HtmlTag;
+import com.mozz.htmlnative.Tracker;
 import com.mozz.htmlnative.css.Styles;
 import com.mozz.htmlnative.dom.HNDomTree;
 import com.mozz.htmlnative.dom.Meta;
@@ -20,6 +22,7 @@ import java.io.EOFException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.mozz.htmlnative.HNEnvironment.PERFORMANCE_TAG;
 import static com.mozz.htmlnative.HtmlTag.isSwallowInnerTag;
 import static com.mozz.htmlnative.parser.CssParser.StyleItemParser.parseStyleSingle;
 import static com.mozz.htmlnative.token.TokenType.EndAngleBracket;
@@ -62,6 +65,8 @@ public final class Parser {
 
     private Map<String, Object> styleCache = new HashMap<>();
 
+    private Tracker mTracker;
+
     private static final int LK_StartArrowBracket = 1;
     private static final int LK_EndArrowBracket = 1 << 1;
     private static final int LK_ID = 1 << 2;
@@ -78,9 +83,14 @@ public final class Parser {
     public Parser(TextReader reader) {
         mLexer = new Lexer(reader);
         mCssParser = new CssParser(mLexer, this);
+
+        mTracker = new Tracker();
     }
 
     public HNSegment process() throws HNSyntaxError {
+
+        long processStartTime = SystemClock.currentThreadTimeMillis();
+
         HNSegment segment = new HNSegment();
         segment.setDom(new HNDomTree(segment.getInlineStyles(), null, 0, 0));
 
@@ -102,6 +112,8 @@ public final class Parser {
             Log.w(TAG, "Reach the end of file!");
         } finally {
             mLexer.close();
+            mTracker.record("Parse Css + Html", SystemClock.currentThreadTimeMillis() - processStartTime);
+            Log.i(PERFORMANCE_TAG, mTracker.dump());
             return segment;
         }
     }
@@ -233,6 +245,8 @@ public final class Parser {
     }
 
     private void processStyle(HNSegment segment) throws EOFException, HNSyntaxError {
+        long timeStart = SystemClock.currentThreadTimeMillis();
+
         // Ignore the element that is written in <style> tag
         while (true) {
             scan();
@@ -261,6 +275,8 @@ public final class Parser {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        mTracker.record("Parse Css", SystemClock.currentThreadTimeMillis() - timeStart);
     }
 
     private void processTitle(HNSegment segment) throws HNSyntaxError, EOFException {
@@ -332,6 +348,9 @@ public final class Parser {
     }
 
     private void processTemplate(HNDomTree tree) throws HNSyntaxError {
+
+        long timeStart = SystemClock.currentThreadTimeMillis();
+
         if (mCurToken.type() != Template) {
             Log.e(TAG, "Look for Template, but " + mCurToken.toString());
             throw new HNSyntaxError("Look for Template, but " + mCurToken.toString(), mLexer.line
@@ -340,6 +359,8 @@ public final class Parser {
 
         tree.setType(mCurToken.stringValue());
         processInternal(tree);
+
+        mTracker.record("Parse Html", SystemClock.currentThreadTimeMillis() - timeStart);
     }
 
     private void processInternal(@NonNull HNDomTree tree) throws HNSyntaxError {

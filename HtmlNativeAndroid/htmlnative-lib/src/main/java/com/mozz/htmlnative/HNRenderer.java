@@ -1,9 +1,11 @@
 package com.mozz.htmlnative;
 
 import android.content.Context;
+import android.os.SystemClock;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -19,13 +21,15 @@ import com.mozz.htmlnative.css.Styles;
 import com.mozz.htmlnative.css.selector.CssSelector;
 import com.mozz.htmlnative.dom.HNDomTree;
 import com.mozz.htmlnative.exception.AttrApplyException;
-import com.mozz.htmlnative.view.HNRootView;
 import com.mozz.htmlnative.view.HNDiv;
+import com.mozz.htmlnative.view.HNRootView;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
+
+import static com.mozz.htmlnative.HNEnvironment.PERFORMANCE_TAG;
 
 /**
  * Render views
@@ -44,6 +48,8 @@ public final class HNRenderer {
 
     private InheritStyleStack mInheritStyleStack;
 
+    private Tracker mTracker;
+
     /**
      * level in Dom Tree
      */
@@ -51,6 +57,7 @@ public final class HNRenderer {
 
     private HNRenderer() {
         mInheritStyleStack = new InheritStyleStack();
+        mTracker = new Tracker();
     }
 
     @NonNull
@@ -61,13 +68,18 @@ public final class HNRenderer {
     @MainThread
     final View render(@NonNull Context context, @NonNull HNSegment segment, @NonNull ViewGroup
             .LayoutParams params) throws HNRenderException {
+
+        mTracker.reset();
+
         HNLog.d(HNLog.RENDER, "start to render " + segment.toString());
         HNRootView rootViewGroup = new HNRootView(context);
 
         HNSandBoxContext sandBoxContext = HNSandBoxContextImpl.createContext(rootViewGroup,
                 segment, context);
 
+        long createTime = SystemClock.currentThreadTimeMillis();
         this.performCreate(sandBoxContext);
+        mTracker.record("Create View", SystemClock.currentThreadTimeMillis() - createTime);
 
         /**
          * set the default level to -1
@@ -76,14 +88,22 @@ public final class HNRenderer {
 
         mInheritStyleStack.reset();
 
+        long renderStartTime = SystemClock.currentThreadTimeMillis();
         View v = renderInternal(context, sandBoxContext, segment.getDom(), segment,
                 rootViewGroup, params, rootViewGroup, segment.getStyleSheet());
 
+
         if (v != null) {
             rootViewGroup.addContent(v, params);
-            this.performCreated(sandBoxContext);
-            HNLog.d(HNLog.RENDER, sandBoxContext.allIdTag());
+            mTracker.record("Render View", SystemClock.currentThreadTimeMillis() - renderStartTime);
 
+            long afterCreate = SystemClock.currentThreadTimeMillis();
+            this.performCreated(sandBoxContext);
+            mTracker.record("After View Created", SystemClock.currentThreadTimeMillis() - afterCreate);
+
+            Log.i(PERFORMANCE_TAG, mTracker.dump());
+
+            HNLog.d(HNLog.RENDER, sandBoxContext.allIdTag());
             return rootViewGroup;
         }
 
@@ -92,8 +112,8 @@ public final class HNRenderer {
 
     private View renderInternal(@NonNull Context context, @NonNull HNSandBoxContext
             sandBoxContext, HNDomTree tree, HNSegment segment, @NonNull ViewGroup parent,
-                                @NonNull ViewGroup.LayoutParams params, @NonNull HNRootView
-                                        root, StyleSheet styleSheet) throws HNRenderException {
+                                @NonNull ViewGroup.LayoutParams params, @NonNull HNRootView root,
+                                StyleSheet styleSheet) throws HNRenderException {
 
         AttrsSet attrsSet = segment.getInlineStyles();
 
