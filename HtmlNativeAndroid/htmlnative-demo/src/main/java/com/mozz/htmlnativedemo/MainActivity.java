@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mGo = (ImageButton) findViewById(R.id.search_go_btn);
         mGo.setOnClickListener(this);
         mLoader = new RemoteViewLoader(this);
+
+        mSearch.clearFocus();
     }
 
     @Override

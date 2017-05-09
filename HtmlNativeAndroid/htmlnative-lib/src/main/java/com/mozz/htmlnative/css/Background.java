@@ -19,6 +19,7 @@ public class Background {
 
     public static final int LENGTH = 0x00000001;
     public static final int PERCENTAGE = 0x00000002;
+    public static final int AUTO = 0x00000003;
 
     private static final int LK_COLOR = 0;
     private static final int LK_URL = 1;
@@ -36,19 +37,18 @@ public class Background {
     private float width;
     private float height;
 
-    private boolean widthSet = false;
-    private boolean heightSet = false;
-
     private int xMode = PERCENTAGE;
     private int yMode = PERCENTAGE;
-    private int widthMode = PERCENTAGE;
-    private int heightMode = PERCENTAGE;
+    private int widthMode = AUTO;
+    private int heightMode = AUTO;
 
 
     @Override
     public String toString() {
-        String widthStr = widthMode == PERCENTAGE ? width + "%" : width + "";
-        String heightStr = heightMode == PERCENTAGE ? height + "%" : height + "";
+        String widthStr = widthMode == AUTO ? "auto" : (widthMode == PERCENTAGE ? width + "%" :
+                width + "");
+        String heightStr = heightMode == AUTO ? "auto" : (heightMode == PERCENTAGE ? height + "%"
+                : height + "");
         String xStr = xMode == PERCENTAGE ? (x * 100) + "%" : x + "";
         String yStr = yMode == PERCENTAGE ? (y * 100) + "%" : y + "";
 
@@ -102,26 +102,10 @@ public class Background {
     }
 
     public float getWidth() {
-        if (!widthSet) {
-            throw new IllegalStateException("Background's width hasn't been set. Please check " +
-                    "with isWidthSet()");
-        }
         return width;
     }
 
-    public boolean isWidthSet() {
-        return widthSet;
-    }
-
-    public boolean isHeightSet() {
-        return heightSet;
-    }
-
     public float getHeight() {
-        if (!heightSet) {
-            throw new IllegalStateException("Background's height hasn't been set. Please check "
-                    + "with isHeightSet()");
-        }
         return height;
     }
 
@@ -356,22 +340,26 @@ public class Background {
                     if (width.endsWith("%")) {
                         style.width = ParametersUtils.getPercent(width);
                         style.widthMode = PERCENTAGE;
+                    } else if (width.equals("auto")) {
+                        style.width = 0;
+                        style.widthMode = AUTO;
                     } else {
                         style.width = (float) ParametersUtils.toPixel(width).getPxValue();
                         style.widthMode = LENGTH;
                     }
 
-                    style.widthSet = true;
-
                     if (height.endsWith("%")) {
                         style.height = ParametersUtils.getPercent(height);
                         style.heightMode = PERCENTAGE;
+                    } else if (height.equals("auto")) {
+                        style.height = 0;
+                        style.heightMode = AUTO;
                     } else {
                         style.height = (float) ParametersUtils.toPixel(height).getPxValue();
                         style.heightMode = LENGTH;
                     }
 
-                    style.heightSet = true;
+
                 }
             }
             break;

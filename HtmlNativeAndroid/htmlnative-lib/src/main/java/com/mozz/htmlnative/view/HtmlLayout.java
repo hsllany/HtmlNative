@@ -33,6 +33,7 @@ public class HtmlLayout extends ViewGroup {
     private int mLeft, mTop, mWidth, mHeight;
     private int mColor = Color.TRANSPARENT;
     private Background mBackground;
+    private int mSetBackgroundCount, mMeasureBackgroundCount;
 
     public HtmlLayout(Context context) {
         super(context);
@@ -205,10 +206,17 @@ public class HtmlLayout extends ViewGroup {
         mColor = background.getColor();
         mBackground = background;
 
+        mSetBackgroundCount++;
+
         invalidate();
     }
 
     private void measuredBackground() {
+
+        if (mMeasureBackgroundCount == mSetBackgroundCount) {
+            return;
+        }
+
         if (mBackground == null) {
             return;
         }
@@ -225,28 +233,30 @@ public class HtmlLayout extends ViewGroup {
             mTop = (int) (mBackground.getY() * getMeasuredHeight());
         }
 
-        if (mBackground.isWidthSet()) {
-            if (mBackground.getWidthMode() == Background.LENGTH) {
-                mWidth = (int) mBackground.getWidth();
-            } else {
-                mWidth = (int) (mBackground.getWidth() * getMeasuredWidth());
-            }
+        if (mBackground.getWidthMode() == Background.LENGTH) {
+            mWidth = (int) mBackground.getWidth();
+        } else if (mBackground.getWidthMode() == Background.AUTO && mBackgroundBitmap != null) {
+            mWidth = mBackgroundBitmap.getWidth();
+        } else if (mBackground.getWidthMode() == Background.PERCENTAGE) {
+            mWidth = (int) (mBackground.getWidth() * getMeasuredWidth());
         } else {
             mWidth = getMeasuredWidth();
         }
 
-        if (mBackground.isHeightSet()) {
-            if (mBackground.getHeightMode() == Background.LENGTH) {
-                mHeight = (int) mBackground.getHeight();
-            } else {
-                mHeight = (int) (mBackground.getHeight() * getMeasuredHeight());
-            }
+        if (mBackground.getHeightMode() == Background.LENGTH) {
+            mHeight = (int) mBackground.getHeight();
+        } else if (mBackground.getHeightMode() == Background.AUTO && mBackgroundBitmap != null) {
+            mHeight = mBackgroundBitmap.getHeight();
+        } else if (mBackground.getHeightMode() == Background.PERCENTAGE) {
+            mHeight = (int) (mBackground.getHeight() * getMeasuredHeight());
         } else {
-            mWidth = getMeasuredWidth();
+            mHeight = getMeasuredHeight();
         }
 
         Log.d(TAG, "CalculateResult: mLeft=" + mLeft + ", mTop=" + mTop + ", mWidth=" + mWidth +
                 ", mHeight=" + mHeight + ", mBackground=" + mBackground);
+
+        mMeasureBackgroundCount++;
     }
 
     @Override
@@ -261,6 +271,7 @@ public class HtmlLayout extends ViewGroup {
         measuredBackground();
 
         mPaint.setColor(mColor);
+        // FIXME: 17/5/9 如何处理color的绘制，以及background重复绘制的问题
         canvas.drawRect(mLeft, mTop, mLeft + mWidth, mTop + mHeight, mPaint);
 
         if (mBackgroundBitmap != null) {
