@@ -108,6 +108,11 @@ final class Lexer {
                 next();
                 return Token.obtainToken(TokenType.Hash, mReader.line(), mReader.column());
 
+            case '*':
+                mLookForScript = 0;
+                next();
+                return Token.obtainToken(TokenType.Star, mReader.line(), mReader.column());
+
             case ',':
                 mLookForScript = 0;
                 next();

@@ -60,7 +60,9 @@ public enum TokenType {
 
     EndBrace("}"),
 
-    ScriptCode("ScriptCode");
+    ScriptCode("ScriptCode"),
+
+    Star("*");
 
     private String value;
 

@@ -7,6 +7,7 @@ import com.mozz.htmlnative.HNSegment;
 import com.mozz.htmlnative.css.Background;
 import com.mozz.htmlnative.css.StyleSheet;
 import com.mozz.htmlnative.css.Styles;
+import com.mozz.htmlnative.css.selector.AnySelector;
 import com.mozz.htmlnative.css.selector.ClassSelector;
 import com.mozz.htmlnative.css.selector.CssSelector;
 import com.mozz.htmlnative.css.selector.IdSelector;
@@ -30,6 +31,7 @@ final class CssParser {
     private static final int SELECTOR_HASH = 1 << 7;
     private static final int SELECTOR_DOT = 1 << 8;
     private static final int SELECTOR_ID = 1;
+    private static final int SELECTOR_STAR = 1 << 16;
     private static final int SELECTOR_CLASS = 1 << 1;
     private static final int SELECTOR_TYPE = 1 << 2;
     private static final int START_BRACE = 1 << 3;
@@ -46,7 +48,8 @@ final class CssParser {
     private static final int COMMA = 1 << 14;
     private static final int END_ANGLE_BRACKET = 1 << 15;
 
-    private static final int SELECTOR_START = SELECTOR_HASH | SELECTOR_TYPE | SELECTOR_DOT;
+    private static final int SELECTOR_START = SELECTOR_HASH | SELECTOR_TYPE | SELECTOR_DOT |
+            SELECTOR_STAR;
     private static final int VALUE = VALUE_STRING | VALUE_INT | VALUE_DOUBLE | VALUE_HASH |
             VALUE_START_PAREN | VALUE_END_PAREN;
 
@@ -158,6 +161,22 @@ final class CssParser {
                     lookFor(SELECTOR_CLASS);
                     break;
 
+                case Star:
+                    check(SELECTOR_STAR);
+                    lookFor(START_BRACE | SELECTOR_START | COMMA | END_ANGLE_BRACKET);
+                    if (cssSelector == null) {
+                        cssSelector = new AnySelector();
+                        styleSheet.register(cssSelector);
+                    } else {
+                        CssSelector groupOne = new AnySelector();
+                        if (chain(cssSelector, groupOne, chainType)) {
+                            styleSheet.putSelector(cssSelector);
+                            cssSelector = groupOne;
+                        }
+                    }
+
+                    chainType = CHAIN_DESCENDANT;
+                    break;
                 case Colon:
                     check(COLON);
                     lookFor(VALUE);

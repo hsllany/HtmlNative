@@ -1,12 +1,15 @@
 package com.mozz.htmlnative.css;
 
+import com.mozz.htmlnative.css.selector.AnySelector;
 import com.mozz.htmlnative.css.selector.ClassSelector;
 import com.mozz.htmlnative.css.selector.CssSelector;
 import com.mozz.htmlnative.css.selector.IdSelector;
 import com.mozz.htmlnative.css.selector.TypeSelector;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,16 +19,18 @@ import java.util.Set;
 
 public final class StyleSheet extends AttrsSet {
 
-    private SelectorHolder mClassSelectors;
-    private SelectorHolder mIdSelectors;
-    private SelectorHolder mTypeSelectors;
+    private StringSelectorHolder mClassSelectors;
+    private StringSelectorHolder mIdSelectors;
+    private StringSelectorHolder mTypeSelectors;
+    private AnySelectorHolder mAnySelectors;
 
     public StyleSheet() {
         super("StyleSheet");
 
-        mClassSelectors = new SelectorHolder();
-        mIdSelectors = new SelectorHolder();
-        mTypeSelectors = new SelectorHolder();
+        mClassSelectors = new StringSelectorHolder();
+        mIdSelectors = new StringSelectorHolder();
+        mTypeSelectors = new StringSelectorHolder();
+        mAnySelectors = new AnySelectorHolder();
     }
 
     public void putSelector(CssSelector cssSelector) {
@@ -42,14 +47,19 @@ public final class StyleSheet extends AttrsSet {
         } else if (cssSelector.getClass().equals(TypeSelector.class)) {
             TypeSelector typeSelector = (TypeSelector) cssSelector;
             mTypeSelectors.put(typeSelector.getName(), typeSelector);
+        } else if (cssSelector.getClass().equals(AnySelector.class)) {
+            mAnySelectors.put((AnySelector) cssSelector);
         }
     }
 
     public Set<CssSelector> matchedSelector(String type, String id, String clazz) {
+
+        // FIXME: 17/5/9 次序问题
         Set<CssSelector> matchedSelector = new HashSet<>();
         mClassSelectors.matches(clazz, matchedSelector);
         mIdSelectors.matches(id, matchedSelector);
         mTypeSelectors.matches(type, matchedSelector);
+        mAnySelectors.matches(matchedSelector);
         return matchedSelector;
     }
 
@@ -63,7 +73,7 @@ public final class StyleSheet extends AttrsSet {
      * @author Yang Tao, 17/3/30.
      */
 
-    private static final class SelectorHolder {
+    private static final class StringSelectorHolder {
         private Map<String, Set<CssSelector>> mSelectors = new HashMap<>();
 
         public void put(String key, CssSelector selector) {
@@ -81,6 +91,23 @@ public final class StyleSheet extends AttrsSet {
             if (sets != null && !sets.isEmpty()) {
                 outSelectors.addAll(sets);
             }
+        }
+
+        @Override
+        public String toString() {
+            return mSelectors.toString();
+        }
+    }
+
+    private static final class AnySelectorHolder {
+        private List<CssSelector> mSelectors = new ArrayList<>();
+
+        public void put(AnySelector selector) {
+            mSelectors.add(selector);
+        }
+
+        void matches(Set<CssSelector> outSelectors) {
+            outSelectors.addAll(mSelectors);
         }
 
         @Override
