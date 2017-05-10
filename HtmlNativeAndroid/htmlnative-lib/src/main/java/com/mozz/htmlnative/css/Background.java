@@ -6,6 +6,8 @@ import android.util.Log;
 
 import com.mozz.htmlnative.utils.ParametersUtils;
 
+import static com.mozz.htmlnative.utils.ParametersUtils.splitByEmpty;
+
 /**
  * @author Yang Tao, 17/3/24.
  */
@@ -56,7 +58,8 @@ public class Background {
         String heightStr = heightMode == AUTO ? "auto" : (heightMode == PERCENTAGE ? height + "%"
                 : height + "");
         String widthColorStr = colorWidthMode == PERCENTAGE ? colorWidth + "%" : colorWidth + "";
-        String heightColorStr = colorHeightMode == PERCENTAGE ? colorHeight + "%" : colorHeight + "";
+        String heightColorStr = colorHeightMode == PERCENTAGE ? colorHeight + "%" : colorHeight +
+                "";
         String xStr = xMode == PERCENTAGE ? (x * 100) + "%" : x + "";
         String yStr = yMode == PERCENTAGE ? (y * 100) + "%" : y + "";
 
@@ -142,7 +145,7 @@ public class Background {
             style = (Background) oldOne;
         }
 
-        String[] subStrings = val.trim().split("\\s+");
+        String[] subStrings = splitByEmpty(val);
 
         switch (param) {
             case "background": {

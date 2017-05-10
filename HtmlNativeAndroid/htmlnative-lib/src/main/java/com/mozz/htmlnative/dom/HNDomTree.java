@@ -4,8 +4,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.mozz.htmlnative.HNLog;
-import com.mozz.htmlnative.parser.ParseCallback;
 import com.mozz.htmlnative.css.AttrsSet;
+import com.mozz.htmlnative.parser.ParseCallback;
 import com.mozz.htmlnative.utils.ParametersUtils;
 
 import java.util.Collections;
@@ -47,7 +47,7 @@ public final class HNDomTree implements ParseCallback, AttrsSet.AttrsOwner, DomE
     /**
      * class property in html
      */
-    private String mClass = null;
+    private String[] mClass = null;
 
     private int mAttrIndex;
 
@@ -256,11 +256,11 @@ public final class HNDomTree implements ParseCallback, AttrsSet.AttrsOwner, DomE
         this.mId = id;
     }
 
-    public String getClazz() {
+    public String[] getClazz() {
         return mClass;
     }
 
-    public void setClazz(String clazz) {
+    public void setClazz(String[] clazz) {
         this.mClass = clazz;
     }
 

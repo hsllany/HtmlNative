@@ -7,7 +7,7 @@ import java.util.List;
  */
 public interface DomElement {
     String getType();
-    String getClazz();
+    String[] getClazz();
     String getId();
     DomElement getParent();
     List children();
@@ -15,7 +15,7 @@ public interface DomElement {
     boolean hasId();
     CharSequence getInner();
     void setType(String type);
-    void setClazz(String clazz);
+    void setClazz(String[] clazz);
     void setId(String id);
 
 

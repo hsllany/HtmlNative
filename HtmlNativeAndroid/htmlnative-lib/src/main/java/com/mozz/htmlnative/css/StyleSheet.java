@@ -73,7 +73,7 @@ public final class StyleSheet extends AttrsSet {
      * @param clazz class name of element if have
      * @return List containing all the selectors matched in insert order.
      */
-    public CssSelector[] matchedSelector(String type, String id, String clazz) {
+    public CssSelector[] matchedSelector(String type, String id, String[] clazz) {
 
         // Pass mSelectorOrderMap.size() to make sure that matchedSelector is big enough to hold
         // all the selectors found.
@@ -119,6 +119,16 @@ public final class StyleSheet extends AttrsSet {
                     Log.d("InsertBug", index + ", " + outSelectors.length + ", map=" +
                             mSelectorOrderMap.size());
                     outSelectors[index] = selector;
+                }
+            }
+        }
+
+        void matches(String[] key, CssSelector[] outSelectors) {
+            if (key != null && key.length > 0) {
+                for (String k : key) {
+                    if (k != null) {
+                        matches(k, outSelectors);
+                    }
                 }
             }
         }

@@ -17,6 +17,7 @@ import com.mozz.htmlnative.reader.TextReader;
 import com.mozz.htmlnative.script.ScriptInfo;
 import com.mozz.htmlnative.token.Token;
 import com.mozz.htmlnative.token.TokenType;
+import com.mozz.htmlnative.utils.ParametersUtils;
 
 import java.io.EOFException;
 import java.util.HashMap;
@@ -704,7 +705,7 @@ public final class Parser {
                 tree.setId(valueStr);
                 break;
             case CLAZZ:
-                tree.setClazz(valueStr);
+                tree.setClazz(ParametersUtils.splitByEmpty(valueStr));
                 break;
             default:
                 tree.addInlineStyle(parameterName, valueStr);

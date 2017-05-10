@@ -110,7 +110,7 @@ public final class ParametersUtils {
     }
 
     public static PixelValue[] toPixels(String ss) throws IllegalArgumentException {
-        String[] single = ss.split(" ");
+        String[] single = splitByEmpty(ss);
 
         PixelValue[] pixelValues = new PixelValue[single.length];
 
@@ -229,5 +229,9 @@ public final class ParametersUtils {
 
     public static float pxToEm(int px) {
         return px / 16.f;
+    }
+
+    public static String[] splitByEmpty(String s) {
+        return s.trim().split("\\s+");
     }
 }

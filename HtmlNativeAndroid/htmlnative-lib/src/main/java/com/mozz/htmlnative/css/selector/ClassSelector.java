@@ -18,6 +18,16 @@ public class ClassSelector extends TypeSelector {
 
     @Override
     public boolean matchThis(DomElement element) {
-        return element.hasClazz() && element.getClazz().equals(mTag);
+        if (element.hasClazz()) {
+            String[] classes = element.getClazz();
+            for (String c : classes) {
+                if (c.equals(mTag)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        return false;
     }
 }
