@@ -1,6 +1,8 @@
 HtmlNative
 ========
 
+[English](README_English.md)
+
 使用Html来渲染Android界面的动态化界面方案。
 
 不同于Webview, HtmlNative直接将Html和Css转换成原生控件，这样做的好处是：
@@ -14,6 +16,8 @@ HtmlNative
 通过HtmlNative渲染后的结果:
 
 ![Demo](doc/screen1.jpg)
+
+[Video](doc/screen1.mp4)
 
 Html:
 
