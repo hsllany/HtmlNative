@@ -27,6 +27,7 @@ import static com.mozz.htmlnative.HtmlTag.isSwallowInnerTag;
 import static com.mozz.htmlnative.parser.StyleItemParser.parseStyleSingle;
 import static com.mozz.htmlnative.token.TokenType.EndAngleBracket;
 import static com.mozz.htmlnative.token.TokenType.Equal;
+import static com.mozz.htmlnative.token.TokenType.Exclamation;
 import static com.mozz.htmlnative.token.TokenType.Head;
 import static com.mozz.htmlnative.token.TokenType.Html;
 import static com.mozz.htmlnative.token.TokenType.Id;
@@ -99,6 +100,19 @@ public final class Parser {
 
             scan(true);
 
+            /*
+             * skip the HTML version information. see https://www.w3.org/TR/html4/struct/global
+             * .html#h-7.2
+             */
+            if (mCurToken.type() == Exclamation) {
+                mLexer.skipUntil('>');
+                // consume the reserved
+                scan();
+                scanFor(EndAngleBracket);
+                scanFor(StartAngleBracket);
+                scan(true);
+            }
+
             if (mCurToken.type() == Html) {
                 scan();
                 scanFor(EndAngleBracket, StartAngleBracket);
@@ -112,7 +126,8 @@ public final class Parser {
             Log.w(TAG, "Reach the end of file!");
         } finally {
             mLexer.close();
-            mTracker.record("Parse Css + Html", SystemClock.currentThreadTimeMillis() - processStartTime);
+            mTracker.record("Parse Css + Html", SystemClock.currentThreadTimeMillis() -
+                    processStartTime);
             Log.i(PERFORMANCE_TAG, mTracker.dump());
             return segment;
         }

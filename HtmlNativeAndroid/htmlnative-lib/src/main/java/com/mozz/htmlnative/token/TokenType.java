@@ -62,7 +62,9 @@ public enum TokenType {
 
     ScriptCode("ScriptCode"),
 
-    Star("*");
+    Star("*"),
+
+    Exclamation("!");
 
     private String value;
 

@@ -23,7 +23,7 @@ HtmlNative
 
 ## css支持情况
 
-支持内联style属性，及<head>标签中<style>标签中的内嵌css。不支持链接形式的css样式文件。
+支持内联style属性，及```<head>```中```<style>```标签的内嵌css。不支持链接形式的css样式文件。
 
 ### 支持的css样式
 

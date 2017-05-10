@@ -20,7 +20,7 @@ parameters：style, onclick（need Lua script, later will finish related functio
 
 ## CSS Support
 
-inline style，and <style> inside <head>. Do Not Support standalone css files。
+inline style，and ```<style?``` tag inside ```<head>```. Do Not Support standalone css files。
 
 ### CSS styles
 

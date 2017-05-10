@@ -143,6 +143,10 @@ class Lexer {
                 next();
                 return Token.obtainToken(TokenType.EndParen, mReader.line(), mReader.column());
 
+            case '!':
+                mLookForScript = 0;
+                next();
+                return Token.obtainToken(TokenType.Exclamation, mReader.line(), mReader.column());
 
         }
 
@@ -161,6 +165,17 @@ class Lexer {
 
         HNLog.e(LEXER, "unknown token " + peek() + " at " + line() + "," + column());
         throw new HNSyntaxError("unknown token " + peek(), line(), column());
+    }
+
+    public void skipUntil(char c) throws EOFException {
+        for (; ; ) {
+            char ch = peek();
+            if (ch != c) {
+                next();
+            } else {
+                break;
+            }
+        }
     }
 
     @Nullable
