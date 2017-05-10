@@ -8,13 +8,15 @@ Other than Webview, HtmlNative directly parse Html and Css into native views, wh
 - reach better user-expirence
 - make writing easy, just using html and css
 
+> Still working on put LuaScript into the raw html file to control the simple logic inside.
+
 ## Example
 
 After rendering:
 
-![Demo](doc/screen1.jpg)
+[Download Video](doc/screen1.mp4)
 
-[Video](doc/screen1.mp4)
+![Demo](doc/screen1.jpg)
 
 Html:
 

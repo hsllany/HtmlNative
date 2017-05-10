@@ -11,13 +11,15 @@ HtmlNative
 - 用户无感知
 - 简易部署，使用最容易的html + css来控制界面
 
+> Still working on put LuaScript into the raw html file to control the simple logic inside.
+
 ## 例子
 
 通过HtmlNative渲染后的结果:
 
-![Demo](doc/screen1.jpg)
+[Download Video](doc/screen1.mp4)
 
-[Video](doc/screen1.mp4)
+![Demo](doc/screen1.jpg)
 
 Html:
 
