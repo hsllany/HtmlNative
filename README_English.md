@@ -10,6 +10,69 @@ Other than Webview, HtmlNative directly parse Html and Css into native views, wh
 
 > Still working on put LuaScript into the raw html file to control the simple logic inside.
 
+## Html Support
+
+<a>, <p>, <h1>, <h2>, <h3>, <h4>, <h5>, <h6>, <input>, <img>, <div>, <br>, <iframe>
+
+parameters：style, onclick（need Lua script, later will finish related function), id, class, href(for <a>), src(for <img>)
+
+## CSS Support
+
+inline style，and <style> inside <head>. Do Not Support standalone css files。
+
+### CSS styles
+
+width, height, background, background-color, background-position, background-size, padding, padding-left, padding-right, padding-top, padding-bottom, margin, margin-top, margin-left, margin-right, margin-bottom, visibility
+
+font-size, color, line-height, font-style, font-weight, text-align, word-spacing, text-overflow, text-transform
+
+### CSS Selectors
+
+type Selectors
+
+```css
+p{}
+div{}
+```
+
+id Selectors
+
+```css
+#id1{}
+```
+
+class Selectors
+
+```css
+.class1{}
+```
+
+Group
+
+```
+#id1, #id2{}
+```
+
+Descendant selectors
+
+```css
+div p{}
+```
+
+Child selectors
+
+```css
+div > p{}
+```
+
+Universal selector
+
+```css
+*{}
+p *{}
+```
+
+
 ## Example
 
 After rendering:

@@ -13,6 +13,69 @@ HtmlNative
 
 > Still working on put LuaScript into the raw html file to control the simple logic inside.
 
+## Html支持情况
+
+<a>, <p>, <h1>, <h2>, <h3>, <h4>, <h5>, <h6>, <input>, <img>, <div>, <br>, <iframe>
+
+属性：style, onclick（需要再lua脚本中定义onclick事件，后续完善相关文档), id, class, href(for <a>), src(for <img>)
+
+## css支持情况
+
+支持内联style属性，及<head>标签中<style>标签中的内嵌css。不支持链接形式的css样式文件。
+
+### 支持的css样式
+
+width, height, background, background-color, background-position, background-size, padding, padding-left, padding-right, padding-top, padding-bottom, margin, margin-top, margin-left, margin-right, margin-bottom, visibility
+
+font-size, color, line-height, font-style, font-weight, text-align, word-spacing, text-overflow, text-transform
+
+### 支持的选择器
+
+type选择器
+
+```css
+p{}
+div{}
+```
+
+id选择器
+
+```css
+#id1{}
+```
+
+class选择器
+
+```css
+.class1{}
+```
+
+组
+
+```css
+#id1, #id2{}
+```
+
+子孙选择
+
+```css
+div p{}
+```
+
+直接子选择器
+
+```css
+div > p{}
+```
+
+全部选择器
+
+```css
+*{}
+p *{}
+```
+
+
 ## 例子
 
 通过HtmlNative渲染后的结果:
