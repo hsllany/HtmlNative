@@ -25,6 +25,7 @@ class BackgroundManager implements IBackgroundManager {
     private Paint mPaint = new Paint();
     private Bitmap mBackgroundBitmap;
     private int mLeft, mTop, mWidth, mHeight;
+    private int mColorLeft, mColorTop, mColorWidth, mColorHeight;
     private int mColor = Color.TRANSPARENT;
     private Background mBackground;
     private int mSetBackgroundCount, mMeasureBackgroundCount;
@@ -33,15 +34,11 @@ class BackgroundManager implements IBackgroundManager {
         mHost = hostView;
     }
 
-    public void init() {
+    @Override
+    public void setHtmlBackground(Bitmap bitmap, Background background) {
         if (mHost instanceof ViewGroup) {
             mHost.setWillNotDraw(false);
         }
-    }
-
-
-    @Override
-    public void setHtmlBackground(Bitmap bitmap, Background background) {
         mBackgroundBitmap = bitmap;
         mColor = background.getColor();
         mBackground = background;
@@ -60,7 +57,8 @@ class BackgroundManager implements IBackgroundManager {
 
         mPaint.setColor(mColor);
         // FIXME: 17/5/9 如何处理color的绘制，以及background重复绘制的问题
-        canvas.drawRect(mLeft, mTop, mLeft + mWidth, mTop + mHeight, mPaint);
+        canvas.drawRect(mColorLeft, mColorTop, mColorLeft + mColorWidth, mColorTop +
+                mColorHeight, mPaint);
 
         if (mBackgroundBitmap != null) {
             mRect.set(mLeft, mTop, mLeft + mWidth, mTop + mHeight);
@@ -110,8 +108,25 @@ class BackgroundManager implements IBackgroundManager {
             mHeight = mHost.getMeasuredHeight();
         }
 
+        if (mBackground.getColorWidthMode() == Background.LENGTH) {
+            mColorWidth = (int) mBackground.getColorWidth();
+        } else if (mBackground.getColorWidthMode() == Background.PERCENTAGE) {
+            mColorWidth = (int) (mBackground.getColorWidth() * mHost.getMeasuredWidth());
+        } else {
+            mColorWidth = mHost.getMeasuredWidth();
+        }
+
+        if (mBackground.getColorHeightMode() == Background.LENGTH) {
+            mColorHeight = (int) mBackground.getColorHeight();
+        } else if (mBackground.getColorHeightMode() == Background.PERCENTAGE) {
+            mColorHeight = (int) (mBackground.getColorHeight() * mHost.getMeasuredWidth());
+        } else {
+            mColorHeight = mHost.getMeasuredWidth();
+        }
+
         Log.d(TAG, "CalculateResult: mLeft=" + mLeft + ", mTop=" + mTop + ", mWidth=" + mWidth +
-                ", mHeight=" + mHeight + ", mBackground=" + mBackground);
+                ", mHeight=" + mHeight + ", mBackground=" + mBackground + ", mColorWidth=" +
+                mColorWidth + ", mColorHeight=" + mColorHeight);
 
         mMeasureBackgroundCount++;
     }

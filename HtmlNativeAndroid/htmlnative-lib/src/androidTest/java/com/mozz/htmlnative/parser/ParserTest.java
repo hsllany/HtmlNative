@@ -7,8 +7,6 @@ import com.mozz.htmlnative.HNSegment;
 import com.mozz.htmlnative.TestGlobal;
 import com.mozz.htmlnative.css.Background;
 import com.mozz.htmlnative.exception.HNSyntaxError;
-import com.mozz.htmlnative.parser.CssParser;
-import com.mozz.htmlnative.parser.Parser;
 import com.mozz.htmlnative.reader.StringTextReader;
 
 import org.junit.Assert;
@@ -28,7 +26,7 @@ public class ParserTest {
 
     private void testBackground(String background, String url, int color) {
         String background1 = background;
-        CssParser.StyleHolder b = CssParser.StyleItemParser.parseStyleSingle("background", background1, null);
+        CssParser.StyleHolder b = StyleItemParser.parseStyleSingle("background", background1, null);
         Assert.assertTrue(b.obj instanceof Background);
 
         Background backgroundStyle = (Background) b.obj;

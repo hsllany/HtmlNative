@@ -24,7 +24,7 @@ import java.util.Map;
 
 import static com.mozz.htmlnative.HNEnvironment.PERFORMANCE_TAG;
 import static com.mozz.htmlnative.HtmlTag.isSwallowInnerTag;
-import static com.mozz.htmlnative.parser.CssParser.StyleItemParser.parseStyleSingle;
+import static com.mozz.htmlnative.parser.StyleItemParser.parseStyleSingle;
 import static com.mozz.htmlnative.token.TokenType.EndAngleBracket;
 import static com.mozz.htmlnative.token.TokenType.Equal;
 import static com.mozz.htmlnative.token.TokenType.Head;
@@ -587,7 +587,7 @@ public final class Parser {
                 inBracket = false;
                 mStyleKeyCache.append(c);
             } else if (c == ';') {
-                Object value = styleCache.get(CssParser.StyleItemParser.parseKey(key));
+                Object value = styleCache.get(StyleItemParser.parseKey(key));
                 CssParser.StyleHolder parsedStyle;
                 if (value != null) {
                     parsedStyle = parseStyleSingle(key, mStyleKeyCache.toString(), value);
@@ -608,7 +608,7 @@ public final class Parser {
         }
 
         if (key != null) {
-            Object value = styleCache.get(CssParser.StyleItemParser.parseKey(key));
+            Object value = styleCache.get(StyleItemParser.parseKey(key));
             CssParser.StyleHolder parsedStyle;
             if (value != null) {
                 parsedStyle = parseStyleSingle(key, mStyleKeyCache.toString(), value);

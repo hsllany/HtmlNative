@@ -37,6 +37,12 @@ public class Background {
     private float width;
     private float height;
 
+    private float colorWidth = 1.f;
+    private float colorHeight = 1.f;
+
+    private int colorWidthMode = PERCENTAGE;
+    private int colorHeightMode = PERCENTAGE;
+
     private int xMode = PERCENTAGE;
     private int yMode = PERCENTAGE;
     private int widthMode = AUTO;
@@ -49,11 +55,14 @@ public class Background {
                 width + "");
         String heightStr = heightMode == AUTO ? "auto" : (heightMode == PERCENTAGE ? height + "%"
                 : height + "");
+        String widthColorStr = colorWidthMode == PERCENTAGE ? colorWidth + "%" : colorWidth + "";
+        String heightColorStr = colorHeightMode == PERCENTAGE ? colorHeight + "%" : colorHeight + "";
         String xStr = xMode == PERCENTAGE ? (x * 100) + "%" : x + "";
         String yStr = yMode == PERCENTAGE ? (y * 100) + "%" : y + "";
 
         return "background:" + color + " url(" + url + ") repeat=" + repeat + " x=" + xStr + " y=" +
-                yStr + ", width=" + widthStr + ", height=" + heightStr;
+                yStr + ", width=" + widthStr + ", height=" + heightStr + ", colorWidth=" +
+                widthColorStr + ", colorHeight" + heightColorStr;
     }
 
     public void setColor(int color) {
@@ -363,6 +372,30 @@ public class Background {
                 }
             }
             break;
+
+            case "-hn-background-color-size": {
+                if (subStrings.length >= 2) {
+                    String width = subStrings[0];
+                    String height = subStrings[1];
+
+                    if (width.endsWith("%")) {
+                        style.colorWidth = ParametersUtils.getPercent(width);
+                        style.colorWidthMode = PERCENTAGE;
+                    } else {
+                        style.colorWidth = (float) ParametersUtils.toPixel(width).getPxValue();
+                        style.colorWidthMode = LENGTH;
+                    }
+
+                    if (height.endsWith("%")) {
+                        style.colorHeight = ParametersUtils.getPercent(height);
+                        style.colorHeightMode = PERCENTAGE;
+                    } else {
+                        style.colorHeight = (float) ParametersUtils.toPixel(height).getPxValue();
+                        style.colorHeightMode = LENGTH;
+                    }
+                }
+            }
+            break;
         }
 
 
@@ -374,5 +407,21 @@ public class Background {
         Matrix matrix = new Matrix();
         matrix.setTranslate(background.getX(), background.getY());
         return matrix;
+    }
+
+    public int getColorWidthMode() {
+        return colorWidthMode;
+    }
+
+    public int getColorHeightMode() {
+        return colorHeightMode;
+    }
+
+    public float getColorWidth() {
+        return colorWidth;
+    }
+
+    public float getColorHeight() {
+        return colorHeight;
     }
 }

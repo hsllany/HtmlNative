@@ -29,26 +29,22 @@ public class HNDiv extends ViewGroup implements IBackgroundView {
     public HNDiv(Context context) {
         super(context);
         mBackgroundMgr = new BackgroundManager(this);
-        mBackgroundMgr.init();
     }
 
     public HNDiv(Context context, AttributeSet attrs) {
         super(context, attrs);
         mBackgroundMgr = new BackgroundManager(this);
-        mBackgroundMgr.init();
     }
 
     public HNDiv(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mBackgroundMgr = new BackgroundManager(this);
-        mBackgroundMgr.init();
     }
 
 
     public HNDiv(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         mBackgroundMgr = new BackgroundManager(this);
-        mBackgroundMgr.init();
     }
 
     @Override

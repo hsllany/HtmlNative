@@ -16,7 +16,7 @@ import java.io.EOFException;
 import static com.mozz.htmlnative.HNLog.LEXER;
 
 
-final class Lexer {
+class Lexer {
 
     private TextReader mReader;
 
@@ -175,7 +175,7 @@ final class Lexer {
         }
 
         if (!Lexer.isDigit(peek())) {
-            HNLog.e(LEXER, "Illegal word" + peek() + " when reading Number!");
+            HNLog.e(LEXER, "Illegal word " + peek() + " when reading Number!");
             throw new HNSyntaxError("Illegal word when reading Number!", line, startColumn);
         }
 
@@ -558,11 +558,11 @@ final class Lexer {
         return (mLookFor & status) != 0;
     }
 
-    private static boolean isDigit(char ch) {
+    public static boolean isDigit(char ch) {
         return ch >= '0' && ch <= '9';
     }
 
-    private static boolean isLetter(char ch) {
+    public static boolean isLetter(char ch) {
         return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
     }
 

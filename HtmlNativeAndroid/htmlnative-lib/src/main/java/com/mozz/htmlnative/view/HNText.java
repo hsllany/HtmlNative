@@ -17,25 +17,21 @@ public class HNText extends TextView implements IBackgroundView {
     public HNText(Context context) {
         super(context);
         mBackgroundMgr = new BackgroundManager(this);
-        mBackgroundMgr.init();
     }
 
     public HNText(Context context, AttributeSet attrs) {
         super(context, attrs);
         mBackgroundMgr = new BackgroundManager(this);
-        mBackgroundMgr.init();
     }
 
     public HNText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mBackgroundMgr = new BackgroundManager(this);
-        mBackgroundMgr.init();
     }
 
     public HNText(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         mBackgroundMgr = new BackgroundManager(this);
-        mBackgroundMgr.init();
     }
 
     @Override

@@ -4,9 +4,7 @@ import android.support.annotation.Nullable;
 
 import com.mozz.htmlnative.HNLog;
 import com.mozz.htmlnative.HNSegment;
-import com.mozz.htmlnative.css.Background;
 import com.mozz.htmlnative.css.StyleSheet;
-import com.mozz.htmlnative.css.Styles;
 import com.mozz.htmlnative.css.selector.AnySelector;
 import com.mozz.htmlnative.css.selector.ClassSelector;
 import com.mozz.htmlnative.css.selector.CssSelector;
@@ -19,8 +17,8 @@ import com.mozz.htmlnative.token.TokenType;
 import java.io.EOFException;
 import java.util.Map;
 
-import static com.mozz.htmlnative.parser.CssParser.StyleItemParser.parseKey;
-import static com.mozz.htmlnative.parser.CssParser.StyleItemParser.parseStyleSingle;
+import static com.mozz.htmlnative.parser.StyleItemParser.parseKey;
+import static com.mozz.htmlnative.parser.StyleItemParser.parseStyleSingle;
 
 /**
  * @author Yang Tao, 17/3/26.
@@ -321,15 +319,20 @@ final class CssParser {
         }
 
         @Nullable
-        Token scan() throws EOFException, HNSyntaxError {
+        public Token scan() throws EOFException, HNSyntaxError {
+            lexer.skipWhiteSpace();
+
             if (shouldScanValue) {
                 return scanValue();
+            } else if (peek() == '-') {
+                // hook the - case, to handle the style name such as -webkit-**.
+                return scanIdWithMinus();
             } else {
                 return lexer.scan();
             }
         }
 
-        char peek() {
+        public char peek() {
             return lexer.peek();
         }
 
@@ -360,11 +363,31 @@ final class CssParser {
             return Token.obtainToken(TokenType.Value, buffer.toString(), line, startColumn);
         }
 
-        long line() {
+        Token scanIdWithMinus() throws EOFException {
+            long startColumn = lexer.column();
+            long line = lexer.line();
+
+            buffer.setLength(0);
+
+            do {
+                buffer.append(peek());
+                lexer.next();
+            }
+            while (Lexer.isLetter(peek()) || Lexer.isDigit(peek()) || peek() == '.' || peek() ==
+                    '-' || peek() == '_');
+
+            String idStr = buffer.toString();
+
+            TokenType type = TokenType.Id;
+
+            return Token.obtainToken(type, buffer.toString(), line, startColumn);
+        }
+
+        public long line() {
             return lexer.line();
         }
 
-        long column() {
+        public long column() {
             return lexer.column();
         }
     }
@@ -457,49 +480,9 @@ final class CssParser {
 
     }
 
-    public static final class StyleItemParser {
-
-        private static final StyleHolder STYLE_HOLDER = new StyleHolder();
-
-        /**
-         * to parse single style string into {@link StyleHolder}. For example, 'background:url
-         * (http://www.abc.com/efg.jpg)' will become :<br/>
-         * StyleHolder.key = background<br/>
-         * StyleHolder.obj = {@link Background}<br/>
-         *
-         * @param styleName,      raw style name
-         * @param styleValue,     raw style string
-         * @param oldStyleObject, old style object, if you have one; or null.
-         * @return StyleHolder
-         */
-        public static StyleHolder parseStyleSingle(String styleName, String styleValue, Object
-                oldStyleObject) {
-            STYLE_HOLDER.key = null;
-            STYLE_HOLDER.obj = null;
-
-            if (styleName.startsWith(Styles.ATTR_BACKGROUND)) {
-                Object val = Background.createOrChange(styleName, styleValue, oldStyleObject);
-                STYLE_HOLDER.key = Styles.ATTR_BACKGROUND;
-                STYLE_HOLDER.obj = val;
-                return STYLE_HOLDER;
-            } else {
-                STYLE_HOLDER.key = styleName;
-                STYLE_HOLDER.obj = styleValue.trim();
-                return STYLE_HOLDER;
-            }
-        }
-
-        public static String parseKey(String key) {
-            if (key.startsWith(Styles.ATTR_BACKGROUND)) {
-                return Styles.ATTR_BACKGROUND;
-            } else {
-                return key;
-            }
-        }
-    }
-
     public static class StyleHolder {
         public String key;
         public Object obj;
+        public String cacheKey;
     }
 }

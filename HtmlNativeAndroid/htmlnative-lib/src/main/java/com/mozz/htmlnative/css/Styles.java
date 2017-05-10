@@ -56,6 +56,10 @@ public final class Styles {
     public static final String ATTR_DISPLAY = "display";
     public static final String ATTR_DIRECTION = "direction";
 
+    // Hn specified styles:
+
+    public static final String ATTR_HN_BACKGROUND = "-hn-background";
+
     public static final String VAL_FILL_PARENT = "100%";
 
     public static final String VAL_DISPLAY_FLEX = "flex";
