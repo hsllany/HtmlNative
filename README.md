@@ -15,9 +15,11 @@ HtmlNative
 
 ## Html支持情况
 
+```html
 <a>, <p>, <h1>, <h2>, <h3>, <h4>, <h5>, <h6>, <input>, <img>, <div>, <br>, <iframe>
 
 属性：style, onclick（需要再lua脚本中定义onclick事件，后续完善相关文档), id, class, href(for <a>), src(for <img>)
+```
 
 ## css支持情况
 

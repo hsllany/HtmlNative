@@ -12,9 +12,11 @@ Other than Webview, HtmlNative directly parse Html and Css into native views, wh
 
 ## Html Support
 
+```html
 <a>, <p>, <h1>, <h2>, <h3>, <h4>, <h5>, <h6>, <input>, <img>, <div>, <br>, <iframe>
 
 parameters：style, onclick（need Lua script, later will finish related function), id, class, href(for <a>), src(for <img>)
+```
 
 ## CSS Support
 
