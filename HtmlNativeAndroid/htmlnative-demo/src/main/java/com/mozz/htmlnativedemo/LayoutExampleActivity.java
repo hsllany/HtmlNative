@@ -1,9 +1,5 @@
 package com.mozz.htmlnativedemo;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -62,37 +58,13 @@ public class LayoutExampleActivity extends AppCompatActivity {
         String code;
         try {
             code = readCode(getIntent().getStringExtra(EXTRA_KEY_RV_FILE));
-            CodeReadDialog dialog = new CodeReadDialog();
-            Bundle bundle = new Bundle();
-            bundle.putString("code", code);
-
-            dialog.setArguments(bundle);
-
-            dialog.show(getFragmentManager(), "dialog");
+            Intent i = new Intent(this, SourceHtmlActivity.class);
+            i.putExtra(SourceHtmlActivity.INTENT_SOURCE_CODE, code);
+            startActivity(i);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-    }
-
-    public static class CodeReadDialog extends DialogFragment {
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-
-            String code = getArguments().getString("code");
-
-            // Use the Builder class for convenient dialog construction
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage(code).setNegativeButton("close", new DialogInterface
-                    .OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    // User cancelled the dialog
-                    dialog.dismiss();
-                }
-            });
-            // Create the AlertDialog object and return it
-            return builder.create();
-        }
     }
 
     String readCode(String fileName) throws IOException {

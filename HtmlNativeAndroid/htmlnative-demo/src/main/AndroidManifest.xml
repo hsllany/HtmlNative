@@ -31,6 +31,10 @@
             android:label="Browser"/>
 
         <activity android:name=".TestActivity"/>
+
+        <activity
+            android:name=".SourceHtmlActivity"
+            android:label="Html"/>
     </application>
 
 </manifest>
