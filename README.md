@@ -1,142 +1,23 @@
 HtmlNative
 ========
 
-[Chinese](README_ch.md)
+使用Html来渲染Android界面的动态化界面方案。
 
-HtmlNative，use HTML + CSS to render Android native widget. Furthermore, if you need some logic inside, HtmlNative also support Lua script.
+不同于Webview, HtmlNative直接将Html和Css转换成原生控件，这样做的好处是：
 
-This repo stands upon some basic idea：
+- 让界面能达到更好的体验效果
+- 用户无感知
+- 简易部署，使用最容易的html + css来控制界面
 
-Although we have react-native and Weex, which are very strong and excellent, to enable us to use javascript to write mobile applications.
-
-But in order to master them, you need to climb up a rather steep learning curve, which may not be so friendly for everybody.
-
-But HTML seems a language that everybody knows, so why not try using HTML to render native widget.
-
-So HtmlNative is born.
-
-## Example:
+## 例子
 
 
-```html
-<html>
-<head>
-    <style>
-        #text1{
-            color: #000;
-            font-size: 16;
-            padding: 10
-        }
-    </style>
-</head>
-<body>
-    <p id="text1">
-        This is an example of ImageView
-        <br />2 Images are shown.
-    </p>
-    <img src="http://n.sinaimg.cn/news/crawl/20170302/18ey-fycaahm6004808.jpg" />
-    <img src="http://n.sinaimg.cn/news/crawl/20170312/VUL1-fychhvn8494769.jpg" />
-    
-    <button onClick="changeText1">clickme</button>
-</body>
-<script type="text/lua">
-    -- Toast in Android
-    alert("hello world")
-    
-    -- Define a global variable
-    b = false
 
-    -- Define a function which responde to click event on button
-    function changeText1()
-        -- 通过id找到view
-        local v = view("text1")
-        
-        -- 设置下样式
-        if(b) then
-            v.style("background:red;color:#fff")
-        else
-            v.style("background:blue;color:red")
-        end
 
-        b = not(b)
+通过HtmlNative渲染后的结果:
 
-    end
-    
-    -- register the function with a clickevent name.
-    callback("changeText1", changeText1)
-    
-    -- Done.
+![Demo](doc/screen1.jpg)
 
-</script>
-</html>
-```
-
-After rendering:
-
-![screen1](show.gif)
-
-## In Android
-
-All you have to do is :
-
-```java
-
-// get the html file somewhere
-String htmlStr = ...
-
-HNative.getInstance().loadView(context, mActivity.getAssets().open(fileName), new HNative.OnHNViewLoaded() {
-
-    @Override
-    public void onViewLoaded(View v) {
-        // do what ever you want to deal with this view
-    }
-
-    @Override
-    public void onError(Exception e) {
-        // if anything went wrong, for example, there is syntax error in html.
-    }
-
-    @Override
-    public void onHead(HNHead head) {
-        // here you can receive the <head> element, deal with title, meta...
-    }
-});
-
-```
-
-Also, you can define some the default behaviour when image loading, WebView creation and hyperlink clicking.
-
-```java
-    HNative.getInstance().setImageViewAdapter(new ImageViewAdapter() {
-        @Override
-        public void setImage(String src, final ViewImageAdapter imageView) {
-            Glide.with(DemoApplication.this).load(src).asBitmap().into(new SimpleTarget<Bitmap>() {
-
-                @Override
-                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap>
-                            glideAnimation) {
-                    Log.d("GlideTest", "onResourceReady");
-                    imageView.setImage(resource);
-                }
-            });
-
-        }
-    });
-
-    HNative.getInstance().setHrefLinkHandler(new HrefLinkHandler() {
-        @Override
-        public void onHref(String url, View view) {
-            Toast.makeText(DemoApplication.this, url, Toast.LENGTH_SHORT).show();
-            }
-    });
-
-    HNative.getInstance().setWebviewCreator(new WebViewCreator() {
-        @Override
-        public WebView create(Context context) {
-            return new WebView(context);
-        }
-    });
-```
 
 ### License
 
