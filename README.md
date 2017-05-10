@@ -102,9 +102,38 @@ Html:
 </html>
 ```
 
+## 使用方法：
+
+```java
+
+InputStream htmlSource = ...;
+
+// 在需要加载view的时候加载
+HNativeEngine.getInstance().loadView(mActivity, htmlSource, new
+                    HNativeEngine.OnHNViewLoaded() {
+
+    @Override
+    public void onViewLoaded(View v) {
+        if (mActivity != null && !mActivity.isDestroyed()) {
+            mActivity.setContentView(v);
+        }
+    }
+
+    @Override
+    public void onError(Exception e) {
+
+    }
+
+    @Override
+    public void onHead(HNHead head) {
+        
+    }
+});
+
+```
 
 
-### License
+## License
 
 Copyright 2016 Hsllany. All rights reserved.
 
