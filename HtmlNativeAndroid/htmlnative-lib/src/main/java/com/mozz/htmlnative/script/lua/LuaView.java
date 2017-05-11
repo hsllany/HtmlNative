@@ -4,19 +4,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.mozz.htmlnative.HNSandBoxContext;
-import com.mozz.htmlnative.css.Styles;
-import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.attrshandler.AttrHandler;
 import com.mozz.htmlnative.attrshandler.AttrsHelper;
 import com.mozz.htmlnative.attrshandler.LayoutAttrHandler;
+import com.mozz.htmlnative.css.Styles;
+import com.mozz.htmlnative.exception.AttrApplyException;
+import com.mozz.htmlnative.parser.CssParser;
 import com.mozz.htmlnative.utils.MainHandlerUtils;
-import com.mozz.htmlnative.utils.ParametersUtils;
 
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.ZeroArgFunction;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -24,6 +25,8 @@ import java.util.Map;
  */
 
 public class LuaView extends LuaTable {
+
+    private static StringBuilder sParserBuffer = new StringBuilder();
 
     public LuaView(final View v, final HNSandBoxContext context) {
         set("toString", new ZeroArgFunction() {
@@ -38,7 +41,9 @@ public class LuaView extends LuaTable {
             public LuaValue call(LuaValue arg) {
                 String style = arg.tojstring();
 
-                final Map<String, String> params = ParametersUtils.parseStyle(style);
+
+                final Map<String, Object> styleMaps = new HashMap<>();
+                CssParser.parseInlineStyle(style, sParserBuffer, styleMaps);
 
                 final AttrHandler viewAttrHandler = AttrsHelper.getAttrHandler(v);
                 final AttrHandler extraAttrHandler = AttrsHelper.getExtraAttrHandler(v);
@@ -46,7 +51,7 @@ public class LuaView extends LuaTable {
                 MainHandlerUtils.instance().post(new Runnable() {
                     @Override
                     public void run() {
-                        for (Map.Entry<String, String> entry : params.entrySet()) {
+                        for (Map.Entry<String, Object> entry : styleMaps.entrySet()) {
                             ViewGroup parent = null;
                             if (v.getParent() instanceof ViewGroup) {
                                 parent = (ViewGroup) v.getParent();

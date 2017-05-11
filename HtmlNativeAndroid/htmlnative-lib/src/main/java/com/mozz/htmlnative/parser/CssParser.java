@@ -1,5 +1,6 @@
 package com.mozz.htmlnative.parser;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.mozz.htmlnative.HNLog;
@@ -24,7 +25,7 @@ import static com.mozz.htmlnative.parser.StyleItemParser.parseStyleSingle;
  * @author Yang Tao, 17/3/26.
  */
 
-final class CssParser {
+public final class CssParser {
 
     private static final int SELECTOR_HASH = 1 << 7;
     private static final int SELECTOR_DOT = 1 << 8;
@@ -68,6 +69,66 @@ final class CssParser {
     public CssParser(Lexer lexer, Parser parentParser) {
         this.lexer = new CssLexer(lexer);
         this.styleCache = parentParser.getStyleCache();
+    }
+
+    /**
+     * Static Method to parse inline style into {@code Map<String, Object>}
+     *
+     * @param styleString, inline style string to parse
+     * @param bufferToUse, buffer to use, may overwrite its content
+     * @param out,         out parameter, to store the result of parsed data.
+     */
+    public static void parseInlineStyle(@NonNull String styleString, StringBuilder bufferToUse,
+                                        Map<String, Object> out) {
+        bufferToUse.setLength(0);
+
+        String key = null;
+
+        out.clear();
+
+        boolean inBracket = false;
+        for (int i = 0; i < styleString.length(); i++) {
+            char c = styleString.charAt(i);
+
+            if (c == '(') {
+                inBracket = true;
+                bufferToUse.append(c);
+            } else if (c == ')') {
+                inBracket = false;
+                bufferToUse.append(c);
+            } else if (c == ';') {
+                Object value = out.get(parseKey(key));
+                StyleHolder parsedStyle;
+                if (value != null) {
+                    parsedStyle = parseStyleSingle(key, bufferToUse.toString(), value);
+                } else {
+                    parsedStyle = parseStyleSingle(key, bufferToUse.toString(), null);
+                }
+                out.put(parsedStyle.key, parsedStyle.obj);
+                bufferToUse.setLength(0);
+            } else if (c == ':' && !inBracket) {
+                key = bufferToUse.toString();
+                bufferToUse.setLength(0);
+            } else {
+                if (c == ' ' || c == '\r' || c == '\n' || c == '\t' || c == '\f' || c == '\b') {
+                    continue;
+                }
+                bufferToUse.append(c);
+            }
+        }
+
+        if (key != null) {
+            Object value = out.get(parseKey(key));
+            StyleHolder parsedStyle;
+            if (value != null) {
+                parsedStyle = parseStyleSingle(key, bufferToUse.toString(), value);
+            } else {
+                parsedStyle = parseStyleSingle(key, bufferToUse.toString(), null);
+            }
+            out.put(parsedStyle.key, parsedStyle.obj);
+        }
+
+        bufferToUse.setLength(0);
     }
 
     public void process(HNSegment segment) throws EOFException, HNSyntaxError {

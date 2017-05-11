@@ -99,7 +99,8 @@ public final class HNRenderer {
 
             long afterCreate = SystemClock.currentThreadTimeMillis();
             this.performCreated(sandBoxContext);
-            mTracker.record("After View Created", SystemClock.currentThreadTimeMillis() - afterCreate);
+            mTracker.record("After View Created", SystemClock.currentThreadTimeMillis() -
+                    afterCreate);
 
             Log.i(PERFORMANCE_TAG, mTracker.dump());
 
@@ -209,6 +210,12 @@ public final class HNRenderer {
             if (v == null) {
                 HNLog.e(HNLog.RENDER, "createView createDiv: view is null with tag " + type);
                 return null;
+            }
+
+            // save the id if element has one
+            String id = tree.getId();
+            if (id != null) {
+                sandBoxContext.registerId(id, v);
             }
 
             // ------- below starts the styleSheet process part -------

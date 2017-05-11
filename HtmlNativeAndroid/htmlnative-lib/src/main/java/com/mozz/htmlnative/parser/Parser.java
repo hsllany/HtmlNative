@@ -25,7 +25,6 @@ import java.util.Map;
 
 import static com.mozz.htmlnative.HNEnvironment.PERFORMANCE_TAG;
 import static com.mozz.htmlnative.HtmlTag.isSwallowInnerTag;
-import static com.mozz.htmlnative.parser.StyleItemParser.parseStyleSingle;
 import static com.mozz.htmlnative.token.TokenType.EndAngleBracket;
 import static com.mozz.htmlnative.token.TokenType.Equal;
 import static com.mozz.htmlnative.token.TokenType.Exclamation;
@@ -65,7 +64,7 @@ public final class Parser {
 
     private boolean mReserved = false;
 
-    private Map<String, Object> styleCache = new HashMap<>();
+    private Map<String, Object> mStyleCache = new HashMap<>();
 
     private Tracker mTracker;
 
@@ -583,58 +582,13 @@ public final class Parser {
         }
     }
 
+
     private StringBuilder mStyleKeyCache = new StringBuilder();
 
     private void parseStyle(@NonNull HNDomTree tree, @NonNull String styleString) {
-        mStyleKeyCache.setLength(0);
+        CssParser.parseInlineStyle(styleString, mStyleKeyCache, mStyleCache);
 
-        String key = null;
-
-        styleCache.clear();
-
-        boolean inBracket = false;
-        for (int i = 0; i < styleString.length(); i++) {
-            char c = styleString.charAt(i);
-
-            if (c == '(') {
-                inBracket = true;
-                mStyleKeyCache.append(c);
-            } else if (c == ')') {
-                inBracket = false;
-                mStyleKeyCache.append(c);
-            } else if (c == ';') {
-                Object value = styleCache.get(StyleItemParser.parseKey(key));
-                CssParser.StyleHolder parsedStyle;
-                if (value != null) {
-                    parsedStyle = parseStyleSingle(key, mStyleKeyCache.toString(), value);
-                } else {
-                    parsedStyle = parseStyleSingle(key, mStyleKeyCache.toString(), null);
-                }
-                styleCache.put(parsedStyle.key, parsedStyle.obj);
-                mStyleKeyCache.setLength(0);
-            } else if (c == ':' && !inBracket) {
-                key = mStyleKeyCache.toString();
-                mStyleKeyCache.setLength(0);
-            } else {
-                if (c == ' ' || c == '\r' || c == '\n' || c == '\t' || c == '\f' || c == '\b') {
-                    continue;
-                }
-                mStyleKeyCache.append(c);
-            }
-        }
-
-        if (key != null) {
-            Object value = styleCache.get(StyleItemParser.parseKey(key));
-            CssParser.StyleHolder parsedStyle;
-            if (value != null) {
-                parsedStyle = parseStyleSingle(key, mStyleKeyCache.toString(), value);
-            } else {
-                parsedStyle = parseStyleSingle(key, mStyleKeyCache.toString(), null);
-            }
-            styleCache.put(parsedStyle.key, parsedStyle.obj);
-        }
-
-        for (Map.Entry<String, Object> entry : styleCache.entrySet()) {
+        for (Map.Entry<String, Object> entry : mStyleCache.entrySet()) {
             tree.addInlineStyle(entry.getKey(), entry.getValue());
         }
     }
@@ -714,7 +668,7 @@ public final class Parser {
     }
 
     public Map<String, Object> getStyleCache() {
-        return styleCache;
+        return mStyleCache;
     }
 
     private static String lookForToString(int lookFor) {

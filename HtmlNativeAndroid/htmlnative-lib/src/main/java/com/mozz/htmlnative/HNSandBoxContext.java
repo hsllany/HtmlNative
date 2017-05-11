@@ -41,7 +41,7 @@ public interface HNSandBoxContext extends VariablePool {
     void onViewCreate();
 
     @Nullable
-    View saveId(String id, View value);
+    View registerId(String id, View value);
 
     String allIdTag();
 

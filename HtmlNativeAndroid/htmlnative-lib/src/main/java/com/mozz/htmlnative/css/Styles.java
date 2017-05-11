@@ -104,18 +104,11 @@ public final class Styles {
                                   boolean isParent, InheritStyleStack stack) throws
             AttrApplyException {
 
-        HNLog.d(HNLog.STYLE, "before apply " + styleName + " = " + style.toString() + " to " + v
-                + "" +
-                "(" + domElement.getType() + ")");
-
         if (isParent) {
             if (!InheritStylesRegistry.isInherit(styleName)) {
                 return;
             }
         }
-
-        HNLog.d(HNLog.STYLE, "apply " + styleName + " = " + style.toString() + " to " + v + "(" +
-                domElement.getType() + ")");
 
         switch (styleName) {
             case ATTR_WIDTH: {

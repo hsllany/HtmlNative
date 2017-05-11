@@ -54,7 +54,7 @@ final class HNSandBoxContextImpl implements HNSandBoxContext {
     }
 
     @Nullable
-    public View saveId(String id, View view) {
+    public View registerId(String id, View view) {
         return mRootView.putViewWithId(id, view);
     }
 
