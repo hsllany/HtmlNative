@@ -20,7 +20,7 @@ public class ScriptTest {
     @Test
     public void execute() throws Exception {
         Globals globals = JsePlatform.standardGlobals();
-        //        globals.set("callback", new callback());
+        //        globals.set("LCallback", new LCallback());
 
         LuaValue value = globals.load(helloWorldScript);
         value.call();

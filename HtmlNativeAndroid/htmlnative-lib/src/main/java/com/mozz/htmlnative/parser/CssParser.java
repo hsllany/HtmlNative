@@ -131,7 +131,7 @@ public final class CssParser {
         bufferToUse.setLength(0);
     }
 
-    public void process(HNSegment segment) throws EOFException, HNSyntaxError {
+    void process(HNSegment segment) throws EOFException, HNSyntaxError {
         StyleSheet styleSheet = segment.getStyleSheet();
 
         lookFor(SELECTOR_START);

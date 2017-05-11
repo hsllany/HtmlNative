@@ -11,7 +11,7 @@ HtmlNative
 - 用户无感知
 - 简易部署，使用最容易的html + css来控制界面
 
-> Still working on put LuaScript into the raw html file to control the simple logic inside.
+> Still working on putting Lua script into the raw html file to control the simple logic inside.
 
 ## Html支持情况
 
@@ -58,13 +58,13 @@ class选择器
 #id1, #id2{}
 ```
 
-子孙选择
+子孙选择器
 
 ```css
 div p{}
 ```
 
-直接子选择器
+子选择器
 
 ```css
 div > p{}

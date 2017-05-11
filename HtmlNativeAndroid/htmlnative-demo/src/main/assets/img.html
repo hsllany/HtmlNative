@@ -28,29 +28,6 @@
 
     </body>
     <script type="text/lua">
-        -- show a toast in androd
-        alert("hello world")
-
-        b = false
-
-        function changeText1()
-            -- get the v by id
-            local v = view("text1")
-
-            if(b) then
-                v.style("background:red;color:#fff")
-            else
-                v.style("background:blue;color:red")
-            end
-
-            b = not(b)
-
-        end
-
-        --[[ register the function to callback pool, then when p#text1 is clicked, its appearance
-        will change according to v value. ]]
-
-        callback("changeText1", changeText1)
-
+        toast("hello world")
     </script>
 </html>

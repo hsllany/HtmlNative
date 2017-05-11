@@ -3,12 +3,12 @@ HtmlNative
 
 Using Html to render Android native views.
 
-Other than Webview, HtmlNative directly parse Html and Css into native views, which will：
+Other than Webview, HtmlNative directly parses HTML and CSS into Android native views, which will：
 
 - reach better user-expirence
 - make writing easy, just using html and css
 
-> Still working on put LuaScript into the raw html file to control the simple logic inside.
+> Still working on putting Lua script into the raw html file to control the simple logic inside.
 
 ## Html Support
 
@@ -30,44 +30,44 @@ font-size, color, line-height, font-style, font-weight, text-align, word-spacing
 
 ### CSS Selectors
 
-type Selectors
+type selectors
 
 ```css
 p{}
 div{}
 ```
 
-id Selectors
+id selectors
 
 ```css
 #id1{}
 ```
 
-class Selectors
+class selectors
 
 ```css
 .class1{}
 ```
 
-Group
+group
 
 ```
 #id1, #id2{}
 ```
 
-Descendant selectors
+descendant selectors
 
 ```css
 div p{}
 ```
 
-Child selectors
+child selectors
 
 ```css
 div > p{}
 ```
 
-Universal selector
+universal selectors
 
 ```css
 *{}

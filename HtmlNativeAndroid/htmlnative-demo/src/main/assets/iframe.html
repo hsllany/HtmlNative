@@ -25,7 +25,7 @@
     </body>
 
     <script type="text/lua">
-        alert("hello world")
+        toast("hello world")
 
         b = false
 
@@ -39,7 +39,7 @@
             b = not(b)
         end
 
-        callback("changeText1", changeText1)
+        register("changeText1", changeText1)
 
     </script>
 </html>
