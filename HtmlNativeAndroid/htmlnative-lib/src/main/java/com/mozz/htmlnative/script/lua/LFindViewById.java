@@ -11,7 +11,7 @@ import org.luaj.vm2.lib.OneArgFunction;
  * @author Yang Tao, 17/3/23.
  */
 
-public class LFindViewById extends OneArgFunction implements LApi {
+class LFindViewById extends OneArgFunction implements ILApi {
     private HNSandBoxContext mContext;
 
     public LFindViewById(HNSandBoxContext context) {
@@ -32,6 +32,6 @@ public class LFindViewById extends OneArgFunction implements LApi {
 
     @Override
     public String apiName() {
-        return "view";
+        return "getElementById";
     }
 }

@@ -3,6 +3,8 @@ package com.mozz.htmlnativedemo;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -28,7 +30,8 @@ public class SourceHtmlActivity extends Activity {
         }
 
         ScrollView scrollView = new ScrollView(this);
-        scrollView.addView(sourceCodeTxt);
+        scrollView.addView(sourceCodeTxt, new FrameLayout.LayoutParams(FrameLayout.LayoutParams
+                .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         setContentView(scrollView);
     }
 }

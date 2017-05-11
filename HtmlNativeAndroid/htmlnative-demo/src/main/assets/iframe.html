@@ -30,13 +30,16 @@
         b = false
 
         function changeText1()
-            local v = view("text1")
+            local v = getElementById("text1")
             if(b) then
                 v.style("background:red;color:#fff")
             else
                 v.style("background:blue;color:red")
             end
             b = not(b)
+
+            window.jump("http://www.baidu.com")
+
         end
 
         register("changeText1", changeText1)

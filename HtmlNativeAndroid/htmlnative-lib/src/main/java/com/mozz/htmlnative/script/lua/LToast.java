@@ -13,7 +13,7 @@ import java.lang.ref.WeakReference;
 /**
  * @author Yang Tao, 17/2/27.
  */
-public class LToast extends OneArgFunction implements LApi {
+public class LToast extends OneArgFunction implements ILApi {
     private WeakReference<Context> mContext;
 
     public LToast(Context context) {

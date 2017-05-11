@@ -7,7 +7,7 @@ import org.luaj.vm2.lib.TwoArgFunction;
  * @author Yang Tao, 17/3/21.
  */
 
-public class LCallback extends TwoArgFunction implements LApi {
+public class LCallback extends TwoArgFunction implements ILApi {
     private LuaRunner mRunner;
 
     public LCallback(LuaRunner runner) {

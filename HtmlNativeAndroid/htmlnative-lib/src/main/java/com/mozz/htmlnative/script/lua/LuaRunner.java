@@ -36,9 +36,14 @@ public class LuaRunner extends ScriptRunner {
 
         long time1 = SystemClock.currentThreadTimeMillis();
         mGlobals = JsePlatform.standardGlobals();
+
+        // register global variables
+        register(new LDocument(sandBoxContext));
+        register(LConsole.getInstance());
+
+        // register api
         register(new LToast(sandBoxContext.getAndroidContext()));
         register(new LCallback(this));
-        register(new LLogcat());
         register(new LFindViewById(sandBoxContext));
         Log.i(PERFORMANCE_TAG, "init Lua module spend " + (SystemClock.currentThreadTimeMillis()
                 - time1) + "" +
@@ -95,9 +100,15 @@ public class LuaRunner extends ScriptRunner {
         mFunctionTable.put(functionName, l);
     }
 
-    private void register(LApi api) {
+    protected final void register(ILApi api) {
         if (api instanceof LuaValue) {
             mGlobals.set(api.apiName(), (LuaValue) api);
+        }
+    }
+
+    protected final void register(ILGlobalObject api) {
+        if (api instanceof LuaValue) {
+            mGlobals.set(api.objectName(), (LuaValue) api);
         }
     }
 

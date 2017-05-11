@@ -26,7 +26,7 @@ import static com.mozz.htmlnative.HNLog.STYLE;
 
 public final class HNativeEngine {
 
-    public static final String LUA_TAG = "HNLua";
+
 
     private static WebViewCreator sWebViewHandler = DefaultWebViewCreator.sInstance;
     private static ImageViewAdapter sImageViewAdapter = DefaultImageAdapter.sInstance;

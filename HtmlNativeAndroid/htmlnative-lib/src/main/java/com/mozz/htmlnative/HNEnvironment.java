@@ -7,8 +7,6 @@ package com.mozz.htmlnative;
 
 public final class HNEnvironment {
 
-    public static boolean DEBUG = false;
-
     private HNEnvironment() {
     }
 
@@ -19,8 +17,4 @@ public final class HNEnvironment {
 
     public static final String v = "HtmlNative " + HNEnvironment.versionName + "(" +
             HNEnvironment.versionCode + ")";
-
-    public static void toggleDebug(boolean debug) {
-        DEBUG = debug;
-    }
 }
