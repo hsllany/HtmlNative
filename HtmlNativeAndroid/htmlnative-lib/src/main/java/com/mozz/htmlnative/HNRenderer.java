@@ -19,6 +19,8 @@ import com.mozz.htmlnative.css.AttrsSet;
 import com.mozz.htmlnative.css.StyleSheet;
 import com.mozz.htmlnative.css.Styles;
 import com.mozz.htmlnative.css.selector.CssSelector;
+import com.mozz.htmlnative.dom.AttachedElement;
+import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.dom.HNDomTree;
 import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.view.HNDiv;
@@ -119,13 +121,13 @@ public final class HNRenderer {
         AttrsSet attrsSet = segment.getInlineStyles();
 
         if (tree.isLeaf()) {
-            View v = createView(tree, sandBoxContext, parent, context, attrsSet, params, root,
-                    styleSheet);
+            View v = createView(tree, tree, sandBoxContext, parent, context, attrsSet, params,
+                    root, styleSheet);
             mInheritStyleStack.pop();
             return v;
         } else {
-            View view = createView(tree, sandBoxContext, parent, context, attrsSet, params, root,
-                    styleSheet);
+            View view = createView(tree, tree, sandBoxContext, parent, context, attrsSet, params,
+                    root, styleSheet);
 
             if (view == null) {
                 return null;
@@ -165,11 +167,11 @@ public final class HNRenderer {
     }
 
 
-    private View createView(@NonNull HNDomTree tree, @NonNull HNSandBoxContext sandBoxContext,
-                            @NonNull ViewGroup parent, @NonNull Context context, @NonNull
-                                    AttrsSet attrsSet, @NonNull ViewGroup.LayoutParams
-                                    layoutParams, @NonNull HNRootView root, StyleSheet
-                                    styleSheet) throws HNRenderException {
+    private View createView(@NonNull AttrsSet.AttrsOwner owner, @NonNull DomElement tree,
+                            @NonNull HNSandBoxContext sandBoxContext, @NonNull ViewGroup parent,
+                            @NonNull Context context, @NonNull AttrsSet attrsSet, @NonNull
+                                    ViewGroup.LayoutParams layoutParams, @NonNull HNRootView
+                                    root, StyleSheet styleSheet) throws HNRenderException {
 
         String type = tree.getType();
 
@@ -180,7 +182,7 @@ public final class HNRenderer {
         try {
             View v;
             if (HtmlTag.isDivOrTemplate(type)) {
-                Object displayObj = attrsSet.getStyle(tree, "display");
+                Object displayObj = attrsSet.getStyle(owner, "display");
                 if (displayObj != null && displayObj instanceof String) {
                     String display = (String) displayObj;
                     switch (display) {
@@ -211,6 +213,9 @@ public final class HNRenderer {
                 HNLog.e(HNLog.RENDER, "createView createDiv: view is null with tag " + type);
                 return null;
             }
+
+            //attach the dom element to view
+            v.setTag(AttachedElement.cloneFrom(tree));
 
             // save the id if element has one
             String id = tree.getId();
@@ -246,7 +251,7 @@ public final class HNRenderer {
                 }
 
 
-                Styles.apply(context, sandBoxContext, attrsSet, v, tree, tree, parent,
+                Styles.apply(context, sandBoxContext, attrsSet, v, owner, tree, parent,
                         layoutParams, true, false, viewAttrHandler, extraAttrHandler,
                         parentLayoutAttr, mInheritStyleStack);
 

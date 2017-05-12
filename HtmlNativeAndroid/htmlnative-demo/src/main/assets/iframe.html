@@ -31,6 +31,9 @@
 
         function changeText1()
             local v = getElementById("text1")
+
+            toast(v.getId())
+
             if(b) then
                 v.style("background:red;color:#fff")
             else
@@ -38,7 +41,7 @@
             end
             b = not(b)
 
-            window.jump("http://www.baidu.com")
+            document.jump("http://www.baidu.com")
 
         end
 

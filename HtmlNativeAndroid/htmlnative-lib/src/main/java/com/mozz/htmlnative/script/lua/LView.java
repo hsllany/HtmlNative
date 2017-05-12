@@ -8,10 +8,12 @@ import com.mozz.htmlnative.attrshandler.AttrHandler;
 import com.mozz.htmlnative.attrshandler.AttrsHelper;
 import com.mozz.htmlnative.attrshandler.LayoutAttrHandler;
 import com.mozz.htmlnative.css.Styles;
+import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.parser.CssParser;
 import com.mozz.htmlnative.utils.MainHandlerUtils;
 
+import org.luaj.vm2.LuaString;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.OneArgFunction;
@@ -70,6 +72,17 @@ public class LView extends LuaTable {
                 return NIL;
             }
 
+        });
+
+        set("getId", new ZeroArgFunction() {
+            @Override
+            public LuaValue call() {
+                Object obj = v.getTag();
+                if (obj != null && obj instanceof DomElement) {
+                    return LuaString.valueOf(((DomElement) obj).getId());
+                }
+                return LuaString.valueOf("");
+            }
         });
 
     }

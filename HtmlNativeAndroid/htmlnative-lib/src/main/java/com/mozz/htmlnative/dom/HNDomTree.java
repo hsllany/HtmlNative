@@ -2,6 +2,7 @@ package com.mozz.htmlnative.dom;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.mozz.htmlnative.HNLog;
 import com.mozz.htmlnative.css.AttrsSet;
@@ -230,12 +231,12 @@ public final class HNDomTree implements ParseCallback, AttrsSet.AttrsOwner, DomE
 
     @Override
     public boolean hasClazz() {
-        return mClass != null;
+        return mClass != null && mClass.length > 0;
     }
 
     @Override
     public boolean hasId() {
-        return mId != null;
+        return !TextUtils.isEmpty(mId);
     }
 
     @Override
