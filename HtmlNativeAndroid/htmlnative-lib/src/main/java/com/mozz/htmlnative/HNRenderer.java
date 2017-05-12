@@ -42,18 +42,13 @@ public final class HNRenderer {
     private static final HashMap<String, Constructor<? extends View>> sConstructorMap = new
             HashMap<>();
 
-    private final Object[] mConstructorArgs = new Object[1];
+    private static final Object[] sConstructorArgs = new Object[1];
 
     private static final Class<?>[] sConstructorSignature = new Class[]{Context.class};
 
     private InheritStyleStack mInheritStyleStack;
 
     private Tracker mTracker;
-
-    /**
-     * level in Dom Tree
-     */
-    private int level = 0;
 
     private HNRenderer() {
         mInheritStyleStack = new InheritStyleStack();
@@ -77,14 +72,6 @@ public final class HNRenderer {
         HNSandBoxContext sandBoxContext = HNSandBoxContextImpl.createContext(rootViewGroup,
                 segment, context);
 
-        long createTime = SystemClock.currentThreadTimeMillis();
-        this.performCreate(sandBoxContext);
-        mTracker.record("Create View", SystemClock.currentThreadTimeMillis() - createTime);
-
-        /**
-         * set the default level to -1
-         */
-        level = -1;
 
         mInheritStyleStack.reset();
 
@@ -99,6 +86,10 @@ public final class HNRenderer {
             rootViewGroup.addContent(v, LayoutParamsLazyCreator.createLayoutParams(rootViewGroup,
                     rootCreator));
             mTracker.record("Render View", SystemClock.currentThreadTimeMillis() - renderStartTime);
+
+            long createTime = SystemClock.currentThreadTimeMillis();
+            this.performCreate(sandBoxContext);
+            mTracker.record("Create View", SystemClock.currentThreadTimeMillis() - createTime);
 
             long afterCreate = SystemClock.currentThreadTimeMillis();
             this.performCreated(sandBoxContext);
@@ -124,12 +115,12 @@ public final class HNRenderer {
 
         if (tree.isLeaf()) {
             View v = createView(tree, tree, sandBoxContext, parent, context, attrsSet,
-                    paramsCreator, root, styleSheet);
+                    paramsCreator, styleSheet, mInheritStyleStack);
             mInheritStyleStack.pop();
             return v;
         } else {
             View view = createView(tree, tree, sandBoxContext, parent, context, attrsSet,
-                    paramsCreator, root, styleSheet);
+                    paramsCreator, styleSheet, mInheritStyleStack);
 
             if (view == null) {
                 return null;
@@ -171,17 +162,16 @@ public final class HNRenderer {
     }
 
 
-    private View createView(@NonNull AttrsSet.AttrsOwner owner, @NonNull DomElement tree,
-                            @NonNull HNSandBoxContext sandBoxContext, @NonNull ViewGroup parent,
-                            @NonNull Context context, @NonNull AttrsSet attrsSet, @NonNull
-                                    LayoutParamsLazyCreator layoutCreator, @NonNull HNRootView
-                                    root, StyleSheet styleSheet) throws HNRenderException {
+    public static View createView(AttrsSet.AttrsOwner owner, @NonNull DomElement tree, @NonNull
+            HNSandBoxContext sandBoxContext, ViewGroup parent, @NonNull Context context, AttrsSet
+            attrsSet, @NonNull LayoutParamsLazyCreator layoutCreator, StyleSheet styleSheet,
+                                  InheritStyleStack stack) throws HNRenderException {
 
         String type = tree.getType();
 
-        level++;
-
-        mInheritStyleStack.push();
+        if (stack != null) {
+            stack.push();
+        }
 
         try {
             View v;
@@ -224,6 +214,7 @@ public final class HNRenderer {
             // save the id if element has one
             String id = tree.getId();
             if (id != null) {
+                Log.d("LALA", "Register Id " + id + ", " + v.getClass().getSimpleName());
                 sandBoxContext.registerId(id, v);
             }
 
@@ -244,20 +235,24 @@ public final class HNRenderer {
                 /**
                  * First apply the parent styleSheet style to it.
                  */
+                if (stack != null) {
+                    for (Styles.StyleEntry entry : stack) {
 
-                for (Styles.StyleEntry entry : mInheritStyleStack) {
+                        // here pass InheritStyleStack null to Styles, is to prevent Style being
+                        // stored in InheritStyleStack twice
+                        Styles.applyStyle(context, sandBoxContext, v, tree, layoutCreator,
+                                parent, viewAttrHandler, extraAttrHandler, parentLayoutAttr,
+                                entry, false, null);
 
-                    // here pass InheritStyleStack null to Styles, is to prevent Style being
-                    // stored in InheritStyleStack twice
-                    Styles.applyStyle(context, sandBoxContext, v, tree, layoutCreator, parent,
-                            viewAttrHandler, extraAttrHandler, parentLayoutAttr, entry, false,
-                            null);
+                    }
                 }
 
+                if (attrsSet != null) {
+                    Styles.apply(context, sandBoxContext, attrsSet, v, owner, tree, parent,
+                            layoutCreator, true, false, viewAttrHandler, extraAttrHandler,
+                            parentLayoutAttr, stack);
 
-                Styles.apply(context, sandBoxContext, attrsSet, v, owner, tree, parent,
-                        layoutCreator, true, false, viewAttrHandler, extraAttrHandler,
-                        parentLayoutAttr, mInheritStyleStack);
+                }
 
             } catch (AttrApplyException e) {
                 e.printStackTrace();
@@ -265,21 +260,23 @@ public final class HNRenderer {
             }
 
             // core part to handle the styleSheet selectors
+            if (styleSheet != null) {
+                CssSelector[] matchedSelectors = styleSheet.matchedSelector(type, tree.getId(),
+                        tree.getClazz());
 
-            CssSelector[] matchedSelectors = styleSheet.matchedSelector(type, tree.getId(), tree
-                    .getClazz());
 
-            for (CssSelector selector : matchedSelectors) {
-                if (selector != null) {
-                    if (selector.matchWhole(tree)) {
+                for (CssSelector selector : matchedSelectors) {
+                    if (selector != null) {
+                        if (selector.matchWhole(tree)) {
 
-                        try {
-                            Styles.apply(context, sandBoxContext, styleSheet, v, selector, tree,
-                                    parent, layoutCreator, false, false, viewAttrHandler,
-                                    extraAttrHandler, parentLayoutAttr, mInheritStyleStack);
+                            try {
+                                Styles.apply(context, sandBoxContext, styleSheet, v, selector,
+                                        tree, parent, layoutCreator, false, false,
+                                        viewAttrHandler, extraAttrHandler, parentLayoutAttr, stack);
 
-                        } catch (AttrApplyException e) {
-                            e.printStackTrace();
+                            } catch (AttrApplyException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
@@ -306,7 +303,7 @@ public final class HNRenderer {
     }
 
     @Nullable
-    final View createViewByTag(@NonNull Context context, @Nullable String tagName) throws
+    static View createViewByTag(@NonNull Context context, @Nullable String tagName) throws
             ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
             InvocationTargetException, InstantiationException {
 
@@ -334,12 +331,12 @@ public final class HNRenderer {
             sConstructorMap.put(viewClassName, constructor);
         }
 
-        mConstructorArgs[0] = context;
-        view = constructor.newInstance(mConstructorArgs);
+        sConstructorArgs[0] = context;
+        view = constructor.newInstance(sConstructorArgs);
         return view;
     }
 
-    private View createViewByViewHandler(Context context, @NonNull String viewClassName) {
+    private static View createViewByViewHandler(Context context, @NonNull String viewClassName) {
         if (viewClassName.equals(WebView.class.getName()) && HNativeEngine.getWebviewCreator() !=
                 null) {
             return HNativeEngine.getWebviewCreator().create(context);

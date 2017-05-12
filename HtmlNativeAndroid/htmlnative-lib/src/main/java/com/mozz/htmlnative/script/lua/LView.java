@@ -12,6 +12,7 @@ import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.parser.CssParser;
 import com.mozz.htmlnative.utils.MainHandlerUtils;
+import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
 
 import org.luaj.vm2.LuaString;
 import org.luaj.vm2.LuaTable;
@@ -29,14 +30,15 @@ import java.util.Map;
 public class LView extends LuaTable {
 
     private View mView;
-    private ViewGroup.LayoutParams mLayoutParameters;
+    private LayoutParamsLazyCreator mLayoutParamsCreator;
+    boolean mAdded = false;
 
     private static StringBuilder sParserBuffer = new StringBuilder();
 
-    public LView(final View v, final ViewGroup.LayoutParams layoutParams, final HNSandBoxContext
-            context) {
+    public LView(final View v, final LayoutParamsLazyCreator layoutParamsCreator, final
+    HNSandBoxContext context) {
         mView = v;
-        mLayoutParameters = layoutParams;
+        mLayoutParamsCreator = layoutParamsCreator;
         set("toString", new ZeroArgFunction() {
             @Override
             public LuaValue call() {
@@ -95,8 +97,9 @@ public class LView extends LuaTable {
             public LuaValue call(LuaValue arg) {
                 if (arg instanceof LView) {
                     LView child = (LView) arg;
-                    if (v instanceof ViewGroup) {
-                        ((ViewGroup) v).addView(child.mView);
+                    if (v instanceof ViewGroup && !child.mAdded) {
+                        ((ViewGroup) v).addView(child.mView, LayoutParamsLazyCreator
+                                .createLayoutParams(v, child.mLayoutParamsCreator));
                     }
                 }
                 return LuaValue.NIL;
@@ -105,7 +108,7 @@ public class LView extends LuaTable {
     }
 
     public LView(final View v, final HNSandBoxContext context) {
-        this(v, v.getLayoutParams(), context);
+        this(v, null, context);
     }
 
 

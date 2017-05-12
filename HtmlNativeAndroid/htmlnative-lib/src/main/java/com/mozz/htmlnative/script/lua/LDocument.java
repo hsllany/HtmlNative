@@ -2,10 +2,14 @@ package com.mozz.htmlnative.script.lua;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.view.View;
 
 import com.mozz.htmlnative.HNEnvironment;
 import com.mozz.htmlnative.HNRenderer;
 import com.mozz.htmlnative.HNSandBoxContext;
+import com.mozz.htmlnative.dom.AttachedElement;
+import com.mozz.htmlnative.dom.DomElement;
+import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
 
 import org.luaj.vm2.LuaString;
 import org.luaj.vm2.LuaTable;
@@ -37,6 +41,17 @@ class LDocument extends LuaTable implements ILGlobalObject {
             @Override
             public LuaValue call(LuaValue tag, LuaValue style) {
                 if (tag instanceof LuaString && style instanceof LuaString) {
+                    DomElement domElement = new AttachedElement();
+                    domElement.setType(tag.tojstring());
+
+                    LayoutParamsLazyCreator creator = new LayoutParamsLazyCreator();
+                    try {
+                        View v = HNRenderer.createView(null, domElement, sandBoxContext, null,
+                                sandBoxContext.getAndroidContext(), null, creator, null, null);
+                        return new LView(v, creator, sandBoxContext);
+                    } catch (HNRenderer.HNRenderException e) {
+                        e.printStackTrace();
+                    }
                 }
                 return LuaValue.NIL;
             }

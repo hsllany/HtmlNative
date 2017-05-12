@@ -73,6 +73,7 @@ public final class HNRootView extends ScrollView {
     }
 
     public View findViewById(@NonNull String id) {
+        Log.d("LALA", "fetch " + id + ", " + mViewWithId.toString());
         return mViewWithId.get(id);
     }
 
@@ -82,6 +83,9 @@ public final class HNRootView extends ScrollView {
         if (before != null) {
             Log.w(TAG, "Duplicated id " + id + ", before is " + before + ", current is " + view);
         }
+
+        Log.d("LALA", mViewWithId.toString());
+
         return before;
     }
 

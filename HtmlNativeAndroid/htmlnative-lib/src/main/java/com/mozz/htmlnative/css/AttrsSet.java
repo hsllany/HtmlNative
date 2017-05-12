@@ -125,6 +125,9 @@ public class AttrsSet {
 
 
     public final Object getStyle(AttrsOwner owner, String styleName) {
+        if (owner == null) {
+            return null;
+        }
         int startPosition = owner.attrIndex();
         int treeAttrLength = mLength[startPosition];
 

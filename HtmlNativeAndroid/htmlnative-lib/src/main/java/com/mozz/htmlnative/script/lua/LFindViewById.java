@@ -24,7 +24,9 @@ class LFindViewById extends OneArgFunction implements ILApi {
         String id = arg.tojstring();
         View v = mContext.findViewById(id);
         if (v != null) {
-            return new LView(v, mContext);
+            LView lView = new LView(v, mContext);
+            lView.mAdded = true;
+            return lView;
         }
 
         return NIL;

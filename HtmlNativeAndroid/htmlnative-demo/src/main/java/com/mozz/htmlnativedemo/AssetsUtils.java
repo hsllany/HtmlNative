@@ -2,6 +2,7 @@ package com.mozz.htmlnativedemo;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.webkit.URLUtil;
 
 import java.io.IOException;
 

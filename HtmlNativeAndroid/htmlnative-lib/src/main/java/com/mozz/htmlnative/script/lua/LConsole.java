@@ -12,7 +12,7 @@ import org.luaj.vm2.lib.OneArgFunction;
 
 public class LConsole extends LuaTable implements ILGlobalObject {
 
-    private static final String LUA_TAG = "HNLua";
+    private static final String LUA_TAG = "HNConsole";
 
     private static LConsole sInstance = null;
 
