@@ -214,7 +214,6 @@ public final class HNRenderer {
             // save the id if element has one
             String id = tree.getId();
             if (id != null) {
-                Log.d("LALA", "Register Id " + id + ", " + v.getClass().getSimpleName());
                 sandBoxContext.registerId(id, v);
             }
 
