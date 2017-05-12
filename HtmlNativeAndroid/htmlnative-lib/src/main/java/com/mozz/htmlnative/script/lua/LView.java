@@ -28,9 +28,15 @@ import java.util.Map;
 
 public class LView extends LuaTable {
 
+    private View mView;
+    private ViewGroup.LayoutParams mLayoutParameters;
+
     private static StringBuilder sParserBuffer = new StringBuilder();
 
-    public LView(final View v, final HNSandBoxContext context) {
+    public LView(final View v, final ViewGroup.LayoutParams layoutParams, final HNSandBoxContext
+            context) {
+        mView = v;
+        mLayoutParameters = layoutParams;
         set("toString", new ZeroArgFunction() {
             @Override
             public LuaValue call() {
@@ -38,7 +44,7 @@ public class LView extends LuaTable {
             }
         });
 
-        set("style", new OneArgFunction() {
+        set("setStyle", new OneArgFunction() {
             @Override
             public LuaValue call(LuaValue arg) {
                 String style = arg.tojstring();
@@ -59,10 +65,9 @@ public class LView extends LuaTable {
                                 parent = (ViewGroup) v.getParent();
                             }
                             try {
-                                Styles.applyStyle(v.getContext(), context, v, null, v
-                                        .getLayoutParams(), parent, viewAttrHandler,
-                                        extraAttrHandler, parentAttr, entry.getKey(), entry
-                                                .getValue(), false, null);
+                                Styles.applyStyle(v.getContext(), context, v, null, null, parent,
+                                        viewAttrHandler, extraAttrHandler, parentAttr, entry
+                                                .getKey(), entry.getValue(), false, null);
                             } catch (AttrApplyException e) {
                                 e.printStackTrace();
                             }
@@ -85,6 +90,22 @@ public class LView extends LuaTable {
             }
         });
 
+        set("appendChild", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue arg) {
+                if (arg instanceof LView) {
+                    LView child = (LView) arg;
+                    if (v instanceof ViewGroup) {
+                        ((ViewGroup) v).addView(child.mView);
+                    }
+                }
+                return LuaValue.NIL;
+            }
+        });
+    }
+
+    public LView(final View v, final HNSandBoxContext context) {
+        this(v, v.getLayoutParams(), context);
     }
 
 

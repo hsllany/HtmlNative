@@ -1,7 +1,6 @@
-package com.mozz.htmlnative;
+package com.mozz.htmlnative.parser;
 
 import com.mozz.htmlnative.exception.HNSyntaxError;
-import com.mozz.htmlnative.parser.Lexer;
 import com.mozz.htmlnative.reader.StringTextReader;
 import com.mozz.htmlnative.token.Token;
 

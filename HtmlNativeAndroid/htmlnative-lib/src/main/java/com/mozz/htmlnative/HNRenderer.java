@@ -9,9 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
-import android.widget.AbsoluteLayout;
 
-import com.google.android.flexbox.FlexboxLayout;
 import com.mozz.htmlnative.attrshandler.AttrHandler;
 import com.mozz.htmlnative.attrshandler.AttrsHelper;
 import com.mozz.htmlnative.attrshandler.LayoutAttrHandler;
@@ -23,8 +21,8 @@ import com.mozz.htmlnative.dom.AttachedElement;
 import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.dom.HNDomTree;
 import com.mozz.htmlnative.exception.AttrApplyException;
-import com.mozz.htmlnative.view.HNDiv;
 import com.mozz.htmlnative.view.HNRootView;
+import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -90,13 +88,16 @@ public final class HNRenderer {
 
         mInheritStyleStack.reset();
 
+        LayoutParamsLazyCreator rootCreator = new LayoutParamsLazyCreator();
+
         long renderStartTime = SystemClock.currentThreadTimeMillis();
         View v = renderInternal(context, sandBoxContext, segment.getDom(), segment,
-                rootViewGroup, params, rootViewGroup, segment.getStyleSheet());
+                rootViewGroup, rootCreator, rootViewGroup, segment.getStyleSheet());
 
 
         if (v != null) {
-            rootViewGroup.addContent(v, params);
+            rootViewGroup.addContent(v, LayoutParamsLazyCreator.createLayoutParams(rootViewGroup,
+                    rootCreator));
             mTracker.record("Render View", SystemClock.currentThreadTimeMillis() - renderStartTime);
 
             long afterCreate = SystemClock.currentThreadTimeMillis();
@@ -115,19 +116,20 @@ public final class HNRenderer {
 
     private View renderInternal(@NonNull Context context, @NonNull HNSandBoxContext
             sandBoxContext, HNDomTree tree, HNSegment segment, @NonNull ViewGroup parent,
-                                @NonNull ViewGroup.LayoutParams params, @NonNull HNRootView root,
-                                StyleSheet styleSheet) throws HNRenderException {
+                                @NonNull LayoutParamsLazyCreator paramsCreator, @NonNull
+                                        HNRootView root, StyleSheet styleSheet) throws
+            HNRenderException {
 
         AttrsSet attrsSet = segment.getInlineStyles();
 
         if (tree.isLeaf()) {
-            View v = createView(tree, tree, sandBoxContext, parent, context, attrsSet, params,
-                    root, styleSheet);
+            View v = createView(tree, tree, sandBoxContext, parent, context, attrsSet,
+                    paramsCreator, root, styleSheet);
             mInheritStyleStack.pop();
             return v;
         } else {
-            View view = createView(tree, tree, sandBoxContext, parent, context, attrsSet, params,
-                    root, styleSheet);
+            View view = createView(tree, tree, sandBoxContext, parent, context, attrsSet,
+                    paramsCreator, root, styleSheet);
 
             if (view == null) {
                 return null;
@@ -141,14 +143,16 @@ public final class HNRenderer {
                 List<HNDomTree> children = tree.children();
                 for (HNDomTree child : children) {
 
-                    ViewGroup.LayoutParams layoutParams = createLayoutParams(viewGroup);
+                    LayoutParamsLazyCreator childCreator = new LayoutParamsLazyCreator();
 
                     // Recursively render child.
                     final View v = renderInternal(context, sandBoxContext, child, segment,
-                            viewGroup, layoutParams, root, styleSheet);
+                            viewGroup, childCreator, root, styleSheet);
 
                     if (v != null) {
-                        viewGroup.addView(v, layoutParams);
+
+                        viewGroup.addView(v, LayoutParamsLazyCreator.createLayoutParams(parent,
+                                childCreator));
                     } else {
                         HNLog.e(HNLog.RENDER, "error when inflating " + child.getType());
                     }
@@ -170,7 +174,7 @@ public final class HNRenderer {
     private View createView(@NonNull AttrsSet.AttrsOwner owner, @NonNull DomElement tree,
                             @NonNull HNSandBoxContext sandBoxContext, @NonNull ViewGroup parent,
                             @NonNull Context context, @NonNull AttrsSet attrsSet, @NonNull
-                                    ViewGroup.LayoutParams layoutParams, @NonNull HNRootView
+                                    LayoutParamsLazyCreator layoutCreator, @NonNull HNRootView
                                     root, StyleSheet styleSheet) throws HNRenderException {
 
         String type = tree.getType();
@@ -203,8 +207,9 @@ public final class HNRenderer {
                 }
 
                 // set the <body> width to 100%
-                layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-                layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                Log.d("LALA", "set width=100% to " + v.getClass().getSimpleName());
+                layoutCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                layoutCreator.width = ViewGroup.LayoutParams.WRAP_CONTENT;
             } else {
                 v = createViewByTag(context, type);
             }
@@ -245,14 +250,14 @@ public final class HNRenderer {
 
                     // here pass InheritStyleStack null to Styles, is to prevent Style being
                     // stored in InheritStyleStack twice
-                    Styles.applyStyle(context, sandBoxContext, v, tree, layoutParams, parent,
+                    Styles.applyStyle(context, sandBoxContext, v, tree, layoutCreator, parent,
                             viewAttrHandler, extraAttrHandler, parentLayoutAttr, entry, false,
                             null);
                 }
 
 
                 Styles.apply(context, sandBoxContext, attrsSet, v, owner, tree, parent,
-                        layoutParams, true, false, viewAttrHandler, extraAttrHandler,
+                        layoutCreator, true, false, viewAttrHandler, extraAttrHandler,
                         parentLayoutAttr, mInheritStyleStack);
 
             } catch (AttrApplyException e) {
@@ -271,7 +276,7 @@ public final class HNRenderer {
 
                         try {
                             Styles.apply(context, sandBoxContext, styleSheet, v, selector, tree,
-                                    parent, layoutParams, false, false, viewAttrHandler,
+                                    parent, layoutCreator, false, false, viewAttrHandler,
                                     extraAttrHandler, parentLayoutAttr, mInheritStyleStack);
 
                         } catch (AttrApplyException e) {
@@ -354,23 +359,6 @@ public final class HNRenderer {
     private void performCreated(HNSandBoxContext sandBoxContext) {
         if (sandBoxContext != null) {
             sandBoxContext.onViewLoaded();
-        }
-    }
-
-    public static ViewGroup.LayoutParams createLayoutParams(ViewGroup viewGroup) throws
-            HNRenderException {
-        if (viewGroup instanceof AbsoluteLayout) {
-            return new AbsoluteLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup
-                    .LayoutParams.WRAP_CONTENT, 0, 0);
-        } else if (viewGroup instanceof HNDiv) {
-            return new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.MarginLayoutParams.WRAP_CONTENT);
-        } else if (viewGroup instanceof FlexboxLayout) {
-            return new FlexboxLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup
-                    .LayoutParams.WRAP_CONTENT);
-        } else {
-            throw new HNRenderException("can't create related layoutParams, unknown " +
-                    "view type " + viewGroup.toString());
         }
     }
 

@@ -4,9 +4,9 @@ import android.content.Context;
 import android.graphics.Matrix;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsoluteLayout;
 
 import com.mozz.htmlnative.HNLog;
 import com.mozz.htmlnative.HNSandBoxContext;
@@ -21,6 +21,7 @@ import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.utils.ParametersUtils;
 import com.mozz.htmlnative.view.BackgroundViewDelegate;
 import com.mozz.htmlnative.view.IBackgroundView;
+import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
 
 import java.util.Iterator;
 
@@ -28,8 +29,6 @@ import java.util.Iterator;
  * @author Yang Tao, 17/3/30.
  */
 public final class Styles {
-
-    private static final String TAG = Styles.class.getSimpleName();
 
     private Styles() {
     }
@@ -72,15 +71,15 @@ public final class Styles {
     }
 
     public static void applyStyle(Context context, final HNSandBoxContext sandBoxContext, View v,
-                                  DomElement domElement, @NonNull ViewGroup.LayoutParams
-                                          layoutParams, @NonNull ViewGroup parent, AttrHandler
+                                  DomElement domElement, @NonNull LayoutParamsLazyCreator
+                                          layoutCreator, @NonNull ViewGroup parent, AttrHandler
                                           viewAttrHandler, AttrHandler extraAttrHandler,
                                   LayoutAttrHandler parentAttr, StyleEntry entry, boolean
                                           isParent, InheritStyleStack stack) throws
             AttrApplyException {
-        applyStyle(context, sandBoxContext, v, domElement, layoutParams, parent, viewAttrHandler,
-                extraAttrHandler, parentAttr, entry.getStyleName(), entry.getStyle(), isParent,
-                stack);
+        applyStyle(context, sandBoxContext, v, domElement, layoutCreator, parent,
+                viewAttrHandler, extraAttrHandler, parentAttr, entry.getStyleName(), entry
+                        .getStyle(), isParent, stack);
     }
 
     /**
@@ -90,15 +89,15 @@ public final class Styles {
      * @param sandBoxContext {@link HNSandBoxContext}
      * @param v              {@link View} view to be processed
      * @param domElement
-     * @param layoutParams   {@link ViewGroup.LayoutParams}, layoutParams for parent
+     * @param layoutCreator  {@link ViewGroup.LayoutParams}, layoutParams for parent
      *                       when add this view to parent
      * @param parent         {@link ViewGroup}, parent of the view
      * @param styleName      parameter name
      * @param style          parameter value     @throws AttrApplyException
      */
     public static void applyStyle(Context context, final HNSandBoxContext sandBoxContext, View v,
-                                  DomElement domElement, @NonNull ViewGroup.LayoutParams
-                                          layoutParams, @NonNull ViewGroup parent, AttrHandler
+                                  DomElement domElement, @NonNull LayoutParamsLazyCreator
+                                          layoutCreator, @NonNull ViewGroup parent, AttrHandler
                                           viewAttrHandler, AttrHandler extraAttrHandler,
                                   LayoutAttrHandler parentAttr, String styleName, Object style,
                                   boolean isParent, InheritStyleStack stack) throws
@@ -113,20 +112,20 @@ public final class Styles {
         switch (styleName) {
             case ATTR_WIDTH: {
                 if (style.toString().equalsIgnoreCase(VAL_FILL_PARENT)) {
-                    layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                    layoutCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 } else {
                     PixelValue pixel = ParametersUtils.toPixel(style);
-                    layoutParams.width = (int) pixel.getPxValue();
+                    layoutCreator.width = (int) pixel.getPxValue();
                 }
             }
             break;
 
             case ATTR_HEIGHT: {
                 if (style.toString().equalsIgnoreCase(VAL_FILL_PARENT)) {
-                    layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+                    layoutCreator.height = ViewGroup.LayoutParams.MATCH_PARENT;
                 } else {
                     PixelValue pixel = ParametersUtils.toPixel(style);
-                    layoutParams.height = (int) pixel.getPxValue();
+                    layoutCreator.height = (int) pixel.getPxValue();
                 }
             }
             break;
@@ -154,80 +153,43 @@ public final class Styles {
                 break;
 
             case ATTR_MARGIN: {
-                if (layoutParams instanceof ViewGroup.MarginLayoutParams) {
-                    PixelValue[] pixelValues = ParametersUtils.toPixels(style.toString());
-                    int top = -1;
-                    int bottom = -1;
-                    int left = -1;
-                    int right = -1;
-                    if (pixelValues.length == 1) {
-                        top = bottom = left = right = (int) pixelValues[0].getValue();
-                    } else if (pixelValues.length == 2) {
-                        top = bottom = (int) pixelValues[0].getValue();
-                        left = right = (int) pixelValues[1].getValue();
-                    } else if (pixelValues.length == 4) {
-                        top = (int) pixelValues[0].getValue();
-                        bottom = (int) pixelValues[2].getValue();
-                        left = (int) pixelValues[3].getValue();
-                        right = (int) pixelValues[1].getValue();
-                    }
-                    if (top != -1 && bottom != -1 && left != -1 && right != -1) {
-                        ((ViewGroup.MarginLayoutParams) layoutParams).setMargins(left, top,
-                                right, bottom);
-                    }
+                PixelValue[] pixelValues = ParametersUtils.toPixels(style.toString());
+                int top = -1;
+                int bottom = -1;
+                int left = -1;
+                int right = -1;
+                if (pixelValues.length == 1) {
+                    top = bottom = left = right = (int) pixelValues[0].getPxValue();
+                } else if (pixelValues.length == 2) {
+                    top = bottom = (int) pixelValues[0].getPxValue();
+                    left = right = (int) pixelValues[1].getPxValue();
+                } else if (pixelValues.length == 4) {
+                    top = (int) pixelValues[0].getPxValue();
+                    bottom = (int) pixelValues[2].getPxValue();
+                    left = (int) pixelValues[3].getPxValue();
+                    right = (int) pixelValues[1].getPxValue();
                 }
+                if (top != -1 && bottom != -1 && left != -1 && right != -1) {
+                    layoutCreator.setMargins(left, top, right, bottom);
+                }
+
             }
             break;
 
             case ATTR_MARGIN_RIGHT:
-                if (layoutParams instanceof ViewGroup.MarginLayoutParams) {
-                    ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup
-                            .MarginLayoutParams) layoutParams;
-                    int left = marginLayoutParams.leftMargin;
-                    int right = ParametersUtils.toInt(style);
-                    int top = marginLayoutParams.topMargin;
-                    int bottom = marginLayoutParams.bottomMargin;
-
-                    marginLayoutParams.setMargins(left, top, right, bottom);
-                }
+                layoutCreator.marginRight = (int) ParametersUtils.toPixel(style).getPxValue();
                 break;
 
             case ATTR_MARGIN_LEFT:
-                if (layoutParams instanceof ViewGroup.MarginLayoutParams) {
-                    ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup
-                            .MarginLayoutParams) layoutParams;
-                    int left = ParametersUtils.toInt(style);
-                    int right = marginLayoutParams.rightMargin;
-                    int top = marginLayoutParams.topMargin;
-                    int bottom = marginLayoutParams.bottomMargin;
-                    marginLayoutParams.setMargins(left, top, right, bottom);
-                }
+                layoutCreator.marginLeft = (int) ParametersUtils.toPixel(style).getPxValue();
                 break;
 
             case ATTR_MARGIN_TOP:
-                if (layoutParams instanceof ViewGroup.MarginLayoutParams) {
-                    ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup
-                            .MarginLayoutParams) layoutParams;
-                    int left = marginLayoutParams.leftMargin;
-                    int right = marginLayoutParams.rightMargin;
-                    int top = ParametersUtils.toInt(style);
-                    int bottom = marginLayoutParams.bottomMargin;
-
-                    marginLayoutParams.setMargins(left, top, right, bottom);
-                }
+                layoutCreator.marginTop = (int) ParametersUtils.toPixel(style).getPxValue();
                 break;
 
             case ATTR_MARGIN_BOTTOM:
-                if (layoutParams instanceof ViewGroup.MarginLayoutParams) {
-                    ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup
-                            .MarginLayoutParams) layoutParams;
-                    int left = marginLayoutParams.leftMargin;
-                    int right = marginLayoutParams.rightMargin;
-                    int top = marginLayoutParams.topMargin;
-                    int bottom = ParametersUtils.toInt(style);
-
-                    marginLayoutParams.setMargins(left, top, right, bottom);
-                }
+                layoutCreator.marginBottom = (int) ParametersUtils.toPixel(style).getPxValue();
                 break;
 
             case ATTR_PADDING: {
@@ -274,15 +236,11 @@ public final class Styles {
                 break;
 
             case ATTR_LEFT:
-                if (layoutParams instanceof AbsoluteLayout.LayoutParams) {
-                    ((AbsoluteLayout.LayoutParams) layoutParams).x = ParametersUtils.toInt(style);
-                }
+                layoutCreator.left = (int) ParametersUtils.toPixel(style).getPxValue();
                 break;
 
             case ATTR_TOP:
-                if (layoutParams instanceof AbsoluteLayout.LayoutParams) {
-                    ((AbsoluteLayout.LayoutParams) layoutParams).y = ParametersUtils.toInt(style);
-                }
+                layoutCreator.top = (int) ParametersUtils.toPixel(style).getPxValue();
                 break;
 
             case ATTR_ALPHA:
@@ -331,19 +289,19 @@ public final class Styles {
                 // 3. use parent view attr to this
 
                 if (viewAttrHandler != null) {
-                    viewAttrHandler.apply(context, v, domElement, parent, layoutParams,
+                    viewAttrHandler.apply(context, v, domElement, parent, layoutCreator,
                             styleName, style, isParent);
                 }
 
                 // If there extra attr is set, then should be applied also.
                 if (extraAttrHandler != null) {
-                    extraAttrHandler.apply(context, v, domElement, parent, layoutParams,
+                    extraAttrHandler.apply(context, v, domElement, parent, layoutCreator,
                             styleName, style, isParent);
                 }
 
                 // finally apply corresponding parent attr to child
                 if (parentAttr != null) {
-                    parentAttr.applyToChild(context, v, domElement, parent, layoutParams,
+                    parentAttr.applyToChild(context, v, domElement, parent, layoutCreator,
                             styleName, style, isParent);
                 }
                 break;
@@ -362,18 +320,18 @@ public final class Styles {
                                           View v, DomElement domElement, @NonNull ViewGroup
                                                   parent, AttrHandler viewAttrHandler,
                                           AttrHandler extraAttrHandler, LayoutAttrHandler
-                                                  parentAttr, @NonNull ViewGroup.LayoutParams
-                                                  layoutParams) throws AttrApplyException {
+                                                  parentAttr, @NonNull LayoutParamsLazyCreator
+                                                  paramsLazyCreator) throws AttrApplyException {
         if (viewAttrHandler != null) {
-            viewAttrHandler.setDefault(context, v, domElement, layoutParams, parent);
+            viewAttrHandler.setDefault(context, v, domElement, paramsLazyCreator, parent);
         }
 
         if (extraAttrHandler != null) {
-            extraAttrHandler.setDefault(context, v, domElement, layoutParams, parent);
+            extraAttrHandler.setDefault(context, v, domElement, paramsLazyCreator, parent);
         }
 
         if (parentAttr != null) {
-            parentAttr.setDefaultToChild(context, v, domElement, parent, layoutParams);
+            parentAttr.setDefaultToChild(context, v, domElement, parent, paramsLazyCreator);
         }
     }
 
@@ -385,7 +343,7 @@ public final class Styles {
      * @param v                 {@link View}
      * @param tree              {@link AttrsSet.AttrsOwner}
      * @param parent            {@link ViewGroup}, parent of the view
-     * @param layoutParams      {@link ViewGroup.LayoutParams}, layoutParams for parent
+     * @param paramsLazyCreator {@link ViewGroup.LayoutParams}, layoutParams for parent
      *                          when add this view to parent
      * @param viewAttrHandler
      * @param extraAttrHandler
@@ -393,11 +351,11 @@ public final class Styles {
      */
     public static void apply(Context context, @NonNull final HNSandBoxContext sandBoxContext,
                              AttrsSet source, View v, @NonNull AttrsSet.AttrsOwner tree,
-                             DomElement domElement, @NonNull ViewGroup parent, @NonNull ViewGroup
-            .LayoutParams layoutParams, boolean applyDefault, boolean isParent, AttrHandler
-                                     viewAttrHandler, AttrHandler extraAttrHandler,
-                             LayoutAttrHandler parentAttrHandler, InheritStyleStack stack) throws
-            AttrApplyException {
+                             DomElement domElement, @NonNull ViewGroup parent, @NonNull
+                                     LayoutParamsLazyCreator paramsLazyCreator, boolean
+                                     applyDefault, boolean isParent, AttrHandler viewAttrHandler,
+                             AttrHandler extraAttrHandler, LayoutAttrHandler parentAttrHandler,
+                             InheritStyleStack stack) throws AttrApplyException {
 
         HNLog.d(HNLog.ATTR, "[" + source.getName() + "]: apply to AttrsOwner " + tree.attrIndex()
                 + ", to " + domElement.getType());
@@ -407,14 +365,14 @@ public final class Styles {
         // Then process each parameter.
         if (applyDefault) {
             applyDefaultStyle(context, sandBoxContext, v, domElement, parent, viewAttrHandler,
-                    extraAttrHandler, parentAttrHandler, layoutParams);
+                    extraAttrHandler, parentAttrHandler, paramsLazyCreator);
         }
 
         Iterator<StyleEntry> itr = source.iterator(tree);
         while (itr.hasNext()) {
             StyleEntry styleEntry = itr.next();
 
-            applyStyle(context, sandBoxContext, v, domElement, layoutParams, parent,
+            applyStyle(context, sandBoxContext, v, domElement, paramsLazyCreator, parent,
                     viewAttrHandler, extraAttrHandler, parentAttrHandler, styleEntry.getStyleName
                             (), styleEntry.getStyle(), isParent, stack);
 

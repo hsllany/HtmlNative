@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.net.Uri;
 
 import com.mozz.htmlnative.HNEnvironment;
+import com.mozz.htmlnative.HNRenderer;
 import com.mozz.htmlnative.HNSandBoxContext;
 
 import org.luaj.vm2.LuaString;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.OneArgFunction;
+import org.luaj.vm2.lib.TwoArgFunction;
 
 /**
  * @author Yang Tao, 17/5/11.
@@ -27,6 +29,15 @@ class LDocument extends LuaTable implements ILGlobalObject {
                 Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
                 sandBoxContext.getAndroidContext().startActivity(i);
 
+                return LuaValue.NIL;
+            }
+        });
+
+        set("createView", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue tag, LuaValue style) {
+                if (tag instanceof LuaString && style instanceof LuaString) {
+                }
                 return LuaValue.NIL;
             }
         });

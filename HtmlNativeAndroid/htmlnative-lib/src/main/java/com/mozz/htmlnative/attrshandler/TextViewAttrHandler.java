@@ -3,6 +3,7 @@ package com.mozz.htmlnative.attrshandler;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -10,12 +11,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mozz.htmlnative.HNativeEngine;
-import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.HtmlTag;
 import com.mozz.htmlnative.common.PixelValue;
-import com.mozz.htmlnative.utils.ParametersUtils;
 import com.mozz.htmlnative.css.InheritStylesRegistry;
+import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.exception.AttrApplyException;
+import com.mozz.htmlnative.utils.ParametersUtils;
+import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
 
 class TextViewAttrHandler extends AttrHandler {
 
@@ -63,9 +65,9 @@ class TextViewAttrHandler extends AttrHandler {
     }
 
     @Override
-    public void apply(Context context, View v, DomElement domElement, View parent, ViewGroup
-            .LayoutParams layoutParams, String params, final Object value, boolean isParent)
-            throws AttrApplyException {
+    public void apply(Context context, View v, DomElement domElement, View parent,
+                      LayoutParamsLazyCreator paramsLazyCreator, String params, final Object
+                                  value, boolean isParent) throws AttrApplyException {
 
         final TextView textView = (TextView) v;
         switch (params) {
@@ -135,8 +137,8 @@ class TextViewAttrHandler extends AttrHandler {
                         @Override
                         public void onClick(View v) {
                             if (HNativeEngine.getHrefLinkHandler() != null) {
-                                HNativeEngine.getHrefLinkHandler().onHref(value.toString
-                                        (), textView);
+                                HNativeEngine.getHrefLinkHandler().onHref(value.toString(),
+                                        textView);
                             }
                         }
                     });
@@ -195,8 +197,9 @@ class TextViewAttrHandler extends AttrHandler {
     }
 
     @Override
-    public void setDefault(Context context, View v, DomElement domElement, ViewGroup.LayoutParams
-            layoutParams, View parent) throws AttrApplyException {
+    public void setDefault(Context context, View v, DomElement domElement,
+                           LayoutParamsLazyCreator paramsLazyCreator, View parent) throws
+            AttrApplyException {
 
         TextView textView = (TextView) v;
 
@@ -209,7 +212,7 @@ class TextViewAttrHandler extends AttrHandler {
         switch (domElement.getType()) {
             case HtmlTag.H1:
                 textView.setTextSize(DEFAULT_H1_SIZE);
-                layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                paramsLazyCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 AttrsHelper.setPadding(textView, DEFAULT_H1_PADDING, textView.getPaddingLeft(),
                         DEFAULT_H1_PADDING, textView.getPaddingRight());
                 AttrsHelper.setBold(textView);
@@ -217,7 +220,7 @@ class TextViewAttrHandler extends AttrHandler {
 
             case HtmlTag.H2:
                 textView.setTextSize(DEFAULT_H2_SIZE);
-                layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                paramsLazyCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 AttrsHelper.setPadding(textView, DEFAULT_H2_PADDING, textView.getPaddingLeft(),
                         DEFAULT_H2_PADDING, textView.getPaddingRight());
                 AttrsHelper.setBold(textView);
@@ -225,7 +228,7 @@ class TextViewAttrHandler extends AttrHandler {
 
             case HtmlTag.H3:
                 textView.setTextSize(DEFAULT_H3_SIZE);
-                layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                paramsLazyCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 AttrsHelper.setPadding(textView, DEFAULT_H3_PADDING, textView.getPaddingLeft(),
                         DEFAULT_H3_PADDING, textView.getPaddingRight());
                 AttrsHelper.setBold(textView);
@@ -233,7 +236,7 @@ class TextViewAttrHandler extends AttrHandler {
 
             case HtmlTag.H4:
                 textView.setTextSize(DEFAULT_H4_SIZE);
-                layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                paramsLazyCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 AttrsHelper.setPadding(textView, DEFAULT_H4_PADDING, textView.getPaddingLeft(),
                         DEFAULT_H4_PADDING, textView.getPaddingRight());
                 AttrsHelper.setBold(textView);
@@ -241,7 +244,7 @@ class TextViewAttrHandler extends AttrHandler {
 
             case HtmlTag.H5:
                 textView.setTextSize(DEFAULT_H5_SIZE);
-                layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                paramsLazyCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 AttrsHelper.setPadding(textView, DEFAULT_H5_PADDING, textView.getPaddingLeft(),
                         DEFAULT_H5_PADDING, textView.getPaddingRight());
                 AttrsHelper.setBold(textView);
@@ -249,7 +252,7 @@ class TextViewAttrHandler extends AttrHandler {
 
             case HtmlTag.H6:
                 textView.setTextSize(DEFAULT_H6_SIZE);
-                layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                paramsLazyCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 AttrsHelper.setPadding(textView, DEFAULT_H6_PADDING, textView.getPaddingLeft(),
                         DEFAULT_H6_PADDING, textView.getPaddingRight());
                 AttrsHelper.setBold(textView);
@@ -258,11 +261,11 @@ class TextViewAttrHandler extends AttrHandler {
             case HtmlTag.P:
                 AttrsHelper.setTopPadding(textView, DEFAULT_P_PADDING);
                 AttrsHelper.setBottomPadding(textView, DEFAULT_P_PADDING);
-                layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                paramsLazyCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 break;
             case HtmlTag.A:
                 AttrsHelper.setUnderLine(textView);
-                layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                paramsLazyCreator.width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 break;
         }
     }

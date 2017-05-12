@@ -11,12 +11,12 @@ import com.mozz.htmlnative.css.Background;
 import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.view.BackgroundViewDelegate;
+import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
 
 class ImageViewAttrHandler extends AttrHandler {
 
     @Override
-    public void apply(Context context, View v, DomElement domElement, View parent, ViewGroup
-            .LayoutParams layoutParams, String params, Object value, boolean isParent) throws
+    public void apply(Context context, View v, DomElement domElement, View parent, LayoutParamsLazyCreator paramsLazyCreator, String params, Object value, boolean isParent) throws
             AttrApplyException {
         if (params.equals("src") && HNativeEngine.getImageViewAdapter() != null && !isParent) {
             Matrix matrix = null;
@@ -36,10 +36,9 @@ class ImageViewAttrHandler extends AttrHandler {
     }
 
     @Override
-    public void setDefault(Context context, View v, DomElement domElement, ViewGroup.LayoutParams
-            layoutParams, View parent) throws AttrApplyException {
-        super.setDefault(context, v, domElement, layoutParams, parent);
+    public void setDefault(Context context, View v, DomElement domElement, LayoutParamsLazyCreator paramsLazyCreator, View parent) throws AttrApplyException {
+        super.setDefault(context, v, domElement, paramsLazyCreator, parent);
 
-        layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        paramsLazyCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
     }
 }

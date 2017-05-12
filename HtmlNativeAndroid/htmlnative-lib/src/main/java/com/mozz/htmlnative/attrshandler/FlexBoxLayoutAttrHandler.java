@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import com.google.android.flexbox.FlexboxLayout;
 import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.exception.AttrApplyException;
+import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
 
 /**
  * @author Yang Tao, 17/3/3.
@@ -15,8 +16,7 @@ import com.mozz.htmlnative.exception.AttrApplyException;
 
 class FlexBoxLayoutAttrHandler extends LayoutAttrHandler {
     @Override
-    public void apply(Context context, View v, DomElement domElement, View parent, ViewGroup
-            .LayoutParams layoutParams, String params, Object value, boolean isParent) throws
+    public void apply(Context context, View v, DomElement domElement, View parent, LayoutParamsLazyCreator paramsLazyCreator, String params, Object value, boolean isParent) throws
             AttrApplyException {
         FlexboxLayout flexboxLayout = (FlexboxLayout) v;
 
@@ -44,16 +44,15 @@ class FlexBoxLayoutAttrHandler extends LayoutAttrHandler {
     }
 
     @Override
-    public void applyToChild(Context context, View v, DomElement domElement, View parent, ViewGroup.LayoutParams layoutParams, String params, Object value, boolean isParent) throws AttrApplyException {
+    public void applyToChild(Context context, View v, DomElement domElement, View parent, LayoutParamsLazyCreator paramsLazyCreator, String params, Object value, boolean isParent) throws AttrApplyException {
 
     }
 
     @Override
-    public void setDefault(Context context, View v, DomElement domElement, ViewGroup.LayoutParams
-            layoutParams, View parent) throws AttrApplyException {
-        super.setDefault(context, v, domElement, layoutParams, parent);
+    public void setDefault(Context context, View v, DomElement domElement, LayoutParamsLazyCreator paramsLazyCreator, View parent) throws AttrApplyException {
+        super.setDefault(context, v, domElement, paramsLazyCreator, parent);
 
-        layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        paramsLazyCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
     }
 
     private static int flexDirection(@NonNull java.lang.String direction) {
