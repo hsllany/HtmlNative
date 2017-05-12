@@ -207,7 +207,6 @@ public final class HNRenderer {
                 }
 
                 // set the <body> width to 100%
-                Log.d("LALA", "set width=100% to " + v.getClass().getSimpleName());
                 layoutCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 layoutCreator.width = ViewGroup.LayoutParams.WRAP_CONTENT;
             } else {
