@@ -314,6 +314,8 @@ public final class HNRenderer {
 
         sConstructorArgs[0] = context;
         view = constructor.newInstance(sConstructorArgs);
+        // release the context
+        sConstructorArgs[0] = null;
         return view;
     }
 
