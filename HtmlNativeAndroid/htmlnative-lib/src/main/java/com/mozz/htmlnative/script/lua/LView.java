@@ -133,8 +133,9 @@ class LView extends LuaTable {
                                         // This must be invoked before HNRenderer.createView
                                         child.mDomElement.setParent(mDomElement);
 
-                                        InheritStyleStack inheritStyleStack = InheritStyleStack
-                                                .get(mView);
+                                        // Compute the inherit style of parent
+                                        InheritStyleStack inheritStyleStack = HNRenderer
+                                                .computeInheritStyle(mView);
 
                                         child.mView = HNRenderer.createView(null, child
                                                 .mDomElement, child.mContext, (ViewGroup) mView,
@@ -153,10 +154,10 @@ class LView extends LuaTable {
                                         }
 
                                         child.mCreated = true;
+                                        child.mAdded = true;
 
                                         // consume the inline style
                                         child.mInlineStyleRaw = null;
-                                        child.mAdded = true;
                                         ((ViewGroup) mView).addView(child.mView,
                                                 LayoutParamsLazyCreator.createLayoutParams(mView,
                                                         creator));
@@ -165,10 +166,7 @@ class LView extends LuaTable {
                                     }
                                 }
                             });
-
                         }
-
-
                     }
                 }
                 return LuaValue.NIL;

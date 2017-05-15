@@ -13,6 +13,7 @@ import com.mozz.htmlnative.attrshandler.AttrHandler;
 import com.mozz.htmlnative.attrshandler.AttrsHelper;
 import com.mozz.htmlnative.attrshandler.LayoutAttrHandler;
 import com.mozz.htmlnative.css.AttrsSet;
+import com.mozz.htmlnative.css.InheritStylesRegistry;
 import com.mozz.htmlnative.css.StyleSheet;
 import com.mozz.htmlnative.css.Styles;
 import com.mozz.htmlnative.css.selector.CssSelector;
@@ -26,6 +27,7 @@ import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -60,6 +62,34 @@ public final class HNRenderer {
     @NonNull
     public static HNRenderer get() {
         return new HNRenderer();
+    }
+
+    public static InheritStyleStack computeInheritStyle(View view) {
+
+        AttrHandler viewAttrHandler = AttrsHelper.getAttrHandler(view);
+        AttrHandler extraAttrHandler = AttrsHelper.getExtraAttrHandler(view);
+        AttrHandler parentAttrHandler = AttrsHelper.getAttrHandler(view);
+
+        LayoutAttrHandler parentLayoutAttr = null;
+        if (parentAttrHandler instanceof LayoutAttrHandler) {
+            parentLayoutAttr = (LayoutAttrHandler) parentAttrHandler;
+        }
+        InheritStyleStack inheritStyleStack = new InheritStyleStack();
+        inheritStyleStack.push();
+
+        Iterator<String> itr = InheritStylesRegistry.iterator();
+
+        while (itr.hasNext()) {
+            String params = itr.next();
+
+            Object val = Styles.getStyle(view, params, viewAttrHandler, extraAttrHandler,
+                    parentLayoutAttr);
+            if (val != null) {
+                inheritStyleStack.newStyle(params, val);
+            }
+        }
+
+        return inheritStyleStack;
     }
 
     @MainThread

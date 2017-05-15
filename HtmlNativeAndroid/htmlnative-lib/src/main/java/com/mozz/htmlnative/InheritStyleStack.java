@@ -96,33 +96,4 @@ public final class InheritStyleStack implements Iterable<Styles.StyleEntry> {
         }
     }
 
-    //TODO complete the function
-    public static InheritStyleStack get(View view) {
-
-        AttrHandler viewAttrHandler = AttrsHelper.getAttrHandler(view);
-        AttrHandler extraAttrHandler = AttrsHelper.getExtraAttrHandler(view);
-        AttrHandler parentAttrHandler = AttrsHelper.getAttrHandler(view);
-
-        LayoutAttrHandler parentLayoutAttr = null;
-        if (parentAttrHandler instanceof LayoutAttrHandler) {
-            parentLayoutAttr = (LayoutAttrHandler) parentAttrHandler;
-        }
-        InheritStyleStack inheritStyleStack = new InheritStyleStack();
-        inheritStyleStack.push();
-
-        Iterator<String> itr = InheritStylesRegistry.iterator();
-
-        while (itr.hasNext()) {
-            String params = itr.next();
-
-            Object val = Styles.getStyle(view, params, viewAttrHandler, extraAttrHandler,
-                    parentLayoutAttr);
-            if (val != null) {
-                inheritStyleStack.newStyle(params, val);
-            }
-        }
-
-        return inheritStyleStack;
-    }
-
 }
