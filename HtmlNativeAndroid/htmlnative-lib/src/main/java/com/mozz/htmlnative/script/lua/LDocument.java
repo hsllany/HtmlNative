@@ -2,14 +2,12 @@ package com.mozz.htmlnative.script.lua;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.view.View;
 
 import com.mozz.htmlnative.HNEnvironment;
-import com.mozz.htmlnative.HNRenderer;
 import com.mozz.htmlnative.HNSandBoxContext;
 import com.mozz.htmlnative.dom.AttachedElement;
 import com.mozz.htmlnative.dom.DomElement;
-import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
+import com.mozz.htmlnative.parser.CssParser;
 
 import org.luaj.vm2.LuaString;
 import org.luaj.vm2.LuaTable;
@@ -17,11 +15,15 @@ import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.TwoArgFunction;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Yang Tao, 17/5/11.
  */
 
 class LDocument extends LuaTable implements ILGlobalObject {
+
 
     LDocument(final HNSandBoxContext sandBoxContext) {
         super();
@@ -44,14 +46,22 @@ class LDocument extends LuaTable implements ILGlobalObject {
                     DomElement domElement = new AttachedElement();
                     domElement.setType(tag.tojstring());
 
-                    LayoutParamsLazyCreator creator = new LayoutParamsLazyCreator();
-                    try {
-                        View v = HNRenderer.createView(null, domElement, sandBoxContext, null,
-                                sandBoxContext.getAndroidContext(), null, creator, null, null);
-                        return new LView(v, creator, sandBoxContext);
-                    } catch (HNRenderer.HNRenderException e) {
-                        e.printStackTrace();
+                    Map<String, Object> styleSets = new HashMap<>();
+                    CssParser.parseInlineStyle(style.tojstring(), new StringBuilder(), styleSets);
+
+                    String idStr = (String) styleSets.get("id");
+                    if (idStr != null) {
+                        domElement.setId(idStr);
+                        styleSets.remove("id");
                     }
+
+                    String[] clazz = (String[]) styleSets.get("class");
+                    if (clazz != null) {
+                        domElement.setClazz(clazz);
+                        styleSets.remove("class");
+                    }
+
+                    return new LView(domElement, styleSets, sandBoxContext);
                 }
                 return LuaValue.NIL;
             }

@@ -45,5 +45,7 @@ public interface HNSandBoxContext extends VariablePool {
 
     String allIdTag();
 
+    HNSegment getSegment();
+
 }
 

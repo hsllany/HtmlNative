@@ -69,6 +69,21 @@ public class AttachedElement implements DomElement {
         mId = id;
     }
 
+    /**
+     * Only clone when domElement is not {@link AttachedElement}
+     *
+     * @param domElement {@link DomElement}
+     * @return cloned one, if domElement is not an AttachedElement; otherwise return just
+     * domElement itself
+     */
+    public static AttachedElement cloneIfNecessary(DomElement domElement) {
+        if (domElement instanceof AttachedElement) {
+            return (AttachedElement) domElement;
+        } else {
+            return cloneFrom(domElement);
+        }
+    }
+
     public static AttachedElement cloneFrom(DomElement domElement) {
         AttachedElement attachedElement = new AttachedElement();
         attachedElement.setId(domElement.getId());

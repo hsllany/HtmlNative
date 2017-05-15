@@ -75,12 +75,18 @@ public final class HtmlTag {
 
     ;
 
-    public static boolean isSwallowInnerTag(@NonNull String tag) {
-        return sSwallowInnerTag.contains(tag.toLowerCase());
+    public static boolean isSwallowInnerTag(@NonNull String type) {
+        return sSwallowInnerTag.contains(type.toLowerCase());
     }
 
-    public static boolean isDivOrTemplate(@NonNull String tag) {
-        return tag.equalsIgnoreCase(HtmlTag.DIV) || tag.equalsIgnoreCase(HtmlTag.TEMPLATE);
+    /**
+     * to judge whether an element is one of 'div' or 'body'
+     *
+     * @param type element type name
+     * @return true if type belongs to the grouping element.
+     */
+    public static boolean isGroupingElement(@NonNull String type) {
+        return type.equalsIgnoreCase(HtmlTag.DIV) || type.equalsIgnoreCase(HtmlTag.TEMPLATE);
     }
 
 }

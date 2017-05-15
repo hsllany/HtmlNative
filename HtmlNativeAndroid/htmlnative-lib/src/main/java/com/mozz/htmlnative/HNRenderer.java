@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 
 import com.mozz.htmlnative.attrshandler.AttrHandler;
 import com.mozz.htmlnative.attrshandler.AttrsHelper;
@@ -28,6 +27,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.mozz.htmlnative.HNEnvironment.PERFORMANCE_TAG;
 
@@ -41,6 +41,8 @@ public final class HNRenderer {
      */
     private static final HashMap<String, Constructor<? extends View>> sConstructorMap = new
             HashMap<>();
+
+    private static final Map<String, ViewFactory> sViewFactory = new HashMap<>();
 
     private static final Object[] sConstructorArgs = new Object[1];
 
@@ -175,32 +177,10 @@ public final class HNRenderer {
 
         try {
             View v;
-            if (HtmlTag.isDivOrTemplate(type)) {
-                Object displayObj = attrsSet.getStyle(owner, "display");
-                if (displayObj != null && displayObj instanceof String) {
-                    String display = (String) displayObj;
-                    switch (display) {
-                        case Styles.VAL_DISPLAY_FLEX:
-                            v = createViewByTag(context, "flexbox");
-                            break;
-                        case Styles.VAL_DISPLAY_ABSOLUTE:
-                            v = createViewByTag(context, "box");
-                            break;
-
-                        case Styles.VAL_DISPLAY_BOX:
-                        default:
-                            v = createViewByTag(context, "linearbox");
-                            break;
-                    }
-                } else {
-                    v = createViewByTag(context, "linearbox");
-                }
-
-                // set the <body> width to 100%
-                layoutCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
-                layoutCreator.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            if (HtmlTag.isGroupingElement(type)) {
+                v = createAndroidViewGroup(context, type, owner, attrsSet, layoutCreator);
             } else {
-                v = createViewByTag(context, type);
+                v = createAndroidView(context, type);
             }
 
             if (v == null) {
@@ -209,7 +189,7 @@ public final class HNRenderer {
             }
 
             //attach the dom element to view
-            v.setTag(AttachedElement.cloneFrom(tree));
+            v.setTag(AttachedElement.cloneIfNecessary(tree));
 
             // save the id if element has one
             String id = tree.getId();
@@ -298,24 +278,23 @@ public final class HNRenderer {
             e.printStackTrace();
             throw new HNRenderException("class's method has something wrong " + type);
         }
-
     }
 
     @Nullable
-    static View createViewByTag(@NonNull Context context, @Nullable String tagName) throws
+    static View createAndroidView(@NonNull Context context, @Nullable String typeName) throws
             ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
             InvocationTargetException, InstantiationException {
 
-        String viewClassName = ViewTypeRelations.findClassByType(tagName);
+        String viewClassName = ViewTypeRelations.findClassByType(typeName);
         if (viewClassName == null) {
             return null;
         }
 
-        HNLog.d(HNLog.RENDER, "createContext view" + viewClassName + " with tag" +
-                tagName);
+        HNLog.d(HNLog.RENDER, "createContext view" + viewClassName + " with type" +
+                typeName);
 
-        // first let viewCreateHandler to createContext view
-        View view = createViewByViewHandler(context, viewClassName);
+        // first let viewFactory to hook the create process
+        View view = createViewByViewFactory(context, viewClassName);
         if (view != null) {
             return view;
         }
@@ -335,10 +314,51 @@ public final class HNRenderer {
         return view;
     }
 
-    private static View createViewByViewHandler(Context context, @NonNull String viewClassName) {
-        if (viewClassName.equals(WebView.class.getName()) && HNativeEngine.getWebviewCreator() !=
-                null) {
-            return HNativeEngine.getWebviewCreator().create(context);
+    static View createAndroidViewGroup(@NonNull Context context, @Nullable String typeName,
+                                       AttrsSet.AttrsOwner owner, AttrsSet attrsSet,
+                                       LayoutParamsLazyCreator layoutParamsCreator) throws
+            ClassNotFoundException, NoSuchMethodException, InvocationTargetException,
+            InstantiationException, IllegalAccessException {
+        View v;
+        Object displayObj = attrsSet.getStyle(owner, "display");
+        if (displayObj != null && displayObj instanceof String) {
+            String display = (String) displayObj;
+            switch (display) {
+                case Styles.VAL_DISPLAY_FLEX:
+                    v = createAndroidView(context, "flexbox");
+                    break;
+                case Styles.VAL_DISPLAY_ABSOLUTE:
+                    v = createAndroidView(context, "box");
+                    break;
+
+                case Styles.VAL_DISPLAY_BOX:
+                default:
+                    v = createAndroidView(context, "linearbox");
+                    break;
+            }
+        } else {
+            v = createAndroidView(context, "linearbox");
+        }
+
+        // set the <body> width to 100%
+        layoutParamsCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        layoutParamsCreator.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+
+        return v;
+    }
+
+    public static void registerViewFactory(String androidClassName, ViewFactory factory) {
+        sViewFactory.put(androidClassName, factory);
+    }
+
+    public static void unregisterViewFactory(String androidClassName) {
+        sViewFactory.remove(androidClassName);
+    }
+
+    private static View createViewByViewFactory(Context context, @NonNull String viewClassName) {
+        ViewFactory factory = sViewFactory.get(viewClassName);
+        if (factory != null) {
+            return factory.create(context);
         }
 
         return null;

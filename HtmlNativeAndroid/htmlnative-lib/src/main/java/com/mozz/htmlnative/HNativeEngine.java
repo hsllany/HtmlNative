@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 
 import com.mozz.htmlnative.attrshandler.AttrsHelper;
-import com.mozz.htmlnative.utils.ParametersUtils;
 import com.mozz.htmlnative.dom.HNHead;
+import com.mozz.htmlnative.utils.ParametersUtils;
 import com.mozz.htmlnative.view.BackgroundViewDelegate;
 
 import java.io.InputStream;
@@ -26,9 +26,10 @@ import static com.mozz.htmlnative.HNLog.STYLE;
 
 public final class HNativeEngine {
 
+    static {
+        HNRenderer.registerViewFactory(WebView.class.getName(), DefaultWebViewFactory.sInstance);
+    }
 
-
-    private static WebViewCreator sWebViewHandler = DefaultWebViewCreator.sInstance;
     private static ImageViewAdapter sImageViewAdapter = DefaultImageAdapter.sInstance;
     private static HrefLinkHandler sHrefLinkHandler = DefaultHrefLinkHandler.sInstance;
 
@@ -145,12 +146,8 @@ public final class HNativeEngine {
         return sImageViewAdapter;
     }
 
-    public void setWebviewCreator(@NonNull WebViewCreator creator) {
-        sWebViewHandler = creator;
-    }
-
-    public static WebViewCreator getWebviewCreator() {
-        return sWebViewHandler;
+    public static void registerViewFactory(String androidViewClassName, ViewFactory viewFactory) {
+        HNRenderer.registerViewFactory(androidViewClassName, viewFactory);
     }
 
     public void setHrefLinkHandler(@NonNull HrefLinkHandler handler) {
@@ -225,12 +222,12 @@ public final class HNativeEngine {
      * @author Yang Tao, 17/3/8.
      */
 
-    private static final class DefaultWebViewCreator implements WebViewCreator {
+    private static final class DefaultWebViewFactory implements WebViewFactory {
 
-        static DefaultWebViewCreator sInstance;
+        static DefaultWebViewFactory sInstance;
 
         static {
-            sInstance = new DefaultWebViewCreator();
+            sInstance = new DefaultWebViewFactory();
         }
 
 

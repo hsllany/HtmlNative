@@ -1,13 +1,11 @@
 package com.mozz.htmlnativedemo;
 
 import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -17,7 +15,6 @@ import com.mozz.htmlnative.HNLog;
 import com.mozz.htmlnative.HNativeEngine;
 import com.mozz.htmlnative.HrefLinkHandler;
 import com.mozz.htmlnative.ImageViewAdapter;
-import com.mozz.htmlnative.WebViewCreator;
 import com.mozz.htmlnative.view.BackgroundViewDelegate;
 import com.squareup.leakcanary.LeakCanary;
 
@@ -63,13 +60,6 @@ public class DemoApplication extends Application {
                 Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);
-            }
-        });
-
-        HNativeEngine.getInstance().setWebviewCreator(new WebViewCreator() {
-            @Override
-            public WebView create(Context context) {
-                return new WebView(context);
             }
         });
 

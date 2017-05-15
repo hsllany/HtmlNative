@@ -7,6 +7,6 @@ import android.view.View;
  * @author Yang Tao, 17/3/8.
  */
 
-public interface ViewCreator<T extends View> {
+public interface ViewFactory<T extends View> {
     T create(Context context);
 }

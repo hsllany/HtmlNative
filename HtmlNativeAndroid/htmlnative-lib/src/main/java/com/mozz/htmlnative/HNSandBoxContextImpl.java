@@ -104,6 +104,11 @@ final class HNSandBoxContextImpl implements HNSandBoxContext {
     }
 
     @Override
+    public HNSegment getSegment() {
+        return mSegment;
+    }
+
+    @Override
     public void execute(final String script) {
         if (mRunner == null) {
             Log.d(TAG, "skip the script \"" + script + "\" because no script in module " +

@@ -1,5 +1,7 @@
 package com.mozz.htmlnative;
 
+import android.view.View;
+
 import com.mozz.htmlnative.css.Styles;
 
 import java.util.Arrays;
@@ -88,6 +90,11 @@ public final class InheritStyleStack implements Iterable<Styles.StyleEntry> {
             index++;
             return entry;
         }
+    }
+
+    //TODO complete the function
+    public static InheritStyleStack get(View view) {
+        return new InheritStyleStack();
     }
 
 }
