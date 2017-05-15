@@ -276,7 +276,6 @@ public final class HNRenderer {
                 CssSelector[] matchedSelectors = styleSheet.matchedSelector(type, tree.getId(),
                         tree.getClazz());
 
-
                 for (CssSelector selector : matchedSelectors) {
                     if (selector != null) {
                         if (selector.matchWhole(tree)) {

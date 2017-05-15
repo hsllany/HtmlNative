@@ -3,7 +3,7 @@
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
     <meta name="viewport"
           content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1"/>
-    <style>
+    <style type="text/css">
 
         *{
             color:yellow;
@@ -14,12 +14,28 @@
         }
 
         div h1{
-            color: black;
+            color: red;
         }
 
         *{
             color: blue;
-         }
+        }
+
+        #div2 .d2 p{
+            color: red
+        }
+
+        #div3 > .d3 > p {
+            color:red;
+        }
+
+        .d4{
+            color:green
+        }
+
+        .d5 *{
+            color:green;
+        }
 
 
 
@@ -28,11 +44,46 @@
     <title>css selector</title>
 </head>
 <body>
-<div id="dat">
-    <h1>hello world</h1>
-    <div>
-        <h2> hello world 2</h2>
+
+    <div id="div1">
+        <h1>hello world</h1>
+        <div>
+            <h1> hello world 2</h1>
+        </div>
     </div>
-</div>
+
+    <div id="div2">
+        <div class="d2">
+            <p>red</p>
+            <div><p>red</p></div>
+        </div>
+
+        <p>blue</p>
+
+        <div class="d2">
+            <p>red</p>
+        </div>
+    </div>
+
+    <div id="div3">
+        <div class="d3">
+            <p>red</p>
+            <div><p>blue</p></div>
+        </div>
+
+        <p>blue</p>
+
+        <div>
+            <p class="d4">green</p>
+        </div>
+    </div>
+
+    <div class="d5">
+        <p>green</p>
+
+        <div>
+            <p>green</p>
+        </div>
+    </div>
 
 </body>

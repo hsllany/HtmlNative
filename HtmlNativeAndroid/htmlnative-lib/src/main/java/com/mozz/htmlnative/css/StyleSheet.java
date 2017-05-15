@@ -1,7 +1,5 @@
 package com.mozz.htmlnative.css;
 
-import android.util.Log;
-
 import com.mozz.htmlnative.css.selector.AnySelector;
 import com.mozz.htmlnative.css.selector.ClassSelector;
 import com.mozz.htmlnative.css.selector.CssSelector;
@@ -115,9 +113,6 @@ public final class StyleSheet extends AttrsSet {
             if (sets != null) {
                 for (CssSelector selector : sets) {
                     Integer index = mSelectorOrderMap.get(selector);
-
-                    Log.d("InsertBug", index + ", " + outSelectors.length + ", map=" +
-                            mSelectorOrderMap.size());
                     outSelectors[index] = selector;
                 }
             }

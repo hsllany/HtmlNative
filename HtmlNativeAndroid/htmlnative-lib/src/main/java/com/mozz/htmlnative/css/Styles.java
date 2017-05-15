@@ -104,6 +104,11 @@ public final class Styles {
                                   boolean isParent, InheritStyleStack outStack) throws
             AttrApplyException {
 
+        if (domElement != null) {
+            HNLog.d(HNLog.STYLE, "set style \"" + styleName + ": " + style + "\"  to " +
+                    domElement.getType());
+        }
+
         if (isParent) {
             if (!InheritStylesRegistry.isInherit(styleName)) {
                 return;
