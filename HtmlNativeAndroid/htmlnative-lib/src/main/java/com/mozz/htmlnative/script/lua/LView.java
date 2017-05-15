@@ -5,10 +5,7 @@ import android.view.ViewGroup;
 
 import com.mozz.htmlnative.HNRenderer;
 import com.mozz.htmlnative.HNSandBoxContext;
-import com.mozz.htmlnative.attrshandler.AttrHandler;
-import com.mozz.htmlnative.attrshandler.AttrsHelper;
-import com.mozz.htmlnative.attrshandler.LayoutAttrHandler;
-import com.mozz.htmlnative.css.Styles;
+import com.mozz.htmlnative.InheritStyleStack;
 import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.parser.CssParser;
@@ -74,36 +71,29 @@ class LView extends LuaTable {
             public LuaValue call(LuaValue arg) {
                 if (mCreated) {
                     String style = arg.tojstring();
-
-
                     final Map<String, Object> styleMaps = new HashMap<>();
                     CssParser.parseInlineStyle(style, sParserBuffer, styleMaps);
 
-                    final AttrHandler viewAttrHandler = AttrsHelper.getAttrHandler(mView);
-                    final AttrHandler extraAttrHandler = AttrsHelper.getExtraAttrHandler(mView);
-                    final LayoutAttrHandler parentAttr = AttrsHelper.getParentAttrHandler(mView);
                     MainHandlerUtils.instance().post(new Runnable() {
                         @Override
                         public void run() {
-                            for (Map.Entry<String, Object> entry : styleMaps.entrySet()) {
-                                ViewGroup parent = null;
-                                if (mView.getParent() instanceof ViewGroup) {
-                                    parent = (ViewGroup) mView.getParent();
-                                }
-                                try {
-                                    Styles.applyStyle(mView.getContext(), mContext, mView, null,
-                                            null, parent, viewAttrHandler, extraAttrHandler,
-                                            parentAttr, entry.getKey(), entry.getValue(), false,
-                                            null);
+                            LayoutParamsLazyCreator tempCreator = new LayoutParamsLazyCreator();
+                            ViewGroup parent = (mView.getParent() != null && mView.getParent()
+                                    instanceof ViewGroup) ? (ViewGroup) mView.getParent() : null;
+                            try {
+                                HNRenderer.renderStyle(mView.getContext(), mContext, mView,
+                                        mDomElement, tempCreator, parent, styleMaps, false, null);
+                                LayoutParamsLazyCreator.createLayoutParams(tempCreator, mView
+                                        .getLayoutParams());
+                                mView.requestLayout();
 
-
-                                } catch (AttrApplyException e) {
-                                    e.printStackTrace();
-                                }
+                            } catch (AttrApplyException e) {
+                                e.printStackTrace();
                             }
                         }
-
                     });
+
+
                 } else {
                     Map<String, Object> newStyle = new HashMap<>();
                     CssParser.parseInlineStyle(arg.tojstring(), sParserBuffer, newStyle);
@@ -130,55 +120,46 @@ class LView extends LuaTable {
         set("appendChild", new OneArgFunction() {
             @Override
             public LuaValue call(LuaValue arg) {
-                if (mCreated) {
-                    if (arg instanceof LView) {
-                        LView child = (LView) arg;
-                        if (mView instanceof ViewGroup && !child.mAdded) {
-                            if (!child.mCreated) {
-                                LayoutParamsLazyCreator creator = new LayoutParamsLazyCreator();
-                                try {
-                                    child.mView = HNRenderer.createView(null, child.mDomElement,
-                                            child.mContext, (ViewGroup) mView, mView.getContext()
-                                            , null, creator, child.mContext.getSegment()
-                                                    .getStyleSheet(), null);
+                if (mCreated && arg instanceof LView && mView instanceof ViewGroup) {
+                    final LView child = (LView) arg;
+                    if (!child.mAdded) {
+                        if (!child.mCreated) {
 
-                                    final AttrHandler viewAttrHandler = AttrsHelper
-                                            .getAttrHandler(child.mView);
-                                    final AttrHandler extraAttrHandler = AttrsHelper
-                                            .getExtraAttrHandler(child.mView);
-                                    final LayoutAttrHandler parentAttr = AttrsHelper
-                                            .getParentAttrHandler(child.mView);
+                            MainHandlerUtils.instance().post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    LayoutParamsLazyCreator creator = new LayoutParamsLazyCreator();
+                                    try {
+                                        child.mView = HNRenderer.createView(null, child
+                                                .mDomElement, child.mContext, (ViewGroup) mView,
+                                                mView.getContext(), null, creator, child.mContext
+                                                        .getSegment().getStyleSheet(), null);
 
-                                    for (Map.Entry<String, Object> entry : child.mInlineStyleRaw
-                                            .entrySet()) {
-                                        ViewGroup parent = null;
-                                        if (child.mView.getParent() instanceof ViewGroup) {
-                                            parent = (ViewGroup) mView.getParent();
-                                        }
                                         try {
-                                            Styles.applyStyle(child.mView.getContext(), mContext,
-                                                    child.mView, null, null, parent,
-                                                    viewAttrHandler, extraAttrHandler,
-                                                    parentAttr, entry.getKey(), entry.getValue(),
-                                                    false, null);
-
-
+                                            HNRenderer.renderStyle(child.mView.getContext(),
+                                                    mContext, child.mView, child.mDomElement,
+                                                    creator, (ViewGroup) mView, child
+                                                            .mInlineStyleRaw, false,
+                                                    InheritStyleStack.get(mView));
                                         } catch (AttrApplyException e) {
                                             e.printStackTrace();
                                         }
+
+                                        child.mCreated = true;
+                                        child.mInlineStyleRaw = null;
+                                        child.mAdded = true;
+                                        ((ViewGroup) mView).addView(child.mView,
+                                                LayoutParamsLazyCreator.createLayoutParams(mView,
+                                                        creator));
+                                    } catch (HNRenderer.HNRenderException e) {
+                                        e.printStackTrace();
                                     }
-
-                                    child.mCreated = true;
-                                    ((ViewGroup) mView).addView(child.mView,
-                                            LayoutParamsLazyCreator.createLayoutParams(mView,
-                                                    creator));
-                                } catch (HNRenderer.HNRenderException e) {
-                                    e.printStackTrace();
                                 }
-                            }
-
+                            });
 
                         }
+
+
                     }
                 }
                 return LuaValue.NIL;

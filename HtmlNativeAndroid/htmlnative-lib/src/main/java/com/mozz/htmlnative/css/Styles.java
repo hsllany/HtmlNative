@@ -70,6 +70,7 @@ public final class Styles {
         InheritStylesRegistry.register(ATTR_DIRECTION);
     }
 
+
     public static void applyStyle(Context context, final HNSandBoxContext sandBoxContext, View v,
                                   DomElement domElement, @NonNull LayoutParamsLazyCreator
                                           layoutCreator, @NonNull ViewGroup parent, AttrHandler

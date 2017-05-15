@@ -83,4 +83,25 @@ public class LayoutParamsLazyCreator {
         }
     }
 
+    public static void createLayoutParams(LayoutParamsLazyCreator creator, ViewGroup.LayoutParams
+            outParams) {
+        outParams.height = creator.height;
+        outParams.width = creator.width;
+        if (outParams instanceof AbsoluteLayout.LayoutParams) {
+            AbsoluteLayout.LayoutParams layoutParams = (AbsoluteLayout.LayoutParams) outParams;
+            layoutParams.x = creator.left;
+            layoutParams.y = creator.top;
+
+        } else if (outParams instanceof ViewGroup.MarginLayoutParams) {
+            ((ViewGroup.MarginLayoutParams) outParams).setMargins(creator.marginLeft, creator
+                    .marginTop, creator.marginRight, creator.marginBottom);
+        } else if (outParams instanceof FlexboxLayout.LayoutParams) {
+            ((FlexboxLayout.LayoutParams) outParams).setMargins(creator.marginLeft, creator
+                    .marginTop, creator.marginRight, creator.marginBottom);
+        } else {
+            throw new IllegalArgumentException("can't create related layoutParams, unknown " +
+                    "layoutParams type " + outParams.toString());
+        }
+    }
+
 }

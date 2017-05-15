@@ -347,6 +347,47 @@ public final class HNRenderer {
         return v;
     }
 
+    public static void renderStyle(Context context, final HNSandBoxContext sandBoxContext, View
+            v, DomElement domElement, @NonNull LayoutParamsLazyCreator layoutCreator, @NonNull
+            ViewGroup parent, String styleName, Object style, boolean isParent, InheritStyleStack
+            stack) throws AttrApplyException {
+
+        AttrHandler viewAttrHandler = AttrsHelper.getAttrHandler(v);
+        AttrHandler extraAttrHandler = AttrsHelper.getExtraAttrHandler(v);
+        AttrHandler parentAttrHandler = AttrsHelper.getAttrHandler(v);
+
+        LayoutAttrHandler parentLayoutAttr = null;
+        if (parentAttrHandler instanceof LayoutAttrHandler) {
+            parentLayoutAttr = (LayoutAttrHandler) parentAttrHandler;
+        }
+
+        Styles.applyStyle(context, sandBoxContext, v, domElement, layoutCreator, parent,
+                viewAttrHandler, extraAttrHandler, parentLayoutAttr, styleName, style, isParent,
+                stack);
+    }
+
+    public static void renderStyle(Context context, final HNSandBoxContext sandBoxContext, View
+            v, DomElement domElement, @NonNull LayoutParamsLazyCreator layoutCreator, @NonNull
+            ViewGroup parent, Map<String, Object> styles, boolean isParent, InheritStyleStack
+            stack) throws AttrApplyException {
+        final AttrHandler viewAttrHandler = AttrsHelper.getAttrHandler(v);
+        final AttrHandler extraAttrHandler = AttrsHelper.getExtraAttrHandler(v);
+        final LayoutAttrHandler parentAttr = AttrsHelper.getParentAttrHandler(v);
+
+        for (Map.Entry<String, Object> entry : styles.entrySet()) {
+
+            try {
+                Styles.applyStyle(v.getContext(), sandBoxContext, v, domElement, layoutCreator,
+                        parent, viewAttrHandler, extraAttrHandler, parentAttr, entry.getKey(),
+                        entry.getValue(), isParent, stack);
+
+
+            } catch (AttrApplyException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public static void registerViewFactory(String androidClassName, ViewFactory factory) {
         sViewFactory.put(androidClassName, factory);
     }
