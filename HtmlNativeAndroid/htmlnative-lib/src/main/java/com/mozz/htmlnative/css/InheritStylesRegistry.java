@@ -1,6 +1,7 @@
 package com.mozz.htmlnative.css;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -21,5 +22,9 @@ public final class InheritStylesRegistry {
 
     public static boolean isInherit(String attr) {
         return sInheritAttrs.contains(attr);
+    }
+
+    public static Iterator<String> iterator() {
+        return sInheritAttrs.iterator();
     }
 }

@@ -45,4 +45,9 @@ public class HNText extends TextView implements IBackgroundView {
     public void setHtmlBackground(Bitmap bitmap, Background background) {
         mBackgroundMgr.setHtmlBackground(bitmap, background);
     }
+
+    @Override
+    public Background getHtmlBackground() {
+        return mBackgroundMgr.getHtmlBackground();
+    }
 }

@@ -21,4 +21,8 @@ public abstract class AttrHandler {
             AttrApplyException {
 
     }
+
+    public Object getStyle(View v, String styleName) {
+        return null;
+    }
 }

@@ -3,7 +3,6 @@ package com.mozz.htmlnative.attrshandler;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -268,5 +267,16 @@ class TextViewAttrHandler extends AttrHandler {
                 paramsLazyCreator.width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 break;
         }
+    }
+
+    @Override
+    public Object getStyle(View v, String styleName) {
+        final TextView textView = (TextView) v;
+        switch (styleName) {
+            case COLOR:
+                return "#ff0000";
+        }
+        //TODO
+        return null;
     }
 }

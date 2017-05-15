@@ -153,6 +153,8 @@ class LView extends LuaTable {
                                         }
 
                                         child.mCreated = true;
+
+                                        // consume the inline style
                                         child.mInlineStyleRaw = null;
                                         child.mAdded = true;
                                         ((ViewGroup) mView).addView(child.mView,

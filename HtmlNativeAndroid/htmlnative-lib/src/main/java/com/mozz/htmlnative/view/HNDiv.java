@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.util.ArrayMap;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import com.mozz.htmlnative.css.Background;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Yang Tao, 17/4/18.
@@ -25,6 +27,8 @@ public class HNDiv extends ViewGroup implements IBackgroundView {
     private List<Integer> mLineLength = new ArrayList<>();
 
     private BackgroundManager mBackgroundMgr;
+
+    private Map<String, Object> mSavedInheritStyles = new ArrayMap<>();
 
     public HNDiv(Context context) {
         super(context);
@@ -186,6 +190,14 @@ public class HNDiv extends ViewGroup implements IBackgroundView {
         }
     }
 
+    public void saveInheritStyles(String styleName, Object style) {
+        mSavedInheritStyles.put(styleName, style);
+    }
+
+    public Object getInheritStyle(String styleName) {
+        return mSavedInheritStyles.get(styleName);
+    }
+
     @Override
     protected ViewGroup.LayoutParams generateDefaultLayoutParams() {
         return new MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams
@@ -194,6 +206,11 @@ public class HNDiv extends ViewGroup implements IBackgroundView {
 
     public void setHtmlBackground(Bitmap bitmap, Background background) {
         mBackgroundMgr.setHtmlBackground(bitmap, background);
+    }
+
+    @Override
+    public Background getHtmlBackground() {
+        return mBackgroundMgr.getHtmlBackground();
     }
 
     @Override

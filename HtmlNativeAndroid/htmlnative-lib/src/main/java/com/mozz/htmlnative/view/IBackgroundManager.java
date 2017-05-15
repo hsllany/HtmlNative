@@ -9,4 +9,6 @@ import com.mozz.htmlnative.css.Background;
  */
 interface IBackgroundManager {
     void setHtmlBackground(Bitmap bitmap, Background background);
+
+    Background getHtmlBackground();
 }

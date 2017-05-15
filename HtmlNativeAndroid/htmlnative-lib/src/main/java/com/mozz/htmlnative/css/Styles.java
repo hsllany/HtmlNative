@@ -4,9 +4,9 @@ import android.content.Context;
 import android.graphics.Matrix;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsoluteLayout;
 
 import com.mozz.htmlnative.HNLog;
 import com.mozz.htmlnative.HNSandBoxContext;
@@ -76,11 +76,11 @@ public final class Styles {
                                           layoutCreator, @NonNull ViewGroup parent, AttrHandler
                                           viewAttrHandler, AttrHandler extraAttrHandler,
                                   LayoutAttrHandler parentAttr, StyleEntry entry, boolean
-                                          isParent, InheritStyleStack stack) throws
+                                          isParent, InheritStyleStack outStack) throws
             AttrApplyException {
         applyStyle(context, sandBoxContext, v, domElement, layoutCreator, parent,
                 viewAttrHandler, extraAttrHandler, parentAttr, entry.getStyleName(), entry
-                        .getStyle(), isParent, stack);
+                        .getStyle(), isParent, outStack);
     }
 
     /**
@@ -101,7 +101,7 @@ public final class Styles {
                                           layoutCreator, @NonNull ViewGroup parent, AttrHandler
                                           viewAttrHandler, AttrHandler extraAttrHandler,
                                   LayoutAttrHandler parentAttr, String styleName, Object style,
-                                  boolean isParent, InheritStyleStack stack) throws
+                                  boolean isParent, InheritStyleStack outStack) throws
             AttrApplyException {
 
         if (isParent) {
@@ -309,8 +309,8 @@ public final class Styles {
         }
 
         // Put inherit style into stack
-        if (stack != null && InheritStylesRegistry.isInherit(styleName)) {
-            stack.newStyle(styleName, style);
+        if (outStack != null && InheritStylesRegistry.isInherit(styleName)) {
+            outStack.newStyle(styleName, style);
         }
     }
 
@@ -378,6 +378,117 @@ public final class Styles {
                             (), styleEntry.getStyle(), isParent, stack);
 
         }
+    }
+
+    public static Object getStyle(View v, String styleName, AttrHandler attrHandler, AttrHandler
+            extraAttrHandler, LayoutAttrHandler parentHandler) {
+        switch (styleName) {
+            case ATTR_WIDTH:
+                int width = v.getLayoutParams().width;
+                if (width == ViewGroup.LayoutParams.MATCH_PARENT) {
+                    return VAL_FILL_PARENT;
+                } else {
+                    return v.getLayoutParams().width + "px";
+                }
+
+            case ATTR_HEIGHT:
+                int height = v.getLayoutParams().height;
+                if (height == ViewGroup.LayoutParams.MATCH_PARENT) {
+                    return VAL_FILL_PARENT;
+                } else {
+                    return v.getLayoutParams().height + "px";
+                }
+
+            case ATTR_BACKGROUND:
+                if (v instanceof IBackgroundView) {
+                    return ((IBackgroundView) v).getHtmlBackground();
+                }
+                return null;
+
+            case ATTR_MARGIN_RIGHT:
+                if (v.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+                    return ((ViewGroup.MarginLayoutParams) v.getLayoutParams()).rightMargin + "px";
+                }
+                return null;
+
+            case ATTR_MARGIN_LEFT:
+                if (v.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+                    return ((ViewGroup.MarginLayoutParams) v.getLayoutParams()).leftMargin + "px";
+                }
+                return null;
+
+            case ATTR_MARGIN_TOP:
+                if (v.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+                    return ((ViewGroup.MarginLayoutParams) v.getLayoutParams()).topMargin + "px";
+                }
+                return null;
+
+            case ATTR_MARGIN_BOTTOM:
+                if (v.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+                    return ((ViewGroup.MarginLayoutParams) v.getLayoutParams()).bottomMargin + "px";
+                }
+                return null;
+            case ATTR_PADDING_TOP:
+                return v.getPaddingTop() + "px";
+            case ATTR_PADDING_LEFT:
+                return v.getPaddingLeft() + "px";
+            case ATTR_PADDING_BOTTOM:
+                return v.getPaddingBottom() + "px";
+            case ATTR_PADDING_RIGHT:
+                return v.getPaddingRight() + "px";
+
+            case ATTR_LEFT:
+                if (v.getLayoutParams() instanceof AbsoluteLayout.LayoutParams) {
+                    return ((AbsoluteLayout.LayoutParams) v.getLayoutParams()).x + "px";
+                } else {
+                    return null;
+                }
+
+            case ATTR_TOP:
+                if (v.getLayoutParams() instanceof AbsoluteLayout.LayoutParams) {
+                    return ((AbsoluteLayout.LayoutParams) v.getLayoutParams()).y + "px";
+                } else {
+                    return null;
+                }
+
+            case ATTR_ALPHA:
+                return v.getAlpha();
+
+            case ATTR_VISIBLE:
+                int visibility = v.getVisibility();
+                if (visibility == View.VISIBLE) {
+                    return "visible";
+                } else if (visibility == View.INVISIBLE) {
+                    return "invisible";
+                }
+
+            case ATTR_DIRECTION:
+                int textDirection = v.getTextDirection();
+
+                if (textDirection == View.TEXT_DIRECTION_LTR) {
+                    return "ltr";
+                } else if (textDirection == View.TEXT_DIRECTION_RTL) {
+                    return "rtl";
+                }
+                return null;
+
+            default:
+                if (attrHandler != null) {
+                    Object val = attrHandler.getStyle(v, styleName);
+                    if (val != null) {
+                        return val;
+                    }
+                }
+
+                if (extraAttrHandler != null) {
+                    Object val = extraAttrHandler.getStyle(v, styleName);
+                    if (val != null) {
+                        return val;
+                    }
+                }
+        }
+
+        return null;
     }
 
     /**

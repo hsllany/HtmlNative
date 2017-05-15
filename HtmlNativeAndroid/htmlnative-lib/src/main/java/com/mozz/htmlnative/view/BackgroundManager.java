@@ -47,6 +47,11 @@ class BackgroundManager implements IBackgroundManager {
         mHost.invalidate();
     }
 
+    @Override
+    public Background getHtmlBackground() {
+        return mBackground;
+    }
+
     /**
      * Should be called at last in {@link View#onDraw(Canvas)}
      *

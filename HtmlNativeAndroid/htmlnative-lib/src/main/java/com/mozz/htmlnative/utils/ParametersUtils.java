@@ -130,7 +130,7 @@ public final class ParametersUtils {
         if (object instanceof Boolean) {
             return (boolean) object;
         } else {
-            throw new IllegalArgumentException("can't read boolean from " + object);
+            return Boolean.valueOf(object.toString().trim());
         }
     }
 

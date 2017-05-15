@@ -2,6 +2,10 @@ package com.mozz.htmlnative;
 
 import android.view.View;
 
+import com.mozz.htmlnative.attrshandler.AttrHandler;
+import com.mozz.htmlnative.attrshandler.AttrsHelper;
+import com.mozz.htmlnative.attrshandler.LayoutAttrHandler;
+import com.mozz.htmlnative.css.InheritStylesRegistry;
 import com.mozz.htmlnative.css.Styles;
 
 import java.util.Arrays;
@@ -94,7 +98,31 @@ public final class InheritStyleStack implements Iterable<Styles.StyleEntry> {
 
     //TODO complete the function
     public static InheritStyleStack get(View view) {
-        return new InheritStyleStack();
+
+        AttrHandler viewAttrHandler = AttrsHelper.getAttrHandler(view);
+        AttrHandler extraAttrHandler = AttrsHelper.getExtraAttrHandler(view);
+        AttrHandler parentAttrHandler = AttrsHelper.getAttrHandler(view);
+
+        LayoutAttrHandler parentLayoutAttr = null;
+        if (parentAttrHandler instanceof LayoutAttrHandler) {
+            parentLayoutAttr = (LayoutAttrHandler) parentAttrHandler;
+        }
+        InheritStyleStack inheritStyleStack = new InheritStyleStack();
+        inheritStyleStack.push();
+
+        Iterator<String> itr = InheritStylesRegistry.iterator();
+
+        while (itr.hasNext()) {
+            String params = itr.next();
+
+            Object val = Styles.getStyle(view, params, viewAttrHandler, extraAttrHandler,
+                    parentLayoutAttr);
+            if (val != null) {
+                inheritStyleStack.newStyle(params, val);
+            }
+        }
+
+        return inheritStyleStack;
     }
 
 }

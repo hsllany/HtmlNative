@@ -17,8 +17,9 @@ class WebViewAttrHandler extends AttrHandler {
     private static final String ATTR_SRC = "src";
 
     @Override
-    public void apply(Context context, View v, DomElement domElement, View parent, LayoutParamsLazyCreator paramsLazyCreator, String params, Object value, boolean isParent) throws
-            AttrApplyException {
+    public void apply(Context context, View v, DomElement domElement, View parent,
+                      LayoutParamsLazyCreator paramsLazyCreator, String params, Object value,
+                      boolean isParent) throws AttrApplyException {
         final WebView webView = (WebView) v;
 
         if (params.equals(ATTR_SRC) && !isParent) {
