@@ -130,17 +130,24 @@ class LView extends LuaTable {
                                 public void run() {
                                     LayoutParamsLazyCreator creator = new LayoutParamsLazyCreator();
                                     try {
+                                        // This must be invoked before HNRenderer.createView
+                                        child.mDomElement.setParent(mDomElement);
+
+                                        InheritStyleStack inheritStyleStack = InheritStyleStack
+                                                .get(mView);
+
                                         child.mView = HNRenderer.createView(null, child
                                                 .mDomElement, child.mContext, (ViewGroup) mView,
                                                 mView.getContext(), null, creator, child.mContext
-                                                        .getSegment().getStyleSheet(), null);
+                                                        .getSegment().getStyleSheet(),
+                                                inheritStyleStack);
 
                                         try {
                                             HNRenderer.renderStyle(child.mView.getContext(),
                                                     mContext, child.mView, child.mDomElement,
                                                     creator, (ViewGroup) mView, child
                                                             .mInlineStyleRaw, false,
-                                                    InheritStyleStack.get(mView));
+                                                    inheritStyleStack);
                                         } catch (AttrApplyException e) {
                                             e.printStackTrace();
                                         }

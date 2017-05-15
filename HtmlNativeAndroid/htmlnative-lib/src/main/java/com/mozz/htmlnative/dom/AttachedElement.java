@@ -13,6 +13,7 @@ public class AttachedElement implements DomElement {
     private String mType;
     private String[] mClazz;
     private String mId;
+    private DomElement mParent;
 
     @Override
     public String getType() {
@@ -31,7 +32,7 @@ public class AttachedElement implements DomElement {
 
     @Override
     public DomElement getParent() {
-        throw new UnsupportedOperationException();
+        return mParent;
     }
 
     @Override
@@ -67,6 +68,11 @@ public class AttachedElement implements DomElement {
     @Override
     public void setId(String id) {
         mId = id;
+    }
+
+    @Override
+    public void setParent(DomElement parent) {
+        mParent = parent;
     }
 
     /**

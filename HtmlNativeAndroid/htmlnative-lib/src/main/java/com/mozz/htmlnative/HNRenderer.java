@@ -189,7 +189,10 @@ public final class HNRenderer {
             }
 
             //attach the dom element to view
+            DomElement domElement = AttachedElement.cloneIfNecessary(tree);
+            domElement.setParent((DomElement) parent.getTag());
             v.setTag(AttachedElement.cloneIfNecessary(tree));
+
 
             // save the id if element has one
             String id = tree.getId();

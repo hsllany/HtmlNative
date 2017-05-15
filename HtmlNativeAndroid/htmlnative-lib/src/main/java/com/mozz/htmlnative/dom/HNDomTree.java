@@ -257,6 +257,11 @@ public final class HNDomTree implements ParseCallback, AttrsSet.AttrsOwner, DomE
         this.mId = id;
     }
 
+    @Override
+    public void setParent(DomElement parent) {
+        mParent = (HNDomTree) parent;
+    }
+
     public String[] getClazz() {
         return mClass;
     }
