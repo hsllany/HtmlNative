@@ -1,4 +1,4 @@
-package com.mozz.htmlnative.attrshandler;
+package com.mozz.htmlnative.stylehandler;
 
 import android.content.Context;
 import android.view.View;
@@ -11,7 +11,7 @@ import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
  * @author Yang Tao, 17/3/3.
  */
 
-public abstract class LayoutAttrHandler extends AttrHandler {
+public abstract class LayoutStyleHandler extends StyleHandler {
     public abstract void applyToChild(Context context, View v, DomElement domElement, View
             parent, LayoutParamsLazyCreator paramsLazyCreator, String params, Object value,
                                       boolean isParent) throws AttrApplyException;

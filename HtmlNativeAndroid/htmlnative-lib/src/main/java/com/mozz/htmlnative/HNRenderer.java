@@ -9,9 +9,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.mozz.htmlnative.attrshandler.AttrHandler;
-import com.mozz.htmlnative.attrshandler.AttrsHelper;
-import com.mozz.htmlnative.attrshandler.LayoutAttrHandler;
+import com.mozz.htmlnative.stylehandler.StyleHandler;
+import com.mozz.htmlnative.stylehandler.StyleHandlerFactory;
+import com.mozz.htmlnative.stylehandler.LayoutStyleHandler;
 import com.mozz.htmlnative.css.AttrsSet;
 import com.mozz.htmlnative.css.InheritStylesRegistry;
 import com.mozz.htmlnative.css.StyleSheet;
@@ -66,13 +66,13 @@ public final class HNRenderer {
 
     public static InheritStyleStack computeInheritStyle(View view) {
 
-        AttrHandler viewAttrHandler = AttrsHelper.getAttrHandler(view);
-        AttrHandler extraAttrHandler = AttrsHelper.getExtraAttrHandler(view);
-        AttrHandler parentAttrHandler = AttrsHelper.getAttrHandler(view);
+        StyleHandler viewStyleHandler = StyleHandlerFactory.get(view);
+        StyleHandler extraStyleHandler = StyleHandlerFactory.extraGet(view);
+        StyleHandler parentStyleHandler = StyleHandlerFactory.get(view);
 
-        LayoutAttrHandler parentLayoutAttr = null;
-        if (parentAttrHandler instanceof LayoutAttrHandler) {
-            parentLayoutAttr = (LayoutAttrHandler) parentAttrHandler;
+        LayoutStyleHandler parentLayoutAttr = null;
+        if (parentStyleHandler instanceof LayoutStyleHandler) {
+            parentLayoutAttr = (LayoutStyleHandler) parentStyleHandler;
         }
         InheritStyleStack inheritStyleStack = new InheritStyleStack();
         inheritStyleStack.push();
@@ -82,7 +82,7 @@ public final class HNRenderer {
         while (itr.hasNext()) {
             String params = itr.next();
 
-            Object val = Styles.getStyle(view, params, viewAttrHandler, extraAttrHandler,
+            Object val = Styles.getStyle(view, params, viewStyleHandler, extraStyleHandler,
                     parentLayoutAttr);
             if (val != null) {
                 inheritStyleStack.newStyle(params, val);
@@ -232,15 +232,15 @@ public final class HNRenderer {
 
             // ------- below starts the styleSheet process part -------
 
-            // first find the related AttrHandler
+            // first find the related StyleHandler
 
-            AttrHandler viewAttrHandler = AttrsHelper.getAttrHandler(v);
-            AttrHandler extraAttrHandler = AttrsHelper.getExtraAttrHandler(v);
-            AttrHandler parentAttrHandler = AttrsHelper.getAttrHandler(v);
+            StyleHandler viewStyleHandler = StyleHandlerFactory.get(v);
+            StyleHandler extraStyleHandler = StyleHandlerFactory.extraGet(v);
+            StyleHandler parentStyleHandler = StyleHandlerFactory.get(v);
 
-            LayoutAttrHandler parentLayoutAttr = null;
-            if (parentAttrHandler instanceof LayoutAttrHandler) {
-                parentLayoutAttr = (LayoutAttrHandler) parentAttrHandler;
+            LayoutStyleHandler parentLayoutAttr = null;
+            if (parentStyleHandler instanceof LayoutStyleHandler) {
+                parentLayoutAttr = (LayoutStyleHandler) parentStyleHandler;
             }
 
             try {
@@ -253,7 +253,7 @@ public final class HNRenderer {
                         // here pass InheritStyleStack null to Styles, is to prevent Style being
                         // stored in InheritStyleStack twice
                         Styles.applyStyle(context, sandBoxContext, v, tree, layoutCreator,
-                                parent, viewAttrHandler, extraAttrHandler, parentLayoutAttr,
+                                parent, viewStyleHandler, extraStyleHandler, parentLayoutAttr,
                                 entry, false, null);
 
                     }
@@ -261,7 +261,7 @@ public final class HNRenderer {
 
                 if (attrsSet != null) {
                     Styles.apply(context, sandBoxContext, attrsSet, v, owner, tree, parent,
-                            layoutCreator, true, false, viewAttrHandler, extraAttrHandler,
+                            layoutCreator, true, false, viewStyleHandler, extraStyleHandler,
                             parentLayoutAttr, stack);
 
                 }
@@ -283,7 +283,7 @@ public final class HNRenderer {
                             try {
                                 Styles.apply(context, sandBoxContext, styleSheet, v, selector,
                                         tree, parent, layoutCreator, false, false,
-                                        viewAttrHandler, extraAttrHandler, parentLayoutAttr, stack);
+                                        viewStyleHandler, extraStyleHandler, parentLayoutAttr, stack);
 
                             } catch (AttrApplyException e) {
                                 e.printStackTrace();
@@ -386,17 +386,17 @@ public final class HNRenderer {
             ViewGroup parent, String styleName, Object style, boolean isParent, InheritStyleStack
             stack) throws AttrApplyException {
 
-        AttrHandler viewAttrHandler = AttrsHelper.getAttrHandler(v);
-        AttrHandler extraAttrHandler = AttrsHelper.getExtraAttrHandler(v);
-        AttrHandler parentAttrHandler = AttrsHelper.getAttrHandler(v);
+        StyleHandler viewStyleHandler = StyleHandlerFactory.get(v);
+        StyleHandler extraStyleHandler = StyleHandlerFactory.extraGet(v);
+        StyleHandler parentStyleHandler = StyleHandlerFactory.get(v);
 
-        LayoutAttrHandler parentLayoutAttr = null;
-        if (parentAttrHandler instanceof LayoutAttrHandler) {
-            parentLayoutAttr = (LayoutAttrHandler) parentAttrHandler;
+        LayoutStyleHandler parentLayoutAttr = null;
+        if (parentStyleHandler instanceof LayoutStyleHandler) {
+            parentLayoutAttr = (LayoutStyleHandler) parentStyleHandler;
         }
 
         Styles.applyStyle(context, sandBoxContext, v, domElement, layoutCreator, parent,
-                viewAttrHandler, extraAttrHandler, parentLayoutAttr, styleName, style, isParent,
+                viewStyleHandler, extraStyleHandler, parentLayoutAttr, styleName, style, isParent,
                 stack);
     }
 
@@ -404,15 +404,15 @@ public final class HNRenderer {
             v, DomElement domElement, @NonNull LayoutParamsLazyCreator layoutCreator, @NonNull
             ViewGroup parent, Map<String, Object> styles, boolean isParent, InheritStyleStack
             stack) throws AttrApplyException {
-        final AttrHandler viewAttrHandler = AttrsHelper.getAttrHandler(v);
-        final AttrHandler extraAttrHandler = AttrsHelper.getExtraAttrHandler(v);
-        final LayoutAttrHandler parentAttr = AttrsHelper.getParentAttrHandler(v);
+        final StyleHandler viewStyleHandler = StyleHandlerFactory.get(v);
+        final StyleHandler extraStyleHandler = StyleHandlerFactory.extraGet(v);
+        final LayoutStyleHandler parentAttr = StyleHandlerFactory.parentGet(v);
 
         for (Map.Entry<String, Object> entry : styles.entrySet()) {
 
             try {
                 Styles.applyStyle(v.getContext(), sandBoxContext, v, domElement, layoutCreator,
-                        parent, viewAttrHandler, extraAttrHandler, parentAttr, entry.getKey(),
+                        parent, viewStyleHandler, extraStyleHandler, parentAttr, entry.getKey(),
                         entry.getValue(), isParent, stack);
 
 

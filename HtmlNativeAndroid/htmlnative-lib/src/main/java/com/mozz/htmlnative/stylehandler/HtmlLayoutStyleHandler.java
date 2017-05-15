@@ -1,4 +1,4 @@
-package com.mozz.htmlnative.attrshandler;
+package com.mozz.htmlnative.stylehandler;
 
 import android.content.Context;
 import android.view.View;
@@ -10,7 +10,7 @@ import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.view.HNDiv;
 import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
 
-class HtmlLayoutAttrHandler extends AttrHandler {
+class HtmlLayoutStyleHandler extends StyleHandler {
     @Override
     public void apply(Context context, View v, DomElement domElement, View parent,
                       LayoutParamsLazyCreator paramsLazyCreator, String params, Object value,

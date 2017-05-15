@@ -1,4 +1,4 @@
-package com.mozz.htmlnative.attrshandler;
+package com.mozz.htmlnative.stylehandler;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -18,7 +18,7 @@ import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.utils.ParametersUtils;
 import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
 
-class TextViewAttrHandler extends AttrHandler {
+class TextViewStyleHandler extends StyleHandler {
 
     private static final String FONT_SIZE = "font-size";
     private static final String COLOR = "color";
@@ -212,58 +212,58 @@ class TextViewAttrHandler extends AttrHandler {
             case HtmlTag.H1:
                 textView.setTextSize(DEFAULT_H1_SIZE);
                 paramsLazyCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
-                AttrsHelper.setPadding(textView, DEFAULT_H1_PADDING, textView.getPaddingLeft(),
+                StyleHelper.setPadding(textView, DEFAULT_H1_PADDING, textView.getPaddingLeft(),
                         DEFAULT_H1_PADDING, textView.getPaddingRight());
-                AttrsHelper.setBold(textView);
+                StyleHelper.setBold(textView);
                 break;
 
             case HtmlTag.H2:
                 textView.setTextSize(DEFAULT_H2_SIZE);
                 paramsLazyCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
-                AttrsHelper.setPadding(textView, DEFAULT_H2_PADDING, textView.getPaddingLeft(),
+                StyleHelper.setPadding(textView, DEFAULT_H2_PADDING, textView.getPaddingLeft(),
                         DEFAULT_H2_PADDING, textView.getPaddingRight());
-                AttrsHelper.setBold(textView);
+                StyleHelper.setBold(textView);
                 break;
 
             case HtmlTag.H3:
                 textView.setTextSize(DEFAULT_H3_SIZE);
                 paramsLazyCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
-                AttrsHelper.setPadding(textView, DEFAULT_H3_PADDING, textView.getPaddingLeft(),
+                StyleHelper.setPadding(textView, DEFAULT_H3_PADDING, textView.getPaddingLeft(),
                         DEFAULT_H3_PADDING, textView.getPaddingRight());
-                AttrsHelper.setBold(textView);
+                StyleHelper.setBold(textView);
                 break;
 
             case HtmlTag.H4:
                 textView.setTextSize(DEFAULT_H4_SIZE);
                 paramsLazyCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
-                AttrsHelper.setPadding(textView, DEFAULT_H4_PADDING, textView.getPaddingLeft(),
+                StyleHelper.setPadding(textView, DEFAULT_H4_PADDING, textView.getPaddingLeft(),
                         DEFAULT_H4_PADDING, textView.getPaddingRight());
-                AttrsHelper.setBold(textView);
+                StyleHelper.setBold(textView);
                 break;
 
             case HtmlTag.H5:
                 textView.setTextSize(DEFAULT_H5_SIZE);
                 paramsLazyCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
-                AttrsHelper.setPadding(textView, DEFAULT_H5_PADDING, textView.getPaddingLeft(),
+                StyleHelper.setPadding(textView, DEFAULT_H5_PADDING, textView.getPaddingLeft(),
                         DEFAULT_H5_PADDING, textView.getPaddingRight());
-                AttrsHelper.setBold(textView);
+                StyleHelper.setBold(textView);
                 break;
 
             case HtmlTag.H6:
                 textView.setTextSize(DEFAULT_H6_SIZE);
                 paramsLazyCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
-                AttrsHelper.setPadding(textView, DEFAULT_H6_PADDING, textView.getPaddingLeft(),
+                StyleHelper.setPadding(textView, DEFAULT_H6_PADDING, textView.getPaddingLeft(),
                         DEFAULT_H6_PADDING, textView.getPaddingRight());
-                AttrsHelper.setBold(textView);
+                StyleHelper.setBold(textView);
                 break;
 
             case HtmlTag.P:
-                AttrsHelper.setTopPadding(textView, DEFAULT_P_PADDING);
-                AttrsHelper.setBottomPadding(textView, DEFAULT_P_PADDING);
+                StyleHelper.setTopPadding(textView, DEFAULT_P_PADDING);
+                StyleHelper.setBottomPadding(textView, DEFAULT_P_PADDING);
                 paramsLazyCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 break;
             case HtmlTag.A:
-                AttrsHelper.setUnderLine(textView);
+                StyleHelper.setUnderLine(textView);
                 paramsLazyCreator.width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 break;
         }

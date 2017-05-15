@@ -1,4 +1,4 @@
-package com.mozz.htmlnative.attrshandler;
+package com.mozz.htmlnative.stylehandler;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -13,7 +13,7 @@ import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.view.BackgroundViewDelegate;
 import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
 
-class ImageViewAttrHandler extends AttrHandler {
+class ImageViewStyleHandler extends StyleHandler {
 
     @Override
     public void apply(Context context, View v, DomElement domElement, View parent, LayoutParamsLazyCreator paramsLazyCreator, String params, Object value, boolean isParent) throws

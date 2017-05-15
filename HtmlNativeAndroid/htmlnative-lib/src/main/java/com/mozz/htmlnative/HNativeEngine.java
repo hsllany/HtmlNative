@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 
-import com.mozz.htmlnative.attrshandler.AttrsHelper;
+import com.mozz.htmlnative.stylehandler.StyleHandlerFactory;
 import com.mozz.htmlnative.dom.HNHead;
 import com.mozz.htmlnative.utils.ParametersUtils;
 import com.mozz.htmlnative.view.BackgroundViewDelegate;
@@ -135,7 +135,7 @@ public final class HNativeEngine {
         HNSegment.clearCache();
         HNInternalThread.quit();
         HNScriptRunnerThread.quit();
-        AttrsHelper.clear();
+        StyleHandlerFactory.clear();
     }
 
     public void setImageViewAdapter(@NonNull ImageViewAdapter adapter) {

@@ -12,7 +12,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
-import com.mozz.htmlnative.attrshandler.AttrsHelper;
+import com.mozz.htmlnative.stylehandler.StyleHandlerFactory;
 import com.mozz.htmlnative.view.HNText;
 import com.mozz.htmlnative.view.HNDiv;
 
@@ -97,6 +97,6 @@ public final class ViewTypeRelations {
         }
 
         sExtraTagClassTable.put(tag, HNViewItem);
-        AttrsHelper.registerExtraAttrHandler(HNViewItem.getViewClass(), HNViewItem.getHandler());
+        StyleHandlerFactory.registerExtraAttrHandler(HNViewItem.getViewClass(), HNViewItem.getHandler());
     }
 }

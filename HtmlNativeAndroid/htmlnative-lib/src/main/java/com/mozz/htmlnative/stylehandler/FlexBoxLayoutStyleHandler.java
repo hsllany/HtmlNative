@@ -1,4 +1,4 @@
-package com.mozz.htmlnative.attrshandler;
+package com.mozz.htmlnative.stylehandler;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -14,7 +14,7 @@ import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
  * @author Yang Tao, 17/3/3.
  */
 
-class FlexBoxLayoutAttrHandler extends LayoutAttrHandler {
+class FlexBoxLayoutStyleHandler extends LayoutStyleHandler {
     @Override
     public void apply(Context context, View v, DomElement domElement, View parent, LayoutParamsLazyCreator paramsLazyCreator, String params, Object value, boolean isParent) throws
             AttrApplyException {

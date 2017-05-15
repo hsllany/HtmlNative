@@ -12,9 +12,9 @@ import com.mozz.htmlnative.HNLog;
 import com.mozz.htmlnative.HNSandBoxContext;
 import com.mozz.htmlnative.HNativeEngine;
 import com.mozz.htmlnative.InheritStyleStack;
-import com.mozz.htmlnative.attrshandler.AttrHandler;
-import com.mozz.htmlnative.attrshandler.AttrsHelper;
-import com.mozz.htmlnative.attrshandler.LayoutAttrHandler;
+import com.mozz.htmlnative.stylehandler.LayoutStyleHandler;
+import com.mozz.htmlnative.stylehandler.StyleHandler;
+import com.mozz.htmlnative.stylehandler.StyleHelper;
 import com.mozz.htmlnative.common.PixelValue;
 import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.exception.AttrApplyException;
@@ -73,13 +73,13 @@ public final class Styles {
 
     public static void applyStyle(Context context, final HNSandBoxContext sandBoxContext, View v,
                                   DomElement domElement, @NonNull LayoutParamsLazyCreator
-                                          layoutCreator, @NonNull ViewGroup parent, AttrHandler
-                                          viewAttrHandler, AttrHandler extraAttrHandler,
-                                  LayoutAttrHandler parentAttr, StyleEntry entry, boolean
+                                          layoutCreator, @NonNull ViewGroup parent, StyleHandler
+                                          viewStyleHandler, StyleHandler extraStyleHandler,
+                                  LayoutStyleHandler parentAttr, StyleEntry entry, boolean
                                           isParent, InheritStyleStack outStack) throws
             AttrApplyException {
         applyStyle(context, sandBoxContext, v, domElement, layoutCreator, parent,
-                viewAttrHandler, extraAttrHandler, parentAttr, entry.getStyleName(), entry
+                viewStyleHandler, extraStyleHandler, parentAttr, entry.getStyleName(), entry
                         .getStyle(), isParent, outStack);
     }
 
@@ -98,9 +98,9 @@ public final class Styles {
      */
     public static void applyStyle(Context context, final HNSandBoxContext sandBoxContext, View v,
                                   DomElement domElement, @NonNull LayoutParamsLazyCreator
-                                          layoutCreator, @NonNull ViewGroup parent, AttrHandler
-                                          viewAttrHandler, AttrHandler extraAttrHandler,
-                                  LayoutAttrHandler parentAttr, String styleName, Object style,
+                                          layoutCreator, @NonNull ViewGroup parent, StyleHandler
+                                          viewStyleHandler, StyleHandler extraStyleHandler,
+                                  LayoutStyleHandler parentAttr, String styleName, Object style,
                                   boolean isParent, InheritStyleStack outStack) throws
             AttrApplyException {
 
@@ -223,22 +223,22 @@ public final class Styles {
 
             case ATTR_PADDING_LEFT:
                 int paddingLeft = ParametersUtils.toInt(style);
-                AttrsHelper.setLeftPadding(v, paddingLeft);
+                StyleHelper.setLeftPadding(v, paddingLeft);
                 break;
 
             case ATTR_PADDING_RIGHT:
                 int paddingRight = ParametersUtils.toInt(style);
-                AttrsHelper.setRightPadding(v, paddingRight);
+                StyleHelper.setRightPadding(v, paddingRight);
                 break;
 
             case ATTR_PADDING_TOP:
                 int paddingTop = ParametersUtils.toInt(style);
-                AttrsHelper.setTopPadding(v, paddingTop);
+                StyleHelper.setTopPadding(v, paddingTop);
                 break;
 
             case ATTR_PADDING_BOTTOM:
                 int paddingBottom = ParametersUtils.toInt(style);
-                AttrsHelper.setBottomPadding(v, paddingBottom);
+                StyleHelper.setBottomPadding(v, paddingBottom);
                 break;
 
             case ATTR_LEFT:
@@ -294,14 +294,14 @@ public final class Styles {
                 // 2. apply the extra attr
                 // 3. use parent view attr to this
 
-                if (viewAttrHandler != null) {
-                    viewAttrHandler.apply(context, v, domElement, parent, layoutCreator,
+                if (viewStyleHandler != null) {
+                    viewStyleHandler.apply(context, v, domElement, parent, layoutCreator,
                             styleName, style, isParent);
                 }
 
                 // If there extra attr is set, then should be applied also.
-                if (extraAttrHandler != null) {
-                    extraAttrHandler.apply(context, v, domElement, parent, layoutCreator,
+                if (extraStyleHandler != null) {
+                    extraStyleHandler.apply(context, v, domElement, parent, layoutCreator,
                             styleName, style, isParent);
                 }
 
@@ -324,16 +324,16 @@ public final class Styles {
      */
     private static void applyDefaultStyle(Context context, final HNSandBoxContext sandBoxContext,
                                           View v, DomElement domElement, @NonNull ViewGroup
-                                                  parent, AttrHandler viewAttrHandler,
-                                          AttrHandler extraAttrHandler, LayoutAttrHandler
+                                                  parent, StyleHandler viewStyleHandler,
+                                          StyleHandler extraStyleHandler, LayoutStyleHandler
                                                   parentAttr, @NonNull LayoutParamsLazyCreator
                                                   paramsLazyCreator) throws AttrApplyException {
-        if (viewAttrHandler != null) {
-            viewAttrHandler.setDefault(context, v, domElement, paramsLazyCreator, parent);
+        if (viewStyleHandler != null) {
+            viewStyleHandler.setDefault(context, v, domElement, paramsLazyCreator, parent);
         }
 
-        if (extraAttrHandler != null) {
-            extraAttrHandler.setDefault(context, v, domElement, paramsLazyCreator, parent);
+        if (extraStyleHandler != null) {
+            extraStyleHandler.setDefault(context, v, domElement, paramsLazyCreator, parent);
         }
 
         if (parentAttr != null) {
@@ -351,16 +351,16 @@ public final class Styles {
      * @param parent            {@link ViewGroup}, parent of the view
      * @param paramsLazyCreator {@link ViewGroup.LayoutParams}, layoutParams for parent
      *                          when add this view to parent
-     * @param viewAttrHandler
-     * @param extraAttrHandler
+     * @param viewStyleHandler
+     * @param extraStyleHandler
      * @param parentAttrHandler @throws AttrApplyException
      */
     public static void apply(Context context, @NonNull final HNSandBoxContext sandBoxContext,
                              AttrsSet source, View v, @NonNull AttrsSet.AttrsOwner tree,
                              DomElement domElement, @NonNull ViewGroup parent, @NonNull
                                      LayoutParamsLazyCreator paramsLazyCreator, boolean
-                                     applyDefault, boolean isParent, AttrHandler viewAttrHandler,
-                             AttrHandler extraAttrHandler, LayoutAttrHandler parentAttrHandler,
+                                     applyDefault, boolean isParent, StyleHandler viewStyleHandler,
+                             StyleHandler extraStyleHandler, LayoutStyleHandler parentAttrHandler,
                              InheritStyleStack stack) throws AttrApplyException {
 
         HNLog.d(HNLog.ATTR, "[" + source.getName() + "]: apply to AttrsOwner " + tree.attrIndex()
@@ -370,8 +370,8 @@ public final class Styles {
         // Apply the default attr to view first;
         // Then process each parameter.
         if (applyDefault) {
-            applyDefaultStyle(context, sandBoxContext, v, domElement, parent, viewAttrHandler,
-                    extraAttrHandler, parentAttrHandler, paramsLazyCreator);
+            applyDefaultStyle(context, sandBoxContext, v, domElement, parent, viewStyleHandler,
+                    extraStyleHandler, parentAttrHandler, paramsLazyCreator);
         }
 
         Iterator<StyleEntry> itr = source.iterator(tree);
@@ -379,14 +379,13 @@ public final class Styles {
             StyleEntry styleEntry = itr.next();
 
             applyStyle(context, sandBoxContext, v, domElement, paramsLazyCreator, parent,
-                    viewAttrHandler, extraAttrHandler, parentAttrHandler, styleEntry.getStyleName
+                    viewStyleHandler, extraStyleHandler, parentAttrHandler, styleEntry.getStyleName
                             (), styleEntry.getStyle(), isParent, stack);
 
         }
     }
 
-    public static Object getStyle(View v, String styleName, AttrHandler attrHandler, AttrHandler
-            extraAttrHandler, LayoutAttrHandler parentHandler) {
+    public static Object getStyle(View v, String styleName, StyleHandler styleHandler, StyleHandler extraStyleHandler, LayoutStyleHandler parentHandler) {
         switch (styleName) {
             case ATTR_WIDTH:
                 int width = v.getLayoutParams().width;
@@ -478,15 +477,15 @@ public final class Styles {
                 return null;
 
             default:
-                if (attrHandler != null) {
-                    Object val = attrHandler.getStyle(v, styleName);
+                if (styleHandler != null) {
+                    Object val = styleHandler.getStyle(v, styleName);
                     if (val != null) {
                         return val;
                     }
                 }
 
-                if (extraAttrHandler != null) {
-                    Object val = extraAttrHandler.getStyle(v, styleName);
+                if (extraStyleHandler != null) {
+                    Object val = extraStyleHandler.getStyle(v, styleName);
                     if (val != null) {
                         return val;
                     }

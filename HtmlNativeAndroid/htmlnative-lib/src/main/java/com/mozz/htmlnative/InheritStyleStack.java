@@ -1,11 +1,5 @@
 package com.mozz.htmlnative;
 
-import android.view.View;
-
-import com.mozz.htmlnative.attrshandler.AttrHandler;
-import com.mozz.htmlnative.attrshandler.AttrsHelper;
-import com.mozz.htmlnative.attrshandler.LayoutAttrHandler;
-import com.mozz.htmlnative.css.InheritStylesRegistry;
 import com.mozz.htmlnative.css.Styles;
 
 import java.util.Arrays;

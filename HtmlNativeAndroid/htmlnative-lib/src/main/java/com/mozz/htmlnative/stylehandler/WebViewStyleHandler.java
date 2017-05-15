@@ -1,4 +1,4 @@
-package com.mozz.htmlnative.attrshandler;
+package com.mozz.htmlnative.stylehandler;
 
 import android.content.Context;
 import android.view.View;
@@ -12,7 +12,7 @@ import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
  * @author Yang Tao, 17/3/6.
  */
 
-class WebViewAttrHandler extends AttrHandler {
+class WebViewStyleHandler extends StyleHandler {
 
     private static final String ATTR_SRC = "src";
 
