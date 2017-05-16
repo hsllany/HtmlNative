@@ -7,8 +7,9 @@ HtmlNative
 
 不同于Webview, HtmlNative直接将Html和Css转换成原生控件，这样做的好处是：
 
-- 让界面能达到更好的体验效果
-- 用户无感知
+- 满足部分定制化的场景需求，客户端无需发版，通过服务器渲染HTML+CSS，客户端展现即可
+- 不同于WebView，原生控件让界面可以能达到更好的体验效果，且用户无感知
+- 客户端可以自定义标签和对应控件，灵活开发
 - 简易部署，使用最容易的html + css来控制界面
 
 > Still working on putting Lua script into the raw html file to control the simple logic inside.
@@ -85,6 +86,7 @@ p *{}
 [Download Video](doc/screen1.mp4)
 
 ![Demo](doc/screen1.jpg)
+![Demo](doc/screen2.jpg)
 
 Html:
 
@@ -147,18 +149,7 @@ Html:
 
     <p>美国研究院由滴滴研究院副院长弓峰敏带领。弓峰敏是去年 9 月加入滴滴，担任滴滴信息安全战略副总裁和滴滴研究院副院长，并开始组建美国研究院。加盟滴滴之前，他是安全公司 Palo Alto
         Networks 的联合创始人。</p>
-
-    <div class="leheadline_video_wrapper">
-        <video src="http://www.w3school.com.cn/example/html5/mov_bbb.mp4" type="video/mp4"
-               controls="controls" poster="coop/pic.png" preload="none"></video>
-    </div>
-
-    <div class="leheadline_video_wrapper">
-        <video src="http://www.w3school.com.cn/example/html5/mov_bbb.mp4" type="video/mp4"
-               controls="controls" poster="coop/pic.png" preload="none"></video>
-        <span class="leheadline_intro">说明</span>
-    </div>
-
+        
     <p>这一次，滴滴还从Uber挖来了查理·米勒（Charlie Miller）。米勒被誉为全球顶级安全专家，曾是一名黑客，从事苹果越狱和安全研究，在加入 Uber
         之前，米勒受雇于苹果。2015 年，米勒完成了对一辆吉普切诺基的远程控制实验。2015 年 9 月，他加入Uber担任汽车安全工程师。</p>
 
@@ -168,7 +159,6 @@ Html:
 <div id="leheadline_other">
     <img src="coop/banner.png"/>
 </div>
-<script src="http://rec.letv.com/detail_template/script-v1.js"> </script>
 </body>
 </html>
 ```
