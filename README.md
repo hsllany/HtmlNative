@@ -9,10 +9,11 @@ HtmlNative
 
 - 满足部分定制化的场景需求，客户端无需发版，通过服务器渲染HTML+CSS，客户端展现即可
 - 不同于WebView，原生控件让界面可以能达到更好的体验效果，且用户无感知
-- 客户端可以自定义标签和对应控件，灵活开发
+- 客户端可以自定义HTML标签和对应控件，灵活开发
 - 简易部署，使用最容易的html + css来控制界面
+- 还可以通过内嵌在html```<script>```标签中的[ Lua ](http://www.lua.org/)脚本，来控制整个动态化控件的部分行为
 
-> Still working on putting Lua script into the raw html file to control the simple logic inside.
+> 远景目标是把JavaScript通过V8引擎集成，这样就完成了对整个H5技术栈的模拟
 
 ## Html支持情况
 
@@ -192,6 +193,81 @@ HNativeEngine.getInstance().loadView(mActivity, htmlSource, new
 });
 
 ```
+
+## HNLua API
+
+HNLua是一套定义在HtmlNative框架下的精简API，通过该API，可以灵活的控制界面、调整样式、跳转url、以及有限地访问部分Android的基础能力。
+
+### 例子：
+
+```html
+<html>
+    <head>
+        <title>iframe</title>
+        <meta name="nihao" content="world"/>
+        <style>
+            #text1{
+                background:red;
+                color:green;
+                margin: 3em 3em;
+                padding: 2em;
+            }
+
+            button{
+                color:yellow
+            }
+
+            #parent{
+                color: red;
+             }
+
+        </style>
+    </head>
+
+    <body>
+        <text id="text1">This is an demo of iframe<br/>nihao
+        </text>
+        <button onclick="changeText1">click me</button>
+    <div id="parent" class="claz1 claz2 claz3"></div>
+    </body>
+
+    <script type="text/lua">
+        toast("hello world")
+
+        b = false
+
+        local vv = document.createView("p", "")
+        vv.setAttribute("text:helloworld");
+
+        local parent = getElementById("parent")
+
+        parent.appendChild(vv)
+
+        console.log(vv.toString())
+        console.log(vv.getAttribute("background"));
+
+        function changeText1()
+            local v = getElementById("text1")
+            console.log(v.id())
+            if(b) then
+                v.setAttribute("background:red;color:#fff")
+            else
+                v.setAttribute("background:blue;color:red")
+            end
+            b = not(b)
+
+            document.jump("http://www.baidu.com")
+
+        end
+    </script>
+</html>
+```
+
+以上示例，使用HNLuaAPI, 动态添加了一个生成了一个```<p>```，并设置了其```text```属性，并添加到id位parent的```div```中；
+
+且在```<button onclick="changeText1">click me</button>```时，为其设置了一个点击事件，事件的行为，在下面由函数```changeText1()```来进行了定义；通过变量b的值，动态改变其背景色和文字颜色；并跳转到http://www.baidu.com链接中。
+
+详细的HNLua API文档可见下：待补充。
 
 
 ## License
