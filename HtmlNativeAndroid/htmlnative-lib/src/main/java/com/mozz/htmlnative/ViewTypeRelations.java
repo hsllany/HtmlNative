@@ -97,6 +97,6 @@ public final class ViewTypeRelations {
         }
 
         sExtraTagClassTable.put(tag, HNViewItem);
-        StyleHandlerFactory.registerExtraAttrHandler(HNViewItem.getViewClass(), HNViewItem.getHandler());
+        StyleHandlerFactory.registerExtraStyleHandler(HNViewItem.getViewClass(), HNViewItem.getHandler());
     }
 }

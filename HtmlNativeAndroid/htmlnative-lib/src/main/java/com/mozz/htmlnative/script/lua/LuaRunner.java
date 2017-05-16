@@ -29,8 +29,6 @@ public class LuaRunner extends ScriptRunner {
 
     private static final String TAG = LuaRunner.class.getSimpleName();
 
-    private Map<String, LuaValue> mFunctionTable = new HashMap<>();
-
     public LuaRunner(HNSandBoxContext sandBoxContext) {
         super(sandBoxContext);
 
@@ -43,7 +41,6 @@ public class LuaRunner extends ScriptRunner {
 
         // register api
         register(new LToast(sandBoxContext.getAndroidContext()));
-        register(new LCallback(this));
         register(new LFindViewById(sandBoxContext));
         Log.i(PERFORMANCE_TAG, "init Lua module spend " + (SystemClock.currentThreadTimeMillis()
                 - time1) + "" +
@@ -83,21 +80,17 @@ public class LuaRunner extends ScriptRunner {
 
     @Override
     public void runFunction(String functionName) {
-        LuaValue v = mFunctionTable.get(functionName);
+        LuaValue v = mGlobals.get(functionName);
         if (v != null) {
             v.call();
         }
     }
 
     public void runFunction(String functionName, LuaFuncParams params) {
-        LuaValue v = mFunctionTable.get(functionName);
+        LuaValue v = mGlobals.get(functionName);
         if (v != null) {
             v.call(params.mValue);
         }
-    }
-
-    public void putFunction(String functionName, LuaValue l) {
-        mFunctionTable.put(functionName, l);
     }
 
     protected final void register(ILApi api) {

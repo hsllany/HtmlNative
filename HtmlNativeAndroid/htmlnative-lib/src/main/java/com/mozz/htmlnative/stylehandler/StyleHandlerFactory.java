@@ -97,8 +97,8 @@ public final class StyleHandlerFactory {
         return sExtraAttrHandlerCache.get(view.getClass());
     }
 
-    public static StyleHandler registerExtraAttrHandler(Class<? extends View> viewClass,
-                                                        StyleHandler styleHandler) {
+    public static StyleHandler registerExtraStyleHandler(Class<? extends View> viewClass,
+                                                         StyleHandler styleHandler) {
         return sExtraAttrHandlerCache.put(viewClass, styleHandler);
     }
 
