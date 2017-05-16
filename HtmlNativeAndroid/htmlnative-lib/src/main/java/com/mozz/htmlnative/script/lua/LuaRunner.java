@@ -1,22 +1,15 @@
 package com.mozz.htmlnative.script.lua;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.SystemClock;
 import android.util.Log;
 
 import com.mozz.htmlnative.HNLog;
 import com.mozz.htmlnative.HNSandBoxContext;
 import com.mozz.htmlnative.script.ScriptRunner;
-import com.mozz.htmlnative.utils.MainHandlerUtils;
 
 import org.luaj.vm2.Globals;
-import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.JsePlatform;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static com.mozz.htmlnative.HNEnvironment.PERFORMANCE_TAG;
 
@@ -28,7 +21,7 @@ public class LuaRunner extends ScriptRunner {
     private Globals mGlobals;
 
     private static final String TAG = LuaRunner.class.getSimpleName();
-
+    
     public LuaRunner(HNSandBoxContext sandBoxContext) {
         super(sandBoxContext);
 
@@ -53,43 +46,40 @@ public class LuaRunner extends ScriptRunner {
         try {
             LuaValue l = mGlobals.load(script);
             l.call();
-        } catch (final LuaError e) {
+        } catch (final Exception e) {
             // make sure that lua script dose not crash the whole app
             e.printStackTrace();
             Log.e(TAG, "LuaScriptRun");
 
-            MainHandlerUtils.instance().post(new Runnable() {
-                @Override
-                public void run() {
-                    new AlertDialog.Builder(mSandbox.getAndroidContext()).setMessage("LuaScript " +
-                            "Wrong:\n" + e.getMessage()).setTitle("LuaSyntaxError")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-
-
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    }).show();
-
-                }
-            });
-
+            dispatchScriptError(e);
         }
     }
 
     @Override
     public void runFunction(String functionName) {
         LuaValue v = mGlobals.get(functionName);
+
         if (v != null) {
-            v.call();
+            try {
+                v.call();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e(TAG, "LuaScriptRun");
+                dispatchScriptError(e);
+            }
         }
     }
 
     public void runFunction(String functionName, LuaFuncParams params) {
         LuaValue v = mGlobals.get(functionName);
         if (v != null) {
-            v.call(params.mValue);
+            try {
+                v.call(params.mValue);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e(TAG, "LuaScriptRun");
+                dispatchScriptError(e);
+            }
         }
     }
 
@@ -104,5 +94,6 @@ public class LuaRunner extends ScriptRunner {
             mGlobals.set(api.objectName(), (LuaValue) api);
         }
     }
+
 
 }

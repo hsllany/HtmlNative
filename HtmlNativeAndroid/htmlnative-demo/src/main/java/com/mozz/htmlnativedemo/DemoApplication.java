@@ -1,9 +1,13 @@
 package com.mozz.htmlnativedemo;
 
+import android.app.AlertDialog;
 import android.app.Application;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -15,6 +19,7 @@ import com.mozz.htmlnative.HNLog;
 import com.mozz.htmlnative.HNativeEngine;
 import com.mozz.htmlnative.HrefLinkHandler;
 import com.mozz.htmlnative.ImageViewAdapter;
+import com.mozz.htmlnative.script.ScriptRunner;
 import com.mozz.htmlnative.view.BackgroundViewDelegate;
 import com.squareup.leakcanary.LeakCanary;
 
@@ -23,6 +28,8 @@ import com.squareup.leakcanary.LeakCanary;
  */
 
 public class DemoApplication extends Application {
+
+    private Handler mMainHandler = new Handler(Looper.getMainLooper());
 
     @Override
     public void onCreate() {
@@ -60,6 +67,27 @@ public class DemoApplication extends Application {
                 Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);
+            }
+        });
+
+        HNativeEngine.registerScriptCallback(new ScriptRunner.OnScriptCallback() {
+            @Override
+            public void error(final Exception e) {
+                mMainHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        new AlertDialog.Builder(DemoApplication.this).setMessage("LuaScript " +
+                                "Wrong:\n" + e.getMessage()).setTitle("LuaSyntaxError")
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).show();
+                    }
+                });
             }
         });
 

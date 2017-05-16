@@ -10,8 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 
-import com.mozz.htmlnative.stylehandler.StyleHandlerFactory;
 import com.mozz.htmlnative.dom.HNHead;
+import com.mozz.htmlnative.script.ScriptRunner;
+import com.mozz.htmlnative.stylehandler.StyleHandlerFactory;
 import com.mozz.htmlnative.utils.ParametersUtils;
 import com.mozz.htmlnative.view.BackgroundViewDelegate;
 
@@ -136,6 +137,7 @@ public final class HNativeEngine {
         HNInternalThread.quit();
         HNScriptRunnerThread.quit();
         StyleHandlerFactory.clear();
+        ScriptRunner.clearUniversalCallback();
     }
 
     public void setImageViewAdapter(@NonNull ImageViewAdapter adapter) {
@@ -156,6 +158,10 @@ public final class HNativeEngine {
 
     public static HrefLinkHandler getHrefLinkHandler() {
         return sHrefLinkHandler;
+    }
+
+    public static void registerScriptCallback(ScriptRunner.OnScriptCallback callback) {
+        ScriptRunner.registerUniversalCallback(callback);
     }
 
     public interface OnHNViewLoaded {

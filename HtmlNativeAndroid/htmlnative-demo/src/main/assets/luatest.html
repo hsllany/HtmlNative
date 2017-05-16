@@ -34,23 +34,22 @@
         b = false
 
         local vv = document.createView("p", "")
-        vv.setStyle("text:helloworld");
+        vv.setAttribute("text:helloworld");
 
         local parent = getElementById("parent")
 
         parent.appendChild(vv)
 
         console.log(vv.toString())
+        console.log(vv.getAttribute("background"));
 
         function changeText1()
             local v = getElementById("text1")
-
-            toast(v.getId())
-
+            console.log(v.id())
             if(b) then
-                v.setStyle("background:red;color:#fff")
+                v.setAttribute("background:red;color:#fff")
             else
-                v.setStyle("background:blue;color:red")
+                v.setAttribute("background:blue;color:red")
             end
             b = not(b)
 
