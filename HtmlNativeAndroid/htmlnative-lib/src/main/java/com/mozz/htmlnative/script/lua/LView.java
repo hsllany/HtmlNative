@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import com.mozz.htmlnative.HNRenderer;
 import com.mozz.htmlnative.HNSandBoxContext;
 import com.mozz.htmlnative.InheritStyleStack;
+import com.mozz.htmlnative.dom.AttachedElement;
 import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.parser.CssParser;
@@ -28,8 +29,8 @@ import java.util.Map;
 class LView extends LuaTable {
 
     private View mView;
-    boolean mAdded;
-    private boolean mCreated;
+    volatile boolean mAdded;
+    private volatile boolean mCreated;
     private HNSandBoxContext mContext;
     private DomElement mDomElement;
     private Map<String, Object> mInlineStyleRaw;
@@ -117,14 +118,31 @@ class LView extends LuaTable {
             }
         });
 
+        set("getClass", new ZeroArgFunction() {
+            @Override
+            public LuaValue call() {
+                String[] classes = ((AttachedElement) mView.getTag()).getClazz();
+                LuaTable classesLua = new LuaTable();
+                if (classes != null && classes.length > 0) {
+                    for (String clazz : classes) {
+                        if (clazz != null) {
+                            classesLua.add(LuaValue.valueOf(clazz));
+                        }
+                    }
+
+                    return classesLua;
+                }
+                return LuaTable.NIL;
+            }
+        });
+
         set("appendChild", new OneArgFunction() {
             @Override
             public LuaValue call(LuaValue arg) {
                 if (mCreated && arg instanceof LView && mView instanceof ViewGroup) {
                     final LView child = (LView) arg;
-                    if (!child.mAdded) {
-                        if (!child.mCreated) {
-
+                    if (!child.mCreated) {
+                        if (!child.mAdded) {
                             MainHandlerUtils.instance().post(new Runnable() {
                                 @Override
                                 public void run() {
@@ -154,13 +172,13 @@ class LView extends LuaTable {
                                         }
 
                                         child.mCreated = true;
-                                        child.mAdded = true;
-
                                         // consume the inline style
                                         child.mInlineStyleRaw = null;
                                         ((ViewGroup) mView).addView(child.mView,
                                                 LayoutParamsLazyCreator.createLayoutParams(mView,
                                                         creator));
+                                        child.mAdded = true;
+
                                     } catch (HNRenderer.HNRenderException e) {
                                         e.printStackTrace();
                                     }
@@ -169,6 +187,45 @@ class LView extends LuaTable {
                         }
                     }
                 }
+                return LuaValue.NIL;
+            }
+        });
+
+        set("removeChild", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue arg) {
+                if (mAdded && arg instanceof LView && mView instanceof ViewGroup) {
+                    final LView toRemoved = (LView) arg;
+
+                    MainHandlerUtils.instance().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (toRemoved.mAdded) {
+                                ((ViewGroup) mView).removeView(toRemoved.mView);
+                            }
+                        }
+                    });
+
+                }
+                return LuaValue.NIL;
+            }
+        });
+
+        set("children", new ZeroArgFunction() {
+            @Override
+            public LuaValue call() {
+                if (mView instanceof ViewGroup && mAdded) {
+                    LuaTable children = new LuaTable();
+
+                    int childCount = ((ViewGroup) mView).getChildCount();
+                    for (int i = 0; i < childCount; i++) {
+                        LView lView = new LView(((ViewGroup) mView).getChildAt(i), mContext);
+                        children.add(lView);
+                    }
+
+                    return children;
+                }
+
                 return LuaValue.NIL;
             }
         });
