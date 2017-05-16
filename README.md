@@ -11,7 +11,7 @@ HtmlNative
 - 不同于WebView，原生控件让界面可以能达到更好的体验效果，且用户无感知
 - 客户端可以自定义HTML标签和对应控件，灵活开发
 - 简易部署，使用最容易的html + css来控制界面
-- 还可以通过内嵌在html```<script>```标签中的[ Lua ](http://www.lua.org/)脚本，来控制整个动态化控件的部分行为
+- 此外，还可以通过内嵌在html```<script>```标签中的[ Lua ](http://www.lua.org/)脚本，来控制整个动态化控件的部分行为。其中集成了部分API，构成HNLua API.
 
 > 远景目标是把JavaScript通过V8引擎集成，这样就完成了对整个H5技术栈的模拟
 
@@ -40,41 +40,23 @@ type选择器
 ```css
 p{}
 div{}
-```
 
 id选择器
-
-```css
 #id1{}
-```
 
 class选择器
-
-```css
 .class1{}
-```
 
 组
-
-```css
 #id1, #id2{}
-```
 
 子孙选择器
-
-```css
 div p{}
-```
 
 子选择器
-
-```css
 div > p{}
-```
 
 全部选择器
-
-```css
 *{}
 p *{}
 ```
@@ -196,7 +178,7 @@ HNativeEngine.getInstance().loadView(mActivity, htmlSource, new
 
 ## HNLua API
 
-HNLua是一套定义在HtmlNative框架下的精简API，通过该API，可以灵活的控制界面、调整样式、跳转url、以及有限地访问部分Android的基础能力。
+HNLua API是一套定义在HtmlNative框架下的精简API，通过该API，可以灵活的控制界面、调整样式、跳转url、以及有限地访问部分Android的基础能力。
 
 ### 例子：
 
@@ -263,11 +245,11 @@ HNLua是一套定义在HtmlNative框架下的精简API，通过该API，可以�
 </html>
 ```
 
-以上示例，使用HNLuaAPI, 动态添加了一个生成了一个```<p>```，并设置了其```text```属性，并添加到id位parent的```div```中；
+以上示例，使用HNLuaAPI, 动态添加了一个生成了一个```<p>```，并设置了其```text```属性，最终添加到```id=parent```的```<div>```中；
 
-且在```<button onclick="changeText1">click me</button>```时，为其设置了一个点击事件，事件的行为，在下面由函数```changeText1()```来进行了定义；通过变量b的值，动态改变其背景色和文字颜色；并跳转到http://www.baidu.com链接中。
+此外，在html中有一段```<button onclick="changeText1">click me</button>```，为```<button>```控件设置了一个点击事件，事件的行为，在下面由函数```changeText1()```定义：通过变量b的值，动态改变其背景色和文字颜色；并跳转链接。
 
-详细的HNLua API文档可见下：待补充。
+更多的HNLua API文档及例子可见：待补充。
 
 
 ## License
