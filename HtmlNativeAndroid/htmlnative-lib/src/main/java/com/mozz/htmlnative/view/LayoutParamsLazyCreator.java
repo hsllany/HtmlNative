@@ -73,8 +73,6 @@ public class LayoutParamsLazyCreator {
     public static ViewGroup.LayoutParams createLayoutParams(View parent, LayoutParamsLazyCreator
             creator) {
 
-        Log.d("LALA", creator.toString());
-
         if (parent instanceof AbsoluteLayout) {
             return creator.toAbsoluteLayoutParams();
         } else if (parent instanceof HNDiv || parent instanceof HNRootView) {
