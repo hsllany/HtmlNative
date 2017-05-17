@@ -1,6 +1,6 @@
 package com.mozz.htmlnative.script;
 
-import com.mozz.htmlnative.token.Token;
+import com.mozz.htmlnative.parser.token.Token;
 
 /**
  * @author Yang Tao, 17/3/20.

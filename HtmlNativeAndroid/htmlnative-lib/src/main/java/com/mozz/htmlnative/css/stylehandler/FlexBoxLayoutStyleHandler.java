@@ -1,4 +1,4 @@
-package com.mozz.htmlnative.stylehandler;
+package com.mozz.htmlnative.css.stylehandler;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

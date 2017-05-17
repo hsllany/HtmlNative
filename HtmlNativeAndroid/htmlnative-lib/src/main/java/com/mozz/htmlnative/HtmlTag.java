@@ -2,7 +2,7 @@ package com.mozz.htmlnative;
 
 import android.support.annotation.NonNull;
 
-import com.mozz.htmlnative.token.TokenType;
+import com.mozz.htmlnative.parser.token.TokenType;
 
 import java.util.HashSet;
 import java.util.Set;

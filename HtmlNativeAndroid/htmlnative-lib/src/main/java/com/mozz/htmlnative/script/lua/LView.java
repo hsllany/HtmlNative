@@ -12,9 +12,9 @@ import com.mozz.htmlnative.dom.AttachedElement;
 import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.parser.CssParser;
-import com.mozz.htmlnative.stylehandler.LayoutStyleHandler;
-import com.mozz.htmlnative.stylehandler.StyleHandler;
-import com.mozz.htmlnative.stylehandler.StyleHandlerFactory;
+import com.mozz.htmlnative.css.stylehandler.LayoutStyleHandler;
+import com.mozz.htmlnative.css.stylehandler.StyleHandler;
+import com.mozz.htmlnative.css.stylehandler.StyleHandlerFactory;
 import com.mozz.htmlnative.utils.MainHandlerUtils;
 import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
 

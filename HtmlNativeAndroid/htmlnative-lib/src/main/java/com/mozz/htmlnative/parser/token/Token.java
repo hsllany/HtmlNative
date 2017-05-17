@@ -1,4 +1,4 @@
-package com.mozz.htmlnative.token;
+package com.mozz.htmlnative.parser.token;
 
 
 import android.support.annotation.NonNull;

@@ -12,7 +12,7 @@ import android.webkit.WebView;
 
 import com.mozz.htmlnative.dom.HNHead;
 import com.mozz.htmlnative.script.ScriptRunner;
-import com.mozz.htmlnative.stylehandler.StyleHandlerFactory;
+import com.mozz.htmlnative.css.stylehandler.StyleHandlerFactory;
 import com.mozz.htmlnative.utils.ParametersUtils;
 import com.mozz.htmlnative.view.BackgroundViewDelegate;
 

@@ -12,7 +12,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
-import com.mozz.htmlnative.stylehandler.StyleHandlerFactory;
+import com.mozz.htmlnative.css.stylehandler.StyleHandlerFactory;
 import com.mozz.htmlnative.view.HNText;
 import com.mozz.htmlnative.view.HNDiv;
 

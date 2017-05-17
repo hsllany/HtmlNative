@@ -8,8 +8,8 @@ import com.mozz.htmlnative.HNSegment;
 import com.mozz.htmlnative.common.CharQueue;
 import com.mozz.htmlnative.exception.HNSyntaxError;
 import com.mozz.htmlnative.reader.TextReader;
-import com.mozz.htmlnative.token.Token;
-import com.mozz.htmlnative.token.TokenType;
+import com.mozz.htmlnative.parser.token.Token;
+import com.mozz.htmlnative.parser.token.TokenType;
 
 import java.io.EOFException;
 

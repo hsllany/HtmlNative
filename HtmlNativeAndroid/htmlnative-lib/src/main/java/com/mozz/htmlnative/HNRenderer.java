@@ -14,13 +14,13 @@ import com.mozz.htmlnative.css.InheritStylesRegistry;
 import com.mozz.htmlnative.css.StyleSheet;
 import com.mozz.htmlnative.css.Styles;
 import com.mozz.htmlnative.css.selector.CssSelector;
+import com.mozz.htmlnative.css.stylehandler.LayoutStyleHandler;
+import com.mozz.htmlnative.css.stylehandler.StyleHandler;
+import com.mozz.htmlnative.css.stylehandler.StyleHandlerFactory;
 import com.mozz.htmlnative.dom.AttachedElement;
 import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.dom.HNDomTree;
 import com.mozz.htmlnative.exception.AttrApplyException;
-import com.mozz.htmlnative.stylehandler.LayoutStyleHandler;
-import com.mozz.htmlnative.stylehandler.StyleHandler;
-import com.mozz.htmlnative.stylehandler.StyleHandlerFactory;
 import com.mozz.htmlnative.view.HNRootView;
 import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
 

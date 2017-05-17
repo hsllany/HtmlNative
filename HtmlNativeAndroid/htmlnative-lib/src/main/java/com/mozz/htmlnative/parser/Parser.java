@@ -15,8 +15,8 @@ import com.mozz.htmlnative.dom.Meta;
 import com.mozz.htmlnative.exception.HNSyntaxError;
 import com.mozz.htmlnative.reader.TextReader;
 import com.mozz.htmlnative.script.ScriptInfo;
-import com.mozz.htmlnative.token.Token;
-import com.mozz.htmlnative.token.TokenType;
+import com.mozz.htmlnative.parser.token.Token;
+import com.mozz.htmlnative.parser.token.TokenType;
 import com.mozz.htmlnative.utils.ParametersUtils;
 
 import java.io.EOFException;
@@ -25,20 +25,20 @@ import java.util.Map;
 
 import static com.mozz.htmlnative.HNEnvironment.PERFORMANCE_TAG;
 import static com.mozz.htmlnative.HtmlTag.isSwallowInnerTag;
-import static com.mozz.htmlnative.token.TokenType.EndAngleBracket;
-import static com.mozz.htmlnative.token.TokenType.Equal;
-import static com.mozz.htmlnative.token.TokenType.Exclamation;
-import static com.mozz.htmlnative.token.TokenType.Head;
-import static com.mozz.htmlnative.token.TokenType.Html;
-import static com.mozz.htmlnative.token.TokenType.Id;
-import static com.mozz.htmlnative.token.TokenType.Inner;
-import static com.mozz.htmlnative.token.TokenType.Meta;
-import static com.mozz.htmlnative.token.TokenType.Script;
-import static com.mozz.htmlnative.token.TokenType.Slash;
-import static com.mozz.htmlnative.token.TokenType.StartAngleBracket;
-import static com.mozz.htmlnative.token.TokenType.Style;
-import static com.mozz.htmlnative.token.TokenType.Template;
-import static com.mozz.htmlnative.token.TokenType.Title;
+import static com.mozz.htmlnative.parser.token.TokenType.EndAngleBracket;
+import static com.mozz.htmlnative.parser.token.TokenType.Equal;
+import static com.mozz.htmlnative.parser.token.TokenType.Exclamation;
+import static com.mozz.htmlnative.parser.token.TokenType.Head;
+import static com.mozz.htmlnative.parser.token.TokenType.Html;
+import static com.mozz.htmlnative.parser.token.TokenType.Id;
+import static com.mozz.htmlnative.parser.token.TokenType.Inner;
+import static com.mozz.htmlnative.parser.token.TokenType.Meta;
+import static com.mozz.htmlnative.parser.token.TokenType.Script;
+import static com.mozz.htmlnative.parser.token.TokenType.Slash;
+import static com.mozz.htmlnative.parser.token.TokenType.StartAngleBracket;
+import static com.mozz.htmlnative.parser.token.TokenType.Style;
+import static com.mozz.htmlnative.parser.token.TokenType.Template;
+import static com.mozz.htmlnative.parser.token.TokenType.Title;
 
 /**
  * @author YangTao7

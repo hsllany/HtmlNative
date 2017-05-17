@@ -12,8 +12,8 @@ import com.mozz.htmlnative.css.selector.CssSelector;
 import com.mozz.htmlnative.css.selector.IdSelector;
 import com.mozz.htmlnative.css.selector.TypeSelector;
 import com.mozz.htmlnative.exception.HNSyntaxError;
-import com.mozz.htmlnative.token.Token;
-import com.mozz.htmlnative.token.TokenType;
+import com.mozz.htmlnative.parser.token.Token;
+import com.mozz.htmlnative.parser.token.TokenType;
 
 import java.io.EOFException;
 import java.util.Map;
