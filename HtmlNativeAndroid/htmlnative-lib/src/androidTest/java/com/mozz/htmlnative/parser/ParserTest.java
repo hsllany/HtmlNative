@@ -18,7 +18,8 @@ import org.junit.runner.RunWith;
 public class ParserTest {
     @Test
     public void parseStyleSingle() throws Exception {
-        testBackground("url(http://n.sinaimg.cn/news/crawl/20170302/18ey-fycaahm6004808.jpg) #fff", "http://baidu.com", Color.WHITE);
+        testBackground("url(http://n.sinaimg.cn/news/crawl/20170302/18ey-fycaahm6004808.jpg) " +
+                "#fff", "http://baidu.com", Color.WHITE);
         testBackground("url(http://baidu.com) white", "http://baidu.com", Color.WHITE);
         testBackground("#fff url(http://baidu.com) ", "http://baidu.com", Color.WHITE);
 
@@ -69,7 +70,7 @@ public class ParserTest {
         try {
             HNSegment rootTree = parser.process();
             debug("\ntree is :");
-            debug(rootTree.mDom.wholeTreeToString());
+            debug(rootTree.getDom().wholeTreeToString());
 
             debug("\nfunction is :");
             debug(rootTree.toString());

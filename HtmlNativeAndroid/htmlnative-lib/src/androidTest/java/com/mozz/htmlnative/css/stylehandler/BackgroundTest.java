@@ -19,7 +19,7 @@ public class BackgroundTest {
 
         String s2 = "url(http://n.sinaimg.cn/news/crawl/20170302/18ey-fycaahm6004808.jpg)";
         Background r2 = Background.createOrChange("background-image", s2, null);
-        Assert.assertTrue(r2.getUrl().equals("http://n.sinaimg" +
+        Assert.assertTrue(r2.getUrl().equals("http://n.sinaimg" + "" +
                 ".cn/news/crawl/20170302/18ey-fycaahm6004808.jpg"));
 
         String s3 = "left center";
@@ -37,6 +37,9 @@ public class BackgroundTest {
         Assert.assertTrue(r5.getY() == 0.5f);
         Assert.assertTrue(r5.getColor() == Color.RED);
         Assert.assertTrue(r5.getUrl().equals("http://www.baidu.com"));
+
+        String s6 = "red url(http://www.baidu.com) left center / auto auto";
+        Background r6 = Background.createOrChange("background", s6, null);
     }
 
 }

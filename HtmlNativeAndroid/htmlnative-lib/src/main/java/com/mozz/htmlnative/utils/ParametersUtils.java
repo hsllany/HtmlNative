@@ -8,7 +8,9 @@ import android.util.TypedValue;
 import com.mozz.htmlnative.common.PixelValue;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Yang Tao, 17/2/24.
@@ -17,6 +19,36 @@ import java.util.Map;
 public final class ParametersUtils {
 
     private static final String TAG = ParametersUtils.class.getSimpleName();
+
+    private static final Set<String> sColorNameMap;
+
+    static {
+        sColorNameMap = new HashSet<>();
+        sColorNameMap.add("black");
+        sColorNameMap.add("darkgray");
+        sColorNameMap.add("gray");
+        sColorNameMap.add("lightgray");
+        sColorNameMap.add("white");
+        sColorNameMap.add("red");
+        sColorNameMap.add("green");
+        sColorNameMap.add("blue");
+        sColorNameMap.add("yellow");
+        sColorNameMap.add("cyan");
+        sColorNameMap.add("magenta");
+        sColorNameMap.add("aqua");
+        sColorNameMap.add("fuchsia");
+        sColorNameMap.add("darkgrey");
+        sColorNameMap.add("grey");
+        sColorNameMap.add("lightgrey");
+        sColorNameMap.add("lime");
+        sColorNameMap.add("maroon");
+        sColorNameMap.add("navy");
+        sColorNameMap.add("olive");
+        sColorNameMap.add("purple");
+        sColorNameMap.add("silver");
+        sColorNameMap.add("teal");
+
+    }
 
     private ParametersUtils() {
     }
@@ -178,6 +210,14 @@ public final class ParametersUtils {
             return Color.parseColor(colorString);
 
         }
+    }
+
+    public static String toHtmlColorString(int color) {
+        return "#" + Integer.toHexString(color & 0x00ffffff);
+    }
+
+    public static boolean isHtmlColorString(String string) {
+        return sColorNameMap.contains(string);
     }
 
 

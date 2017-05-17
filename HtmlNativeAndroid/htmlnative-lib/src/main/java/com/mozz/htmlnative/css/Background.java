@@ -2,6 +2,7 @@ package com.mozz.htmlnative.css;
 
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.mozz.htmlnative.utils.ParametersUtils;
@@ -28,7 +29,8 @@ public class Background {
     private static final int LK_REPEAT = 2;
     private static final int LK_X = 3;
     private static final int LK_Y = 4;
-
+    private static final int LK_WIDTH = 5;
+    private static final int LK_HEIGHT = 6;
 
     private String url = "";
     private int color = Color.TRANSPARENT;
@@ -57,15 +59,13 @@ public class Background {
                 width + "");
         String heightStr = heightMode == AUTO ? "auto" : (heightMode == PERCENTAGE ? height + "%"
                 : height + "");
-        String widthColorStr = colorWidthMode == PERCENTAGE ? colorWidth + "%" : colorWidth + "";
-        String heightColorStr = colorHeightMode == PERCENTAGE ? colorHeight + "%" : colorHeight +
-                "";
         String xStr = xMode == PERCENTAGE ? (x * 100) + "%" : x + "";
         String yStr = yMode == PERCENTAGE ? (y * 100) + "%" : y + "";
+        String urlStr = !TextUtils.isEmpty(url) ? " url(" + url + ")" : "";
 
-        return "background:" + color + " url(" + url + ") repeat=" + repeat + " x=" + xStr + " y=" +
-                yStr + ", width=" + widthStr + ", height=" + heightStr + ", colorWidth=" +
-                widthColorStr + ", colorHeight" + heightColorStr;
+        return "background:" + ParametersUtils.toHtmlColorString(color) + urlStr +
+                " " + xStr + " " +
+                yStr + " / " + widthStr + " " + heightStr + " " + repeatToString(repeat);
     }
 
     public void setColor(int color) {
@@ -152,20 +152,22 @@ public class Background {
                 int lk = LK_COLOR;
                 for (String item : subStrings) {
 
+                    if (item.equals("/")) {
+                        lk = LK_WIDTH;
+                        continue;
+                    }
+
                     if (item.startsWith("url(") && lk <= LK_URL) {
                         style.setUrl(item.substring(item.indexOf('(') + 1, item.lastIndexOf(')'))
                                 .trim());
                         lk = LK_URL + 1;
 
-                    } else if (item.startsWith("#") && lk == LK_COLOR) {
+                    } else if (item.startsWith("#") || ParametersUtils.isHtmlColorString(item)) {
                         try {
                             style.setColor(ParametersUtils.toColor(item));
                         } catch (IllegalArgumentException ignored) {
 
                         }
-
-                        lk = LK_COLOR + 1;
-
                     } else if (item.equals("no-repeat") || item.equals("repeat-x") || item.equals
                             ("repeat-y") || item.equals("repeat") && lk <= LK_REPEAT) {
                         switch (item) {
@@ -186,7 +188,7 @@ public class Background {
                         }
                         lk = LK_REPEAT + 1;
 
-                    } else if (lk == LK_X) {
+                    } else if (lk >= LK_URL) {
                         try {
                             if (item.endsWith("%")) {
                                 style.setX(ParametersUtils.getPercent(item));
@@ -234,11 +236,31 @@ public class Background {
 
                         lk++;
 
-                    } else if (lk == LK_COLOR) {
-                        try {
-                            style.setColor(ParametersUtils.toColor(item));
-                        } catch (IllegalArgumentException e) {
-                            e.printStackTrace();
+                    } else if (lk == LK_WIDTH) {
+                        String width = item;
+
+                        if (width.endsWith("%")) {
+                            style.width = ParametersUtils.getPercent(width);
+                            style.widthMode = PERCENTAGE;
+                        } else if (width.equals("auto")) {
+                            style.width = 0;
+                            style.widthMode = AUTO;
+                        } else {
+                            style.width = (float) ParametersUtils.toPixel(width).getPxValue();
+                            style.widthMode = LENGTH;
+                        }
+
+                        lk++;
+                    } else if (lk == LK_HEIGHT) {
+                        String height = subStrings[1];
+
+                        if (height.endsWith("%")) {
+                            style.colorHeight = ParametersUtils.getPercent(height);
+                            style.colorHeightMode = PERCENTAGE;
+                        } else {
+                            style.colorHeight = (float) ParametersUtils.toPixel(height)
+                                    .getPxValue();
+                            style.colorHeightMode = LENGTH;
                         }
 
                         lk++;
@@ -426,5 +448,20 @@ public class Background {
 
     public float getColorHeight() {
         return colorHeight;
+    }
+
+    private static String repeatToString(int repeat) {
+        switch (repeat) {
+            case REPEAT:
+                return "repeat";
+            case REPEAT_X:
+                return "repeat-x";
+            case REPEAT_Y:
+                return "repeat-y";
+            case NO_REPEAT:
+            default:
+                return "no-repeat";
+
+        }
     }
 }

@@ -8,13 +8,13 @@ import com.mozz.htmlnative.HNRenderer;
 import com.mozz.htmlnative.HNSandBoxContext;
 import com.mozz.htmlnative.InheritStyleStack;
 import com.mozz.htmlnative.css.Styles;
+import com.mozz.htmlnative.css.stylehandler.LayoutStyleHandler;
+import com.mozz.htmlnative.css.stylehandler.StyleHandler;
+import com.mozz.htmlnative.css.stylehandler.StyleHandlerFactory;
 import com.mozz.htmlnative.dom.AttachedElement;
 import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.parser.CssParser;
-import com.mozz.htmlnative.css.stylehandler.LayoutStyleHandler;
-import com.mozz.htmlnative.css.stylehandler.StyleHandler;
-import com.mozz.htmlnative.css.stylehandler.StyleHandlerFactory;
 import com.mozz.htmlnative.utils.MainHandlerUtils;
 import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
 
@@ -56,10 +56,7 @@ class LView extends LuaTable {
     }
 
     /**
-     * Only used
-     *
-     * @param v
-     * @param context
+     * Used only by {@link LFindViewById}, which will look up view in existing view tree.
      */
     LView(final View v, final HNSandBoxContext context) {
         this((DomElement) v.getTag(), null, context);
