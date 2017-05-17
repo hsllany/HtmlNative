@@ -9,9 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.mozz.htmlnative.stylehandler.StyleHandler;
-import com.mozz.htmlnative.stylehandler.StyleHandlerFactory;
-import com.mozz.htmlnative.stylehandler.LayoutStyleHandler;
 import com.mozz.htmlnative.css.AttrsSet;
 import com.mozz.htmlnative.css.InheritStylesRegistry;
 import com.mozz.htmlnative.css.StyleSheet;
@@ -21,6 +18,9 @@ import com.mozz.htmlnative.dom.AttachedElement;
 import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.dom.HNDomTree;
 import com.mozz.htmlnative.exception.AttrApplyException;
+import com.mozz.htmlnative.stylehandler.LayoutStyleHandler;
+import com.mozz.htmlnative.stylehandler.StyleHandler;
+import com.mozz.htmlnative.stylehandler.StyleHandlerFactory;
 import com.mozz.htmlnative.view.HNRootView;
 import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
 
@@ -232,7 +232,7 @@ public final class HNRenderer {
 
             // ------- below starts the styleSheet process part -------
 
-            // first find the related StyleHandler
+            // 1 - find the related StyleHandler
 
             StyleHandler viewStyleHandler = StyleHandlerFactory.get(v);
             StyleHandler extraStyleHandler = StyleHandlerFactory.extraGet(v);
@@ -243,6 +243,15 @@ public final class HNRenderer {
                 parentLayoutAttr = (LayoutStyleHandler) parentStyleHandler;
             }
 
+            // 2 - set initial style to an view
+            try {
+                Styles.setDefaultStyle(context, sandBoxContext, v, tree, parent,
+                        viewStyleHandler, extraStyleHandler, parentLayoutAttr, layoutCreator);
+            } catch (AttrApplyException e) {
+                e.printStackTrace();
+            }
+
+            // 3 - use parent inherit style
             try {
                 /**
                  * First apply the parent styleSheet style to it.
@@ -258,20 +267,12 @@ public final class HNRenderer {
 
                     }
                 }
-
-                if (attrsSet != null) {
-                    Styles.apply(context, sandBoxContext, attrsSet, v, owner, tree, parent,
-                            layoutCreator, true, false, viewStyleHandler, extraStyleHandler,
-                            parentLayoutAttr, stack);
-
-                }
-
             } catch (AttrApplyException e) {
                 e.printStackTrace();
-                HNLog.e(HNLog.RENDER, "wrong when apply attr to " + type);
+                HNLog.e(HNLog.RENDER, "wrong when apply inherit attr to " + type);
             }
 
-            // core part to handle the styleSheet selectors
+            // 4 - use CSS to render
             if (styleSheet != null) {
                 CssSelector[] matchedSelectors = styleSheet.matchedSelector(type, tree.getId(),
                         tree.getClazz());
@@ -283,14 +284,28 @@ public final class HNRenderer {
                             try {
                                 Styles.apply(context, sandBoxContext, styleSheet, v, selector,
                                         tree, parent, layoutCreator, false, false,
-                                        viewStyleHandler, extraStyleHandler, parentLayoutAttr, stack);
+                                        viewStyleHandler, extraStyleHandler, parentLayoutAttr,
+                                        stack);
 
                             } catch (AttrApplyException e) {
                                 e.printStackTrace();
+                                HNLog.e(HNLog.RENDER, "Wrong when apply css style to " + type);
                             }
                         }
                     }
                 }
+            }
+
+            // 5 - use inline-style to render
+            try {
+                if (attrsSet != null) {
+                    Styles.apply(context, sandBoxContext, attrsSet, v, owner, tree, parent,
+                            layoutCreator, true, false, viewStyleHandler, extraStyleHandler,
+                            parentLayoutAttr, stack);
+                }
+            } catch (AttrApplyException e) {
+                e.printStackTrace();
+                HNLog.e(HNLog.RENDER, "wrong when apply inline attr to " + type);
             }
             return v;
 
@@ -396,8 +411,8 @@ public final class HNRenderer {
         }
 
         Styles.applyStyle(context, sandBoxContext, v, domElement, layoutCreator, parent,
-                viewStyleHandler, extraStyleHandler, parentLayoutAttr, styleName, style, isParent,
-                stack);
+                viewStyleHandler, extraStyleHandler, parentLayoutAttr, styleName, style,
+                isParent, stack);
     }
 
     public static void renderStyle(Context context, final HNSandBoxContext sandBoxContext, View

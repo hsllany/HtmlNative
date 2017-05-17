@@ -52,7 +52,7 @@ public class AttachedElement implements DomElement {
 
     @Override
     public CharSequence getInner() {
-        throw new UnsupportedOperationException();
+        return null;
     }
 
     @Override

@@ -322,10 +322,10 @@ public final class Styles {
     /**
      * Apply a default style to view
      */
-    private static void applyDefaultStyle(Context context, final HNSandBoxContext sandBoxContext,
-                                          View v, DomElement domElement, @NonNull ViewGroup
+    public static void setDefaultStyle(Context context, final HNSandBoxContext sandBoxContext,
+                                       View v, DomElement domElement, @NonNull ViewGroup
                                                   parent, StyleHandler viewStyleHandler,
-                                          StyleHandler extraStyleHandler, LayoutStyleHandler
+                                       StyleHandler extraStyleHandler, LayoutStyleHandler
                                                   parentAttr, @NonNull LayoutParamsLazyCreator
                                                   paramsLazyCreator) throws AttrApplyException {
         if (viewStyleHandler != null) {
@@ -362,17 +362,8 @@ public final class Styles {
                                      applyDefault, boolean isParent, StyleHandler viewStyleHandler,
                              StyleHandler extraStyleHandler, LayoutStyleHandler parentAttrHandler,
                              InheritStyleStack stack) throws AttrApplyException {
-
-        HNLog.d(HNLog.ATTR, "[" + source.getName() + "]: apply to AttrsOwner " + tree.attrIndex()
-                + ", to " + domElement.getType());
-
-
         // Apply the default attr to view first;
         // Then process each parameter.
-        if (applyDefault) {
-            applyDefaultStyle(context, sandBoxContext, v, domElement, parent, viewStyleHandler,
-                    extraStyleHandler, parentAttrHandler, paramsLazyCreator);
-        }
 
         Iterator<StyleEntry> itr = source.iterator(tree);
         while (itr.hasNext()) {
