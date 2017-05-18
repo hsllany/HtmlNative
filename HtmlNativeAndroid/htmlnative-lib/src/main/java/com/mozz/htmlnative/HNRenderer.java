@@ -68,7 +68,7 @@ public final class HNRenderer {
 
         StyleHandler viewStyleHandler = StyleHandlerFactory.get(view);
         StyleHandler extraStyleHandler = StyleHandlerFactory.extraGet(view);
-        StyleHandler parentStyleHandler = StyleHandlerFactory.get(view);
+        StyleHandler parentStyleHandler = StyleHandlerFactory.parentGet(view);
 
         LayoutStyleHandler parentLayoutAttr = null;
         if (parentStyleHandler instanceof LayoutStyleHandler) {
@@ -236,7 +236,7 @@ public final class HNRenderer {
 
             StyleHandler viewStyleHandler = StyleHandlerFactory.get(v);
             StyleHandler extraStyleHandler = StyleHandlerFactory.extraGet(v);
-            StyleHandler parentStyleHandler = StyleHandlerFactory.get(v);
+            StyleHandler parentStyleHandler = StyleHandlerFactory.parentGet(v);
 
             LayoutStyleHandler parentLayoutAttr = null;
             if (parentStyleHandler instanceof LayoutStyleHandler) {
@@ -368,32 +368,29 @@ public final class HNRenderer {
                                        LayoutParamsLazyCreator layoutParamsCreator) throws
             ClassNotFoundException, NoSuchMethodException, InvocationTargetException,
             InstantiationException, IllegalAccessException {
-        View v;
-        Object displayObj = attrsSet.getStyle(owner, "display");
-        if (displayObj != null && displayObj instanceof String) {
-            String display = (String) displayObj;
-            switch (display) {
-                case Styles.VAL_DISPLAY_FLEX:
-                    v = createAndroidView(context, "flexbox");
-                    break;
-                case Styles.VAL_DISPLAY_ABSOLUTE:
-                    v = createAndroidView(context, "box");
-                    break;
-
-                case Styles.VAL_DISPLAY_BOX:
-                default:
-                    v = createAndroidView(context, "linearbox");
-                    break;
-            }
-        } else {
-            v = createAndroidView(context, "linearbox");
-        }
 
         // set the <body> width to 100%
         layoutParamsCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
         layoutParamsCreator.width = ViewGroup.LayoutParams.WRAP_CONTENT;
 
-        return v;
+        if (attrsSet != null) {
+            Object displayObj = attrsSet.getStyle(owner, "display");
+            if (displayObj != null && displayObj instanceof String) {
+                String display = (String) displayObj;
+                switch (display) {
+                    case Styles.VAL_DISPLAY_FLEX:
+                        return createAndroidView(context, "flexbox");
+                    case Styles.VAL_DISPLAY_ABSOLUTE:
+                        return createAndroidView(context, "box");
+
+                    case Styles.VAL_DISPLAY_BOX:
+                    default:
+                        return createAndroidView(context, "linearbox");
+                }
+            }
+        }
+
+        return createAndroidView(context, "linearbox");
     }
 
     public static void renderStyle(Context context, final HNSandBoxContext sandBoxContext, View
@@ -403,7 +400,7 @@ public final class HNRenderer {
 
         StyleHandler viewStyleHandler = StyleHandlerFactory.get(v);
         StyleHandler extraStyleHandler = StyleHandlerFactory.extraGet(v);
-        StyleHandler parentStyleHandler = StyleHandlerFactory.get(v);
+        StyleHandler parentStyleHandler = StyleHandlerFactory.parentGet(v);
 
         LayoutStyleHandler parentLayoutAttr = null;
         if (parentStyleHandler instanceof LayoutStyleHandler) {

@@ -304,10 +304,10 @@ public class Background {
                                 style.setX(0f);
                                 style.xMode = PERCENTAGE;
                             } else if (item.equals("right")) {
-                                style.setX(100);
+                                style.setX(1.f);
                                 style.xMode = PERCENTAGE;
                             } else if (item.equals("center")) {
-                                style.setX(50);
+                                style.setX(0.5f);
                                 style.xMode = PERCENTAGE;
                             } else {
                                 style.xMode = LENGTH;
@@ -321,10 +321,10 @@ public class Background {
                                 style.setY(0f);
                                 style.yMode = PERCENTAGE;
                             } else if (item.equals("bottom")) {
-                                style.setY(100);
+                                style.setY(1.f);
                                 style.yMode = PERCENTAGE;
                             } else if (item.equals("center")) {
-                                style.setY(50);
+                                style.setY(0.5f);
                                 style.yMode = PERCENTAGE;
                             } else {
                                 style.yMode = LENGTH;

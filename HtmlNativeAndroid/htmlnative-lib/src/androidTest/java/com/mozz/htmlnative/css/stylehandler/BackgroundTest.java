@@ -40,6 +40,15 @@ public class BackgroundTest {
 
         String s6 = "red url(http://www.baidu.com) left center / auto auto";
         Background r6 = Background.createOrChange("background", s6, null);
+        Assert.assertTrue(r6.getColor() == Color.RED);
+        Assert.assertTrue(r6.getRepeat() == Background.NO_REPEAT);
+        Assert.assertTrue(r6.getX() == 0);
+        Assert.assertTrue(r6.getY() == 0.5f);
+        Assert.assertTrue(r6.getUrl().equals("http://www.baidu.com"));
+        Assert.assertTrue(r6.getWidth() == 0);
+        Assert.assertTrue(r6.getWidthMode() == Background.AUTO);
+        Assert.assertTrue(r6.getHeight() == 0);
+        Assert.assertTrue(r6.getHeightMode() == Background.AUTO);
     }
 
 }

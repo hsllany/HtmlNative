@@ -6,6 +6,7 @@ import android.view.ViewParent;
 
 import com.mozz.htmlnative.HNRenderer;
 import com.mozz.htmlnative.HNSandBoxContext;
+import com.mozz.htmlnative.HtmlTag;
 import com.mozz.htmlnative.InheritStyleStack;
 import com.mozz.htmlnative.css.Styles;
 import com.mozz.htmlnative.css.stylehandler.LayoutStyleHandler;
@@ -26,6 +27,8 @@ import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.ZeroArgFunction;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,12 +37,19 @@ import java.util.Map;
 
 class LView extends LuaTable {
 
+    private static final int INSERT_LAST = -1;
+    private static final int INSERT_FIRST = 0;
+
     private View mView;
     volatile boolean mAdded;
     private volatile boolean mCreated;
     private HNSandBoxContext mContext;
     private DomElement mDomElement;
+
+    // for cache insert information
     private Map<String, Object> mInlineStyleRaw;
+    private List<LView> mToBeAdded;
+    private int mInsertIndex = -1;
 
     private static StringBuilder sParserBuffer = new StringBuilder();
     private final Object mLock = new Object();
@@ -159,137 +169,23 @@ class LView extends LuaTable {
         );
 
         set("appendChild", new OneArgFunction() {
-                    @Override
-                    public LuaValue call(LuaValue arg) {
-                        if (mCreated && arg instanceof LView && mView instanceof ViewGroup) {
-                            final LView child = (LView) arg;
-                            if (!child.mCreated) {
-                                if (!child.mAdded) {
-                                    MainHandlerUtils.instance().post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            LayoutParamsLazyCreator creator = new
-                                                    LayoutParamsLazyCreator();
-                                            try {
-                                                // This must be invoked before HNRenderer.createView
-                                                child.mDomElement.setParent(mDomElement);
-
-                                                // Compute the inherit style of parent
-                                                InheritStyleStack inheritStyleStack = HNRenderer
-                                                        .computeInheritStyle(mView);
-
-                                                child.mView = HNRenderer.createView(null, child
-                                                        .mDomElement, child.mContext, (ViewGroup)
-                                                        mView, mView.getContext(), null, creator,
-                                                        child.mContext.getSegment().getStyleSheet
-                                                                (), inheritStyleStack);
-
-                                                try {
-                                                    Map<String, Object> inlineStyles;
-                                                    synchronized (mLock) {
-                                                        inlineStyles = child.mInlineStyleRaw;
-
-                                                    }
-                                                    HNRenderer.renderStyle(child.mView.getContext
-                                                            (), mContext, child.mView, child
-                                                            .mDomElement, creator, (ViewGroup)
-                                                            mView, inlineStyles, false,
-                                                            inheritStyleStack);
-                                                } catch (AttrApplyException e) {
-                                                    e.printStackTrace();
-                                                }
-
-                                                child.mCreated = true;
-                                                ((ViewGroup) mView).addView(child.mView,
-                                                        LayoutParamsLazyCreator
-                                                                .createLayoutParams(mView,
-                                                                        creator));
-
-
-                                                child.mAdded = true;
-
-                                                // consume the inline style
-                                                synchronized (mLock) {
-                                                    child.mInlineStyleRaw = null;
-                                                }
-
-                                            } catch (HNRenderer.HNRenderException e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-                                    });
-                                }
-                            }
-                        }
-                        return LuaValue.NIL;
-                    }
+            @Override
+            public LuaValue call(LuaValue arg) {
+                if (arg instanceof LView) {
+                    final LView child = (LView) arg;
+                    appendTo(LView.this, child);
                 }
-
-        );
+                return LuaValue.NIL;
+            }
+        });
 
         set("insertBefore", new OneArgFunction() {
                     @Override
                     public LuaValue call(LuaValue arg) {
-                        if (mCreated && arg instanceof LView && mView instanceof ViewGroup) {
+                        if (arg instanceof LView) {
                             final LView child = (LView) arg;
-                            if (!child.mCreated) {
-                                if (!child.mAdded) {
-                                    MainHandlerUtils.instance().post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            LayoutParamsLazyCreator creator = new
-                                                    LayoutParamsLazyCreator();
-                                            try {
-                                                // This must be invoked before HNRenderer.createView
-                                                child.mDomElement.setParent(mDomElement);
-
-                                                // Compute the inherit style of parent
-                                                InheritStyleStack inheritStyleStack = HNRenderer
-                                                        .computeInheritStyle(mView);
-
-                                                child.mView = HNRenderer.createView(null, child
-                                                        .mDomElement, child.mContext, (ViewGroup)
-                                                        mView, mView.getContext(), null, creator,
-                                                        child.mContext.getSegment().getStyleSheet
-                                                                (), inheritStyleStack);
-
-                                                Map<String, Object> inlineStyles;
-                                                synchronized (mLock) {
-                                                    inlineStyles = child.mInlineStyleRaw;
-
-                                                }
-
-                                                try {
-                                                    HNRenderer.renderStyle(child.mView.getContext
-                                                            (), mContext, child.mView, child
-                                                            .mDomElement, creator, (ViewGroup)
-                                                            mView, inlineStyles, false,
-                                                            inheritStyleStack);
-                                                } catch (AttrApplyException e) {
-                                                    e.printStackTrace();
-                                                }
-
-                                                child.mCreated = true;
-
-                                                ((ViewGroup) mView).addView(child.mView, 0,
-                                                        LayoutParamsLazyCreator
-                                                                .createLayoutParams(mView,
-                                                                        creator));
-
-
-                                                child.mAdded = true;
-
-                                                synchronized (mLock) {
-                                                    // consume the inline style
-                                                    child.mInlineStyleRaw = null;
-                                                }
-                                            } catch (HNRenderer.HNRenderException e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-                                    });
-                                }
-                            }
+                            child.mInsertIndex = INSERT_FIRST;
+                            appendTo(LView.this, child);
                         }
                         return LuaValue.NIL;
                     }
@@ -408,6 +304,95 @@ class LView extends LuaTable {
                 }
 
         );
+    }
+
+    private static void appendTo(LView parent, LView child) {
+        if (!HtmlTag.isGroupingElement(parent.mDomElement.getType())) {
+            return;
+        }
+
+        if (parent.mAdded) {
+            generateAndroidViewAndAppend(parent, child);
+        } else {
+            synchronized (parent.mLock) {
+                if (parent.mToBeAdded == null) {
+                    parent.mToBeAdded = new LinkedList<>();
+                }
+
+                parent.mToBeAdded.add(child);
+            }
+        }
+    }
+
+    private static void generateAndroidViewAndAppend(final LView parent, final LView child) {
+        if (!parent.mAdded) {
+            return;
+        }
+        MainHandlerUtils.instance().post(new Runnable() {
+            @Override
+            public void run() {
+                if (child.mAdded) {
+                    return;
+                }
+
+                LayoutParamsLazyCreator creator = new LayoutParamsLazyCreator();
+                try {
+
+                    if (!child.mCreated) {
+                        // This must be invoked before HNRenderer.createView
+                        child.mDomElement.setParent(parent.mDomElement);
+
+                        // Compute the inherit style of parent
+                        InheritStyleStack inheritStyleStack = HNRenderer.computeInheritStyle
+                                (parent.mView);
+
+                        child.mView = HNRenderer.createView(null, child.mDomElement, child
+                                .mContext, (ViewGroup) parent.mView, parent.mView.getContext(),
+                                null, creator, child.mContext.getSegment().getStyleSheet(),
+                                inheritStyleStack);
+
+                        Map<String, Object> inlineStyles;
+                        synchronized (parent.mLock) {
+                            inlineStyles = child.mInlineStyleRaw;
+
+                        }
+
+                        try {
+                            HNRenderer.renderStyle(child.mView.getContext(), parent.mContext,
+                                    child.mView, child.mDomElement, creator, (ViewGroup) parent
+                                            .mView, inlineStyles, false, inheritStyleStack);
+                        } catch (AttrApplyException e) {
+                            e.printStackTrace();
+                        }
+
+                        child.mCreated = true;
+                    }
+                    if (child.mInsertIndex == INSERT_LAST) {
+                        ((ViewGroup) parent.mView).addView(child.mView, LayoutParamsLazyCreator
+                                .createLayoutParams(parent.mView, creator));
+                    } else {
+                        ((ViewGroup) parent.mView).addView(child.mView, child.mInsertIndex,
+                                LayoutParamsLazyCreator.createLayoutParams(parent.mView, creator));
+                    }
+
+                    child.mAdded = true;
+
+                    if (child.mToBeAdded != null) {
+                        for (LView grandChild : child.mToBeAdded) {
+                            generateAndroidViewAndAppend(child, grandChild);
+                        }
+                    }
+
+                    synchronized (parent.mLock) {
+                        // consume the inline style
+                        child.mInlineStyleRaw = null;
+                        child.mToBeAdded = null;
+                    }
+                } catch (HNRenderer.HNRenderException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
 
