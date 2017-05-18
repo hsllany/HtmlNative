@@ -1,6 +1,5 @@
 package com.mozz.htmlnative.view;
 
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsoluteLayout;
@@ -54,9 +53,8 @@ public class LayoutParamsLazyCreator {
     }
 
     public AbsoluteLayout.LayoutParams toAbsoluteLayoutParams() {
-        AbsoluteLayout.LayoutParams layoutParams = new AbsoluteLayout.LayoutParams(width, height,
+        return new AbsoluteLayout.LayoutParams(width, height,
                 left, top);
-        return layoutParams;
     }
 
     public FlexboxLayout.LayoutParams toFlexLayoutParams() {
@@ -96,9 +94,6 @@ public class LayoutParamsLazyCreator {
 
         } else if (outParams instanceof ViewGroup.MarginLayoutParams) {
             ((ViewGroup.MarginLayoutParams) outParams).setMargins(creator.marginLeft, creator
-                    .marginTop, creator.marginRight, creator.marginBottom);
-        } else if (outParams instanceof FlexboxLayout.LayoutParams) {
-            ((FlexboxLayout.LayoutParams) outParams).setMargins(creator.marginLeft, creator
                     .marginTop, creator.marginRight, creator.marginBottom);
         } else {
             throw new IllegalArgumentException("can't create related layoutParams, unknown " +

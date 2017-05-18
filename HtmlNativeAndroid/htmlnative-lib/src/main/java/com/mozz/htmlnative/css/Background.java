@@ -237,30 +237,28 @@ public class Background {
                         lk++;
 
                     } else if (lk == LK_WIDTH) {
-                        String width = item;
-
-                        if (width.endsWith("%")) {
-                            style.width = ParametersUtils.getPercent(width);
+                        if (item.endsWith("%")) {
+                            style.width = ParametersUtils.getPercent(item);
                             style.widthMode = PERCENTAGE;
-                        } else if (width.equals("auto")) {
+                        } else if (item.equals("auto")) {
                             style.width = 0;
                             style.widthMode = AUTO;
                         } else {
-                            style.width = (float) ParametersUtils.toPixel(width).getPxValue();
+                            style.width = (float) ParametersUtils.toPixel(item).getPxValue();
                             style.widthMode = LENGTH;
                         }
 
                         lk++;
                     } else if (lk == LK_HEIGHT) {
-                        String height = subStrings[1];
-
-                        if (height.endsWith("%")) {
-                            style.colorHeight = ParametersUtils.getPercent(height);
-                            style.colorHeightMode = PERCENTAGE;
+                        if (item.endsWith("%")) {
+                            style.height = ParametersUtils.getPercent(item);
+                            style.heightMode = PERCENTAGE;
+                        } else if (item.equals("auto")) {
+                            style.height = 0;
+                            style.heightMode = AUTO;
                         } else {
-                            style.colorHeight = (float) ParametersUtils.toPixel(height)
-                                    .getPxValue();
-                            style.colorHeightMode = LENGTH;
+                            style.height = (float) ParametersUtils.toPixel(item).getPxValue();
+                            style.heightMode = LENGTH;
                         }
 
                         lk++;

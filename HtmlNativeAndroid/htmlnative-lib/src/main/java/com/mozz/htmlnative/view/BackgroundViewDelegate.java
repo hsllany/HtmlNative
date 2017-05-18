@@ -15,13 +15,11 @@ import com.mozz.htmlnative.css.Background;
 public final class BackgroundViewDelegate {
     private View mView;
     private Matrix mTransformMatrix;
-    private int mColor = Color.WHITE;
     private Background mBackground;
 
-    public BackgroundViewDelegate(View v, Matrix matrix, int color, Background background) {
+    public BackgroundViewDelegate(View v, Matrix matrix, Background background) {
         mView = v;
         mTransformMatrix = matrix;
-        mColor = color;
         mBackground = background;
     }
 

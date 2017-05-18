@@ -320,11 +320,7 @@ class Lexer {
             type = TokenType.Style;
             tokenContent = idStr;
 
-            if (!mIsInStyle && peekHistory(6) == '<') {
-                mIsInStyle = true;
-            } else {
-                mIsInStyle = false;
-            }
+            mIsInStyle = !mIsInStyle && peekHistory(6) == '<';
 
         } else {
             tokenContent = idStr;
@@ -581,7 +577,7 @@ class Lexer {
         return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
     }
 
-    public void clearBuf() {
+    private void clearBuf() {
         mBuffer.setLength(0);
     }
 }

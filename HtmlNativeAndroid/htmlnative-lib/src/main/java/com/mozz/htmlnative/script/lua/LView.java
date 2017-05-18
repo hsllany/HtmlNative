@@ -194,27 +194,25 @@ class LView extends LuaTable {
         );
 
         set("removeChild", new OneArgFunction() {
-                    @Override
-                    public LuaValue call(LuaValue arg) {
-                        if (mAdded && arg instanceof LView && mView instanceof ViewGroup) {
-                            final LView toRemoved = (LView) arg;
+            @Override
+            public LuaValue call(LuaValue arg) {
+                if (mAdded && arg instanceof LView && mView instanceof ViewGroup) {
+                    final LView toRemoved = (LView) arg;
 
-                            MainHandlerUtils.instance().post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (toRemoved.mAdded) {
-                                        ((ViewGroup) mView).removeView(toRemoved.mView);
-                                        toRemoved.mAdded = false;
-                                    }
-                                }
-                            });
-
+                    MainHandlerUtils.instance().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (toRemoved.mAdded) {
+                                ((ViewGroup) mView).removeView(toRemoved.mView);
+                                toRemoved.mAdded = false;
+                            }
                         }
-                        return LuaValue.NIL;
-                    }
-                }
+                    });
 
-        );
+                }
+                return LuaValue.NIL;
+            }
+        });
 
         set("childNodes", new ZeroArgFunction() {
                     @Override
@@ -352,9 +350,8 @@ class LView extends LuaTable {
                                 inheritStyleStack);
 
                         Map<String, Object> inlineStyles;
-                        synchronized (parent.mLock) {
+                        synchronized (child.mLock) {
                             inlineStyles = child.mInlineStyleRaw;
-
                         }
 
                         try {
@@ -383,7 +380,7 @@ class LView extends LuaTable {
                         }
                     }
 
-                    synchronized (parent.mLock) {
+                    synchronized (child.mLock) {
                         // consume the inline style
                         child.mInlineStyleRaw = null;
                         child.mToBeAdded = null;

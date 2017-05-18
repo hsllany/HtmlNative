@@ -68,12 +68,8 @@ public final class HNRenderer {
 
         StyleHandler viewStyleHandler = StyleHandlerFactory.get(view);
         StyleHandler extraStyleHandler = StyleHandlerFactory.extraGet(view);
-        StyleHandler parentStyleHandler = StyleHandlerFactory.parentGet(view);
+        LayoutStyleHandler parentLayoutAttr = StyleHandlerFactory.parentGet(view);
 
-        LayoutStyleHandler parentLayoutAttr = null;
-        if (parentStyleHandler instanceof LayoutStyleHandler) {
-            parentLayoutAttr = (LayoutStyleHandler) parentStyleHandler;
-        }
         InheritStyleStack inheritStyleStack = new InheritStyleStack();
         inheritStyleStack.push();
 
@@ -236,12 +232,7 @@ public final class HNRenderer {
 
             StyleHandler viewStyleHandler = StyleHandlerFactory.get(v);
             StyleHandler extraStyleHandler = StyleHandlerFactory.extraGet(v);
-            StyleHandler parentStyleHandler = StyleHandlerFactory.parentGet(v);
-
-            LayoutStyleHandler parentLayoutAttr = null;
-            if (parentStyleHandler instanceof LayoutStyleHandler) {
-                parentLayoutAttr = (LayoutStyleHandler) parentStyleHandler;
-            }
+            LayoutStyleHandler parentLayoutAttr = StyleHandlerFactory.parentGet(v);
 
             // 2 - set initial style to an view
             try {
@@ -400,22 +391,18 @@ public final class HNRenderer {
 
         StyleHandler viewStyleHandler = StyleHandlerFactory.get(v);
         StyleHandler extraStyleHandler = StyleHandlerFactory.extraGet(v);
-        StyleHandler parentStyleHandler = StyleHandlerFactory.parentGet(v);
-
-        LayoutStyleHandler parentLayoutAttr = null;
-        if (parentStyleHandler instanceof LayoutStyleHandler) {
-            parentLayoutAttr = (LayoutStyleHandler) parentStyleHandler;
-        }
+        LayoutStyleHandler parentLayoutAttr = StyleHandlerFactory.parentGet(v);
 
         Styles.applyStyle(context, sandBoxContext, v, domElement, layoutCreator, parent,
                 viewStyleHandler, extraStyleHandler, parentLayoutAttr, styleName, style,
                 isParent, stack);
     }
 
-    public static void renderStyle(Context context, final HNSandBoxContext sandBoxContext, View
-            v, DomElement domElement, @NonNull LayoutParamsLazyCreator layoutCreator, @NonNull
-            ViewGroup parent, Map<String, Object> styles, boolean isParent, InheritStyleStack
-            stack) throws AttrApplyException {
+    public static void renderStyle(Context context, @NonNull final HNSandBoxContext
+            sandBoxContext, @NonNull View v, DomElement domElement, @NonNull
+            LayoutParamsLazyCreator layoutCreator, ViewGroup parent, @NonNull Map<String, Object>
+            styles, boolean isParent, InheritStyleStack stack) throws AttrApplyException {
+
         final StyleHandler viewStyleHandler = StyleHandlerFactory.get(v);
         final StyleHandler extraStyleHandler = StyleHandlerFactory.extraGet(v);
         final LayoutStyleHandler parentAttr = StyleHandlerFactory.parentGet(v);

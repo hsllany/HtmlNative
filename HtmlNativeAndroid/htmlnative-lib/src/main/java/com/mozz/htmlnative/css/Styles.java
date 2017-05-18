@@ -12,10 +12,10 @@ import com.mozz.htmlnative.HNLog;
 import com.mozz.htmlnative.HNSandBoxContext;
 import com.mozz.htmlnative.HNativeEngine;
 import com.mozz.htmlnative.InheritStyleStack;
+import com.mozz.htmlnative.common.PixelValue;
 import com.mozz.htmlnative.css.stylehandler.LayoutStyleHandler;
 import com.mozz.htmlnative.css.stylehandler.StyleHandler;
 import com.mozz.htmlnative.css.stylehandler.StyleHelper;
-import com.mozz.htmlnative.common.PixelValue;
 import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.utils.ParametersUtils;
@@ -143,8 +143,7 @@ public final class Styles {
                     if (!TextUtils.isEmpty(background.getUrl()) && v instanceof IBackgroundView) {
                         Matrix matrix = Background.createBitmapMatrix(background);
                         HNativeEngine.getImageViewAdapter().setImage(background.getUrl(), new
-                                BackgroundViewDelegate(v, matrix, background.getColor(),
-                                background));
+                                BackgroundViewDelegate(v, matrix, background));
                     } else if (background.isColorSet()) {
                         if (v instanceof IBackgroundView) {
                             ((IBackgroundView) v).setHtmlBackground(null, background);
@@ -323,11 +322,11 @@ public final class Styles {
      * Apply a default style to view
      */
     public static void setDefaultStyle(Context context, final HNSandBoxContext sandBoxContext,
-                                       View v, DomElement domElement, @NonNull ViewGroup
-                                                  parent, StyleHandler viewStyleHandler,
-                                       StyleHandler extraStyleHandler, LayoutStyleHandler
-                                                  parentAttr, @NonNull LayoutParamsLazyCreator
-                                                  paramsLazyCreator) throws AttrApplyException {
+                                       View v, DomElement domElement, @NonNull ViewGroup parent,
+                                       StyleHandler viewStyleHandler, StyleHandler
+                                               extraStyleHandler, LayoutStyleHandler parentAttr,
+                                       @NonNull LayoutParamsLazyCreator paramsLazyCreator) throws
+            AttrApplyException {
         if (viewStyleHandler != null) {
             viewStyleHandler.setDefault(context, v, domElement, paramsLazyCreator, parent);
         }
@@ -359,9 +358,10 @@ public final class Styles {
                              AttrsSet source, View v, @NonNull AttrsSet.AttrsOwner tree,
                              DomElement domElement, @NonNull ViewGroup parent, @NonNull
                                      LayoutParamsLazyCreator paramsLazyCreator, boolean
-                                     applyDefault, boolean isParent, StyleHandler viewStyleHandler,
-                             StyleHandler extraStyleHandler, LayoutStyleHandler parentAttrHandler,
-                             InheritStyleStack stack) throws AttrApplyException {
+                                     applyDefault, boolean isParent, StyleHandler
+                                     viewStyleHandler, StyleHandler extraStyleHandler,
+                             LayoutStyleHandler parentAttrHandler, InheritStyleStack stack)
+            throws AttrApplyException {
         // Apply the default attr to view first;
         // Then process each parameter.
 
@@ -370,13 +370,15 @@ public final class Styles {
             StyleEntry styleEntry = itr.next();
 
             applyStyle(context, sandBoxContext, v, domElement, paramsLazyCreator, parent,
-                    viewStyleHandler, extraStyleHandler, parentAttrHandler, styleEntry.getStyleName
-                            (), styleEntry.getStyle(), isParent, stack);
+                    viewStyleHandler, extraStyleHandler, parentAttrHandler, styleEntry
+                            .getStyleName(), styleEntry.getStyle(), isParent, stack);
 
         }
     }
 
-    public static Object getStyle(View v, String styleName, StyleHandler styleHandler, StyleHandler extraStyleHandler, LayoutStyleHandler parentHandler) {
+    public static Object getStyle(View v, String styleName, StyleHandler styleHandler,
+                                  StyleHandler extraStyleHandler, LayoutStyleHandler
+                                          parentHandler) {
         switch (styleName) {
             case ATTR_WIDTH:
                 int width = v.getLayoutParams().width;

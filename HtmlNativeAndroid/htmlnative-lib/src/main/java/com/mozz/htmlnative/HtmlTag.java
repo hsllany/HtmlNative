@@ -73,8 +73,6 @@ public final class HtmlTag {
         sSwallowInnerTag.add(HtmlTag.SPAN);
     }
 
-    ;
-
     public static boolean isSwallowInnerTag(@NonNull String type) {
         return sSwallowInnerTag.contains(type.toLowerCase());
     }

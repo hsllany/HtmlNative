@@ -29,7 +29,7 @@ public final class Token {
     private static int sPoolSize = 0;
     private static final int MAX_POOL_SIZE = 20;
 
-    private Token(@NonNull TokenType tokenType, Object value) {
+    private Token(@NonNull TokenType tokenType, @NonNull Object value) {
         mTokenType = tokenType;
         mValue = value;
     }
@@ -57,7 +57,7 @@ public final class Token {
 
     @Nullable
     public String stringValue() {
-        return (String) mValue;
+        return mValue.toString();
     }
 
     public int intValue() {

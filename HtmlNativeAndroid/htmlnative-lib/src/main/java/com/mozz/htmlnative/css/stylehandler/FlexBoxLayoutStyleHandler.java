@@ -55,6 +55,7 @@ class FlexBoxLayoutStyleHandler extends LayoutStyleHandler {
         paramsLazyCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
     }
 
+    @FlexboxLayout.FlexDirection
     private static int flexDirection(@NonNull java.lang.String direction) {
         switch (direction) {
             case "column-reverse":
@@ -68,6 +69,7 @@ class FlexBoxLayoutStyleHandler extends LayoutStyleHandler {
         }
     }
 
+    @FlexboxLayout.FlexWrap
     private static int flexWrap(java.lang.String wrap) {
         switch (wrap) {
             case "nowrap":
@@ -81,6 +83,7 @@ class FlexBoxLayoutStyleHandler extends LayoutStyleHandler {
         }
     }
 
+    @FlexboxLayout.JustifyContent
     private static int justContent(java.lang.String content) {
         switch (content) {
             case "flex-start":
