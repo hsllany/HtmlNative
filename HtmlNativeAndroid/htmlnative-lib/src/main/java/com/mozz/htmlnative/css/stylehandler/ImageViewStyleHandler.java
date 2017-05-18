@@ -29,7 +29,7 @@ class ImageViewStyleHandler extends StyleHandler {
             }
 
             HNativeEngine.getImageViewAdapter().setImage(url, new BackgroundViewDelegate(v,
-                    matrix, background));
+                    matrix, background, true));
         }
     }
 

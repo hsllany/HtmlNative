@@ -7,14 +7,14 @@ import android.webkit.WebView;
 import android.widget.AbsoluteLayout;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.mozz.htmlnative.css.stylehandler.StyleHandlerFactory;
-import com.mozz.htmlnative.view.HNText;
 import com.mozz.htmlnative.view.HNDiv;
+import com.mozz.htmlnative.view.HNImg;
+import com.mozz.htmlnative.view.HNText;
 
 import java.util.Map;
 
@@ -44,7 +44,7 @@ public final class ViewTypeRelations {
 
         sReservedTagClassTable.put(HtmlTag.P, HNText.class.getName());
         sReservedTagClassTable.put(HtmlTag.TEXT, HNText.class.getName());
-        sReservedTagClassTable.put(HtmlTag.IMG, ImageView.class.getName());
+        sReservedTagClassTable.put(HtmlTag.IMG, HNImg.class.getName());
         sReservedTagClassTable.put(HtmlTag.INPUT, EditText.class.getName());
         sReservedTagClassTable.put(HtmlTag.BUTTON, Button.class.getName());
         sReservedTagClassTable.put(HtmlTag.SCROLLER, ScrollView.class.getName());
@@ -97,6 +97,7 @@ public final class ViewTypeRelations {
         }
 
         sExtraTagClassTable.put(tag, HNViewItem);
-        StyleHandlerFactory.registerExtraStyleHandler(HNViewItem.getViewClass(), HNViewItem.getHandler());
+        StyleHandlerFactory.registerExtraStyleHandler(HNViewItem.getViewClass(), HNViewItem
+                .getHandler());
     }
 }

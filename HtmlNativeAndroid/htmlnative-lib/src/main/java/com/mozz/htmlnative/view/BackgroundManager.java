@@ -59,11 +59,12 @@ class BackgroundManager implements IBackgroundManager {
      */
     public void onDraw(Canvas canvas) {
         measuredBackground();
+        if (mBackground != null && mBackground.isColorSet()) {
+            mPaint.setColor(mColor);
+            canvas.drawRect(mColorLeft, mColorTop, mColorLeft + mColorWidth, mColorTop +
+                    mColorHeight, mPaint);
 
-        mPaint.setColor(mColor);
-        // FIXME: 17/5/9 如何处理color的绘制，以及background重复绘制的问题
-        canvas.drawRect(mColorLeft, mColorTop, mColorLeft + mColorWidth, mColorTop +
-                mColorHeight, mPaint);
+        }
 
         if (mBackgroundBitmap != null) {
             mRect.set(mLeft, mTop, mLeft + mWidth, mTop + mHeight);
@@ -72,7 +73,6 @@ class BackgroundManager implements IBackgroundManager {
     }
 
     private void measuredBackground() {
-
         if (mMeasureBackgroundCount == mSetBackgroundCount) {
             return;
         }
