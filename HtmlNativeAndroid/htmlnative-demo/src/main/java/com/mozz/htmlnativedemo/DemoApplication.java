@@ -35,13 +35,7 @@ public class DemoApplication extends Application {
     public void onCreate() {
         super.onCreate();
         HNativeEngine.getInstance().init(this);
-        HNativeEngine.getInstance().debugAll();
-
-        HNLog.setDebugLevel(HNLog.LEXER);
-        HNLog.setDebugLevel(HNLog.CSS_PARSER);
-        HNLog.setDebugLevel(HNLog.PARSER);
-        HNLog.setDebugLevel(HNLog.STYLE);
-        HNLog.setDebugLevel(HNLog.PROCESS_THREAD);
+        HNativeEngine.getInstance().debugRenderProcess();
 
         HNativeEngine.getInstance().setImageViewAdapter(new ImageViewAdapter() {
             @Override

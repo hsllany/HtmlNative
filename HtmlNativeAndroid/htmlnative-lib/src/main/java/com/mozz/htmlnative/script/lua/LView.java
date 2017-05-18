@@ -99,7 +99,8 @@ class LView extends LuaTable {
                     MainHandlerUtils.instance().post(new Runnable() {
                         @Override
                         public void run() {
-                            LayoutParamsLazyCreator tempCreator = new LayoutParamsLazyCreator();
+                            LayoutParamsLazyCreator tempCreator = new LayoutParamsLazyCreator
+                                    (mView.getLayoutParams());
                             ViewGroup parent = (mView.getParent() != null && mView.getParent()
                                     instanceof ViewGroup) ? (ViewGroup) mView.getParent() : null;
                             try {

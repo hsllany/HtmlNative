@@ -24,6 +24,23 @@ public class LayoutParamsLazyCreator {
 
     }
 
+    public LayoutParamsLazyCreator(ViewGroup.LayoutParams params) {
+        width = params.width;
+        height = params.height;
+
+        if (params instanceof ViewGroup.MarginLayoutParams) {
+            marginLeft = ((ViewGroup.MarginLayoutParams) params).leftMargin;
+            marginTop = ((ViewGroup.MarginLayoutParams) params).topMargin;
+            marginRight = ((ViewGroup.MarginLayoutParams) params).rightMargin;
+            marginBottom = ((ViewGroup.MarginLayoutParams) params).bottomMargin;
+        }
+
+        if (params instanceof AbsoluteLayout.LayoutParams) {
+            left = ((AbsoluteLayout.LayoutParams) params).x;
+            top = ((AbsoluteLayout.LayoutParams) params).y;
+        }
+    }
+
     public LayoutParamsLazyCreator(int width, int height, int marginLeft, int marginTop, int
             marginRight, int marginBottom, int left, int top) {
         this.width = width;
@@ -53,8 +70,7 @@ public class LayoutParamsLazyCreator {
     }
 
     public AbsoluteLayout.LayoutParams toAbsoluteLayoutParams() {
-        return new AbsoluteLayout.LayoutParams(width, height,
-                left, top);
+        return new AbsoluteLayout.LayoutParams(width, height, left, top);
     }
 
     public FlexboxLayout.LayoutParams toFlexLayoutParams() {

@@ -10,16 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 
+import com.mozz.htmlnative.css.stylehandler.StyleHandlerFactory;
 import com.mozz.htmlnative.dom.HNHead;
 import com.mozz.htmlnative.script.ScriptRunner;
-import com.mozz.htmlnative.css.stylehandler.StyleHandlerFactory;
 import com.mozz.htmlnative.utils.ParametersUtils;
 import com.mozz.htmlnative.view.BackgroundViewDelegate;
 
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
-
-import static com.mozz.htmlnative.HNLog.STYLE;
 
 /**
  * @author Yang Tao, 17/2/21.
@@ -59,10 +57,16 @@ public final class HNativeEngine {
         initScreenMetrics(context);
     }
 
-    public void debugAll() {
-        HNLog.setDebugLevel(STYLE);
+    public void debugParseProcess() {
+        HNLog.setDebugLevel(HNLog.LEXER);
+        HNLog.setDebugLevel(HNLog.PARSER);
+        HNLog.setDebugLevel(HNLog.CSS_PARSER);
+    }
+
+    public void debugRenderProcess() {
         HNLog.setDebugLevel(HNLog.RENDER);
-        HNLog.setDebugLevel(HNLog.ATTR);
+        HNLog.setDebugLevel(HNLog.STYLE);
+        HNLog.setDebugLevel(HNLog.PROCESS_THREAD);
     }
 
     private void initScreenMetrics(@NonNull Context context) {
