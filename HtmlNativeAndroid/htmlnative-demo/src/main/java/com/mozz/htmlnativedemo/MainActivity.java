@@ -1,6 +1,7 @@
 package com.mozz.htmlnativedemo;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -23,10 +24,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     EditText mSearch;
     ImageButton mGo;
-
     ViewGroup mContainer;
-
     RemoteViewLoader mLoader;
+
+    SharedPreferences mSharedPreference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +35,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         setContentView(R.layout.activity_main);
 
+        mSharedPreference = getSharedPreferences("htmlnative-demo", MODE_PRIVATE);
+        String url = mSharedPreference.getString("url", "");
+
         mContainer = (RelativeLayout) findViewById(R.id.relative_view);
         mSearch = (EditText) findViewById(R.id.search_editbox);
+        mSearch.setText(url);
         mGo = (ImageButton) findViewById(R.id.search_go_btn);
         mGo.setOnClickListener(this);
         mLoader = new RemoteViewLoader(this);
@@ -100,6 +105,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 }
             });
+
+            SharedPreferences.Editor editor = mSharedPreference.edit();
+            editor.putString("url", url);
+            editor.apply();
         } else {
             Toast.makeText(this, "not valid url", Toast.LENGTH_LONG).show();
         }

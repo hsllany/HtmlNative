@@ -1,16 +1,13 @@
 package com.mozz.htmlnativedemo;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.mozz.htmlnative.view.HNDiv;
 
 /**
  * @author Yang Tao, 17/4/18.
@@ -21,50 +18,71 @@ public class TestActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DIVView divView = new DIVView(this);
+        HNDiv divView = new HNDiv(this);
+        divView.setPadding(10, 20, 30, 0);
+
+        {
+            HNDiv.HNDivLayoutParams params = new HNDiv.HNDivLayoutParams(ViewGroup.LayoutParams
+                    .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+            params.positionMode = HNDiv.HNDivLayoutParams.POSITION_STATIC;
+            divView.addView(generateView("hello world", Color.GREEN));
+        }
+
+        {
+            HNDiv.HNDivLayoutParams params = new HNDiv.HNDivLayoutParams(ViewGroup.LayoutParams
+                    .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.positionMode = HNDiv.HNDivLayoutParams.POSITION_FLOAT_LEFT;
+            divView.addView(generateView("left", Color.RED), params);
+        }
+
+        {
+            HNDiv.HNDivLayoutParams params = new HNDiv.HNDivLayoutParams(ViewGroup.LayoutParams
+                    .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.positionMode = HNDiv.HNDivLayoutParams.POSITION_FLOAT_LEFT;
+            params.setMargins(10, 20, 0, 0);
+            divView.addView(generateView("left2", Color.BLUE), params);
+        }
+
+        {
+            HNDiv.HNDivLayoutParams params = new HNDiv.HNDivLayoutParams(ViewGroup.LayoutParams
+                    .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.positionMode = HNDiv.HNDivLayoutParams.POSITION_FLOAT_RIGHT;
+            params.setMargins(10, 20, 0, 0);
+            divView.addView(generateView("right right right", Color.CYAN), params);
+        }
+
+        {
+            HNDiv.HNDivLayoutParams params = new HNDiv.HNDivLayoutParams(ViewGroup.LayoutParams
+                    .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.positionMode = HNDiv.HNDivLayoutParams.POSITION_FLOAT_RIGHT;
+            params.setMargins(10, 20, 0, 0);
+            divView.addView(generateView("right right rightright right rightright right " +
+                    "rightright right rightright right rightright right rightright right " +
+                    "rightright right rightright right rightright right rightright right " +
+                    "rightright right rightright right right", Color.DKGRAY), params);
+        }
+
+        {
+            HNDiv.HNDivLayoutParams params = new HNDiv.HNDivLayoutParams(ViewGroup.LayoutParams
+                    .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.positionMode = HNDiv.HNDivLayoutParams.POSITION_FLOAT_LEFT;
+            params.setMargins(10, 20, 0, 0);
+            divView.addView(generateView("left2 left2 left2 left2 left2 left2 left2 left2 left2 "
+                    + "left2 left2 left2 left2 left2 left2 left2 left2 left2", Color.YELLOW),
+                    params);
+        }
+
+
         setContentView(divView);
 
     }
 
-    private static class DIVView extends View {
+    private View generateView(String t, int color) {
+        TextView v = new TextView(this);
+        v.setText(t);
 
-        public DIVView(Context context) {
-            super(context);
-        }
-
-        public DIVView(Context context, AttributeSet attrs) {
-            super(context, attrs);
-        }
-
-        public DIVView(Context context, AttributeSet attrs, int defStyleAttr) {
-            super(context, attrs, defStyleAttr);
-        }
-
-        public DIVView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-            super(context, attrs, defStyleAttr, defStyleRes);
-        }
-
-        @Override
-        protected void onDraw(Canvas canvas) {
-            super.onDraw(canvas);
-            Resources res = getResources();
-            Bitmap bmp = BitmapFactory.decodeResource(res, R.drawable.a_webp);
-
-            Matrix matrix = new Matrix();
-            //            matrix.postTranslate(20, 100);
-            matrix.setTranslate(500, 500);
-
-            Bitmap newBitmap = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(),
-                    matrix, true);
-
-
-            if(newBitmap.equals(bmp)) {
-                canvas.drawColor(Color.RED);
-            }
-//            canvas.drawBitmap(newBitmap, 0, 0, null);
-            canvas.drawBitmap(newBitmap, new Matrix(), null);
-
-
-        }
+        v.setBackgroundColor(color);
+        return v;
     }
 }

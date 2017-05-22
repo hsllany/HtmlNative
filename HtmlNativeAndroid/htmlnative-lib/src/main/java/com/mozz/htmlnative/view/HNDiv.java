@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.IntDef;
 import android.util.ArrayMap;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -29,8 +28,7 @@ public class HNDiv extends ViewGroup implements IBackgroundView {
     private static final String TAG = HNDiv.class.getSimpleName();
 
     private List<List<View>> mAllViews = new ArrayList<>();
-    private List<View> mFloatLeftViews = new LinkedList<>();
-    private List<View> mFloatRightViews = new LinkedList<>();
+    private List<View> mFloatViews = new LinkedList<>();
     private List<Integer> mLineLength = new ArrayList<>();
     private BackgroundManager mBackgroundMgr;
     private Map<String, Object> mSavedInheritStyles = new ArrayMap<>();
@@ -60,8 +58,7 @@ public class HNDiv extends ViewGroup implements IBackgroundView {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        mFloatLeftViews.clear();
-        mFloatRightViews.clear();
+        mFloatViews.clear();
 
         final int msWidth = MeasureSpec.getSize(widthMeasureSpec);
         final int msHeight = MeasureSpec.getSize(heightMeasureSpec);
@@ -105,10 +102,9 @@ public class HNDiv extends ViewGroup implements IBackgroundView {
                     width = Math.max(lineWidth, width);
                     height += lineHeight;
                 }
-            } else if (lp.positionMode == HNDivLayoutParams.POSITION_FLOAT_LEFT) {
-                mFloatLeftViews.add(child);
-            } else if (lp.positionMode == HNDivLayoutParams.POSITION_FLOAT_RIGHT) {
-                mFloatRightViews.add(child);
+            } else if (lp.positionMode == HNDivLayoutParams.POSITION_FLOAT_LEFT || lp
+                    .positionMode == HNDivLayoutParams.POSITION_FLOAT_RIGHT) {
+                mFloatViews.add(child);
             }
         }
 
@@ -140,12 +136,9 @@ public class HNDiv extends ViewGroup implements IBackgroundView {
         int paddingLeft = getPaddingLeft();
         int paddingRight = getPaddingRight();
         int paddingTop = getPaddingTop();
-        int paddingBottom = getPaddingBottom();
 
-        // 存储每一行所有的childView
         List<View> lineViews = new ArrayList<>();
         int cCount = getChildCount();
-        // 遍历所有的孩子
         for (int i = 0; i < cCount; i++) {
             View child = getChildAt(i);
             HNDivLayoutParams lp = (HNDivLayoutParams) child.getLayoutParams();
@@ -154,14 +147,11 @@ public class HNDiv extends ViewGroup implements IBackgroundView {
 
             if (lp.positionMode == HNDivLayoutParams.POSITION_STATIC || lp.positionMode ==
                     HNDivLayoutParams.POSITION_RELATIVE) {
-                // 如果已经需要换行
                 if (childWidth + lp.leftMargin + lp.rightMargin + lineWidth + paddingLeft +
                         paddingRight > width) {
-                    // 记录这一行所有的View以及最大高度
                     mLineLength.add(lineHeight);
-                    // 将当前行的childView保存，然后开启新的ArrayList保存下一行的childView
                     mAllViews.add(lineViews);
-                    lineWidth = childWidth;// 重置行宽
+                    lineWidth = childWidth;
                     lineViews = new ArrayList<>();
                     lineViews.add(child);
                     lineHeight = childHeight;
@@ -177,21 +167,16 @@ public class HNDiv extends ViewGroup implements IBackgroundView {
                 child.layout(lp.left, lp.top, lp.right, lp.bottom);
             }
         }
-        // 记录最后一行
         mLineLength.add(lineHeight);
         mAllViews.add(lineViews);
 
         int left = paddingLeft;
         int top = paddingTop;
-        // 得到总行数
         int lineNums = mAllViews.size();
         for (int i = 0; i < lineNums; i++) {
-            // 每一行的所有的views
             lineViews = mAllViews.get(i);
-            // 当前行的最大高度
             lineHeight = mLineLength.get(i);
 
-            // 遍历当前行所有的View
             for (int j = 0; j < lineViews.size(); j++) {
                 View child = lineViews.get(j);
                 if (child.getVisibility() == View.GONE) {
@@ -199,7 +184,6 @@ public class HNDiv extends ViewGroup implements IBackgroundView {
                 }
                 HNDivLayoutParams lp = (HNDivLayoutParams) child.getLayoutParams();
 
-                //计算childView的left,top,right,bottom
                 int lc = left + lp.leftMargin;
                 int tc = top + lp.topMargin;
                 int rc = lc + child.getMeasuredWidth();
@@ -220,61 +204,46 @@ public class HNDiv extends ViewGroup implements IBackgroundView {
         top = paddingTop;
         left = paddingLeft;
         int lastLineHeight = 0;
+        int right = getMeasuredWidth() - paddingRight;
 
-        for (View v : mFloatLeftViews) {
+        lineWidth = getMeasuredWidth() - paddingLeft - paddingRight;
+
+        for (View v : mFloatViews) {
             if (v.getVisibility() == View.GONE) {
                 continue;
             }
 
             HNDivLayoutParams lp = (HNDivLayoutParams) v.getLayoutParams();
-            if (left + v.getMeasuredWidth() + lp.rightMargin + lp.leftMargin > getMeasuredWidth()) {
-                left = 0;
+
+            if (v.getMeasuredWidth() + lp.rightMargin + lp.leftMargin > lineWidth) {
+                right = getMeasuredWidth() - paddingRight;
+                left = paddingLeft;
                 top += lastLineHeight;
                 lastLineHeight = 0;
+                lineWidth = getMeasuredWidth() - paddingLeft - paddingRight;
             }
+            if (lp.positionMode == HNDivLayoutParams.POSITION_FLOAT_LEFT) {
+                int lc = left + lp.leftMargin;
+                int tc = top + lp.topMargin;
+                int rc = lc + v.getMeasuredWidth();
+                int bc = tc + v.getMeasuredHeight();
+                v.layout(lc, tc, rc, bc);
 
-            int lc = left + lp.leftMargin;
-            int tc = top + lp.topMargin;
-            int rc = lc + v.getMeasuredWidth();
-            int bc = tc + v.getMeasuredHeight();
-            Log.d("HSL", "layout " + v.getClass().getSimpleName() + ", " + String.format("%d, %d," +
-                    "" + " %d, %d", lc, tc, rc, bc));
-            v.layout(lc, tc, rc, bc);
+                left += v.getMeasuredWidth() + lp.leftMargin + lp.rightMargin;
 
+            } else {
+                int lc = right - lp.rightMargin - v.getMeasuredWidth();
+                int tc = top + lp.topMargin;
+                int rc = right - lp.rightMargin;
+                int bc = tc + v.getMeasuredHeight();
+
+                v.layout(lc, tc, rc, bc);
+
+                right -= v.getMeasuredWidth() + lp.leftMargin + lp.rightMargin;
+            }
             lastLineHeight = Math.max(lastLineHeight, v.getHeight() + lp.topMargin + lp
                     .bottomMargin);
-
-            left += v.getMeasuredWidth() + lp.leftMargin + lp.rightMargin;
-        }
-
-        top = paddingTop;
-        int right = paddingRight;
-        lastLineHeight = 0;
-
-        for (View v : mFloatRightViews) {
-            if (v.getVisibility() == View.GONE) {
-                continue;
-            }
-
-            HNDivLayoutParams lp = (HNDivLayoutParams) v.getLayoutParams();
-            if (right + v.getMeasuredWidth() + lp.rightMargin + lp.leftMargin > getMeasuredWidth
-                    ()) {
-                right = 0;
-                top += lastLineHeight;
-                lastLineHeight = 0;
-            }
-
-            int lc = right + lp.rightMargin + v.getMeasuredWidth();
-            int tc = top + lp.topMargin;
-            int rc = right + lp.rightMargin;
-            int bc = tc + v.getMeasuredHeight();
-
-            v.layout(lc, tc, rc, bc);
-
-            lastLineHeight = Math.max(lastLineHeight, v.getHeight() + lp.topMargin + lp
-                    .bottomMargin);
-
-            right += v.getMeasuredWidth() + lp.leftMargin + lp.rightMargin;
+            lineWidth -= v.getMeasuredWidth() - lp.leftMargin - lp.rightMargin;
         }
     }
 
