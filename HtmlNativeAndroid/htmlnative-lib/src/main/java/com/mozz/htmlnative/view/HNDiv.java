@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.IntDef;
-import android.util.ArrayMap;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +14,7 @@ import com.mozz.htmlnative.css.Background;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +31,7 @@ public class HNDiv extends ViewGroup implements IBackgroundView {
     private List<View> mFloatViews = new LinkedList<>();
     private List<Integer> mLineLength = new ArrayList<>();
     private BackgroundManager mBackgroundMgr;
-    private Map<String, Object> mSavedInheritStyles = new ArrayMap<>();
+    private Map<String, Object> mSavedInheritStyles = new HashMap<>();
 
     public HNDiv(Context context) {
         super(context);
@@ -98,15 +98,17 @@ public class HNDiv extends ViewGroup implements IBackgroundView {
                     lineHeight = Math.max(lineHeight, childHeight);
                 }
 
-                if (i == length - 1) {
-                    width = Math.max(lineWidth, width);
-                    height += lineHeight;
-                }
+
             } else if (lp.positionMode == HNDivLayoutParams.POSITION_FLOAT_LEFT || lp
                     .positionMode == HNDivLayoutParams.POSITION_FLOAT_RIGHT) {
                 mFloatViews.add(child);
+                continue;
             }
+
         }
+
+        width = Math.max(lineWidth, width);
+        height += lineHeight;
 
         height = height + getPaddingBottom();
 
@@ -164,7 +166,8 @@ public class HNDiv extends ViewGroup implements IBackgroundView {
                     lineViews.add(child);
                 }
             } else if (lp.positionMode == HNDivLayoutParams.POSITION_ABSOLUTE) {
-                child.layout(lp.left, lp.top, lp.right, lp.bottom);
+                child.layout(lp.left, lp.top, lp.left + child.getMeasuredWidth(), lp.top + child
+                        .getMeasuredHeight());
             }
         }
         mLineLength.add(lineHeight);

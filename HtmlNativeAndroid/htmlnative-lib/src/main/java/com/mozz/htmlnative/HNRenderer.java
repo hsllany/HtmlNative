@@ -32,6 +32,10 @@ import java.util.List;
 import java.util.Map;
 
 import static com.mozz.htmlnative.HNEnvironment.PERFORMANCE_TAG;
+import static com.mozz.htmlnative.ViewTypeRelations.BOX;
+import static com.mozz.htmlnative.ViewTypeRelations.FLEX_BOX;
+import static com.mozz.htmlnative.ViewTypeRelations.LINEAR_BOX;
+import static com.mozz.htmlnative.css.Styles.ATTR_DISPLAY;
 
 /**
  * Render views
@@ -169,19 +173,15 @@ public final class HNRenderer {
                             viewGroup, childCreator, root, styleSheet);
 
                     if (v != null) {
-
-                        viewGroup.addView(v, LayoutParamsLazyCreator.createLayoutParams(parent,
-                                childCreator));
+                        addView(viewGroup, v, childCreator);
                     } else {
                         HNLog.e(HNLog.RENDER, "error when inflating " + child.getType());
                     }
                 }
             } else {
-                HNLog.e(HNLog.RENDER, "View render from HNRenderer is not " +
-                        "an " +
-                        "viewGroup" +
-                        view.getClass().getSimpleName() +
-                        ", but related HNDomTree has children. Will ignore its children!");
+                HNLog.e(HNLog.RENDER, "View render from HNRenderer is not " + "an " + "viewGroup"
+                        + view.getClass().getSimpleName() + ", but related HNDomTree has " +
+                        "children" + ". Will ignore its children!");
             }
 
             mInheritStyleStack.pop();
@@ -328,8 +328,7 @@ public final class HNRenderer {
             return null;
         }
 
-        HNLog.d(HNLog.RENDER, "createContext view" + viewClassName + " with type" +
-                typeName);
+        HNLog.d(HNLog.RENDER, "createContext view" + viewClassName + " with type" + typeName);
 
         // first let viewFactory to hook the create process
         View view = createViewByViewFactory(context, viewClassName);
@@ -365,23 +364,23 @@ public final class HNRenderer {
         layoutParamsCreator.width = ViewGroup.LayoutParams.WRAP_CONTENT;
 
         if (attrsSet != null) {
-            Object displayObj = attrsSet.getStyle(owner, "display");
+            Object displayObj = attrsSet.getStyle(owner, ATTR_DISPLAY);
             if (displayObj != null && displayObj instanceof String) {
                 String display = (String) displayObj;
                 switch (display) {
                     case Styles.VAL_DISPLAY_FLEX:
-                        return createAndroidView(context, "flexbox");
+                        return createAndroidView(context, FLEX_BOX);
                     case Styles.VAL_DISPLAY_ABSOLUTE:
-                        return createAndroidView(context, "box");
+                        return createAndroidView(context, BOX);
 
                     case Styles.VAL_DISPLAY_BOX:
                     default:
-                        return createAndroidView(context, "linearbox");
+                        return createAndroidView(context, LINEAR_BOX);
                 }
             }
         }
 
-        return createAndroidView(context, "linearbox");
+        return createAndroidView(context, LINEAR_BOX);
     }
 
     public static void renderStyle(Context context, final HNSandBoxContext sandBoxContext, View
@@ -419,6 +418,25 @@ public final class HNRenderer {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static void addView(ViewGroup parent, View v, LayoutParamsLazyCreator creator) {
+        if (parent == null || v == null) {
+            HNLog.e(HNLog.RENDER, "Wrong when trying to add " + v + " to " + parent + " with " +
+                    "creator " + creator);
+            return;
+        }
+        parent.addView(v, LayoutParamsLazyCreator.createLayoutParams(parent, creator));
+    }
+
+    public static void addView(ViewGroup parent, View v, LayoutParamsLazyCreator creator, int
+            index) {
+        if (parent == null || v == null) {
+            HNLog.e(HNLog.RENDER, "Wrong when trying to add " + v + " to " + parent + " with " +
+                    "creator " + creator);
+            return;
+        }
+        parent.addView(v, index, LayoutParamsLazyCreator.createLayoutParams(parent, creator));
     }
 
     public static void registerViewFactory(String androidClassName, ViewFactory factory) {

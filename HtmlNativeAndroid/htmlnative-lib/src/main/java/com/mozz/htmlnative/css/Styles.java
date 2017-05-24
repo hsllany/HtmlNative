@@ -20,6 +20,7 @@ import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.utils.ParametersUtils;
 import com.mozz.htmlnative.view.BackgroundViewDelegate;
+import com.mozz.htmlnative.view.HNDiv;
 import com.mozz.htmlnative.view.IBackgroundView;
 import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
 
@@ -49,6 +50,9 @@ public final class Styles {
     public static final String ATTR_MARGIN_BOTTOM = "margin-bottom";
     public static final String ATTR_LEFT = "left";
     public static final String ATTR_TOP = "top";
+    public static final String ATTR_RIGHT = "right";
+    public static final String ATTR_BOTTOM = "bottom";
+    public static final String ATTR_FLOAT = "float";
     public static final String ATTR_ALPHA = "alpha";
     public static final String ATTR_ONCLICK = "onclick";
     public static final String ATTR_VISIBLE = "visibility";
@@ -89,7 +93,7 @@ public final class Styles {
      * @param context        {@link Context}
      * @param sandBoxContext {@link HNSandBoxContext}
      * @param v              {@link View} view to be processed
-     * @param domElement
+     * @param domElement     {@link DomElement} dom element
      * @param layoutCreator  {@link ViewGroup.LayoutParams}, layoutParams for parent
      *                       when add this view to parent
      * @param parent         {@link ViewGroup}, parent of the view
@@ -248,6 +252,26 @@ public final class Styles {
                 layoutCreator.top = (int) ParametersUtils.toPixel(style).getPxValue();
                 break;
 
+            case ATTR_RIGHT:
+                layoutCreator.right = (int) ParametersUtils.toPixel(style).getPxValue();
+                break;
+
+            case ATTR_BOTTOM:
+                layoutCreator.bottom = (int) ParametersUtils.toPixel(style).getPxValue();
+                break;
+
+            case ATTR_FLOAT: {
+                switch (style.toString()) {
+                    case "left":
+                        layoutCreator.positionMode = HNDiv.HNDivLayoutParams.POSITION_FLOAT_LEFT;
+                        break;
+                    case "right":
+                        layoutCreator.positionMode = HNDiv.HNDivLayoutParams.POSITION_FLOAT_RIGHT;
+                        break;
+                }
+            }
+            break;
+
             case ATTR_ALPHA:
                 float alpha = ParametersUtils.toFloat(style);
                 v.setAlpha(alpha);
@@ -262,7 +286,6 @@ public final class Styles {
                     v.setVisibility(View.INVISIBLE);
                 }
                 break;
-
             case ATTR_DIRECTION:
                 String direction = style.toString();
                 if (direction.equals("ltr")) {

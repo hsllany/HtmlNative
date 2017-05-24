@@ -31,6 +31,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import static com.mozz.htmlnative.view.LayoutParamsLazyCreator.createLayoutParams;
+
 /**
  * @author Yang Tao, 17/3/23.
  */
@@ -106,8 +108,7 @@ class LView extends LuaTable {
                             try {
                                 HNRenderer.renderStyle(mView.getContext(), mContext, mView,
                                         mDomElement, tempCreator, parent, styleMaps, false, null);
-                                LayoutParamsLazyCreator.createLayoutParams(tempCreator, mView
-                                        .getLayoutParams());
+                                createLayoutParams(tempCreator, mView.getLayoutParams());
                                 mView.requestLayout();
 
                             } catch (AttrApplyException e) {
@@ -366,11 +367,10 @@ class LView extends LuaTable {
                         child.mCreated = true;
                     }
                     if (child.mInsertIndex == INSERT_LAST) {
-                        ((ViewGroup) parent.mView).addView(child.mView, LayoutParamsLazyCreator
-                                .createLayoutParams(parent.mView, creator));
+                        HNRenderer.addView((ViewGroup) parent.mView, child.mView, creator);
                     } else {
-                        ((ViewGroup) parent.mView).addView(child.mView, child.mInsertIndex,
-                                LayoutParamsLazyCreator.createLayoutParams(parent.mView, creator));
+                        HNRenderer.addView((ViewGroup) parent.mView, child.mView, creator, child
+                                .mInsertIndex);
                     }
 
                     child.mAdded = true;

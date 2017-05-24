@@ -1,3 +1,5 @@
 .idea/*
 build/*
 captures
+infer-out/
+projectFilesBackup/

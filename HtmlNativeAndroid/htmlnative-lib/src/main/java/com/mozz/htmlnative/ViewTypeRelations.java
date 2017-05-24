@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.ArrayMap;
 import android.webkit.WebView;
-import android.widget.AbsoluteLayout;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
@@ -24,6 +23,10 @@ import java.util.Map;
 
 public final class ViewTypeRelations {
 
+    static final String BOX = "box";
+    static final String LINEAR_BOX = "linear_box";
+    static final String FLEX_BOX = "flex_box";
+
     /**
      * Relate the tag and class.
      */
@@ -35,9 +38,9 @@ public final class ViewTypeRelations {
     private static Map<String, HNViewItem> sExtraTagClassTable;
 
     static {
-        sReservedTagClassTable.put("box", AbsoluteLayout.class.getName());
-        sReservedTagClassTable.put("linearbox", HNDiv.class.getName());
-        sReservedTagClassTable.put("flexbox", FlexboxLayout.class.getName());
+        sReservedTagClassTable.put(BOX, HNDiv.class.getName());
+        sReservedTagClassTable.put(LINEAR_BOX, HNDiv.class.getName());
+        sReservedTagClassTable.put(FLEX_BOX, FlexboxLayout.class.getName());
 
         sReservedTagClassTable.put(HtmlTag.BODY, HNDiv.class.getName());
         sReservedTagClassTable.put(HtmlTag.TEMPLATE, HNDiv.class.getName());
