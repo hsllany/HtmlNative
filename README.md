@@ -250,7 +250,40 @@ HNLua API是一套定义在HtmlNative框架下的精简API，通过该API，可�
 
 此外，在html中有一段```<button onclick="changeText1">click me</button>```，为```<button>```控件设置了一个点击事件，事件的行为，在下面由函数```changeText1()```定义：通过变量b的值，动态改变其背景色和文字颜色；并跳转链接。
 
-更多的HNLua API文档及例子可见：待补充。
+目前支持的HNLuaApi（不断完善中）:
+
+```lua
+
+--log相关,会以HNConsole的标签出现在Android Logcat中
+console.log(msg)
+console.error(msg)
+console.info(msg)
+console.warn(msg)
+
+--全局操作
+document.version()	--获取当前HNLuaApi版本号
+document.jump(url) 	--跳转至url,具体处理方式，客户端可复写HrefLinkHandler，并在HNativeEngine中注册
+doucment.createView(tag, style) --以tag方式创建一个标签，并附加上style属性。例如local v = document.createView("p", "color:red")，该函数返回一个lview对象
+
+--查找view
+local lview = getElementById(id) --通过id查找view
+
+--lview对象
+lview.toString()	--转换成stirng
+lview.setAttribute(style)	--设置样式，例如lview.setAttribute("color:red")
+lview.id()	--获取该标签的id
+lview.className()	--获取该标签的class，返回为一个LuaTable类型对象
+lview.appendChild(lviewChild)	--往该lview中添加一个子view到末尾
+lview.insertBefore(lviewChild)	--往该lview中添加一个子view到最前面
+lview.removeChild(lviewChild)	--删除view
+lview.childNodes()	--返回该view的所有子view
+lview.getAttribute(stylename)	--返回某个属性名为stylename的属性值
+lview.tagName()	--返回该view的tag标签名称
+lview.hasChildNode() --检验该lview是否含有子view
+
+--toast
+toast("helloworld")	--显示一个toast提示（android only）
+```
 
 
 ## License
