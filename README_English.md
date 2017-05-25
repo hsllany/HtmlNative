@@ -83,6 +83,7 @@ After rendering:
 
 ![Demo](doc/screen1.jpg)
 ![Demo](doc/screen2.jpg)
+![Demo](doc/example-3.jpg)
 
 Html:
 
@@ -170,8 +171,6 @@ Html:
 </body>
 </html>
 ```
-
-![Demo](doc/example-3.jpg)
 
 ## Usage：
 
