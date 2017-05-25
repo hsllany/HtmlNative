@@ -58,12 +58,14 @@ public final class Styles {
     public static final String ATTR_VISIBLE = "visibility";
     public static final String ATTR_DISPLAY = "display";
     public static final String ATTR_DIRECTION = "direction";
+    public static final String ATTR_HREF = "href";
 
     // Hn specified styles:
 
     public static final String ATTR_HN_BACKGROUND = "-hn-background";
 
     public static final String VAL_FILL_PARENT = "100%";
+    public static final String VAL_WRAP_CONTENT = "auto";
 
     public static final String VAL_DISPLAY_FLEX = "flex";
     public static final String VAL_DISPLAY_BOX = "box";
@@ -104,9 +106,9 @@ public final class Styles {
                                   DomElement domElement, @NonNull LayoutParamsLazyCreator
                                           layoutCreator, @NonNull ViewGroup parent, StyleHandler
                                           viewStyleHandler, StyleHandler extraStyleHandler,
-                                  LayoutStyleHandler parentAttr, String styleName, Object style,
-                                  boolean isParent, InheritStyleStack outStack) throws
-            AttrApplyException {
+                                  LayoutStyleHandler parentAttr, String styleName, final Object
+                                          style, boolean isParent, InheritStyleStack outStack)
+            throws AttrApplyException {
 
         if (domElement != null) {
             HNLog.d(HNLog.STYLE, "set style \"" + styleName + ": " + style + "\"  to " +
@@ -123,6 +125,8 @@ public final class Styles {
             case ATTR_WIDTH: {
                 if (style.toString().equalsIgnoreCase(VAL_FILL_PARENT)) {
                     layoutCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                } else if (style.toString().equalsIgnoreCase(VAL_WRAP_CONTENT)) {
+                    layoutCreator.width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 } else {
                     PixelValue pixel = ParametersUtils.toPixel(style);
                     layoutCreator.width = (int) pixel.getPxValue();
@@ -133,6 +137,8 @@ public final class Styles {
             case ATTR_HEIGHT: {
                 if (style.toString().equalsIgnoreCase(VAL_FILL_PARENT)) {
                     layoutCreator.height = ViewGroup.LayoutParams.MATCH_PARENT;
+                } else if (style.toString().equalsIgnoreCase(VAL_WRAP_CONTENT)) {
+                    layoutCreator.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 } else {
                     PixelValue pixel = ParametersUtils.toPixel(style);
                     layoutCreator.height = (int) pixel.getPxValue();
@@ -223,7 +229,16 @@ public final class Styles {
                 }
             }
             break;
-
+            case ATTR_HREF:
+                v.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (HNativeEngine.getHrefLinkHandler() != null) {
+                            HNativeEngine.getHrefLinkHandler().onHref(style.toString(), v);
+                        }
+                    }
+                });
+                break;
             case ATTR_PADDING_LEFT:
                 int paddingLeft = ParametersUtils.toInt(style);
                 StyleHelper.setLeftPadding(v, paddingLeft);

@@ -27,7 +27,6 @@ class TextViewStyleHandler extends StyleHandler {
     private static final String FONT_STYLE = "font-style";
     private static final String FONT_WEIGHT = "font-weight";
     private static final String TEXT_ALIGN = "text-align";
-    private static final String HREF = "href";
     private static final String TEXT_WORD_SPACING = "word-spacing";
     private static final String TEXT_OVER_FLOW = "text-overflow";
     private static final String TEXT_TRANSFORM = "text-transform";
@@ -130,19 +129,7 @@ class TextViewStyleHandler extends StyleHandler {
 
                 break;
 
-            case HREF:
-                if (domElement.getType().equals(HtmlTag.A)) {
-                    textView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (HNativeEngine.getHrefLinkHandler() != null) {
-                                HNativeEngine.getHrefLinkHandler().onHref(value.toString(),
-                                        textView);
-                            }
-                        }
-                    });
-                }
-                break;
+
 
             case TEXT_ALIGN:
                 java.lang.String val = value.toString();
