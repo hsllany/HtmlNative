@@ -171,7 +171,7 @@ Html:
 </html>
 ```
 
-![Demo](doc/example3.jpg)
+![Demo](doc/example-3.jpg)
 
 ## Usage：
 
