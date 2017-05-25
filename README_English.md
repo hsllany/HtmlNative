@@ -82,6 +82,7 @@ After rendering:
 [Download Video](doc/screen1.mp4)
 
 ![Demo](doc/screen1.jpg)
+![Demo](doc/screen2.jpg)
 
 Html:
 
@@ -169,6 +170,8 @@ Html:
 </body>
 </html>
 ```
+
+![Demo](doc/example3.jpg)
 
 ## Usage：
 
