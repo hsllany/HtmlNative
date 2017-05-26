@@ -20,6 +20,9 @@ public final class ContextProvider {
 
     @Nullable
     public static Context getApplicationRef() {
+        if (mApplicationRef == null) {
+            return null;
+        }
         return mApplicationRef.get();
     }
 }

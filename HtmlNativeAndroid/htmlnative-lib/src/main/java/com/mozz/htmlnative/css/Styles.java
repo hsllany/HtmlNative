@@ -131,7 +131,7 @@ public final class Styles {
                 } else if (style.toString().equalsIgnoreCase(VAL_WRAP_CONTENT)) {
                     layoutCreator.width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 } else {
-                    PixelValue pixel = ParametersUtils.toPixel(style);
+                    PixelValue pixel = ParametersUtils.toPixelSafe(style);
                     layoutCreator.width = (int) pixel.getPxValue();
                 }
             }
@@ -143,7 +143,7 @@ public final class Styles {
                 } else if (style.toString().equalsIgnoreCase(VAL_WRAP_CONTENT)) {
                     layoutCreator.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 } else {
-                    PixelValue pixel = ParametersUtils.toPixel(style);
+                    PixelValue pixel = ParametersUtils.toPixelSafe(style);
                     layoutCreator.height = (int) pixel.getPxValue();
                 }
             }
@@ -178,7 +178,7 @@ public final class Styles {
                 break;
 
             case ATTR_MARGIN: {
-                PixelValue[] pixelValues = ParametersUtils.toPixels(style.toString());
+                PixelValue[] pixelValues = ParametersUtils.toPixelsSafe(style.toString());
                 int top = -1;
                 int bottom = -1;
                 int left = -1;
@@ -202,37 +202,37 @@ public final class Styles {
             break;
 
             case ATTR_MARGIN_RIGHT:
-                layoutCreator.marginRight = (int) ParametersUtils.toPixel(style).getPxValue();
+                layoutCreator.marginRight = (int) ParametersUtils.toPixelSafe(style).getPxValue();
                 break;
 
             case ATTR_MARGIN_LEFT:
-                layoutCreator.marginLeft = (int) ParametersUtils.toPixel(style).getPxValue();
+                layoutCreator.marginLeft = (int) ParametersUtils.toPixelSafe(style).getPxValue();
                 break;
 
             case ATTR_MARGIN_TOP:
-                layoutCreator.marginTop = (int) ParametersUtils.toPixel(style).getPxValue();
+                layoutCreator.marginTop = (int) ParametersUtils.toPixelSafe(style).getPxValue();
                 break;
 
             case ATTR_MARGIN_BOTTOM:
-                layoutCreator.marginBottom = (int) ParametersUtils.toPixel(style).getPxValue();
+                layoutCreator.marginBottom = (int) ParametersUtils.toPixelSafe(style).getPxValue();
                 break;
 
             case ATTR_PADDING: {
-                PixelValue[] pixelValues = ParametersUtils.toPixels(style.toString());
+                PixelValue[] pixelValues = ParametersUtils.toPixelsSafe(style.toString());
                 int top = -1;
                 int bottom = -1;
                 int left = -1;
                 int right = -1;
                 if (pixelValues.length == 1) {
-                    top = bottom = left = right = (int) pixelValues[0].getValue();
+                    top = bottom = left = right = (int) pixelValues[0].getPxValue();
                 } else if (pixelValues.length == 2) {
-                    top = bottom = (int) pixelValues[0].getValue();
-                    left = right = (int) pixelValues[1].getValue();
+                    top = bottom = (int) pixelValues[0].getPxValue();
+                    left = right = (int) pixelValues[1].getPxValue();
                 } else if (pixelValues.length == 4) {
-                    top = (int) pixelValues[0].getValue();
-                    bottom = (int) pixelValues[2].getValue();
-                    left = (int) pixelValues[3].getValue();
-                    right = (int) pixelValues[1].getValue();
+                    top = (int) pixelValues[0].getPxValue();
+                    bottom = (int) pixelValues[2].getPxValue();
+                    left = (int) pixelValues[3].getPxValue();
+                    right = (int) pixelValues[1].getPxValue();
                 }
                 if (top != -1 && bottom != -1 && left != -1 && right != -1) {
                     v.setPadding(left, top, right, bottom);
@@ -250,39 +250,39 @@ public final class Styles {
                 });
                 break;
             case ATTR_PADDING_LEFT:
-                int paddingLeft = ParametersUtils.toInt(style);
+                int paddingLeft = (int) ParametersUtils.toPixelSafe(style).getPxValue();
                 StyleHelper.setLeftPadding(v, paddingLeft);
                 break;
 
             case ATTR_PADDING_RIGHT:
-                int paddingRight = ParametersUtils.toInt(style);
+                int paddingRight = (int) ParametersUtils.toPixelSafe(style).getPxValue();
                 StyleHelper.setRightPadding(v, paddingRight);
                 break;
 
             case ATTR_PADDING_TOP:
-                int paddingTop = ParametersUtils.toInt(style);
+                int paddingTop = (int) ParametersUtils.toPixelSafe(style).getPxValue();
                 StyleHelper.setTopPadding(v, paddingTop);
                 break;
 
             case ATTR_PADDING_BOTTOM:
-                int paddingBottom = ParametersUtils.toInt(style);
+                int paddingBottom = (int) ParametersUtils.toPixelSafe(style).getPxValue();
                 StyleHelper.setBottomPadding(v, paddingBottom);
                 break;
 
             case ATTR_LEFT:
-                layoutCreator.left = (int) ParametersUtils.toPixel(style).getPxValue();
+                layoutCreator.left = (int) ParametersUtils.toPixelSafe(style).getPxValue();
                 break;
 
             case ATTR_TOP:
-                layoutCreator.top = (int) ParametersUtils.toPixel(style).getPxValue();
+                layoutCreator.top = (int) ParametersUtils.toPixelSafe(style).getPxValue();
                 break;
 
             case ATTR_RIGHT:
-                layoutCreator.right = (int) ParametersUtils.toPixel(style).getPxValue();
+                layoutCreator.right = (int) ParametersUtils.toPixelSafe(style).getPxValue();
                 break;
 
             case ATTR_BOTTOM:
-                layoutCreator.bottom = (int) ParametersUtils.toPixel(style).getPxValue();
+                layoutCreator.bottom = (int) ParametersUtils.toPixelSafe(style).getPxValue();
                 break;
 
             case ATTR_FLOAT: {
@@ -298,8 +298,12 @@ public final class Styles {
             break;
 
             case ATTR_ALPHA:
-                float alpha = ParametersUtils.toFloat(style);
-                v.setAlpha(alpha);
+                try {
+                    float alpha = ParametersUtils.toFloat(style);
+                    v.setAlpha(alpha);
+                } catch (ParametersUtils.ParametersParseException ignored) {
+
+                }
                 break;
 
             case ATTR_VISIBLE:

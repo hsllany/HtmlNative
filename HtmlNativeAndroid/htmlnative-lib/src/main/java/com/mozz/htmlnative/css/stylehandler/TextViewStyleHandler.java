@@ -3,20 +3,22 @@ package com.mozz.htmlnative.css.stylehandler;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.text.TextUtils;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.mozz.htmlnative.HNativeEngine;
 import com.mozz.htmlnative.HtmlTag;
 import com.mozz.htmlnative.common.PixelValue;
 import com.mozz.htmlnative.css.InheritStylesRegistry;
 import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.exception.AttrApplyException;
-import com.mozz.htmlnative.utils.ParametersUtils;
 import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
+
+import static com.mozz.htmlnative.utils.ParametersUtils.dpToPx;
+import static com.mozz.htmlnative.utils.ParametersUtils.emToPx;
+import static com.mozz.htmlnative.utils.ParametersUtils.toColorSafe;
+import static com.mozz.htmlnative.utils.ParametersUtils.toPixelSafe;
 
 class TextViewStyleHandler extends StyleHandler {
 
@@ -32,25 +34,25 @@ class TextViewStyleHandler extends StyleHandler {
     private static final String TEXT_TRANSFORM = "text-transform";
 
     private static final int DEFAULT_SIZE = 14;
-    private static final int DEFAULT_H1_SIZE = ParametersUtils.emToPx(2);
-    private static final int DEFAULT_H1_PADDING = ParametersUtils.emToPx(0.67f);
+    private static final int DEFAULT_H1_SIZE = emToPx(2);
+    private static final int DEFAULT_H1_PADDING = emToPx(0.67f);
 
-    private static final int DEFAULT_H2_SIZE = ParametersUtils.emToPx(1.5f);
-    private static final int DEFAULT_H2_PADDING = (int) ParametersUtils.emToPx(.75f);
+    private static final int DEFAULT_H2_SIZE = emToPx(1.5f);
+    private static final int DEFAULT_H2_PADDING = (int) emToPx(.75f);
 
-    private static final int DEFAULT_H3_SIZE = (int) ParametersUtils.emToPx(1.17f);
-    private static final int DEFAULT_H3_PADDING = (int) ParametersUtils.emToPx(.83f);
+    private static final int DEFAULT_H3_SIZE = (int) emToPx(1.17f);
+    private static final int DEFAULT_H3_PADDING = (int) emToPx(.83f);
 
-    private static final int DEFAULT_H4_SIZE = (int) ParametersUtils.emToPx(1.f);
-    private static final int DEFAULT_H4_PADDING = (int) ParametersUtils.emToPx(1.12f);
+    private static final int DEFAULT_H4_SIZE = (int) emToPx(1.f);
+    private static final int DEFAULT_H4_PADDING = (int) emToPx(1.12f);
 
-    private static final int DEFAULT_H5_SIZE = (int) ParametersUtils.emToPx(0.8f);
-    private static final int DEFAULT_H5_PADDING = (int) ParametersUtils.emToPx(1.12f);
+    private static final int DEFAULT_H5_SIZE = (int) emToPx(0.8f);
+    private static final int DEFAULT_H5_PADDING = (int) emToPx(1.12f);
 
-    private static final int DEFAULT_H6_SIZE = (int) ParametersUtils.emToPx(.6f);
-    private static final int DEFAULT_H6_PADDING = (int) ParametersUtils.emToPx(1.12f);
+    private static final int DEFAULT_H6_SIZE = (int) emToPx(.6f);
+    private static final int DEFAULT_H6_PADDING = (int) emToPx(1.12f);
 
-    private static final int DEFAULT_P_PADDING = (int) ParametersUtils.dpToPx(5);
+    private static final int DEFAULT_P_PADDING = (int) dpToPx(5);
 
     static {
         InheritStylesRegistry.register(FONT_SIZE);
@@ -70,7 +72,7 @@ class TextViewStyleHandler extends StyleHandler {
         final TextView textView = (TextView) v;
         switch (params) {
             case COLOR:
-                textView.setTextColor(ParametersUtils.toColor(value));
+                textView.setTextColor(toColorSafe(value));
                 break;
 
             case TEXT:
@@ -78,16 +80,12 @@ class TextViewStyleHandler extends StyleHandler {
                 break;
 
             case FONT_SIZE:
-                PixelValue size = ParametersUtils.toPixel(value);
-                if (size.getUnit() == PixelValue.UNSET) {
-                    textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, (float) size.getValue());
-                } else {
-                    textView.setTextSize(size.getUnit(), (float) size.getValue());
-                }
+                PixelValue size = toPixelSafe(value);
+                textView.setTextSize(size.getUnit(), size.getPxValue());
                 break;
 
             case LINE_HEIGHT:
-                float lineHeight = (float) ParametersUtils.toPixel(value).getPxValue();
+                float lineHeight = toPixelSafe(value).getPxValue();
                 textView.setLineSpacing(0, lineHeight);
                 break;
 
@@ -130,7 +128,6 @@ class TextViewStyleHandler extends StyleHandler {
                 break;
 
 
-
             case TEXT_ALIGN:
                 java.lang.String val = value.toString();
                 switch (val) {
@@ -152,7 +149,7 @@ class TextViewStyleHandler extends StyleHandler {
                 if (ss.equals("normal")) {
                     textView.setLetterSpacing(textView.getLetterSpacing());
                 } else {
-                    PixelValue f = ParametersUtils.toPixel(value);
+                    PixelValue f = toPixelSafe(value);
                     textView.setLetterSpacing((float) f.getEmValue());
                 }
                 break;

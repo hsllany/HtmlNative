@@ -8,9 +8,7 @@ import android.util.TypedValue;
 import com.mozz.htmlnative.common.ContextProvider;
 import com.mozz.htmlnative.common.PixelValue;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -19,9 +17,9 @@ import java.util.Set;
 
 public final class ParametersUtils {
 
-    private static final String TAG = ParametersUtils.class.getSimpleName();
-
     private static final Set<String> sColorNameMap;
+
+    private static final int DEFAULT_COLOR = Color.TRANSPARENT;
 
     static {
         sColorNameMap = new HashSet<>();
@@ -54,83 +52,112 @@ public final class ParametersUtils {
     private ParametersUtils() {
     }
 
-    private static float screenDensity = -1.f;
+    private static float density = -1.f;
+    private static float scaledDensity = -1.f;
 
-    public static void init(Context context) {
-        float density = context.getResources().getDisplayMetrics().density;
-        updateScreenDensity(density);
+    public static void init(@NonNull Context context) {
+        density = context.getResources().getDisplayMetrics().density;
+        scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
     }
 
-    private static void updateScreenDensity(float density) {
-        screenDensity = density;
+    static void init(float ds, float sDs) {
+        density = ds;
+        scaledDensity = sDs;
     }
 
-    public static int toInt(Object object) throws IllegalArgumentException {
+
+    public static int toInt(Object object) throws ParametersParseException {
         if (object instanceof Integer) {
             return (int) object;
         } else {
-            return Integer.valueOf(object.toString());
+            try {
+                return Integer.valueOf(object.toString().trim());
+            } catch (IllegalArgumentException e) {
+                throw new ParametersParseException(e);
+            }
         }
     }
 
-    public static float toFloat(Object object) throws IllegalArgumentException {
+
+    public static float toFloat(Object object) throws ParametersParseException {
         if (object instanceof Float) {
             return (float) object;
         } else {
             String fStr = object.toString();
             boolean isPercentage = false;
             if (fStr.endsWith("%")) {
+                isPercentage = true;
+            }
+            if (isPercentage && fStr.length() > 1) {
                 fStr = fStr.substring(0, fStr.length() - 1);
                 isPercentage = true;
             }
-            float f = Float.valueOf(fStr);
-
-            return isPercentage ? f / 100 : f;
+            try {
+                float f = Float.valueOf(fStr.trim());
+                return isPercentage ? f / 100 : f;
+            } catch (IllegalArgumentException e) {
+                throw new ParametersParseException(e);
+            }
 
         }
     }
 
-    public static PixelValue toPixel(Object object) throws IllegalArgumentException {
-        int unit = TypedValue.COMPLEX_UNIT_PX;
-        if (object instanceof String) {
-            String string = (String) object;
+    @NonNull
+    public static PixelValue toPixelSafe(@NonNull Object object) {
+        try {
+            int unit = TypedValue.COMPLEX_UNIT_PX;
+            if (object instanceof String) {
+                String string = (String) object;
 
-            if (string.charAt(0) == '@') {
-                String resId = string.substring(1);
-                Context context = ContextProvider.getApplicationRef();
-                if (context != null) {
-                    float size = ResourceUtils.getDimension(resId, ContextProvider
-                            .getApplicationRef());
-                    return new PixelValue(size, TypedValue.COMPLEX_UNIT_PX);
-                } else {
-                    return new PixelValue(0, TypedValue.COMPLEX_UNIT_PX);
+                if (string.length() == 0 || (string.equals("@"))) {
+                    return PixelValue.ZERO;
                 }
-            }
 
-            StringBuilder unitString = new StringBuilder(5);
-            int i = string.length() - 1;
-            for (; i > 0; i--) {
-                char c = string.charAt(i);
-                if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
-                    unitString.append(c);
-                } else {
-                    break;
+                if (string.charAt(0) == '@' && string.length() > 1) {
+                    String resId = string.substring(1);
+                    Context context = ContextProvider.getApplicationRef();
+                    if (context != null) {
+                        float size = ResourceUtils.getDimension(resId, ContextProvider
+                                .getApplicationRef());
+                        return new PixelValue(size);
+                    } else {
+                        return new PixelValue(0);
+                    }
                 }
+
+                StringBuilder unitString = new StringBuilder(5);
+                int i = string.length() - 1;
+                for (; i > 0; i--) {
+                    char c = string.charAt(i);
+                    if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
+                        unitString.append(c);
+                    } else {
+                        break;
+                    }
+                }
+
+                unit = getUnit(unitString.reverse().toString());
+
+                float value = 0;
+                try {
+                    value = toFloat(string.substring(0, i + 1));
+                } catch (ParametersParseException e) {
+                    return new PixelValue(value, unit);
+                }
+                return new PixelValue(value, unit);
+            } else {
+                return new PixelValue(toFloat(object), unit);
             }
-
-            unit = getUnit(unitString.reverse().toString());
-
-            float value = toFloat(string.substring(0, i + 1));
-            return new PixelValue(value, unit);
-
-        } else {
-            return new PixelValue(toFloat(object), unit);
+        } catch (ParametersParseException e) {
+            e.printStackTrace();
+            return PixelValue.ZERO;
         }
     }
 
     @PixelValue.PixelUnit
-    public static int getUnit(String s) {
+    private static int getUnit(String s) {
         switch (s.toLowerCase()) {
+            default:
             case "px":
                 return TypedValue.COMPLEX_UNIT_PX;
             case "dp":
@@ -140,21 +167,19 @@ public final class ParametersUtils {
                 return TypedValue.COMPLEX_UNIT_SP;
             case "em":
                 return PixelValue.EM;
-            default:
-                return PixelValue.UNSET;
 
         }
     }
 
-    public static float getPercent(String s) throws IllegalArgumentException {
+    public static float getPercent(String s) throws ParametersParseException {
         if (s.endsWith("%")) {
             return toInt(s.substring(0, s.length() - 1)) / 100.f;
         } else {
-            throw new IllegalArgumentException("not a percent format " + s);
+            throw new ParametersParseException("not a percent format " + s);
         }
     }
 
-    public static PixelValue[] toPixels(String ss) throws IllegalArgumentException {
+    public static PixelValue[] toPixelsSafe(String ss) {
         String[] single = splitByEmpty(ss);
 
         PixelValue[] pixelValues = new PixelValue[single.length];
@@ -163,33 +188,44 @@ public final class ParametersUtils {
 
         for (String s : single) {
             String trimS = s.trim();
-
-            pixelValues[i++] = toPixel(trimS);
+            pixelValues[i++] = toPixelSafe(trimS);
         }
 
         return pixelValues;
     }
 
 
-    public static boolean toBoolean(Object object) throws IllegalArgumentException {
+    public static boolean toBoolean(Object object) throws ParametersParseException {
         if (object instanceof Boolean) {
             return (boolean) object;
         } else {
-            return Boolean.valueOf(object.toString().trim());
+            try {
+                return Boolean.valueOf(object.toString().trim());
+            } catch (IllegalArgumentException e) {
+                throw new ParametersParseException(e);
+            }
         }
     }
 
-    public static int toColor(@NonNull Object colorObj) throws IllegalArgumentException {
+    public static int toColorSafe(Object colorObj) {
+        try {
+            return toColor(colorObj);
+        } catch (ParametersParseException e) {
+            return DEFAULT_COLOR;
+        }
+    }
+
+    public static int toColor(@NonNull Object colorObj) throws ParametersParseException {
         String colorString = colorObj.toString().trim();
         if (colorString.length() == 0) {
-            throw new IllegalArgumentException("empty color string for parse");
+            throw new ParametersParseException("empty color string for parse");
         }
 
         // handle the #* like color
         if (colorString.charAt(0) == '#') {
 
             // handle the #000000 like color string
-            if (colorString.length() > 4) {
+            if (colorString.length() == 7 || colorString.length() == 9) {
                 return Color.parseColor(colorString);
             } else if (colorString.length() == 4) {
                 long color = 0;
@@ -203,7 +239,7 @@ public final class ParametersUtils {
                     } else if (c >= '0' && c <= '9') {
                         cI = c - '0';
                     } else {
-                        throw new IllegalArgumentException("unknown color string " + colorString);
+                        throw new ParametersParseException("unknown color string " + colorString);
                     }
 
                     color |= (cI * 16 + cI) << (3 - i - 1) * 8;
@@ -211,23 +247,27 @@ public final class ParametersUtils {
 
                 return (int) (color | 0x00000000ff000000);
             } else {
-                throw new IllegalArgumentException("unknown color string " + colorString);
+                throw new ParametersParseException("unknown color string " + colorString);
             }
 
-        } else if (colorString.charAt(0) == '@') {
+        } else if (colorString.charAt(0) == '@' && colorString.length() > 1) {
             String colorRes = colorString.substring(1);
             Context context = ContextProvider.getApplicationRef();
             if (context != null) {
                 return ResourceUtils.getColor(colorRes, context);
             } else {
-                return Color.BLACK;
+                return DEFAULT_COLOR;
             }
         } else {
             /**
              handle the color like 'red', 'green' ect. see {@link https://www.w3.org/TR/CSS2/syndata
             .html#tokenization}
              */
-            return Color.parseColor(colorString);
+            try {
+                return Color.parseColor(colorString);
+            } catch (IllegalArgumentException e) {
+                throw new ParametersParseException(e);
+            }
 
         }
     }
@@ -240,47 +280,32 @@ public final class ParametersUtils {
         return sColorNameMap.contains(string);
     }
 
-
-    public static Map<String, String> parseStyle(@NonNull String styleString) {
-        Map<String, String> pas = new HashMap<>();
-        StringBuilder sb = new StringBuilder();
-        String key = null;
-        for (int i = 0; i < styleString.length(); i++) {
-            char c = styleString.charAt(i);
-
-            if (c == ';') {
-                pas.put(key, sb.toString());
-                sb.setLength(0);
-            } else if (c == ':') {
-                key = sb.toString();
-                sb.setLength(0);
-            } else {
-                if (c == ' ' || c == '\r' || c == '\n' || c == '\t' || c == '\f' || c == '\b') {
-                    continue;
-                }
-                sb.append(c);
-            }
-        }
-
-        if (key != null) {
-            pas.put(key, sb.toString());
-        }
-
-        return pas;
-    }
-
-    public static float dpToPx(float px) {
-        if (screenDensity == -1.f) {
+    public static float dpToPx(float dp) {
+        if (density == -1.f) {
             throw new IllegalStateException("you must call init() first");
         }
-        return (int) (screenDensity * px + 0.5f);
+        return (int) (density * dp + 0.5f);
     }
 
-    public static float pxToDp(float dp) {
-        if (screenDensity == -1.f) {
+    public static float pxToDp(float px) {
+        if (density == -1.f) {
             throw new IllegalStateException("you must call init() first");
         }
-        return dp / screenDensity;
+        return (int) (px / density + 0.5f);
+    }
+
+    public static float spToPx(float sp) {
+        if (scaledDensity == -1.f) {
+            throw new IllegalStateException("you must call init() first");
+        }
+        return (int) (scaledDensity * sp + 0.5f);
+    }
+
+    public static float pxToSp(float px) {
+        if (scaledDensity == -1.f) {
+            throw new IllegalStateException("you must call init() first");
+        }
+        return (int) (px / scaledDensity + 0.5f);
     }
 
     public static int emToPx(float em) {
@@ -293,5 +318,19 @@ public final class ParametersUtils {
 
     public static String[] splitByEmpty(String s) {
         return s.trim().split("\\s+");
+    }
+
+    public static class ParametersParseException extends Exception {
+        private ParametersParseException() {
+            super();
+        }
+
+        private ParametersParseException(String msg) {
+            super(msg);
+        }
+
+        private ParametersParseException(Throwable cause) {
+            super(cause);
+        }
     }
 }

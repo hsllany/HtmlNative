@@ -91,6 +91,8 @@ public final class HNDomTree implements ParseCallback, AttrsSet.AttrsOwner, DomE
                 HNLog.e(HNLog.DOM, "Wrong when read order, expecting integer while actual is " +
                         style +
                         ", " + style.getClass().toString());
+            } catch (ParametersUtils.ParametersParseException e) {
+                e.printStackTrace();
             }
         }
         mInlineStyle.put(this, styleName, style);

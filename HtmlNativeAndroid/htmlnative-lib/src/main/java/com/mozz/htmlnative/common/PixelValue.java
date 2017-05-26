@@ -14,28 +14,21 @@ import java.lang.annotation.RetentionPolicy;
 
 public class PixelValue {
 
-    public static final int UNSET = -1;
+    public static final PixelValue ZERO = new PixelValue(0, TypedValue.COMPLEX_UNIT_PX);
 
     public static final int EM = -2;
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({TypedValue.COMPLEX_UNIT_PX, TypedValue.COMPLEX_UNIT_DIP, TypedValue.COMPLEX_UNIT_SP,
-            UNSET, EM})
+            EM})
     public @interface PixelUnit {
     }
 
-    private double value;
-    private int unit = UNSET;
+    private final float value;
+    private final int unit;
 
-
-    public PixelValue(int value, @PixelUnit int unit) {
-        if (unit == EM) {
-            this.value = value * 16;
-            this.unit = TypedValue.COMPLEX_UNIT_PX;
-        } else {
-            this.value = value;
-            this.unit = unit;
-        }
+    public PixelValue(float pxValue) {
+        this(pxValue, TypedValue.COMPLEX_UNIT_PX);
     }
 
     public PixelValue(float value, @PixelUnit int unit) {
@@ -46,10 +39,6 @@ public class PixelValue {
             this.value = value;
             this.unit = unit;
         }
-    }
-
-    public double getValue() {
-        return value;
     }
 
     @PixelUnit
@@ -63,29 +52,30 @@ public class PixelValue {
     }
 
 
-    public final double getEmValue() {
+    public final float getEmValue() {
+        return this.getPxValue() / 16.f;
+    }
+
+    public final float getPxValue() {
         switch (unit) {
             case EM:
-                return this.value;
-            case TypedValue.COMPLEX_UNIT_PX:
                 return this.value / 16.f;
+            case TypedValue.COMPLEX_UNIT_PX:
+                return this.value;
+            case TypedValue.COMPLEX_UNIT_SP:
+                return ParametersUtils.spToPx(this.value);
             case TypedValue.COMPLEX_UNIT_DIP:
-                return ParametersUtils.dpToPx((float) this.value);
+                return ParametersUtils.dpToPx(this.value);
             default:
                 return value;
         }
     }
 
-    public final double getPxValue() {
-        switch (unit) {
-            case EM:
-                return this.value / 16;
-            case TypedValue.COMPLEX_UNIT_PX:
-                return this.value;
-            case TypedValue.COMPLEX_UNIT_DIP:
-                return ParametersUtils.pxToDp((float) this.value);
-            default:
-                return value;
-        }
+    public final float getDpValue() {
+        return ParametersUtils.pxToDp(getPxValue());
+    }
+
+    public final float getSpValue() {
+        return ParametersUtils.pxToSp(getPxValue());
     }
 }
