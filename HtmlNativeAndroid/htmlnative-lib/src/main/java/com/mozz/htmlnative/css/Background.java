@@ -52,6 +52,8 @@ public class Background {
     private int widthMode = AUTO;
     private int heightMode = AUTO;
 
+    private boolean isAndroidResource = false;
+
 
     @Override
     public String toString() {
@@ -82,6 +84,9 @@ public class Background {
     }
 
     public void setUrl(String url) {
+        if (url.charAt(0) == '@') {
+            this.isAndroidResource = true;
+        }
         this.url = url;
     }
 
@@ -461,5 +466,9 @@ public class Background {
                 return "no-repeat";
 
         }
+    }
+
+    public boolean isAndroidResource() {
+        return isAndroidResource;
     }
 }

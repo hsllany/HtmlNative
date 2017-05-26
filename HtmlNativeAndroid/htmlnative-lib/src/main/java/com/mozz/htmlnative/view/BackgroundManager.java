@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ class BackgroundManager implements IBackgroundManager {
     private Rect mRect = new Rect();
     private Paint mPaint = new Paint();
     private Bitmap mBackgroundBitmap;
+    private Drawable mBackgroundDrawable;
     private int mLeft, mTop, mWidth, mHeight;
     private int mColorLeft, mColorTop, mColorWidth, mColorHeight;
     private int mColor = Color.TRANSPARENT;
@@ -48,6 +50,12 @@ class BackgroundManager implements IBackgroundManager {
     }
 
     @Override
+    public void setHtmlBackground(Drawable drawable, Background background) {
+        mBackgroundDrawable = drawable;
+        setHtmlBackground((Bitmap) null, background);
+    }
+
+    @Override
     public Background getHtmlBackground() {
         return mBackground;
     }
@@ -63,12 +71,14 @@ class BackgroundManager implements IBackgroundManager {
             mPaint.setColor(mColor);
             canvas.drawRect(mColorLeft, mColorTop, mColorLeft + mColorWidth, mColorTop +
                     mColorHeight, mPaint);
-
         }
 
         if (mBackgroundBitmap != null) {
             mRect.set(mLeft, mTop, mLeft + mWidth, mTop + mHeight);
             canvas.drawBitmap(mBackgroundBitmap, null, mRect, null);
+        } else if (mBackgroundDrawable != null) {
+            mBackgroundDrawable.setBounds(mLeft, mTop, mLeft + mWidth, mTop + mHeight);
+            mBackgroundDrawable.draw(canvas);
         }
     }
 

@@ -1,7 +1,9 @@
 package com.mozz.htmlnative.css;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
@@ -19,6 +21,7 @@ import com.mozz.htmlnative.css.stylehandler.StyleHelper;
 import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.utils.ParametersUtils;
+import com.mozz.htmlnative.utils.ResourceUtils;
 import com.mozz.htmlnative.view.BackgroundViewDelegate;
 import com.mozz.htmlnative.view.HNDiv;
 import com.mozz.htmlnative.view.IBackgroundView;
@@ -150,13 +153,20 @@ public final class Styles {
                 if (style instanceof Background) {
                     Background background = (Background) style;
 
-                    if (!TextUtils.isEmpty(background.getUrl()) && v instanceof IBackgroundView) {
+                    if (background.isAndroidResource() && v instanceof IBackgroundView) {
+                        Drawable drawable = ResourceUtils.getDrawable(((Background) style).getUrl
+                                ().substring(1), context);
+                        if (drawable != null) {
+                            ((IBackgroundView) v).setHtmlBackground(drawable, background);
+                        }
+                    } else if (!TextUtils.isEmpty(background.getUrl()) && v instanceof
+                            IBackgroundView) {
                         Matrix matrix = Background.createBitmapMatrix(background);
                         HNativeEngine.getImageViewAdapter().setImage(background.getUrl(), new
                                 BackgroundViewDelegate(v, matrix, background));
                     } else if (background.isColorSet()) {
                         if (v instanceof IBackgroundView) {
-                            ((IBackgroundView) v).setHtmlBackground(null, background);
+                            ((IBackgroundView) v).setHtmlBackground((Bitmap) null, background);
                         } else {
                             v.setBackgroundColor(background.getColor());
                         }

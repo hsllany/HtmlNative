@@ -3,6 +3,7 @@ package com.mozz.htmlnative.view;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
@@ -44,6 +45,11 @@ public class HNText extends TextView implements IBackgroundView {
     @Override
     public void setHtmlBackground(Bitmap bitmap, Background background) {
         mBackgroundMgr.setHtmlBackground(bitmap, background);
+    }
+
+    @Override
+    public void setHtmlBackground(Drawable drawable, Background background) {
+        mBackgroundMgr.setHtmlBackground(drawable, background);
     }
 
     @Override

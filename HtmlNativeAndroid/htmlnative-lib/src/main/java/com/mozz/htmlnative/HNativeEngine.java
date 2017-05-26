@@ -1,6 +1,7 @@
 package com.mozz.htmlnative;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 
+import com.mozz.htmlnative.common.ContextProvider;
 import com.mozz.htmlnative.css.stylehandler.StyleHandlerFactory;
 import com.mozz.htmlnative.dom.HNHead;
 import com.mozz.htmlnative.script.ScriptRunner;
@@ -24,6 +26,7 @@ import java.lang.ref.WeakReference;
  */
 
 public final class HNativeEngine {
+
 
     static {
         HNRenderer.registerViewFactory(WebView.class.getName(), DefaultWebViewFactory.sInstance);
@@ -40,6 +43,11 @@ public final class HNativeEngine {
     @Nullable
     private static HNativeEngine sInstance = null;
 
+    public static void init(Application application) {
+        ContextProvider.install(application);
+        initScreenMetrics(application);
+    }
+
     @Nullable
     public static HNativeEngine getInstance() {
         if (sInstance == null) {
@@ -51,10 +59,6 @@ public final class HNativeEngine {
         }
 
         return sInstance;
-    }
-
-    public void init(@NonNull Context context) {
-        initScreenMetrics(context);
     }
 
     public void debugParseProcess() {
@@ -69,7 +73,7 @@ public final class HNativeEngine {
         HNLog.setDebugLevel(HNLog.PROCESS_THREAD);
     }
 
-    private void initScreenMetrics(@NonNull Context context) {
+    private static void initScreenMetrics(@NonNull Context context) {
         ParametersUtils.init(context);
     }
 

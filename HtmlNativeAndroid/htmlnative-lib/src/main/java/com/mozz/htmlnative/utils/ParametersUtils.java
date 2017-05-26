@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.util.TypedValue;
 
+import com.mozz.htmlnative.common.ContextProvider;
 import com.mozz.htmlnative.common.PixelValue;
 
 import java.util.HashMap;
@@ -201,12 +202,19 @@ public final class ParametersUtils {
                 throw new IllegalArgumentException("unknown color string " + colorString);
             }
 
+        } else if (colorString.charAt(0) == '@') {
+            String colorRes = colorString.substring(1);
+            Context context = ContextProvider.getApplicationRef();
+            if (context != null) {
+                return ResourceUtils.getColor(colorRes, context);
+            } else {
+                return Color.BLACK;
+            }
         } else {
             /**
              handle the color like 'red', 'green' ect. see {@link https://www.w3.org/TR/CSS2/syndata
             .html#tokenization}
              */
-
             return Color.parseColor(colorString);
 
         }

@@ -269,6 +269,11 @@ public class HNDiv extends ViewGroup implements IBackgroundView {
     }
 
     @Override
+    public void setHtmlBackground(Drawable drawable, Background background) {
+        mBackgroundMgr.setHtmlBackground(drawable, background);
+    }
+
+    @Override
     public Background getHtmlBackground() {
         return mBackgroundMgr.getHtmlBackground();
     }

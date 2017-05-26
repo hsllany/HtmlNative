@@ -34,7 +34,7 @@ public class DemoApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        HNativeEngine.getInstance().init(this);
+        HNativeEngine.init(this);
         HNativeEngine.getInstance().debugRenderProcess();
 
         HNativeEngine.getInstance().setImageViewAdapter(new ImageViewAdapter() {

@@ -8,6 +8,7 @@ import com.mozz.htmlnative.HNSandBoxContext;
 import com.mozz.htmlnative.dom.AttachedElement;
 import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.parser.CssParser;
+import com.mozz.htmlnative.utils.ResourceUtils;
 
 import org.luaj.vm2.LuaString;
 import org.luaj.vm2.LuaTable;
@@ -64,6 +65,19 @@ class LDocument extends LuaTable implements ILGlobalObject {
                     return new LView(domElement, styleSets, sandBoxContext);
                 }
                 return LuaValue.NIL;
+            }
+        });
+
+        set("getString", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue arg) {
+                String res = ResourceUtils.getString(arg.tojstring(), sandBoxContext
+                        .getAndroidContext());
+                if (res != null) {
+                    return LuaString.valueOf(res);
+                } else {
+                    return LuaValue.NIL;
+                }
             }
         });
     }
