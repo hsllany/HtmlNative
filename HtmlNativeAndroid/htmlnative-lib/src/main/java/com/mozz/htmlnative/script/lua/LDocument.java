@@ -10,6 +10,8 @@ import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.parser.CssParser;
 import com.mozz.htmlnative.utils.ResourceUtils;
 
+import org.luaj.vm2.LuaDouble;
+import org.luaj.vm2.LuaInteger;
 import org.luaj.vm2.LuaString;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
@@ -78,6 +80,24 @@ class LDocument extends LuaTable implements ILGlobalObject {
                 } else {
                     return LuaValue.NIL;
                 }
+            }
+        });
+
+        set("getColor", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue arg) {
+                int res = ResourceUtils.getColor(arg.tojstring(), sandBoxContext
+                        .getAndroidContext());
+                return LuaInteger.valueOf(res);
+            }
+        });
+
+        set("getDimension", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue arg) {
+                float res = ResourceUtils.getDimension(arg.tojstring(), sandBoxContext
+                        .getAndroidContext());
+                return LuaDouble.valueOf(res);
             }
         });
     }

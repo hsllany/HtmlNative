@@ -79,6 +79,27 @@ public class ResourceUtils {
         return null;
     }
 
+    public static float getDimension(String id, Context context) {
+        try {
+            Class<?> rClass = getClass(context, ResourceType.Dimension);
+            int idd = getId(id, rClass);
+            if (idd != View.NO_ID) {
+                return context.getResources().getDimension(idd);
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return 0;
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            return 0;
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+            return 0;
+        }
+
+        return 0;
+    }
+
     private static int getId(String id, Class<?> rClass) throws NoSuchFieldException,
             IllegalAccessException {
         Field f = rClass.getField(id);
@@ -102,6 +123,8 @@ public class ResourceUtils {
                 return getRColorClass(context);
             case Drawable:
                 return getRDrawableClass(context);
+            case Dimension:
+                return getRDimensionClass(context);
         }
 
         return null;
@@ -119,7 +142,11 @@ public class ResourceUtils {
         return Class.forName(context.getPackageName() + ".R$drawable");
     }
 
+    private static Class<?> getRDimensionClass(Context context) throws ClassNotFoundException {
+        return Class.forName(context.getPackageName() + ".R$dimen");
+    }
+
     private enum ResourceType {
-        String, Color, Drawable
+        String, Color, Drawable, Dimension
     }
 }

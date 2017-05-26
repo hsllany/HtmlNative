@@ -95,7 +95,19 @@ public final class ParametersUtils {
         if (object instanceof String) {
             String string = (String) object;
 
-            StringBuilder unitString = new StringBuilder();
+            if (string.charAt(0) == '@') {
+                String resId = string.substring(1);
+                Context context = ContextProvider.getApplicationRef();
+                if (context != null) {
+                    float size = ResourceUtils.getDimension(resId, ContextProvider
+                            .getApplicationRef());
+                    return new PixelValue(size, TypedValue.COMPLEX_UNIT_PX);
+                } else {
+                    return new PixelValue(0, TypedValue.COMPLEX_UNIT_PX);
+                }
+            }
+
+            StringBuilder unitString = new StringBuilder(5);
             int i = string.length() - 1;
             for (; i > 0; i--) {
                 char c = string.charAt(i);
