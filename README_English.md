@@ -5,10 +5,13 @@ Using Html to render Android native views.
 
 Other than Webview, HtmlNative directly parses HTML and CSS into Android native views, which will：
 
-- reach better user-expirence
-- make writing easy, just using html and css
+- Reach better user-expirence by native widgets
+- Make UI dynamic, no need to release new version of application
+- Easy to write html and css
+- Define your own html tag
+- Support inline script of Lua, by which you can control the logic inside of this view.
 
-> Still working on putting Lua script into the raw html file to control the simple logic inside.
+> Future plan is trying to embed javascript in it. 
 
 ## Html Support
 
@@ -27,6 +30,13 @@ inline style，and ```<style?``` tag inside ```<head>```. Do Not Support standal
 width, height, background, background-color, background-position, background-size, padding, padding-left, padding-right, padding-top, padding-bottom, margin, margin-top, margin-left, margin-right, margin-bottom, visibility
 
 font-size, color, line-height, font-style, font-weight, text-align, word-spacing, text-overflow, text-transform
+
+Also, you can fetch native resources (color, drawable) via '@' node:
+
+```
+background: url(@pic);
+color: @colorPrimary;
+```
 
 ### CSS Selectors
 
@@ -200,6 +210,107 @@ HNativeEngine.getInstance().loadView(mActivity, htmlSource, new
     }
 });
 
+```
+
+## HNLuaAPI
+
+HNLuaAPI is a set of pre-defined apis that gives you the ability to call some Android Native Services. You can write them inside ```<script type="text/lua">```. Here is a simple examle:
+
+```html
+<html>
+    <head>
+        <title>iframe</title>
+        <meta name="nihao" content="world"/>
+        <style>
+            #text1{
+                background:red;
+                color:green;
+                margin: 3em 3em;
+                padding: 2em;
+            }
+
+            button{
+                color:yellow
+            }
+
+            #parent{
+                color: red;
+             }
+
+        </style>
+    </head>
+
+    <body>
+        <text id="text1">This is an demo of iframe<br/>nihao
+        </text>
+        <button onclick="changeText1">click me</button>
+    <div id="parent" class="claz1 claz2 claz3"></div>
+    </body>
+
+    <script type="text/lua">
+        toast("hello world")
+
+        b = false
+
+        local vv = document.createView("p", "")
+        vv.setAttribute("text:helloworld");
+
+        local parent = getElementById("parent")
+
+        parent.appendChild(vv)
+
+        console.log(vv.toString())
+        console.log(vv.getAttribute("background"));
+
+        function changeText1()
+            local v = getElementById("text1")
+            console.log(v.id())
+            if(b) then
+                v.setAttribute("background:red;color:#fff")
+            else
+                v.setAttribute("background:blue;color:red")
+            end
+            b = not(b)
+
+            document.jump("http://www.baidu.com")
+
+        end
+    </script>
+</html>
+```
+
+Detail document of this API will be added in the near future, Still working on it. Below is a snapshot:
+
+```lua
+--Print log in Android Logcat with tag "HNConsole"
+console.log(msg)
+console.error(msg)
+console.info(msg)
+console.warn(msg)
+
+--Global operations
+document.version()	--Get current HNLuaAPI version
+document.jump(url) 	--Jump to an url or uri.
+doucment.createView(tag, style) --Create a html element with tagname 'tag' and inline style 'style'
+
+--Finding the HtmlElement
+local lview = getElementById(id) --Get html element by id
+
+--LView object, result of "getElementById"
+lview.toString()	--Get the string description of this view
+lview.setAttribute(style)	--Set its style. Example: lview.setAttribute("color:red")
+lview.id()	--Get id
+lview.className()	--Get class array(LuaTable)
+lview.appendChild(lviewChild)	--Insert an view
+lview.insertBefore(lviewChild)	--Insert an view at the very first beginning
+lview.removeChild(lviewChild)	--Remove the view
+lview.childNodes()	--Get all children views
+lview.getAttribute(stylename)	--Get css attribute according to a style name
+lview.tagName()	--Get html tagname of this view
+lview.hasChildNode() --Check if this view has children
+
+--toast
+toast("helloworld")	--Display a toast in Android
 ```
 
 

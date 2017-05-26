@@ -33,6 +33,13 @@ width, height, background, background-color, background-position, background-siz
 
 font-size, color, line-height, font-style, font-weight, text-align, word-spacing, text-overflow, text-transform
 
+此外，支持从html中获取颜色和drawable，使用@开头即可，例如：
+
+```css
+background: url(@pic);
+color: @colorPrimary;
+```
+
 ### 支持的选择器
 
 type选择器
