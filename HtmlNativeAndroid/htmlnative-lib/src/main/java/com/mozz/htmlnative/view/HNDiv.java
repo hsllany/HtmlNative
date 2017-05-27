@@ -25,8 +25,6 @@ import java.util.Map;
 
 public class HNDiv extends ViewGroup implements IBackgroundView {
 
-    private static final String TAG = HNDiv.class.getSimpleName();
-
     private List<List<View>> mAllViews = new ArrayList<>();
     private List<View> mFloatViews = new LinkedList<>();
     private List<Integer> mLineLength = new ArrayList<>();
@@ -74,7 +72,6 @@ public class HNDiv extends ViewGroup implements IBackgroundView {
             View child = getChildAt(i);
 
             measureChild(child, widthMeasureSpec, heightMeasureSpec);
-
             HNDivLayoutParams lp = (HNDivLayoutParams) child.getLayoutParams();
 
             if (lp.positionMode == HNDivLayoutParams.POSITION_STATIC || lp.positionMode ==
@@ -97,14 +94,10 @@ public class HNDiv extends ViewGroup implements IBackgroundView {
                     lineWidth += childWidth;
                     lineHeight = Math.max(lineHeight, childHeight);
                 }
-
-
             } else if (lp.positionMode == HNDivLayoutParams.POSITION_FLOAT_LEFT || lp
                     .positionMode == HNDivLayoutParams.POSITION_FLOAT_RIGHT) {
                 mFloatViews.add(child);
-                continue;
             }
-
         }
 
         width = Math.max(lineWidth, width);
@@ -158,7 +151,7 @@ public class HNDiv extends ViewGroup implements IBackgroundView {
                     lineViews.add(child);
                     lineHeight = childHeight;
                 } else {
-                    /**
+                    /*
                      * 如果不需要换行，则累加
                      */
                     lineWidth += childWidth + lp.leftMargin + lp.rightMargin;

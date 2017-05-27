@@ -62,15 +62,12 @@ final class HNProcessThread {
                         mCallback.onHead(segment.getHead());
                     }
                 });
-
-                final ViewGroup.LayoutParams layoutParams = new FrameLayout.LayoutParams
-                        (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 MainHandlerUtils.instance().post(new Runnable() {
                     @Override
                     public void run() {
                         View v = null;
                         try {
-                            v = HNRenderer.get().render(context, segment, layoutParams);
+                            v = HNRenderer.get().render(context, segment);
                         } catch (HNRenderer.HNRenderException e) {
                             e.printStackTrace();
                         }

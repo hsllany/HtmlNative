@@ -2,6 +2,7 @@ package com.mozz.htmlnative;
 
 import android.content.Context;
 import android.os.SystemClock;
+import android.os.Trace;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -93,8 +94,10 @@ public final class HNRenderer {
     }
 
     @MainThread
-    final View render(@NonNull Context context, @NonNull HNSegment segment, @NonNull ViewGroup
-            .LayoutParams params) throws HNRenderException {
+    final View render(@NonNull Context context, @NonNull HNSegment segment) throws
+            HNRenderException {
+
+        Trace.beginSection("NHRenderer render start");
 
         mTracker.reset();
 
@@ -131,9 +134,11 @@ public final class HNRenderer {
             Log.i(PERFORMANCE_TAG, mTracker.dump());
 
             HNLog.d(HNLog.RENDER, sandBoxContext.allIdTag());
+            Trace.endSection();
             return rootViewGroup;
         }
 
+        Trace.endSection();
         return null;
     }
 
