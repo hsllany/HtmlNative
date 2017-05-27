@@ -166,7 +166,6 @@ Html:
 <div>
     <img src="coop/banner.png"/>
 </div>
-<script src="http://www.abc.com/script-v1.js"> </script>
 </body>
 </html>
 ```
