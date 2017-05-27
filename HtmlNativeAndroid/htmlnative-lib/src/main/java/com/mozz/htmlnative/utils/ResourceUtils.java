@@ -3,6 +3,7 @@ package com.mozz.htmlnative.utils;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
 
 import java.lang.reflect.Field;
@@ -12,6 +13,9 @@ import java.lang.reflect.Field;
  */
 
 public class ResourceUtils {
+
+    private static final String TAG = "ResourceUtils";
+
     private ResourceUtils() {
 
     }
@@ -22,6 +26,8 @@ public class ResourceUtils {
             int idd = getId(id, rClass);
             if (idd != View.NO_ID) {
                 return context.getString(idd);
+            } else {
+                Log.e(TAG, "Can't find related string resources of id:" + id);
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -43,6 +49,8 @@ public class ResourceUtils {
             int idd = getId(id, rClass);
             if (idd != View.NO_ID) {
                 return context.getColor(idd);
+            } else {
+                Log.e(TAG, "Can't find related color resources of id:" + id);
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -64,6 +72,8 @@ public class ResourceUtils {
             int idd = getId(id, rClass);
             if (idd != View.NO_ID) {
                 return context.getDrawable(idd);
+            } else {
+                Log.e(TAG, "Can't find related drawable resources of id:" + id);
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -85,6 +95,8 @@ public class ResourceUtils {
             int idd = getId(id, rClass);
             if (idd != View.NO_ID) {
                 return context.getResources().getDimension(idd);
+            } else {
+                Log.e(TAG, "Can't find related dimension resources of id:" + id);
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();

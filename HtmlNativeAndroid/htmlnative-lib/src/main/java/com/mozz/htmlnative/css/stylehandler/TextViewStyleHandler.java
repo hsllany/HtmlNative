@@ -13,12 +13,13 @@ import com.mozz.htmlnative.common.PixelValue;
 import com.mozz.htmlnative.css.InheritStylesRegistry;
 import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.exception.AttrApplyException;
+import com.mozz.htmlnative.utils.ParametersUtils;
 import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
 
 import static com.mozz.htmlnative.utils.ParametersUtils.dpToPx;
 import static com.mozz.htmlnative.utils.ParametersUtils.emToPx;
-import static com.mozz.htmlnative.utils.ParametersUtils.toColorSafe;
-import static com.mozz.htmlnative.utils.ParametersUtils.toPixelSafe;
+import static com.mozz.htmlnative.utils.ParametersUtils.toColor;
+import static com.mozz.htmlnative.utils.ParametersUtils.toPixel;
 
 class TextViewStyleHandler extends StyleHandler {
 
@@ -72,7 +73,11 @@ class TextViewStyleHandler extends StyleHandler {
         final TextView textView = (TextView) v;
         switch (params) {
             case COLOR:
-                textView.setTextColor(toColorSafe(value));
+                try {
+                    textView.setTextColor(toColor(value));
+                } catch (ParametersUtils.ParametersParseException e) {
+                    e.printStackTrace();
+                }
                 break;
 
             case TEXT:
@@ -80,13 +85,30 @@ class TextViewStyleHandler extends StyleHandler {
                 break;
 
             case FONT_SIZE:
-                PixelValue size = toPixelSafe(value);
-                textView.setTextSize(size.getUnit(), size.getPxValue());
+                try {
+                    PixelValue size;
+                    size = toPixel(value);
+                    textView.setTextSize(size.getUnit(), size.getPxValue());
+                } catch (ParametersUtils.ParametersParseException e) {
+                    e.printStackTrace();
+                }
                 break;
 
             case LINE_HEIGHT:
-                float lineHeight = toPixelSafe(value).getPxValue();
-                textView.setLineSpacing(0, lineHeight);
+                try {
+                    if (value instanceof String) {
+                        if (((String) value).endsWith("%")) {
+                            float percent = ParametersUtils.getPercent((String) value);
+                            textView.setLineSpacing(0, percent);
+                        } else {
+                            float lineHeight;
+                            lineHeight = toPixel(value).getPxValue();
+                            textView.setLineSpacing(lineHeight, 0);
+                        }
+                    }
+                } catch (ParametersUtils.ParametersParseException e) {
+                    e.printStackTrace();
+                }
                 break;
 
             case FONT_WEIGHT:
@@ -149,8 +171,12 @@ class TextViewStyleHandler extends StyleHandler {
                 if (ss.equals("normal")) {
                     textView.setLetterSpacing(textView.getLetterSpacing());
                 } else {
-                    PixelValue f = toPixelSafe(value);
-                    textView.setLetterSpacing((float) f.getEmValue());
+                    try {
+                        PixelValue f = toPixel(value);
+                        textView.setLetterSpacing(f.getEmValue());
+                    } catch (ParametersUtils.ParametersParseException e) {
+                        e.printStackTrace();
+                    }
                 }
                 break;
             }

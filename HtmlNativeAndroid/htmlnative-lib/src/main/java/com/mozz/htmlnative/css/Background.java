@@ -8,9 +8,9 @@ import static com.mozz.htmlnative.utils.ParametersUtils.ParametersParseException
 import static com.mozz.htmlnative.utils.ParametersUtils.getPercent;
 import static com.mozz.htmlnative.utils.ParametersUtils.isHtmlColorString;
 import static com.mozz.htmlnative.utils.ParametersUtils.splitByEmpty;
-import static com.mozz.htmlnative.utils.ParametersUtils.toColorSafe;
+import static com.mozz.htmlnative.utils.ParametersUtils.toColor;
 import static com.mozz.htmlnative.utils.ParametersUtils.toHtmlColorString;
-import static com.mozz.htmlnative.utils.ParametersUtils.toPixelSafe;
+import static com.mozz.htmlnative.utils.ParametersUtils.toPixel;
 
 /**
  * @author Yang Tao, 17/3/24.
@@ -171,9 +171,9 @@ public class Background {
 
                     } else if (item.startsWith("#") || isHtmlColorString(item)) {
                         try {
-                            style.setColor(toColorSafe(item));
-                        } catch (IllegalArgumentException ignored) {
-
+                            style.setColor(toColor(item));
+                        } catch (ParametersParseException e) {
+                            e.printStackTrace();
                         }
                     } else if (item.equals("no-repeat") || item.equals("repeat-x") || item.equals
                             ("repeat-y") || item.equals("repeat") && lk <= LK_REPEAT) {
@@ -214,10 +214,10 @@ public class Background {
                                 style.setX(0.5f);
                                 style.xMode = PERCENTAGE;
                             } else {
-                                style.setX(toPixelSafe(item).getPxValue());
+                                style.setX(toPixel(item).getPxValue());
                                 style.xMode = LENGTH;
                             }
-                        } catch (IllegalArgumentException e) {
+                        } catch (ParametersParseException e) {
                             e.printStackTrace();
                         }
 
@@ -242,44 +242,48 @@ public class Background {
                                 style.setY(0.5f);
                                 style.yMode = PERCENTAGE;
                             } else {
-                                style.setY(toPixelSafe(item).getPxValue());
+                                style.setY(toPixel(item).getPxValue());
                                 style.yMode = LENGTH;
                             }
-                        } catch (IllegalArgumentException e) {
+                        } catch (ParametersParseException e) {
                             e.printStackTrace();
                         }
 
                         lk++;
 
                     } else if (lk == LK_WIDTH) {
-                        if (item.endsWith("%")) {
-                            try {
+                        try {
+                            if (item.endsWith("%")) {
                                 style.width = getPercent(item);
                                 style.widthMode = PERCENTAGE;
-                            } catch (ParametersParseException ignored) {
-                            }
-                        } else if (item.equals("auto")) {
-                            style.width = 0;
-                            style.widthMode = AUTO;
-                        } else {
-                            style.width = toPixelSafe(item).getPxValue();
-                            style.widthMode = LENGTH;
-                        }
 
+                            } else if (item.equals("auto")) {
+                                style.width = 0;
+                                style.widthMode = AUTO;
+                            } else {
+                                style.width = toPixel(item).getPxValue();
+                                style.widthMode = LENGTH;
+                            }
+                        } catch (ParametersParseException e) {
+                            e.printStackTrace();
+                        }
                         lk++;
                     } else if (lk == LK_HEIGHT) {
-                        if (item.endsWith("%")) {
-                            try {
+                        try {
+                            if (item.endsWith("%")) {
+
                                 style.height = getPercent(item);
                                 style.heightMode = PERCENTAGE;
-                            } catch (ParametersParseException ignored) {
+
+                            } else if (item.equals("auto")) {
+                                style.height = 0;
+                                style.heightMode = AUTO;
+                            } else {
+                                style.height = (float) toPixel(item).getPxValue();
+                                style.heightMode = LENGTH;
                             }
-                        } else if (item.equals("auto")) {
-                            style.height = 0;
-                            style.heightMode = AUTO;
-                        } else {
-                            style.height = (float) toPixelSafe(item).getPxValue();
-                            style.heightMode = LENGTH;
+                        } catch (ParametersParseException e) {
+                            e.printStackTrace();
                         }
 
                         lk++;
@@ -291,8 +295,9 @@ public class Background {
             case "background-color": {
                 if (subStrings.length >= 1) {
                     try {
-                        style.setColor(toColorSafe(subStrings[0]));
-                    } catch (IllegalArgumentException ignored) {
+                        style.setColor(toColor(subStrings[0]));
+                    } catch (ParametersParseException e) {
+                        e.printStackTrace();
                     }
                 }
             }
@@ -318,11 +323,7 @@ public class Background {
                         if (lookFor == LK_X) {
                             if (item.endsWith("%")) {
                                 style.xMode = PERCENTAGE;
-                                try {
-                                    style.setX(getPercent(item));
-                                } catch (ParametersParseException ignored) {
-
-                                }
+                                style.setX(getPercent(item));
                             } else if (item.equals("left")) {
                                 style.setX(0f);
                                 style.xMode = PERCENTAGE;
@@ -334,16 +335,14 @@ public class Background {
                                 style.xMode = PERCENTAGE;
                             } else {
                                 style.xMode = LENGTH;
-                                style.setX((float) toPixelSafe(item).getPxValue());
+                                style.setX(toPixel(item).getPxValue());
                             }
+
                         } else if (lookFor == LK_Y) {
+
                             if (item.endsWith("%")) {
                                 style.yMode = PERCENTAGE;
-                                try {
-                                    style.setY(getPercent(item));
-                                } catch (ParametersParseException ignored) {
-
-                                }
+                                style.setY(getPercent(item));
                             } else if (item.equals("top")) {
                                 style.setY(0f);
                                 style.yMode = PERCENTAGE;
@@ -355,12 +354,13 @@ public class Background {
                                 style.yMode = PERCENTAGE;
                             } else {
                                 style.yMode = LENGTH;
-                                style.setY((float) toPixelSafe(item).getPxValue());
+                                style.setY(toPixel(item).getPxValue());
                             }
+
                         } else {
                             break;
                         }
-                    } catch (IllegalArgumentException e) {
+                    } catch (ParametersParseException e) {
                         e.printStackTrace();
                     }
 
@@ -397,38 +397,31 @@ public class Background {
                 if (subStrings.length >= 2) {
                     String width = subStrings[0];
                     String height = subStrings[1];
-
-                    if (width.endsWith("%")) {
-                        try {
+                    try {
+                        if (width.endsWith("%")) {
                             style.width = getPercent(width);
-                        } catch (ParametersParseException ignored) {
-
+                            style.widthMode = PERCENTAGE;
+                        } else if (width.equals("auto")) {
+                            style.width = 0;
+                            style.widthMode = AUTO;
+                        } else {
+                            style.width = toPixel(width).getPxValue();
+                            style.widthMode = LENGTH;
                         }
-                        style.widthMode = PERCENTAGE;
-                    } else if (width.equals("auto")) {
-                        style.width = 0;
-                        style.widthMode = AUTO;
-                    } else {
-                        style.width = toPixelSafe(width).getPxValue();
-                        style.widthMode = LENGTH;
-                    }
 
-                    if (height.endsWith("%")) {
-                        try {
+                        if (height.endsWith("%")) {
                             style.height = getPercent(height);
-                        } catch (ParametersParseException ignored) {
-
+                            style.heightMode = PERCENTAGE;
+                        } else if (height.equals("auto")) {
+                            style.height = 0;
+                            style.heightMode = AUTO;
+                        } else {
+                            style.height = toPixel(height).getPxValue();
+                            style.heightMode = LENGTH;
                         }
-                        style.heightMode = PERCENTAGE;
-                    } else if (height.equals("auto")) {
-                        style.height = 0;
-                        style.heightMode = AUTO;
-                    } else {
-                        style.height = toPixelSafe(height).getPxValue();
-                        style.heightMode = LENGTH;
+                    } catch (ParametersParseException e) {
+                        e.printStackTrace();
                     }
-
-
                 }
             }
             break;
@@ -437,27 +430,25 @@ public class Background {
                 if (subStrings.length >= 2) {
                     String width = subStrings[0];
                     String height = subStrings[1];
-
-                    if (width.endsWith("%")) {
-                        try {
+                    try {
+                        if (width.endsWith("%")) {
                             style.colorWidth = getPercent(width);
                             style.colorWidthMode = PERCENTAGE;
-                        } catch (ParametersParseException ignored) {
+                        } else {
+                            style.colorWidth = toPixel(width).getPxValue();
+                            style.colorWidthMode = LENGTH;
                         }
-                    } else {
-                        style.colorWidth = toPixelSafe(width).getPxValue();
-                        style.colorWidthMode = LENGTH;
-                    }
 
-                    if (height.endsWith("%")) {
-                        try {
+                        if (height.endsWith("%")) {
                             style.colorHeight = getPercent(height);
                             style.colorHeightMode = PERCENTAGE;
-                        } catch (ParametersParseException ignored) {
+
+                        } else {
+                            style.colorHeight = toPixel(height).getPxValue();
+                            style.colorHeightMode = LENGTH;
                         }
-                    } else {
-                        style.colorHeight = toPixelSafe(height).getPxValue();
-                        style.colorHeightMode = LENGTH;
+                    } catch (ParametersParseException e) {
+                        e.printStackTrace();
                     }
                 }
             }

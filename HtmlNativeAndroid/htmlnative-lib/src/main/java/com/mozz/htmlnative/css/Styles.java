@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -105,13 +106,16 @@ public final class Styles {
      * @param styleName      parameter name
      * @param style          parameter value     @throws AttrApplyException
      */
-    public static void applyStyle(Context context, final HNSandBoxContext sandBoxContext, View v,
-                                  DomElement domElement, @NonNull LayoutParamsLazyCreator
-                                          layoutCreator, @NonNull ViewGroup parent, StyleHandler
-                                          viewStyleHandler, StyleHandler extraStyleHandler,
-                                  LayoutStyleHandler parentAttr, String styleName, final Object
-                                          style, boolean isParent, InheritStyleStack outStack)
-            throws AttrApplyException {
+    public static void applyStyle(@NonNull Context context, @NonNull final HNSandBoxContext
+            sandBoxContext, @NonNull View v, @Nullable DomElement domElement, @NonNull
+            LayoutParamsLazyCreator layoutCreator, @NonNull ViewGroup parent, StyleHandler
+            viewStyleHandler, StyleHandler extraStyleHandler, LayoutStyleHandler parentAttr,
+                                  String styleName, final Object style, boolean isParent,
+                                  InheritStyleStack outStack) throws AttrApplyException {
+
+        if (styleName == null || style == null) {
+            return;
+        }
 
         if (domElement != null) {
             HNLog.d(HNLog.STYLE, "set style \"" + styleName + ": " + style + "\"  to " +
@@ -131,8 +135,12 @@ public final class Styles {
                 } else if (style.toString().equalsIgnoreCase(VAL_WRAP_CONTENT)) {
                     layoutCreator.width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 } else {
-                    PixelValue pixel = ParametersUtils.toPixelSafe(style);
-                    layoutCreator.width = (int) pixel.getPxValue();
+                    try {
+                        PixelValue pixel = ParametersUtils.toPixel(style);
+                        layoutCreator.width = (int) pixel.getPxValue();
+                    } catch (ParametersUtils.ParametersParseException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
             break;
@@ -143,8 +151,13 @@ public final class Styles {
                 } else if (style.toString().equalsIgnoreCase(VAL_WRAP_CONTENT)) {
                     layoutCreator.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 } else {
-                    PixelValue pixel = ParametersUtils.toPixelSafe(style);
-                    layoutCreator.height = (int) pixel.getPxValue();
+                    try {
+                        PixelValue pixel = ParametersUtils.toPixel(style);
+                        layoutCreator.height = (int) pixel.getPxValue();
+                    } catch (ParametersUtils.ParametersParseException e) {
+                        e.printStackTrace();
+                    }
+
                 }
             }
             break;
@@ -178,64 +191,87 @@ public final class Styles {
                 break;
 
             case ATTR_MARGIN: {
-                PixelValue[] pixelValues = ParametersUtils.toPixelsSafe(style.toString());
-                int top = -1;
-                int bottom = -1;
-                int left = -1;
-                int right = -1;
-                if (pixelValues.length == 1) {
-                    top = bottom = left = right = (int) pixelValues[0].getPxValue();
-                } else if (pixelValues.length == 2) {
-                    top = bottom = (int) pixelValues[0].getPxValue();
-                    left = right = (int) pixelValues[1].getPxValue();
-                } else if (pixelValues.length == 4) {
-                    top = (int) pixelValues[0].getPxValue();
-                    bottom = (int) pixelValues[2].getPxValue();
-                    left = (int) pixelValues[3].getPxValue();
-                    right = (int) pixelValues[1].getPxValue();
+                try {
+                    PixelValue[] pixelValues = ParametersUtils.toPixels(style.toString());
+                    int top = -1;
+                    int bottom = -1;
+                    int left = -1;
+                    int right = -1;
+                    if (pixelValues.length == 1) {
+                        top = bottom = left = right = (int) pixelValues[0].getPxValue();
+                    } else if (pixelValues.length == 2) {
+                        top = bottom = (int) pixelValues[0].getPxValue();
+                        left = right = (int) pixelValues[1].getPxValue();
+                    } else if (pixelValues.length == 4) {
+                        top = (int) pixelValues[0].getPxValue();
+                        bottom = (int) pixelValues[2].getPxValue();
+                        left = (int) pixelValues[3].getPxValue();
+                        right = (int) pixelValues[1].getPxValue();
+                    }
+                    if (top != -1 && bottom != -1 && left != -1 && right != -1) {
+                        layoutCreator.setMargins(left, top, right, bottom);
+                    }
+                } catch (ParametersUtils.ParametersParseException e) {
+                    e.printStackTrace();
                 }
-                if (top != -1 && bottom != -1 && left != -1 && right != -1) {
-                    layoutCreator.setMargins(left, top, right, bottom);
-                }
-
             }
             break;
 
             case ATTR_MARGIN_RIGHT:
-                layoutCreator.marginRight = (int) ParametersUtils.toPixelSafe(style).getPxValue();
+                try {
+                    layoutCreator.marginRight = (int) ParametersUtils.toPixel(style).getPxValue();
+                } catch (ParametersUtils.ParametersParseException e) {
+                    e.printStackTrace();
+                }
                 break;
 
             case ATTR_MARGIN_LEFT:
-                layoutCreator.marginLeft = (int) ParametersUtils.toPixelSafe(style).getPxValue();
+                try {
+                    layoutCreator.marginLeft = (int) ParametersUtils.toPixel(style).getPxValue();
+                } catch (ParametersUtils.ParametersParseException e) {
+                    e.printStackTrace();
+                }
                 break;
 
             case ATTR_MARGIN_TOP:
-                layoutCreator.marginTop = (int) ParametersUtils.toPixelSafe(style).getPxValue();
+                try {
+                    layoutCreator.marginTop = (int) ParametersUtils.toPixel(style).getPxValue();
+                } catch (ParametersUtils.ParametersParseException e) {
+                    e.printStackTrace();
+                }
                 break;
 
             case ATTR_MARGIN_BOTTOM:
-                layoutCreator.marginBottom = (int) ParametersUtils.toPixelSafe(style).getPxValue();
+                try {
+                    layoutCreator.marginBottom = (int) ParametersUtils.toPixel(style).getPxValue();
+                } catch (ParametersUtils.ParametersParseException e) {
+                    e.printStackTrace();
+                }
                 break;
 
             case ATTR_PADDING: {
-                PixelValue[] pixelValues = ParametersUtils.toPixelsSafe(style.toString());
-                int top = -1;
-                int bottom = -1;
-                int left = -1;
-                int right = -1;
-                if (pixelValues.length == 1) {
-                    top = bottom = left = right = (int) pixelValues[0].getPxValue();
-                } else if (pixelValues.length == 2) {
-                    top = bottom = (int) pixelValues[0].getPxValue();
-                    left = right = (int) pixelValues[1].getPxValue();
-                } else if (pixelValues.length == 4) {
-                    top = (int) pixelValues[0].getPxValue();
-                    bottom = (int) pixelValues[2].getPxValue();
-                    left = (int) pixelValues[3].getPxValue();
-                    right = (int) pixelValues[1].getPxValue();
-                }
-                if (top != -1 && bottom != -1 && left != -1 && right != -1) {
-                    v.setPadding(left, top, right, bottom);
+                try {
+                    PixelValue[] pixelValues = ParametersUtils.toPixels(style.toString());
+                    int top = -1;
+                    int bottom = -1;
+                    int left = -1;
+                    int right = -1;
+                    if (pixelValues.length == 1) {
+                        top = bottom = left = right = (int) pixelValues[0].getPxValue();
+                    } else if (pixelValues.length == 2) {
+                        top = bottom = (int) pixelValues[0].getPxValue();
+                        left = right = (int) pixelValues[1].getPxValue();
+                    } else if (pixelValues.length == 4) {
+                        top = (int) pixelValues[0].getPxValue();
+                        bottom = (int) pixelValues[2].getPxValue();
+                        left = (int) pixelValues[3].getPxValue();
+                        right = (int) pixelValues[1].getPxValue();
+                    }
+                    if (top != -1 && bottom != -1 && left != -1 && right != -1) {
+                        v.setPadding(left, top, right, bottom);
+                    }
+                } catch (ParametersUtils.ParametersParseException e) {
+                    e.printStackTrace();
                 }
             }
             break;
@@ -250,39 +286,72 @@ public final class Styles {
                 });
                 break;
             case ATTR_PADDING_LEFT:
-                int paddingLeft = (int) ParametersUtils.toPixelSafe(style).getPxValue();
-                StyleHelper.setLeftPadding(v, paddingLeft);
+                try {
+                    int paddingLeft = (int) ParametersUtils.toPixel(style).getPxValue();
+                    StyleHelper.setLeftPadding(v, paddingLeft);
+                } catch (ParametersUtils.ParametersParseException e) {
+                    e.printStackTrace();
+                }
+
                 break;
 
             case ATTR_PADDING_RIGHT:
-                int paddingRight = (int) ParametersUtils.toPixelSafe(style).getPxValue();
-                StyleHelper.setRightPadding(v, paddingRight);
+                try {
+                    int paddingRight = (int) ParametersUtils.toPixel(style).getPxValue();
+                    StyleHelper.setRightPadding(v, paddingRight);
+                } catch (ParametersUtils.ParametersParseException e) {
+                    e.printStackTrace();
+                }
                 break;
 
             case ATTR_PADDING_TOP:
-                int paddingTop = (int) ParametersUtils.toPixelSafe(style).getPxValue();
-                StyleHelper.setTopPadding(v, paddingTop);
+                try {
+                    int paddingTop = (int) ParametersUtils.toPixel(style).getPxValue();
+                    StyleHelper.setTopPadding(v, paddingTop);
+                } catch (ParametersUtils.ParametersParseException e) {
+                    e.printStackTrace();
+                }
                 break;
 
             case ATTR_PADDING_BOTTOM:
-                int paddingBottom = (int) ParametersUtils.toPixelSafe(style).getPxValue();
-                StyleHelper.setBottomPadding(v, paddingBottom);
+                try {
+                    int paddingBottom = (int) ParametersUtils.toPixel(style).getPxValue();
+                    StyleHelper.setBottomPadding(v, paddingBottom);
+                } catch (ParametersUtils.ParametersParseException e) {
+                    e.printStackTrace();
+                }
                 break;
 
             case ATTR_LEFT:
-                layoutCreator.left = (int) ParametersUtils.toPixelSafe(style).getPxValue();
+                try {
+                    layoutCreator.left = (int) ParametersUtils.toPixel(style).getPxValue();
+                } catch (ParametersUtils.ParametersParseException e) {
+                    e.printStackTrace();
+                }
                 break;
 
             case ATTR_TOP:
-                layoutCreator.top = (int) ParametersUtils.toPixelSafe(style).getPxValue();
+                try {
+                    layoutCreator.top = (int) ParametersUtils.toPixel(style).getPxValue();
+                } catch (ParametersUtils.ParametersParseException e) {
+                    e.printStackTrace();
+                }
                 break;
 
             case ATTR_RIGHT:
-                layoutCreator.right = (int) ParametersUtils.toPixelSafe(style).getPxValue();
+                try {
+                    layoutCreator.right = (int) ParametersUtils.toPixel(style).getPxValue();
+                } catch (ParametersUtils.ParametersParseException e) {
+                    e.printStackTrace();
+                }
                 break;
 
             case ATTR_BOTTOM:
-                layoutCreator.bottom = (int) ParametersUtils.toPixelSafe(style).getPxValue();
+                try {
+                    layoutCreator.bottom = (int) ParametersUtils.toPixel(style).getPxValue();
+                } catch (ParametersUtils.ParametersParseException e) {
+                    e.printStackTrace();
+                }
                 break;
 
             case ATTR_FLOAT: {

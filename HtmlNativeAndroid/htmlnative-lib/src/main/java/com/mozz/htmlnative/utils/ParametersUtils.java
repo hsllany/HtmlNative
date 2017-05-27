@@ -90,7 +90,6 @@ public final class ParametersUtils {
             }
             if (isPercentage && fStr.length() > 1) {
                 fStr = fStr.substring(0, fStr.length() - 1);
-                isPercentage = true;
             }
             try {
                 float f = Float.valueOf(fStr.trim());
@@ -103,61 +102,54 @@ public final class ParametersUtils {
     }
 
     @NonNull
-    public static PixelValue toPixelSafe(@NonNull Object object) {
-        try {
-            int unit = TypedValue.COMPLEX_UNIT_PX;
-            if (object instanceof String) {
-                String string = (String) object;
+    public static PixelValue toPixel(@NonNull Object object) throws ParametersParseException {
+        int unit = TypedValue.COMPLEX_UNIT_PX;
+        if (object instanceof String) {
+            String string = (String) object;
 
-                if (string.length() == 0 || (string.equals("@"))) {
-                    return PixelValue.ZERO;
-                }
-
-                if (string.charAt(0) == '@' && string.length() > 1) {
-                    String resId = string.substring(1);
-                    Context context = ContextProvider.getApplicationRef();
-                    if (context != null) {
-                        float size = ResourceUtils.getDimension(resId, ContextProvider
-                                .getApplicationRef());
-                        return new PixelValue(size);
-                    } else {
-                        return new PixelValue(0);
-                    }
-                }
-
-                StringBuilder unitString = new StringBuilder(5);
-                int i = string.length() - 1;
-                for (; i > 0; i--) {
-                    char c = string.charAt(i);
-                    if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
-                        unitString.append(c);
-                    } else {
-                        break;
-                    }
-                }
-
-                unit = getUnit(unitString.reverse().toString());
-
-                float value = 0;
-                try {
-                    value = toFloat(string.substring(0, i + 1));
-                } catch (ParametersParseException e) {
-                    return new PixelValue(value, unit);
-                }
-                return new PixelValue(value, unit);
-            } else {
-                return new PixelValue(toFloat(object), unit);
+            if (string.length() == 0 || (string.equals("@"))) {
+                throw new ParametersParseException("wrong when parse pixel");
             }
-        } catch (ParametersParseException e) {
-            e.printStackTrace();
-            return PixelValue.ZERO;
+
+            if (string.charAt(0) == '@' && string.length() > 1) {
+                String resId = string.substring(1);
+                Context context = ContextProvider.getApplicationRef();
+                if (context != null) {
+                    float size = ResourceUtils.getDimension(resId, ContextProvider
+                            .getApplicationRef());
+                    return new PixelValue(size);
+                } else {
+                    throw new ParametersParseException("wrong when parse pixel");
+                }
+            }
+
+            StringBuilder unitString = new StringBuilder(5);
+            int i = string.length() - 1;
+            for (; i > 0; i--) {
+                char c = string.charAt(i);
+                if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
+                    unitString.append(c);
+                } else {
+                    break;
+                }
+            }
+
+            unit = getUnit(unitString.reverse().toString());
+
+            float value = 0;
+            value = toFloat(string.substring(0, i + 1));
+            return new PixelValue(value, unit);
+        } else {
+            return new PixelValue(toFloat(object), unit);
         }
+
     }
 
     @PixelValue.PixelUnit
-    private static int getUnit(String s) {
+    private static int getUnit(String s) throws ParametersParseException {
         switch (s.toLowerCase()) {
             default:
+                throw new ParametersParseException("Unknown unit " + s);
             case "px":
                 return TypedValue.COMPLEX_UNIT_PX;
             case "dp":
@@ -179,7 +171,7 @@ public final class ParametersUtils {
         }
     }
 
-    public static PixelValue[] toPixelsSafe(String ss) {
+    public static PixelValue[] toPixels(String ss) throws ParametersParseException {
         String[] single = splitByEmpty(ss);
 
         PixelValue[] pixelValues = new PixelValue[single.length];
@@ -188,7 +180,7 @@ public final class ParametersUtils {
 
         for (String s : single) {
             String trimS = s.trim();
-            pixelValues[i++] = toPixelSafe(trimS);
+            pixelValues[i++] = toPixel(trimS);
         }
 
         return pixelValues;
@@ -204,14 +196,6 @@ public final class ParametersUtils {
             } catch (IllegalArgumentException e) {
                 throw new ParametersParseException(e);
             }
-        }
-    }
-
-    public static int toColorSafe(Object colorObj) {
-        try {
-            return toColor(colorObj);
-        } catch (ParametersParseException e) {
-            return DEFAULT_COLOR;
         }
     }
 
