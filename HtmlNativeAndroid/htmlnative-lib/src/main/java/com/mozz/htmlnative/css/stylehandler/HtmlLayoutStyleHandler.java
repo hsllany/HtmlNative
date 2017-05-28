@@ -2,8 +2,9 @@ package com.mozz.htmlnative.css.stylehandler;
 
 import android.content.Context;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.view.ViewGroup;
 
+import com.mozz.htmlnative.HtmlTag;
 import com.mozz.htmlnative.css.InheritStylesRegistry;
 import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.exception.AttrApplyException;
@@ -26,8 +27,13 @@ class HtmlLayoutStyleHandler extends StyleHandler {
     public void setDefault(Context context, View v, DomElement domElement,
                            LayoutParamsLazyCreator paramsLazyCreator, View parent) throws
             AttrApplyException {
-        paramsLazyCreator.height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        paramsLazyCreator.width = LinearLayout.LayoutParams.MATCH_PARENT;
+        paramsLazyCreator.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+
+        if (domElement.getType().equals(HtmlTag.SPAN)) {
+            paramsLazyCreator.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+        } else {
+            paramsLazyCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        }
     }
 
     @Override

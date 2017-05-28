@@ -54,7 +54,7 @@ public final class ViewTypeRelations {
         sReservedTagClassTable.put(HtmlTag.IFRAME, WebView.class.getName());
         sReservedTagClassTable.put(HtmlTag.WEB, WebView.class.getName());
         sReservedTagClassTable.put(HtmlTag.A, HNText.class.getName());
-        sReservedTagClassTable.put(HtmlTag.SPAN, HNText.class.getName());
+        sReservedTagClassTable.put(HtmlTag.SPAN, HNDiv.class.getName());
         sReservedTagClassTable.put(HtmlTag.H1, HNText.class.getName());
         sReservedTagClassTable.put(HtmlTag.H2, HNText.class.getName());
         sReservedTagClassTable.put(HtmlTag.H3, HNText.class.getName());

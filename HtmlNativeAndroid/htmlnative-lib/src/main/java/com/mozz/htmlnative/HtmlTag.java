@@ -70,7 +70,6 @@ public final class HtmlTag {
         sSwallowInnerTag.add(HtmlTag.P);
         sSwallowInnerTag.add(HtmlTag.TEXT);
         sSwallowInnerTag.add(HtmlTag.BUTTON);
-        sSwallowInnerTag.add(HtmlTag.SPAN);
     }
 
     public static boolean isSwallowInnerTag(@NonNull String type) {
