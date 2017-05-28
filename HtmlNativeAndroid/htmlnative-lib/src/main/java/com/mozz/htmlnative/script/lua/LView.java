@@ -68,7 +68,7 @@ class LView extends LuaTable {
     }
 
     /**
-     * Used only by {@link LFindViewById}, which will look up view in existing view tree.
+     * Used only by {@link LDocument.LFindViewById}, which will look up view in existing view tree.
      */
     LView(final View v, final HNSandBoxContext context) {
         this((DomElement) v.getTag(), null, context);

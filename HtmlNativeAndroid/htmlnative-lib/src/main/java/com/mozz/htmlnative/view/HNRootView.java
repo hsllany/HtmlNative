@@ -6,12 +6,9 @@ import android.util.ArrayMap;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ScrollView;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,9 +23,6 @@ public final class HNRootView extends ScrollView {
 
     private FrameLayout mContentView;
 
-    @NonNull
-    private List<WebView> mWebViewList = new LinkedList<>();
-
     public HNRootView(@NonNull Context context) {
         super(context);
         mContentView = new FrameLayout(context);
@@ -36,37 +30,8 @@ public final class HNRootView extends ScrollView {
                 .MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
     }
 
-    @Override
-    public void onViewAdded(View child) {
-        super.onViewAdded(child);
-        if (child instanceof WebView) {
-            mWebViewList.add((WebView) child);
-        }
-    }
-
-    @Override
-    public void onViewRemoved(View child) {
-        super.onViewRemoved(child);
-        if (child instanceof WebView) {
-            mWebViewList.remove(child);
-        }
-    }
-
     public void addContent(View v, ViewGroup.LayoutParams layoutParams) {
         mContentView.addView(v, layoutParams);
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        List<WebView> tempWebViewList = mWebViewList;
-        mWebViewList.clear();
-
-        for (WebView webView : tempWebViewList) {
-            if (webView != null) {
-                webView.destroy();
-            }
-        }
     }
 
     public View findViewById(@NonNull String id) {

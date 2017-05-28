@@ -26,7 +26,7 @@ public enum TokenType {
 
     Template("Template"),
 
-    Body("Body"),
+    Body("Body"),//the same as Template
 
     Script("Script"),
 
