@@ -42,7 +42,7 @@ class LDocument extends LuaTable implements ILGlobalObject {
             }
         });
 
-        set("createView", new TwoArgFunction() {
+        set("createElement", new TwoArgFunction() {
             @Override
             public LuaValue call(LuaValue tag, LuaValue style) {
                 if (tag instanceof LuaString && style instanceof LuaString) {
@@ -100,6 +100,10 @@ class LDocument extends LuaTable implements ILGlobalObject {
                 return LuaDouble.valueOf(res);
             }
         });
+
+        set("getElementById", new LFindViewById(sandBoxContext));
+
+
     }
 
     @Override

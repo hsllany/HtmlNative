@@ -21,7 +21,7 @@ public class LuaRunner extends ScriptRunner {
     private Globals mGlobals;
 
     private static final String TAG = LuaRunner.class.getSimpleName();
-    
+
     public LuaRunner(HNSandBoxContext sandBoxContext) {
         super(sandBoxContext);
 
@@ -34,10 +34,8 @@ public class LuaRunner extends ScriptRunner {
 
         // register api
         register(new LToast(sandBoxContext.getAndroidContext()));
-        register(new LFindViewById(sandBoxContext));
         Log.i(PERFORMANCE_TAG, "init Lua module spend " + (SystemClock.currentThreadTimeMillis()
-                - time1) + "" +
-                " ms");
+                - time1) + "" + " ms");
     }
 
     @Override

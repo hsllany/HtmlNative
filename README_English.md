@@ -279,10 +279,10 @@ console.warn(msg)
 --Global operations
 document.version()	--Get current HNLuaAPI version
 document.jump(url) 	--Jump to an url or uri.
-doucment.createView(tag, style) --Create a html element with tagname 'tag' and inline style 'style'
+doucment.createElement(tag, style) --Create a html element with tagname 'tag' and inline style 'style'
 
 --Finding the HtmlElement
-local lview = getElementById(id) --Get html element by id
+local lview = document.getElementById(id) --Get html element by id
 
 --LView object, result of "getElementById"
 lview.toString()	--Get the string description of this view

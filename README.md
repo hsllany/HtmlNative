@@ -270,10 +270,10 @@ console.warn(msg)
 --全局操作
 document.version()	--获取当前HNLuaApi版本号
 document.jump(url) 	--跳转至url,具体处理方式，客户端可复写HrefLinkHandler，并在HNativeEngine中注册
-doucment.createView(tag, style) --以tag方式创建一个标签，并附加上style属性。例如local v = document.createView("p", "color:red")，该函数返回一个lview对象
+doucment.createView(tag, style) --以tag方式创建一个标签，并附加上style属性。例如local v = document.createElement("p", "color:red")，该函数返回一个lview对象
 
 --查找view
-local lview = getElementById(id) --通过id查找view
+local lview = document.getElementById(id) --通过id查找view
 
 --lview对象
 lview.toString()	--转换成stirng
