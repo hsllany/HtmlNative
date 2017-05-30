@@ -290,6 +290,16 @@ lview.hasChildNode() --检验该lview是否含有子view
 
 --toast
 toast("helloworld")	--显示一个toast提示（android only）
+
+--网络操作
+
+local callback = {}        --定义一个回调函数
+function l.onResponse(res) --定义其onResponse方法
+    toast(res.body())      --在其中发起一个toast，并显示response的body中的内容。res有body(), header()及status()方法，可分别访问其HTTP BODY，RESPONSE HEADER及状态码
+end
+
+http.get("http://www.abc.com", callback)
+http.post("http://www.abc.com", postParams, callback)
 ```
 
 
