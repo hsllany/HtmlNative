@@ -34,6 +34,10 @@ final class HNScriptRunnerThread {
         mHandler.post(r);
     }
 
+    public static void postAtFront(Runnable r) {
+        mHandler.postAtFrontOfQueue(r);
+    }
+
     private static class ScriptRunTask implements Runnable {
 
         WeakReference<HNSandBoxContext> mContextRef;

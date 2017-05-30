@@ -25,6 +25,8 @@ public interface HNSandBoxContext extends VariablePool {
 
     void executeFun(String funName);
 
+    void executeUIFun(String funName);
+
     /**
      * Looking for View by Id set in .layout file
      *

@@ -400,7 +400,8 @@ public final class Styles {
 
                         @Override
                         public void onClick(View v) {
-                            sandBoxContext.executeFun(functionName);
+                            // to make sure the ui function is executed as fast as possible
+                            sandBoxContext.executeUIFun(functionName);
                         }
                     });
 

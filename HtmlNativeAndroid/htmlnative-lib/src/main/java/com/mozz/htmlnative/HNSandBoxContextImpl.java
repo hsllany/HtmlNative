@@ -124,9 +124,26 @@ final class HNSandBoxContextImpl implements HNSandBoxContext {
         HNScriptRunnerThread.runScript(this, this.mRunner, script);
     }
 
+
     @Override
-    public void executeFun(String funName) {
-        mRunner.runFunction(funName);
+    public void executeFun(final String funName) {
+        HNScriptRunnerThread.post(new Runnable() {
+            @Override
+            public void run() {
+                mRunner.runFunction(funName);
+            }
+        });
+
+    }
+
+    @Override
+    public void executeUIFun(final String funName) {
+        HNScriptRunnerThread.postAtFront(new Runnable() {
+            @Override
+            public void run() {
+                mRunner.runFunction(funName);
+            }
+        });
     }
 
     @NonNull
