@@ -12,6 +12,7 @@ import com.android.volley.toolbox.Volley;
 import com.mozz.htmlnative.http.HNHttpClient;
 import com.mozz.htmlnative.http.Http;
 import com.mozz.htmlnative.http.HttpRequest;
+import com.mozz.htmlnative.http.HttpResponse;
 
 /**
  * @author Yang Tao, 17/5/30.
@@ -39,41 +40,7 @@ public class DemoHttpClient implements HNHttpClient {
 
             @Override
             protected void deliverResponse(final String res) {
-                callback.onResponse(new Http.Response() {
-                    private String header = null;
-                    private String response = res;
-                    private int statusCode = 200;
-
-                    @Override
-                    public void setHeader(String header) {
-
-                    }
-
-                    @Override
-                    public String header() {
-                        return header;
-                    }
-
-                    @Override
-                    public void setBody(String body) {
-
-                    }
-
-                    @Override
-                    public String body() {
-                        return response;
-                    }
-
-                    @Override
-                    public void setStatusCode(int code) {
-
-                    }
-
-                    @Override
-                    public int statusCode() {
-                        return statusCode;
-                    }
-                });
+                callback.onResponse(new HttpResponse(res, 200));
             }
         };
 

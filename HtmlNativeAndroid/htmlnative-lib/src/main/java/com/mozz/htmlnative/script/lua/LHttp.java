@@ -121,6 +121,9 @@ class LHttp extends LuaTable implements ILApi {
             set("header", new ZeroArgFunction() {
                 @Override
                 public LuaValue call() {
+                    if (mHeader == null) {
+                        return LuaValue.NIL;
+                    }
                     return LuaString.valueOf(mHeader);
                 }
             });
@@ -128,6 +131,9 @@ class LHttp extends LuaTable implements ILApi {
             set("body", new ZeroArgFunction() {
                 @Override
                 public LuaValue call() {
+                    if (mBody == null) {
+                        return LuaValue.NIL;
+                    }
                     return LuaString.valueOf(mBody);
                 }
             });
@@ -175,11 +181,11 @@ class LHttp extends LuaTable implements ILApi {
             if (response instanceof LResponse) {
                 return (LResponse) response;
             } else {
-                LResponse response1 = new LResponse();
-                response1.setStatusCode(response.statusCode());
-                response1.setHeader(response.header());
-                response1.setBody(response.body());
-                return response1;
+                LResponse luaResponse = new LResponse();
+                luaResponse.setStatusCode(response.statusCode());
+                luaResponse.setHeader(response.header());
+                luaResponse.setBody(response.body());
+                return luaResponse;
             }
         }
     }

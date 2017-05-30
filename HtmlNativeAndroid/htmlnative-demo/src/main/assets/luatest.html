@@ -22,6 +22,7 @@
 
 
 
+
     </style>
 </head>
 
@@ -33,11 +34,10 @@
 </body>
 
 <script type="text/lua">
-        toast(nil)
 
         local l = {}
         function l.onResponse(res)
-            toast(res)
+            toast(res.body())
         end
 
         http.get("http://square.github.io/okhttp/#examples", l)
@@ -67,6 +67,7 @@
             document.jump("http://www.baidu.com")
 
         end
+
 
 
 
