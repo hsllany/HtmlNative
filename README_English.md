@@ -300,6 +300,7 @@ lview.hasChildNode() --Check if this view has children
 --toast
 toast("helloworld")	--Display a toast in Android
 
+--HTTP Request
 local callback = {}        --define a callback
 function l.onResponse(res) --define its onResponse(), which will be invoked when HTTP request is completed.
     toast(res.body())      --show a toast of response'body content. NOTICE: res.body(), res.header(), res.status() are avaible for you to access HTTP body, Response header and HTTP status code
