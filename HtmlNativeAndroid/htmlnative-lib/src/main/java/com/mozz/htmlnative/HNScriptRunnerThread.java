@@ -27,7 +27,11 @@ final class HNScriptRunnerThread {
     }
 
     public static void runScript(HNSandBoxContext context, ScriptRunner runner, String script) {
-        mHandler.post(new ScriptRunTask(context, runner, script));
+        post(new ScriptRunTask(context, runner, script));
+    }
+
+    public static void post(Runnable r) {
+        mHandler.post(r);
     }
 
     private static class ScriptRunTask implements Runnable {

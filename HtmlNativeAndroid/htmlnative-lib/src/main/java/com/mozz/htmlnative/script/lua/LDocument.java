@@ -35,10 +35,11 @@ class LDocument extends LuaTable implements ILGlobalObject {
         set("jump", new OneArgFunction() {
             @Override
             public LuaValue call(LuaValue arg) {
-                String uri = arg.tojstring();
-                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-                sandBoxContext.getAndroidContext().startActivity(i);
-
+                if (arg.isstring()) {
+                    String uri = arg.tojstring();
+                    Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                    sandBoxContext.getAndroidContext().startActivity(i);
+                }
                 return LuaValue.NIL;
             }
         });

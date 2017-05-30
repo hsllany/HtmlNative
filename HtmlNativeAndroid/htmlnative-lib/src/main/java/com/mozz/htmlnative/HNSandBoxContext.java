@@ -24,7 +24,7 @@ public interface HNSandBoxContext extends VariablePool {
     void execute(String script);
 
     void executeFun(String funName);
-    
+
     /**
      * Looking for View by Id set in .layout file
      *
@@ -46,6 +46,8 @@ public interface HNSandBoxContext extends VariablePool {
     String allIdTag();
 
     HNSegment getSegment();
+
+    void postInScriptThread(Runnable r);
 
 }
 

@@ -1,8 +1,8 @@
 <html>
-    <head>
-        <title>iframe</title>
-        <meta name="nihao" content="world"/>
-        <style>
+<head>
+    <title>iframe</title>
+    <meta name="nihao" content="world"/>
+    <style>
             #text1{
                 background:red;
                 color:green;
@@ -18,25 +18,36 @@
                 color: red;
              }
 
-        </style>
-    </head>
 
-    <body>
-        <text id="text1">This is an demo of iframe<br/>nihao
-        </text>
-        <button onclick="changeText1">click me</button>
-    <div id="parent" class="claz1 claz2 claz3"></div>
-    </body>
 
-    <script type="text/lua">
-        toast("hello world")
+
+
+    </style>
+</head>
+
+<body>
+<text id="text1">This is an demo of iframe<br/>nihao
+</text>
+<button onclick="changeText1">click me</button>
+<div id="parent" class="claz1 claz2 claz3"></div>
+</body>
+
+<script type="text/lua">
+        toast(nil)
+
+        local l = {}
+        function l.onResponse(res)
+            toast(res)
+        end
+
+        http.get("http://square.github.io/okhttp/#examples", l)
 
         b = false
 
-        local vv = document.createView("p", "")
+        local vv = document.createElement("p", "")
         vv.setAttribute("text:helloworld");
 
-        local parent = getElementById("parent")
+        local parent = document.getElementById("parent")
 
         parent.appendChild(vv)
 
@@ -44,7 +55,7 @@
         console.log(vv.getAttribute("background"));
 
         function changeText1()
-            local v = getElementById("text1")
+            local v = document.getElementById("text1")
             console.log(v.id())
             if(b) then
                 v.setAttribute("background:red;color:#fff")
@@ -56,5 +67,9 @@
             document.jump("http://www.baidu.com")
 
         end
-    </script>
+
+
+
+
+</script>
 </html>

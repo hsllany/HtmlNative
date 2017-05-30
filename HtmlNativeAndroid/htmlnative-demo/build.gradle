@@ -23,6 +23,7 @@ dependencies {
     compile project(':htmlnative-lib')
     compile 'com.squareup.okhttp3:okhttp:3.6.0'
     compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'com.android.volley:volley:1.0.0'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'

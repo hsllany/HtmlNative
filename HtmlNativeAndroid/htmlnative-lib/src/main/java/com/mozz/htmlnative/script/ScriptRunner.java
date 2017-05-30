@@ -51,4 +51,8 @@ public abstract class ScriptRunner {
         }
     }
 
+    public final void postRun(Runnable runnable) {
+        mSandbox.postInScriptThread(runnable);
+    }
+
 }

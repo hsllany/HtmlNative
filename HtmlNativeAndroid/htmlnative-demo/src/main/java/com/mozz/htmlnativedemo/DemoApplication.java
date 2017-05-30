@@ -1,8 +1,6 @@
 package com.mozz.htmlnativedemo;
 
-import android.app.AlertDialog;
 import android.app.Application;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -15,7 +13,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.mozz.htmlnative.HNLog;
 import com.mozz.htmlnative.HNativeEngine;
 import com.mozz.htmlnative.HrefLinkHandler;
 import com.mozz.htmlnative.ImageViewAdapter;
@@ -31,9 +28,12 @@ public class DemoApplication extends Application {
 
     private Handler mMainHandler = new Handler(Looper.getMainLooper());
 
+    public static DemoApplication instance;
+
     @Override
     public void onCreate() {
         super.onCreate();
+        instance = this;
         HNativeEngine.init(this);
         HNativeEngine.getInstance().debugRenderProcess();
 
@@ -70,20 +70,14 @@ public class DemoApplication extends Application {
                 mMainHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        new AlertDialog.Builder(DemoApplication.this).setMessage("LuaScript " +
-                                "Wrong:\n" + e.getMessage()).setTitle("LuaSyntaxError")
-                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-
-
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        }).show();
+                        Toast.makeText(DemoApplication.this, e.getMessage(), Toast.LENGTH_LONG)
+                                .show();
                     }
                 });
             }
         });
+
+        HNativeEngine.registerHttpClient(new DemoHttpClient());
 
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.

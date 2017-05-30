@@ -14,7 +14,9 @@ import android.webkit.WebView;
 import com.mozz.htmlnative.common.ContextProvider;
 import com.mozz.htmlnative.css.stylehandler.StyleHandlerFactory;
 import com.mozz.htmlnative.dom.HNHead;
+import com.mozz.htmlnative.http.HNHttpClient;
 import com.mozz.htmlnative.script.ScriptRunner;
+import com.mozz.htmlnative.script.lua.EmptyHttpClient;
 import com.mozz.htmlnative.utils.ParametersUtils;
 import com.mozz.htmlnative.view.BackgroundViewDelegate;
 
@@ -34,6 +36,7 @@ public final class HNativeEngine {
 
     private static ImageViewAdapter sImageViewAdapter = DefaultImageAdapter.sInstance;
     private static HrefLinkHandler sHrefLinkHandler = DefaultHrefLinkHandler.sInstance;
+    private static HNHttpClient sHttpClient = EmptyHttpClient.instance;
 
     private HNativeEngine() {
         HNInternalThread.init();
@@ -171,6 +174,15 @@ public final class HNativeEngine {
     public static void registerScriptCallback(ScriptRunner.OnScriptCallback callback) {
         ScriptRunner.registerUniversalCallback(callback);
     }
+
+    public static void registerHttpClient(HNHttpClient client) {
+        sHttpClient = client;
+    }
+
+    public static HNHttpClient getHttpClient() {
+        return sHttpClient;
+    }
+
 
     public interface OnHNViewLoaded {
         void onViewLoaded(View v);

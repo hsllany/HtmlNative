@@ -32,6 +32,8 @@ public class LuaRunner extends ScriptRunner {
         register(new LDocument(sandBoxContext));
         register(LConsole.getInstance());
 
+        register(new LHttp(this));
+
         // register api
         register(new LToast(sandBoxContext.getAndroidContext()));
         Log.i(PERFORMANCE_TAG, "init Lua module spend " + (SystemClock.currentThreadTimeMillis()

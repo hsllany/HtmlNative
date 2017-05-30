@@ -109,6 +109,11 @@ final class HNSandBoxContextImpl implements HNSandBoxContext {
     }
 
     @Override
+    public void postInScriptThread(Runnable r) {
+        HNScriptRunnerThread.post(r);
+    }
+
+    @Override
     public void execute(final String script) {
         if (mRunner == null) {
             Log.d(TAG, "skip the script \"" + script + "\" because no script in module " +
