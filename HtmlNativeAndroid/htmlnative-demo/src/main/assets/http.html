@@ -1,0 +1,45 @@
+<html>
+<head>
+    <title>http</title>
+</head>
+
+<body>
+<button onclick="sendGet">get</button>
+<button onclick="sendPost">post</button>
+<p id="result">HttpDemo<br/></p>
+</body>
+
+<script type="text/lua">
+    local idTxt = document.getElementById("result")
+
+    function sendGet()
+        local l = {};
+
+        function l.onResponse(res)
+            idTxt.setText(res.status().."\n"..res.body())
+        end
+
+        http.get("http://www.w3school.com.cn/", l)
+    end
+
+    function sendPost()
+
+        console.log("onPost")
+        local l = {};
+
+        function l.onResponse(res)
+            if(res.status()==200)
+            then
+                idTxt.setText(res.status().."\n"..res.body())
+            else
+                idTxt.setText(res.status().."\n something is wrong")
+            end
+        end
+
+        local params = {}
+        params["hello"]="world"
+
+        http.post("http://www.w3school.com.cn/", params, l)
+    end
+</script>
+</html>

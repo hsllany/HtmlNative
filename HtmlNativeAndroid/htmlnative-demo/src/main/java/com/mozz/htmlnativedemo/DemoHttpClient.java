@@ -2,6 +2,7 @@ package com.mozz.htmlnativedemo;
 
 import android.util.Log;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -23,13 +24,18 @@ public class DemoHttpClient implements HNHttpClient {
     private static RequestQueue sQueue = Volley.newRequestQueue(DemoApplication.instance);
 
     @Override
-    public void send(HttpRequest request, final Http.RequestCallback callback) {
+    public void send(final HttpRequest request, final Http.RequestCallback callback) {
         Request<String> stringRequest = new Request<String>(request.method, request.url, new
                 Response.ErrorListener() {
 
+
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("DemoHttpClient", error.getMessage());
+                if (error != null) {
+                    Log.e("DemoHttpClient", error.getMessage());
+                } else {
+                    Log.e("DemoHttpClient", "SOMETHIGN WENT WRONG!");
+                }
             }
         }) {
             @Override
@@ -41,6 +47,16 @@ public class DemoHttpClient implements HNHttpClient {
             @Override
             protected void deliverResponse(final String res) {
                 callback.onResponse(new HttpResponse(res, 200));
+            }
+
+            @Override
+            public void deliverError(VolleyError error) {
+                callback.onResponse(new HttpResponse(error.getMessage(), 505));
+            }
+
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                return request.body.getBytes();
             }
         };
 

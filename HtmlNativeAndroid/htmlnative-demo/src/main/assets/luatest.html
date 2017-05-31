@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>iframe</title>
+    <title>luaTest</title>
     <meta name="nihao" content="world"/>
     <style>
             #text1{
@@ -17,12 +17,6 @@
             #parent{
                 color: red;
              }
-
-
-
-
-
-
     </style>
 </head>
 
@@ -35,17 +29,10 @@
 
 <script type="text/lua">
 
-        local l = {}
-        function l.onResponse(res)
-            toast(res.body())
-        end
-
-        http.get("http://square.github.io/okhttp/#examples", l)
-
         b = false
 
         local vv = document.createElement("p", "")
-        vv.setAttribute("text:helloworld");
+        vv.setText("hello world");
 
         local parent = document.getElementById("parent")
 

@@ -3,6 +3,7 @@ package com.mozz.htmlnative.script.lua;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.TextView;
 
 import com.mozz.htmlnative.HNRenderer;
 import com.mozz.htmlnative.HNSandBoxContext;
@@ -50,6 +51,7 @@ class LView extends LuaTable {
 
     // for cache insert information
     private Map<String, Object> mInlineStyleRaw;
+    private String mToBeAddText;
     private List<LView> mToBeAdded;
     private int mInsertIndex = -1;
 
@@ -87,6 +89,26 @@ class LView extends LuaTable {
                 } else {
                     return LuaValue.NIL;
                 }
+            }
+        });
+
+        set("setText", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue arg) {
+                final String s = arg.tojstring();
+                if (mCreated) {
+                    if (mView instanceof TextView) {
+                        MainHandlerUtils.instance().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                ((TextView) mView).setText(s);
+                            }
+                        });
+                    }
+                } else {
+                    mToBeAddText = arg.tojstring();
+                }
+                return LuaValue.NIL;
             }
         });
 
@@ -360,6 +382,14 @@ class LView extends LuaTable {
                             HNRenderer.renderStyle(child.mView.getContext(), parent.mContext,
                                     child.mView, child.mDomElement, creator, (ViewGroup) parent
                                             .mView, inlineStyles, false, inheritStyleStack);
+
+                            if (child.mToBeAddText != null) {
+                                if (child.mView instanceof TextView) {
+                                    ((TextView) child.mView).setText(child.mToBeAddText);
+                                }
+
+                                child.mToBeAddText = null;
+                            }
                         } catch (AttrApplyException e) {
                             e.printStackTrace();
                         }
