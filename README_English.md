@@ -296,8 +296,9 @@ lview.childNodes()	--Get all children views
 lview.getAttribute(stylename)	--Get css attribute according to a style name
 lview.tagName()	--Get html tagname of this view
 lview.hasChildNode() --Check if this view has children
+lview.setText(textString) --Set text
 
---toast
+--Toast
 toast("helloworld")	--Display a toast in Android
 
 --HTTP Request
