@@ -287,6 +287,7 @@ lview.childNodes()	--返回该view的所有子view
 lview.getAttribute(stylename)	--返回某个属性名为stylename的属性值
 lview.tagName()	--返回该view的tag标签名称
 lview.hasChildNode() --检验该lview是否含有子view
+lview.setText(textString) --设置文本
 
 --toast
 toast("helloworld")	--显示一个toast提示（android only）
