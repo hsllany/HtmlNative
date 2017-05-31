@@ -15,7 +15,6 @@ import com.mozz.htmlnative.common.ContextProvider;
 import com.mozz.htmlnative.css.stylehandler.StyleHandlerFactory;
 import com.mozz.htmlnative.dom.HNHead;
 import com.mozz.htmlnative.http.HNHttpClient;
-import com.mozz.htmlnative.script.ScriptRunner;
 import com.mozz.htmlnative.script.lua.EmptyHttpClient;
 import com.mozz.htmlnative.utils.ParametersUtils;
 import com.mozz.htmlnative.view.BackgroundViewDelegate;
@@ -148,7 +147,6 @@ public final class HNativeEngine {
         HNInternalThread.quit();
         HNScriptRunnerThread.quit();
         StyleHandlerFactory.clear();
-        ScriptRunner.clearUniversalCallback();
     }
 
     public void setImageViewAdapter(@NonNull ImageViewAdapter adapter) {
@@ -171,8 +169,8 @@ public final class HNativeEngine {
         return sHrefLinkHandler;
     }
 
-    public static void registerScriptCallback(ScriptRunner.OnScriptCallback callback) {
-        ScriptRunner.registerUniversalCallback(callback);
+    public static void registerScriptCallback(OnScriptCallback callback) {
+        HNScriptRunnerThread.setErrorCallback(callback);
     }
 
     public static void registerHttpClient(HNHttpClient client) {

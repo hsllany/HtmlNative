@@ -16,7 +16,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.mozz.htmlnative.HNativeEngine;
 import com.mozz.htmlnative.HrefLinkHandler;
 import com.mozz.htmlnative.ImageViewAdapter;
-import com.mozz.htmlnative.script.ScriptRunner;
+import com.mozz.htmlnative.OnScriptCallback;
 import com.mozz.htmlnative.view.BackgroundViewDelegate;
 import com.squareup.leakcanary.LeakCanary;
 
@@ -64,9 +64,9 @@ public class DemoApplication extends Application {
             }
         });
 
-        HNativeEngine.registerScriptCallback(new ScriptRunner.OnScriptCallback() {
+        HNativeEngine.registerScriptCallback(new OnScriptCallback() {
             @Override
-            public void error(final Exception e) {
+            public void error(final Throwable e) {
                 mMainHandler.post(new Runnable() {
                     @Override
                     public void run() {

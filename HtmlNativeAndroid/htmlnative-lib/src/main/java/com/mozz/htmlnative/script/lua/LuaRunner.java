@@ -43,43 +43,22 @@ public class LuaRunner extends ScriptRunner {
     @Override
     public void run(String script) {
         HNLog.d(HNLog.SANDBOX, "Execute script \"" + script + "\".");
-        try {
-            LuaValue l = mGlobals.load(script);
-            l.call();
-        } catch (final Exception e) {
-            // make sure that lua script dose not crash the whole app
-            e.printStackTrace();
-            Log.e(TAG, "LuaScriptRun");
-
-            dispatchScriptError(e);
-        }
+        LuaValue l = mGlobals.load(script);
+        l.call();
     }
 
     @Override
     public void runFunction(String functionName) {
         LuaValue v = mGlobals.get(functionName);
-
         if (v != null) {
-            try {
-                v.call();
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.e(TAG, "LuaScriptRun");
-                dispatchScriptError(e);
-            }
+            v.call();
         }
     }
 
     public void runFunction(String functionName, LuaFuncParams params) {
         LuaValue v = mGlobals.get(functionName);
         if (v != null) {
-            try {
-                v.call(params.mValue);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.e(TAG, "LuaScriptRun");
-                dispatchScriptError(e);
-            }
+            v.call(params.mValue);
         }
     }
 

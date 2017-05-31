@@ -79,7 +79,6 @@ final class HNSandBoxContextImpl implements HNSandBoxContext {
         // if there is script code in layout file, then initContextScriptRunner
         if (mSegment.hasSetScript()) {
             mRunner = ScriptRunnerFactory.createRunner(mSegment.getScriptInfo().type(), this);
-            mRunner.registerScriptCallback(ScriptRunner.getUniversalCallback());
         }
 
         initVariablePool();

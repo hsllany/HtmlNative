@@ -16,14 +16,17 @@ final class HNScriptRunnerThread {
     @NonNull
     private static HandlerThread mScriptThread = new HandlerThread("HNScriptRunner");
     private static Handler mHandler;
+    private static OnScriptCallback mErrorCallback;
 
     public static void init() {
         mScriptThread.start();
         mHandler = new Handler(mScriptThread.getLooper());
+
     }
 
     public static void quit() {
         mScriptThread.quit();
+        mErrorCallback = null;
     }
 
     public static void runScript(HNSandBoxContext context, ScriptRunner runner, String script) {
@@ -31,11 +34,41 @@ final class HNScriptRunnerThread {
     }
 
     public static void post(Runnable r) {
-        mHandler.post(r);
+        mHandler.post(noException(r));
     }
 
     public static void postAtFront(Runnable r) {
-        mHandler.postAtFrontOfQueue(r);
+        mHandler.postAtFrontOfQueue(noException(r));
+    }
+
+    public static void setErrorCallback(OnScriptCallback mErrorCallback) {
+        HNScriptRunnerThread.mErrorCallback = mErrorCallback;
+    }
+
+    private static final class ExceptionCatcherRunnable implements Runnable {
+
+        private Runnable mWrappedRunnable;
+
+        ExceptionCatcherRunnable(Runnable wrappedRunnable) {
+            mWrappedRunnable = wrappedRunnable;
+        }
+
+        @Override
+        public void run() {
+            try {
+                mWrappedRunnable.run();
+            } catch (Throwable e) {
+                if (mErrorCallback != null) {
+                    mErrorCallback.error(e);
+                }
+            }
+        }
+
+
+    }
+
+    private static ExceptionCatcherRunnable noException(Runnable runnable) {
+        return new ExceptionCatcherRunnable(runnable);
     }
 
     private static class ScriptRunTask implements Runnable {
@@ -61,4 +94,5 @@ final class HNScriptRunnerThread {
             }
         }
     }
+
 }
