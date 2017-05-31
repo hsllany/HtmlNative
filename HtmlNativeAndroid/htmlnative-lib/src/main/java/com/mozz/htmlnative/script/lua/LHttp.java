@@ -112,12 +112,13 @@ class LHttp extends LuaTable implements ILApi {
         return "http";
     }
 
-    static class LResponse extends LuaTable implements Http.Response {
+    static class LResponse extends LObject implements Http.Response {
         private String mHeader;
         private int mStatusCode;
         private String mBody;
 
         LResponse() {
+            super();
             set("header", new ZeroArgFunction() {
                 @Override
                 public LuaValue call() {
@@ -144,6 +145,11 @@ class LHttp extends LuaTable implements ILApi {
                     return LuaInteger.valueOf(mStatusCode);
                 }
             });
+        }
+
+        @Override
+        String onObjectClassName() {
+            return "httpResponse";
         }
 
 

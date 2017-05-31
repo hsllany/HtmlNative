@@ -55,13 +55,6 @@ public class LuaRunner extends ScriptRunner {
         }
     }
 
-    public void runFunction(String functionName, LuaFuncParams params) {
-        LuaValue v = mGlobals.get(functionName);
-        if (v != null) {
-            v.call(params.mValue);
-        }
-    }
-
     protected final void register(ILApi api) {
         if (api instanceof LuaValue) {
             mGlobals.set(api.apiName(), (LuaValue) api);

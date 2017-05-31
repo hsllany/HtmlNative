@@ -38,7 +38,7 @@ import static com.mozz.htmlnative.view.LayoutParamsLazyCreator.createLayoutParam
  * @author Yang Tao, 17/3/23.
  */
 
-class LView extends LuaTable {
+class LView extends LObject {
 
     private static final int INSERT_LAST = -1;
     private static final int INSERT_FIRST = 0;
@@ -60,6 +60,7 @@ class LView extends LuaTable {
 
     LView(final DomElement domElement, Map<String, Object> inlineStyle, final HNSandBoxContext
             context) {
+        super();
         mDomElement = domElement;
         mInlineStyleRaw = inlineStyle;
         mContext = context;
@@ -434,4 +435,8 @@ class LView extends LuaTable {
         return TYPE_NAMES[3];
     }
 
+    @Override
+    String onObjectClassName() {
+        return mDomElement.getType();
+    }
 }
