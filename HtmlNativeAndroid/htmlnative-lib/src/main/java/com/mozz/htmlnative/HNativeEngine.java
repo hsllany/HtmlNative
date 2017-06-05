@@ -15,6 +15,8 @@ import com.mozz.htmlnative.common.ContextProvider;
 import com.mozz.htmlnative.css.stylehandler.StyleHandlerFactory;
 import com.mozz.htmlnative.dom.HNHead;
 import com.mozz.htmlnative.http.HNHttpClient;
+import com.mozz.htmlnative.script.ScriptLib;
+import com.mozz.htmlnative.script.ScriptRunner;
 import com.mozz.htmlnative.script.lua.EmptyHttpClient;
 import com.mozz.htmlnative.utils.ParametersUtils;
 import com.mozz.htmlnative.view.BackgroundViewDelegate;
@@ -181,6 +183,10 @@ public final class HNativeEngine {
         return sHttpClient;
     }
 
+    public static final void registerScriptLib(ScriptLib lib) {
+        ScriptRunner.registerLib(lib);
+    }
+
 
     public interface OnHNViewLoaded {
         void onViewLoaded(View v);
@@ -261,4 +267,6 @@ public final class HNativeEngine {
             return new WebView(context);
         }
     }
+
+
 }

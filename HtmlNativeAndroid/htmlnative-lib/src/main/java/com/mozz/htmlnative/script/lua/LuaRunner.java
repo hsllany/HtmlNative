@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.mozz.htmlnative.HNLog;
 import com.mozz.htmlnative.HNSandBoxContext;
+import com.mozz.htmlnative.script.ScriptLib;
 import com.mozz.htmlnative.script.ScriptRunner;
 
 import org.luaj.vm2.Globals;
@@ -55,6 +56,13 @@ public class LuaRunner extends ScriptRunner {
         }
     }
 
+    @Override
+    protected void installLib(ScriptLib lib) {
+        if (lib instanceof LuaLib) {
+            getGlobals().set(lib.libName(), (LuaValue) lib);
+        }
+    }
+
     protected final void register(ILApi api) {
         if (api instanceof LuaValue) {
             mGlobals.set(api.apiName(), (LuaValue) api);
@@ -65,6 +73,10 @@ public class LuaRunner extends ScriptRunner {
         if (api instanceof LuaValue) {
             mGlobals.set(api.objectName(), (LuaValue) api);
         }
+    }
+
+    final Globals getGlobals() {
+        return mGlobals;
     }
 
 
