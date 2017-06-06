@@ -9,12 +9,12 @@ import com.mozz.htmlnative.css.InheritStylesRegistry;
 import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.view.HNDiv;
-import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
+import com.mozz.htmlnative.view.LayoutParamsCreator;
 
 class HtmlLayoutStyleHandler extends StyleHandler {
     @Override
     public void apply(Context context, View v, DomElement domElement, View parent,
-                      LayoutParamsLazyCreator paramsLazyCreator, String params, Object value)
+                      LayoutParamsCreator paramsCreator, String params, Object value)
             throws AttrApplyException {
 
         if (InheritStylesRegistry.isInherit(params)) {
@@ -25,14 +25,14 @@ class HtmlLayoutStyleHandler extends StyleHandler {
 
     @Override
     public void setDefault(Context context, View v, DomElement domElement,
-                           LayoutParamsLazyCreator paramsLazyCreator, View parent) throws
+                           LayoutParamsCreator paramsCreator, View parent) throws
             AttrApplyException {
-        paramsLazyCreator.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        paramsCreator.height = ViewGroup.LayoutParams.WRAP_CONTENT;
 
         if (domElement.getType().equals(HtmlTag.SPAN)) {
-            paramsLazyCreator.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            paramsCreator.width = ViewGroup.LayoutParams.WRAP_CONTENT;
         } else {
-            paramsLazyCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            paramsCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
         }
     }
 

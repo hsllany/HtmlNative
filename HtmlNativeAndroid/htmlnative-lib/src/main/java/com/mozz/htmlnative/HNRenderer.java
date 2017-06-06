@@ -23,7 +23,7 @@ import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.dom.HNDomTree;
 import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.view.HNRootView;
-import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
+import com.mozz.htmlnative.view.LayoutParamsCreator;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -110,7 +110,7 @@ public final class HNRenderer {
 
         mInheritStyleStack.reset();
 
-        LayoutParamsLazyCreator rootCreator = new LayoutParamsLazyCreator();
+        LayoutParamsCreator rootCreator = new LayoutParamsCreator();
 
         long renderStartTime = SystemClock.currentThreadTimeMillis();
         View v = renderInternal(context, sandBoxContext, segment.getDom(), segment,
@@ -118,7 +118,7 @@ public final class HNRenderer {
 
 
         if (v != null) {
-            rootViewGroup.addContent(v, LayoutParamsLazyCreator.createLayoutParams(rootViewGroup,
+            rootViewGroup.addContent(v, LayoutParamsCreator.createLayoutParams(rootViewGroup,
                     rootCreator));
             mTracker.record("Render View", SystemClock.currentThreadTimeMillis() - renderStartTime);
 
@@ -143,8 +143,7 @@ public final class HNRenderer {
     }
 
     private View renderInternal(@NonNull Context context, @NonNull HNSandBoxContext
-            sandBoxContext, HNDomTree dom, HNSegment segment, @NonNull ViewGroup parent, @NonNull
-            LayoutParamsLazyCreator paramsCreator, @NonNull HNRootView root, StyleSheet
+            sandBoxContext, HNDomTree dom, HNSegment segment, @NonNull ViewGroup parent, @NonNull LayoutParamsCreator paramsCreator, @NonNull HNRootView root, StyleSheet
             styleSheet) throws HNRenderException {
 
         AttrsSet attrsSet = segment.getInlineStyles();
@@ -170,7 +169,7 @@ public final class HNRenderer {
                 List<HNDomTree> children = dom.children();
                 for (HNDomTree child : children) {
 
-                    LayoutParamsLazyCreator childCreator = new LayoutParamsLazyCreator();
+                    LayoutParamsCreator childCreator = new LayoutParamsCreator();
 
                     // Recursively render child.
                     final View v = renderInternal(context, sandBoxContext, child, segment,
@@ -196,8 +195,7 @@ public final class HNRenderer {
 
     public static View createView(AttrsSet.AttrsOwner owner, @NonNull DomElement element,
                                   @NonNull HNSandBoxContext sandBoxContext, ViewGroup parent,
-                                  @NonNull Context context, AttrsSet attrsSet, @NonNull
-                                          LayoutParamsLazyCreator layoutCreator, StyleSheet
+                                  @NonNull Context context, AttrsSet attrsSet, @NonNull LayoutParamsCreator layoutCreator, StyleSheet
                                           styleSheet, InheritStyleStack stack) throws
             HNRenderException {
 
@@ -361,7 +359,7 @@ public final class HNRenderer {
 
     static View createAndroidViewGroup(@NonNull Context context, @Nullable String typeName,
                                        AttrsSet.AttrsOwner owner, AttrsSet attrsSet,
-                                       LayoutParamsLazyCreator layoutParamsCreator) throws
+                                       LayoutParamsCreator layoutParamsCreator) throws
             ClassNotFoundException, NoSuchMethodException, InvocationTargetException,
             InstantiationException, IllegalAccessException {
 
@@ -390,7 +388,7 @@ public final class HNRenderer {
     }
 
     public static void renderStyle(Context context, final HNSandBoxContext sandBoxContext, View
-            v, DomElement domElement, @NonNull LayoutParamsLazyCreator layoutCreator, @NonNull
+            v, DomElement domElement, @NonNull LayoutParamsCreator layoutCreator, @NonNull
             ViewGroup parent, String styleName, Object style, boolean isParent, InheritStyleStack
             stack) throws AttrApplyException {
 
@@ -403,8 +401,7 @@ public final class HNRenderer {
     }
 
     public static void renderStyle(Context context, @NonNull final HNSandBoxContext
-            sandBoxContext, @NonNull View v, DomElement domElement, @NonNull
-            LayoutParamsLazyCreator layoutCreator, ViewGroup parent, @NonNull Map<String, Object>
+            sandBoxContext, @NonNull View v, DomElement domElement, @NonNull LayoutParamsCreator layoutCreator, ViewGroup parent, @NonNull Map<String, Object>
             styles, InheritStyleStack stack) throws AttrApplyException {
 
         final StyleHandler viewStyleHandler = StyleHandlerFactory.get(v);
@@ -425,23 +422,23 @@ public final class HNRenderer {
         }
     }
 
-    public static void addView(ViewGroup parent, View v, LayoutParamsLazyCreator creator) {
+    public static void addView(ViewGroup parent, View v, LayoutParamsCreator creator) {
         if (parent == null || v == null) {
             HNLog.e(HNLog.RENDER, "Wrong when trying to add " + v + " to " + parent + " with " +
                     "creator " + creator);
             return;
         }
-        parent.addView(v, LayoutParamsLazyCreator.createLayoutParams(parent, creator));
+        parent.addView(v, LayoutParamsCreator.createLayoutParams(parent, creator));
     }
 
-    public static void addView(ViewGroup parent, View v, LayoutParamsLazyCreator creator, int
+    public static void addView(ViewGroup parent, View v, LayoutParamsCreator creator, int
             index) {
         if (parent == null || v == null) {
             HNLog.e(HNLog.RENDER, "Wrong when trying to add " + v + " to " + parent + " with " +
                     "creator " + creator);
             return;
         }
-        parent.addView(v, index, LayoutParamsLazyCreator.createLayoutParams(parent, creator));
+        parent.addView(v, index, LayoutParamsCreator.createLayoutParams(parent, creator));
     }
 
     public static void registerViewFactory(String androidClassName, ViewFactory factory) {

@@ -14,7 +14,7 @@ import com.mozz.htmlnative.css.InheritStylesRegistry;
 import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.utils.ParametersUtils;
-import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
+import com.mozz.htmlnative.view.LayoutParamsCreator;
 
 import static com.mozz.htmlnative.utils.ParametersUtils.dpToPx;
 import static com.mozz.htmlnative.utils.ParametersUtils.emToPx;
@@ -72,7 +72,7 @@ class TextViewStyleHandler extends StyleHandler {
 
     @Override
     public void apply(Context context, View v, DomElement domElement, View parent,
-                      LayoutParamsLazyCreator paramsLazyCreator, String params, final Object
+                      LayoutParamsCreator paramsCreator, String params, final Object
                                   value) throws AttrApplyException {
 
         final TextView textView = (TextView) v;
@@ -212,7 +212,7 @@ class TextViewStyleHandler extends StyleHandler {
 
     @Override
     public void setDefault(Context context, View v, DomElement domElement,
-                           LayoutParamsLazyCreator paramsLazyCreator, View parent) throws
+                           LayoutParamsCreator paramsCreator, View parent) throws
             AttrApplyException {
 
         TextView textView = (TextView) v;
@@ -226,7 +226,7 @@ class TextViewStyleHandler extends StyleHandler {
         switch (domElement.getType()) {
             case HtmlTag.H1:
                 textView.setTextSize(DEFAULT_H1_SIZE);
-                paramsLazyCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                paramsCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 StyleHelper.setPadding(textView, DEFAULT_H1_PADDING, textView.getPaddingLeft(),
                         DEFAULT_H1_PADDING, textView.getPaddingRight());
                 StyleHelper.setBold(textView);
@@ -234,7 +234,7 @@ class TextViewStyleHandler extends StyleHandler {
 
             case HtmlTag.H2:
                 textView.setTextSize(DEFAULT_H2_SIZE);
-                paramsLazyCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                paramsCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 StyleHelper.setPadding(textView, DEFAULT_H2_PADDING, textView.getPaddingLeft(),
                         DEFAULT_H2_PADDING, textView.getPaddingRight());
                 StyleHelper.setBold(textView);
@@ -242,7 +242,7 @@ class TextViewStyleHandler extends StyleHandler {
 
             case HtmlTag.H3:
                 textView.setTextSize(DEFAULT_H3_SIZE);
-                paramsLazyCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                paramsCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 StyleHelper.setPadding(textView, DEFAULT_H3_PADDING, textView.getPaddingLeft(),
                         DEFAULT_H3_PADDING, textView.getPaddingRight());
                 StyleHelper.setBold(textView);
@@ -250,7 +250,7 @@ class TextViewStyleHandler extends StyleHandler {
 
             case HtmlTag.H4:
                 textView.setTextSize(DEFAULT_H4_SIZE);
-                paramsLazyCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                paramsCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 StyleHelper.setPadding(textView, DEFAULT_H4_PADDING, textView.getPaddingLeft(),
                         DEFAULT_H4_PADDING, textView.getPaddingRight());
                 StyleHelper.setBold(textView);
@@ -258,7 +258,7 @@ class TextViewStyleHandler extends StyleHandler {
 
             case HtmlTag.H5:
                 textView.setTextSize(DEFAULT_H5_SIZE);
-                paramsLazyCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                paramsCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 StyleHelper.setPadding(textView, DEFAULT_H5_PADDING, textView.getPaddingLeft(),
                         DEFAULT_H5_PADDING, textView.getPaddingRight());
                 StyleHelper.setBold(textView);
@@ -266,7 +266,7 @@ class TextViewStyleHandler extends StyleHandler {
 
             case HtmlTag.H6:
                 textView.setTextSize(DEFAULT_H6_SIZE);
-                paramsLazyCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                paramsCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 StyleHelper.setPadding(textView, DEFAULT_H6_PADDING, textView.getPaddingLeft(),
                         DEFAULT_H6_PADDING, textView.getPaddingRight());
                 StyleHelper.setBold(textView);
@@ -275,11 +275,11 @@ class TextViewStyleHandler extends StyleHandler {
             case HtmlTag.P:
                 StyleHelper.setTopPadding(textView, DEFAULT_P_PADDING);
                 StyleHelper.setBottomPadding(textView, DEFAULT_P_PADDING);
-                paramsLazyCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                paramsCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 break;
             case HtmlTag.A:
                 StyleHelper.setUnderLine(textView);
-                paramsLazyCreator.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                paramsCreator.width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 break;
         }
     }

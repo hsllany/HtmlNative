@@ -18,7 +18,7 @@ import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.parser.CssParser;
 import com.mozz.htmlnative.utils.MainHandlerUtils;
-import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
+import com.mozz.htmlnative.view.LayoutParamsCreator;
 
 import org.luaj.vm2.LuaBoolean;
 import org.luaj.vm2.LuaString;
@@ -32,7 +32,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static com.mozz.htmlnative.view.LayoutParamsLazyCreator.createLayoutParams;
+import static com.mozz.htmlnative.view.LayoutParamsCreator.createLayoutParams;
 
 /**
  * @author Yang Tao, 17/3/23.
@@ -124,7 +124,7 @@ class LView extends LObject {
                     MainHandlerUtils.instance().post(new Runnable() {
                         @Override
                         public void run() {
-                            LayoutParamsLazyCreator tempCreator = new LayoutParamsLazyCreator
+                            LayoutParamsCreator tempCreator = new LayoutParamsCreator
                                     (mView.getLayoutParams());
                             ViewGroup parent = (mView.getParent() != null && mView.getParent()
                                     instanceof ViewGroup) ? (ViewGroup) mView.getParent() : null;
@@ -358,7 +358,7 @@ class LView extends LObject {
                     return;
                 }
 
-                LayoutParamsLazyCreator creator = new LayoutParamsLazyCreator();
+                LayoutParamsCreator creator = new LayoutParamsCreator();
                 try {
 
                     if (!child.mCreated) {

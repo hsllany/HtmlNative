@@ -26,7 +26,7 @@ import com.mozz.htmlnative.utils.ResourceUtils;
 import com.mozz.htmlnative.view.BackgroundViewDelegate;
 import com.mozz.htmlnative.view.HNDiv;
 import com.mozz.htmlnative.view.IBackgroundView;
-import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
+import com.mozz.htmlnative.view.LayoutParamsCreator;
 
 import java.util.Iterator;
 
@@ -108,8 +108,7 @@ public final class Styles {
 
 
     public static void applySingleStyle(Context context, final HNSandBoxContext sandBoxContext,
-                                        View v, DomElement domElement, @NonNull
-                                                LayoutParamsLazyCreator layoutCreator, @NonNull
+                                        View v, DomElement domElement, @NonNull LayoutParamsCreator layoutCreator, @NonNull
                                                 ViewGroup parent, StyleHandler viewStyleHandler,
                                         StyleHandler extraStyleHandler, LayoutStyleHandler
                                                 parentAttr, StyleEntry entry, InheritStyleStack
@@ -133,8 +132,7 @@ public final class Styles {
      * @param style          parameter value     @throws AttrApplyException
      */
     public static void applySingleStyle(@NonNull Context context, @NonNull final HNSandBoxContext
-            sandBoxContext, @NonNull View v, @Nullable DomElement domElement, @NonNull
-            LayoutParamsLazyCreator layoutCreator, @NonNull ViewGroup parent, StyleHandler
+            sandBoxContext, @NonNull View v, @Nullable DomElement domElement, @NonNull LayoutParamsCreator layoutCreator, @NonNull ViewGroup parent, StyleHandler
             viewStyleHandler, StyleHandler extraStyleHandler, LayoutStyleHandler parentAttr,
                                         String styleName, final Object style, InheritStyleStack
                                                 outStack) throws AttrApplyException {
@@ -449,7 +447,7 @@ public final class Styles {
                 // finally apply corresponding parent attr to child
                 if (parentAttr != null) {
                     parentAttr.applyToChild(context, v, domElement, parent, layoutCreator,
-                            styleName, style, false);
+                            styleName, style);
                 }
                 break;
         }
@@ -467,7 +465,7 @@ public final class Styles {
                                        View v, DomElement domElement, @NonNull ViewGroup parent,
                                        StyleHandler viewStyleHandler, StyleHandler
                                                extraStyleHandler, LayoutStyleHandler parentAttr,
-                                       @NonNull LayoutParamsLazyCreator paramsLazyCreator) throws
+                                       @NonNull LayoutParamsCreator paramsLazyCreator) throws
             AttrApplyException {
         if (viewStyleHandler != null) {
             viewStyleHandler.setDefault(context, v, domElement, paramsLazyCreator, parent);
@@ -498,8 +496,7 @@ public final class Styles {
      */
     public static void applyStyles(Context context, @NonNull final HNSandBoxContext
             sandBoxContext, AttrsSet source, View v, @NonNull AttrsSet.AttrsOwner tree,
-                                   DomElement domElement, @NonNull ViewGroup parent, @NonNull
-                                           LayoutParamsLazyCreator paramsLazyCreator,
+                                   DomElement domElement, @NonNull ViewGroup parent, @NonNull LayoutParamsCreator paramsLazyCreator,
                                    StyleHandler viewStyleHandler, StyleHandler extraStyleHandler,
                                    LayoutStyleHandler parentAttrHandler, InheritStyleStack stack)
             throws AttrApplyException {

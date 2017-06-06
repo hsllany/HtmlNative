@@ -5,7 +5,7 @@ import android.view.View;
 
 import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.exception.AttrApplyException;
-import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
+import com.mozz.htmlnative.view.LayoutParamsCreator;
 
 /**
  * @author Yang Tao, 17/2/22.
@@ -13,11 +13,11 @@ import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
 
 public abstract class StyleHandler {
     public abstract void apply(Context context, View v, DomElement domElement, View parent,
-                               LayoutParamsLazyCreator paramsLazyCreator, String params, Object
+                               LayoutParamsCreator paramsCreator, String params, Object
                                        value) throws AttrApplyException;
 
     public void setDefault(Context context, View v, DomElement domElement,
-                           LayoutParamsLazyCreator paramsLazyCreator, View parent) throws
+                           LayoutParamsCreator paramsCreator, View parent) throws
             AttrApplyException {
 
     }

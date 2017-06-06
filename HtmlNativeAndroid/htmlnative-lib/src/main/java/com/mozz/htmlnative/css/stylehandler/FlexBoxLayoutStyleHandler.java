@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import com.google.android.flexbox.FlexboxLayout;
 import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.exception.AttrApplyException;
-import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
+import com.mozz.htmlnative.view.LayoutParamsCreator;
 
 /**
  * @author Yang Tao, 17/3/3.
@@ -17,7 +17,7 @@ import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
 class FlexBoxLayoutStyleHandler extends LayoutStyleHandler {
     @Override
     public void apply(Context context, View v, DomElement domElement, View parent,
-                      LayoutParamsLazyCreator paramsLazyCreator, String params, Object value)
+                      LayoutParamsCreator paramsCreator, String params, Object value)
             throws AttrApplyException {
         FlexboxLayout flexboxLayout = (FlexboxLayout) v;
 
@@ -41,19 +41,17 @@ class FlexBoxLayoutStyleHandler extends LayoutStyleHandler {
     }
 
     @Override
-    public void applyToChild(Context context, View v, DomElement domElement, View parent,
-                             LayoutParamsLazyCreator paramsLazyCreator, String params, Object
-                                         value, boolean isParent) throws AttrApplyException {
+    public void applyToChild(Context context, View v, DomElement domElement, View parent, LayoutParamsCreator paramsCreator, String params, Object value) throws AttrApplyException {
 
     }
 
     @Override
     public void setDefault(Context context, View v, DomElement domElement,
-                           LayoutParamsLazyCreator paramsLazyCreator, View parent) throws
+                           LayoutParamsCreator paramsCreator, View parent) throws
             AttrApplyException {
-        super.setDefault(context, v, domElement, paramsLazyCreator, parent);
+        super.setDefault(context, v, domElement, paramsCreator, parent);
 
-        paramsLazyCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        paramsCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;
     }
 
     @FlexboxLayout.FlexDirection

@@ -7,7 +7,7 @@ import android.view.View;
 import com.mozz.htmlnative.css.stylehandler.StyleHandler;
 import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.exception.AttrApplyException;
-import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
+import com.mozz.htmlnative.view.LayoutParamsCreator;
 
 import java.util.Set;
 
@@ -26,23 +26,22 @@ public abstract class HNViewType<T extends View> extends StyleHandler implements
 
     @Override
     public final void apply(Context context, View v, DomElement domElement, View parent,
-                            LayoutParamsLazyCreator paramsLazyCreator, String params, Object
+                            LayoutParamsCreator paramsCreator, String params, Object
                                         value) throws AttrApplyException {
-        this.onSetStyle(context, v, parent, paramsLazyCreator, params, value);
+        this.onSetStyle(context, v, parent, paramsCreator, params, value);
     }
 
     @Override
     public final void setDefault(Context context, View v, DomElement domElement,
-                                 LayoutParamsLazyCreator paramsLazyCreator, View parent) throws
+                                 LayoutParamsCreator paramsCreator, View parent) throws
             AttrApplyException {
-        this.onSetDefaultStyle(context, v, paramsLazyCreator, parent);
+        this.onSetDefaultStyle(context, v, paramsCreator, parent);
     }
 
-    public abstract void onSetStyle(Context context, View v, View parent, LayoutParamsLazyCreator
+    public abstract void onSetStyle(Context context, View v, View parent, LayoutParamsCreator
             layoutCreator, String styleName, Object style);
 
-    public abstract void onSetDefaultStyle(Context context, View v, LayoutParamsLazyCreator
-            layoutParamsLazyCreator, View parent);
+    public abstract void onSetDefaultStyle(Context context, View v, LayoutParamsCreator layoutParamsCreator, View parent);
 
     public Set<String> onInheritStyleNames() {
         return null;

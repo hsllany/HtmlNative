@@ -9,7 +9,7 @@ import com.google.android.flexbox.FlexboxLayout;
  * @author Yang Tao, 17/5/12.
  */
 
-public class LayoutParamsLazyCreator {
+public class LayoutParamsCreator {
     public int width = ViewGroup.LayoutParams.WRAP_CONTENT;
     public int height = ViewGroup.LayoutParams.WRAP_CONTENT;
     public int marginLeft;
@@ -24,11 +24,11 @@ public class LayoutParamsLazyCreator {
     @HNDiv.HNDivLayoutParams.HNDivPosition
     public int positionMode = HNDiv.HNDivLayoutParams.POSITION_STATIC;
 
-    public LayoutParamsLazyCreator() {
+    public LayoutParamsCreator() {
 
     }
 
-    public LayoutParamsLazyCreator(ViewGroup.LayoutParams params) {
+    public LayoutParamsCreator(ViewGroup.LayoutParams params) {
         width = params.width;
         height = params.height;
 
@@ -49,7 +49,7 @@ public class LayoutParamsLazyCreator {
 
     }
 
-    public LayoutParamsLazyCreator(int width, int height, int marginLeft, int marginTop, int
+    public LayoutParamsCreator(int width, int height, int marginLeft, int marginTop, int
             marginRight, int marginBottom, int left, int top, int right, int bottom, @HNDiv
             .HNDivLayoutParams.HNDivPosition int floatMode) {
         this.width = width;
@@ -103,7 +103,7 @@ public class LayoutParamsLazyCreator {
         return "width=" + toString(width) + ", height=" + toString(height);
     }
 
-    public static ViewGroup.LayoutParams createLayoutParams(View parent, LayoutParamsLazyCreator
+    public static ViewGroup.LayoutParams createLayoutParams(View parent, LayoutParamsCreator
             creator) {
         if (parent instanceof HNDiv) {
             return creator.toHNDivLayoutParams();
@@ -117,7 +117,7 @@ public class LayoutParamsLazyCreator {
         }
     }
 
-    public static void createLayoutParams(LayoutParamsLazyCreator creator, ViewGroup.LayoutParams
+    public static void createLayoutParams(LayoutParamsCreator creator, ViewGroup.LayoutParams
             outParams) {
         outParams.height = creator.height;
         outParams.width = creator.width;

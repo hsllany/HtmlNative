@@ -7,7 +7,7 @@ import android.webkit.WebView;
 import com.mozz.htmlnative.css.InheritStylesRegistry;
 import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.exception.AttrApplyException;
-import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
+import com.mozz.htmlnative.view.LayoutParamsCreator;
 
 /**
  * @author Yang Tao, 17/3/6.
@@ -24,7 +24,7 @@ class WebViewStyleHandler extends StyleHandler {
 
     @Override
     public void apply(Context context, View v, DomElement domElement, View parent,
-                      LayoutParamsLazyCreator paramsLazyCreator, String params, Object value)
+                      LayoutParamsCreator paramsCreator, String params, Object value)
             throws AttrApplyException {
         final WebView webView = (WebView) v;
 
