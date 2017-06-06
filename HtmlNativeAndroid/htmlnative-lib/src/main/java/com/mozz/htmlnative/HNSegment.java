@@ -77,8 +77,8 @@ public final class HNSegment {
         return mDom;
     }
 
-    public void setDom(HNDomTree mDom) {
-        this.mDom = mDom;
+    public void setDom(HNDomTree dom) {
+        this.mDom = dom;
     }
 
     public HNHead getHead() {

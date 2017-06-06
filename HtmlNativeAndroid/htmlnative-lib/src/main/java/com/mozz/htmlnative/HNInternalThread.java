@@ -8,11 +8,11 @@ import android.support.annotation.NonNull;
  * @author Yang Tao, 17/5/3.
  */
 
-public final class HNInternalThread {
+final class HNInternalThread {
 
     // for running render task
     @NonNull
-    private static HandlerThread mRenderThread = new HandlerThread("HNProcessThread");
+    private static HandlerThread mRenderThread = new HandlerThread("HNInternalThread");
     private static Handler mRenderHandler;
 
     static void init() {

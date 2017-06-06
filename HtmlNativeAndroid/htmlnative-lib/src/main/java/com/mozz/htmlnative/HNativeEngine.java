@@ -3,13 +3,10 @@ package com.mozz.htmlnative;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 
 import com.mozz.htmlnative.common.ContextProvider;
 import com.mozz.htmlnative.css.stylehandler.StyleHandlerFactory;
@@ -17,9 +14,7 @@ import com.mozz.htmlnative.dom.HNHead;
 import com.mozz.htmlnative.http.HNHttpClient;
 import com.mozz.htmlnative.script.ScriptLib;
 import com.mozz.htmlnative.script.ScriptRunner;
-import com.mozz.htmlnative.script.lua.EmptyHttpClient;
 import com.mozz.htmlnative.utils.ParametersUtils;
-import com.mozz.htmlnative.view.BackgroundViewDelegate;
 
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
@@ -30,14 +25,8 @@ import java.lang.ref.WeakReference;
 
 public final class HNativeEngine {
 
-
-    static {
-        HNRenderer.registerViewFactory(WebView.class.getName(), DefaultWebViewFactory.sInstance);
-    }
-
-    private static ImageViewAdapter sImageViewAdapter = DefaultImageAdapter.sInstance;
-    private static HrefLinkHandler sHrefLinkHandler = DefaultHrefLinkHandler.sInstance;
-    private static HNHttpClient sHttpClient = EmptyHttpClient.instance;
+    private static HNConfig sConfig;
+    private volatile static boolean sInit = false;
 
     private HNativeEngine() {
         HNInternalThread.init();
@@ -47,13 +36,24 @@ public final class HNativeEngine {
     @Nullable
     private static HNativeEngine sInstance = null;
 
-    public static void init(Application application) {
+    public static void init(Application application, HNConfig config) {
+
         ContextProvider.install(application);
         initScreenMetrics(application);
+        if (config == null) {
+            throw new IllegalArgumentException("Config can't be null.");
+        }
+        sConfig = config;
+        sConfig.install();
+
+        sInit = true;
     }
 
     @Nullable
     public static HNativeEngine getInstance() {
+        if (!sInit) {
+            throw new IllegalStateException("You must call init() first");
+        }
         if (sInstance == null) {
             synchronized (HNativeEngine.class) {
                 if (sInstance == null) {
@@ -83,7 +83,7 @@ public final class HNativeEngine {
 
     public final void loadView(final Context context, final InputStream inputStream, final
     OnHNViewLoaded onHNViewLoaded) {
-        HNProcessThread.runRenderTask(new HNProcessThread.RenderTask(context, inputStream,
+        HNRenderThread.runRenderTask(new HNRenderThread.RenderTask(context, inputStream,
                 onHNViewLoaded));
     }
 
@@ -151,42 +151,32 @@ public final class HNativeEngine {
         StyleHandlerFactory.clear();
     }
 
-    public void setImageViewAdapter(@NonNull ImageViewAdapter adapter) {
-        sImageViewAdapter = adapter;
-    }
 
-    public static ImageViewAdapter getImageViewAdapter() {
-        return sImageViewAdapter;
+    public static ImageFetcher getImageViewAdapter() {
+        return sConfig.getImageViewAdapter();
     }
 
     public static void registerViewFactory(String androidViewClassName, ViewFactory viewFactory) {
         HNRenderer.registerViewFactory(androidViewClassName, viewFactory);
     }
 
-    public void setHrefLinkHandler(@NonNull HrefLinkHandler handler) {
-        sHrefLinkHandler = handler;
+
+    public static onHrefClick getHrefLinkHandler() {
+        return sConfig.getHrefLinkHandler();
     }
 
-    public static HrefLinkHandler getHrefLinkHandler() {
-        return sHrefLinkHandler;
-    }
-
-    public static void registerScriptCallback(OnScriptCallback callback) {
+    public static void registerScriptCallback(ScriptCallback callback) {
         HNScriptRunnerThread.setErrorCallback(callback);
     }
 
-    public static void registerHttpClient(HNHttpClient client) {
-        sHttpClient = client;
-    }
 
     public static HNHttpClient getHttpClient() {
-        return sHttpClient;
+        return sConfig.getHttpClient();
     }
 
     public static final void registerScriptLib(ScriptLib lib) {
         ScriptRunner.registerLib(lib);
     }
-
 
     public interface OnHNViewLoaded {
         void onViewLoaded(View v);
@@ -201,70 +191,6 @@ public final class HNativeEngine {
 
         public OnHNViewLoadedWeak(T tt) {
             this.mWeakRef = new WeakReference<>(tt);
-        }
-    }
-
-    /**
-     * @author Yang Tao, 17/3/11.
-     */
-
-    private static final class DefaultHrefLinkHandler implements HrefLinkHandler {
-
-        @NonNull
-        static final DefaultHrefLinkHandler sInstance;
-
-        static {
-            sInstance = new DefaultHrefLinkHandler();
-        }
-
-        @Override
-        public void onHref(String url, @NonNull View view) {
-            Intent intent = new Intent();
-            intent.setAction("Android.intent.action.VIEW");
-            Uri content_url = Uri.parse(url);
-            intent.setData(content_url);
-            view.getContext().startActivity(intent);
-        }
-    }
-
-    /**
-     * @author Yang Tao, 17/3/10.
-     */
-
-    private static final class DefaultImageAdapter implements ImageViewAdapter {
-
-        static DefaultImageAdapter sInstance;
-
-        static {
-            sInstance = new DefaultImageAdapter();
-        }
-
-        private DefaultImageAdapter() {
-        }
-
-        @Override
-        public void setImage(String src, BackgroundViewDelegate imageView) {
-            //do nothing
-        }
-    }
-
-    /**
-     * @author Yang Tao, 17/3/8.
-     */
-
-    private static final class DefaultWebViewFactory implements WebViewFactory {
-
-        static DefaultWebViewFactory sInstance;
-
-        static {
-            sInstance = new DefaultWebViewFactory();
-        }
-
-
-        @NonNull
-        @Override
-        public WebView create(Context context) {
-            return new WebView(context);
         }
     }
 

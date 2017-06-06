@@ -4,8 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import com.mozz.htmlnative.common.WefRunnable;
 import com.mozz.htmlnative.exception.HNSyntaxError;
@@ -17,11 +15,11 @@ import java.io.InputStream;
  * @author Yang Tao, 17/3/10.
  */
 
-final class HNProcessThread {
+final class HNRenderThread {
 
-    private static final String TAG = HNProcessThread.class.getSimpleName();
+    private static final String TAG = HNRenderThread.class.getSimpleName();
 
-    private HNProcessThread() {
+    private HNRenderThread() {
 
     }
 
@@ -60,11 +58,7 @@ final class HNProcessThread {
                     @Override
                     public void run() {
                         mCallback.onHead(segment.getHead());
-                    }
-                });
-                MainHandlerUtils.instance().post(new Runnable() {
-                    @Override
-                    public void run() {
+
                         View v = null;
                         try {
                             v = HNRenderer.get().render(context, segment);
@@ -75,18 +69,15 @@ final class HNProcessThread {
                         mCallback.onViewLoaded(v);
                     }
                 });
+
             } catch (@NonNull final HNSyntaxError e) {
                 e.printStackTrace();
-                if (mCallback != null) {
-                    MainHandlerUtils.instance().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (mCallback != null) {
-                                mCallback.onError(e);
-                            }
-                        }
-                    });
-                }
+                MainHandlerUtils.instance().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mCallback.onError(e);
+                    }
+                });
             }
         }
     }

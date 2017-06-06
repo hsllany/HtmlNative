@@ -13,10 +13,11 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.mozz.htmlnative.HNConfig;
 import com.mozz.htmlnative.HNativeEngine;
-import com.mozz.htmlnative.HrefLinkHandler;
-import com.mozz.htmlnative.ImageViewAdapter;
-import com.mozz.htmlnative.OnScriptCallback;
+import com.mozz.htmlnative.ImageFetcher;
+import com.mozz.htmlnative.ScriptCallback;
+import com.mozz.htmlnative.onHrefClick;
 import com.mozz.htmlnative.view.BackgroundViewDelegate;
 import com.squareup.leakcanary.LeakCanary;
 
@@ -34,10 +35,9 @@ public class DemoApplication extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
-        HNativeEngine.init(this);
-        HNativeEngine.getInstance().debugRenderProcess();
 
-        HNativeEngine.getInstance().setImageViewAdapter(new ImageViewAdapter() {
+        HNConfig config = new HNConfig.Builder().setHttpClient(new DemoHttpClient())
+                .setImageFetcher(new ImageFetcher() {
             @Override
             public void setImage(String src, final BackgroundViewDelegate imageView) {
                 Glide.with(DemoApplication.this).load(src).asBitmap().into(new SimpleTarget<Bitmap>() {
@@ -51,9 +51,7 @@ public class DemoApplication extends Application {
                 });
 
             }
-        });
-
-        HNativeEngine.getInstance().setHrefLinkHandler(new HrefLinkHandler() {
+        }).setOnHrefClick(new onHrefClick() {
             @Override
             public void onHref(String url, View view) {
                 Toast.makeText(DemoApplication.this, url, Toast.LENGTH_SHORT).show();
@@ -62,9 +60,7 @@ public class DemoApplication extends Application {
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);
             }
-        });
-
-        HNativeEngine.registerScriptCallback(new OnScriptCallback() {
+        }).setScriptCallback(new ScriptCallback() {
             @Override
             public void error(final Throwable e) {
                 mMainHandler.post(new Runnable() {
@@ -75,9 +71,10 @@ public class DemoApplication extends Application {
                     }
                 });
             }
-        });
+        }).build();
 
-        HNativeEngine.registerHttpClient(new DemoHttpClient());
+        HNativeEngine.init(this, config);
+        HNativeEngine.getInstance().debugRenderProcess();
 
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.

@@ -16,7 +16,7 @@ final class HNScriptRunnerThread {
     @NonNull
     private static HandlerThread mScriptThread = new HandlerThread("HNScriptRunner");
     private static Handler mHandler;
-    private static OnScriptCallback mErrorCallback;
+    private static ScriptCallback mErrorCallback;
 
     public static void init() {
         mScriptThread.start();
@@ -24,12 +24,12 @@ final class HNScriptRunnerThread {
 
     }
 
-    public static void quit() {
+    static void quit() {
         mScriptThread.quit();
         mErrorCallback = null;
     }
 
-    public static void runScript(HNSandBoxContext context, ScriptRunner runner, String script) {
+    static void runScript(HNSandBoxContext context, ScriptRunner runner, String script) {
         post(new ScriptRunTask(context, runner, script));
     }
 
@@ -41,15 +41,15 @@ final class HNScriptRunnerThread {
         mHandler.postAtFrontOfQueue(noException(r));
     }
 
-    public static void setErrorCallback(OnScriptCallback mErrorCallback) {
+    static void setErrorCallback(ScriptCallback mErrorCallback) {
         HNScriptRunnerThread.mErrorCallback = mErrorCallback;
     }
 
-    private static final class ExceptionCatcherRunnable implements Runnable {
+    private static final class ExceptionCatchRunnable implements Runnable {
 
         private Runnable mWrappedRunnable;
 
-        ExceptionCatcherRunnable(Runnable wrappedRunnable) {
+        ExceptionCatchRunnable(Runnable wrappedRunnable) {
             mWrappedRunnable = wrappedRunnable;
         }
 
@@ -67,8 +67,8 @@ final class HNScriptRunnerThread {
 
     }
 
-    private static ExceptionCatcherRunnable noException(Runnable runnable) {
-        return new ExceptionCatcherRunnable(runnable);
+    private static ExceptionCatchRunnable noException(Runnable runnable) {
+        return new ExceptionCatchRunnable(runnable);
     }
 
     private static class ScriptRunTask implements Runnable {

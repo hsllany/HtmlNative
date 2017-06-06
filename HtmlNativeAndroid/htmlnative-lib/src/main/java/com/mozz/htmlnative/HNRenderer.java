@@ -143,20 +143,20 @@ public final class HNRenderer {
     }
 
     private View renderInternal(@NonNull Context context, @NonNull HNSandBoxContext
-            sandBoxContext, HNDomTree tree, HNSegment segment, @NonNull ViewGroup parent,
+            sandBoxContext, HNDomTree dom, HNSegment segment, @NonNull ViewGroup parent,
                                 @NonNull LayoutParamsLazyCreator paramsCreator, @NonNull
                                         HNRootView root, StyleSheet styleSheet) throws
             HNRenderException {
 
         AttrsSet attrsSet = segment.getInlineStyles();
 
-        if (tree.isLeaf()) {
-            View v = createView(tree, tree, sandBoxContext, parent, context, attrsSet,
+        if (dom.isLeaf()) {
+            View v = createView(dom, dom, sandBoxContext, parent, context, attrsSet,
                     paramsCreator, styleSheet, mInheritStyleStack);
             mInheritStyleStack.pop();
             return v;
         } else {
-            View view = createView(tree, tree, sandBoxContext, parent, context, attrsSet,
+            View view = createView(dom, dom, sandBoxContext, parent, context, attrsSet,
                     paramsCreator, styleSheet, mInheritStyleStack);
 
             if (view == null) {
@@ -168,7 +168,7 @@ public final class HNRenderer {
 
                 final ViewGroup viewGroup = (ViewGroup) view;
 
-                List<HNDomTree> children = tree.children();
+                List<HNDomTree> children = dom.children();
                 for (HNDomTree child : children) {
 
                     LayoutParamsLazyCreator childCreator = new LayoutParamsLazyCreator();
@@ -195,12 +195,12 @@ public final class HNRenderer {
     }
 
 
-    public static View createView(AttrsSet.AttrsOwner owner, @NonNull DomElement tree, @NonNull
+    public static View createView(AttrsSet.AttrsOwner owner, @NonNull DomElement element, @NonNull
             HNSandBoxContext sandBoxContext, ViewGroup parent, @NonNull Context context, AttrsSet
             attrsSet, @NonNull LayoutParamsLazyCreator layoutCreator, StyleSheet styleSheet,
                                   InheritStyleStack stack) throws HNRenderException {
 
-        String type = tree.getType();
+        String type = element.getType();
 
         if (stack != null) {
             stack.push();
@@ -220,13 +220,13 @@ public final class HNRenderer {
             }
 
             //attach the dom element to view
-            DomElement domElement = AttachedElement.cloneIfNecessary(tree);
+            DomElement domElement = AttachedElement.cloneIfNecessary(element);
             domElement.setParent((DomElement) parent.getTag());
-            v.setTag(AttachedElement.cloneIfNecessary(tree));
+            v.setTag(AttachedElement.cloneIfNecessary(element));
 
 
             // save the id if element has one
-            String id = tree.getId();
+            String id = element.getId();
             if (id != null) {
                 sandBoxContext.registerId(id, v);
             }
@@ -241,7 +241,7 @@ public final class HNRenderer {
 
             // 2 - set initial style to an view
             try {
-                Styles.setDefaultStyle(context, sandBoxContext, v, tree, parent,
+                Styles.setDefaultStyle(context, sandBoxContext, v, element, parent,
                         viewStyleHandler, extraStyleHandler, parentLayoutAttr, layoutCreator);
             } catch (AttrApplyException e) {
                 e.printStackTrace();
@@ -249,7 +249,7 @@ public final class HNRenderer {
 
             // 3 - use parent inherit style
             try {
-                /**
+                /*
                  * First apply the parent styleSheet style to it.
                  */
                 if (stack != null) {
@@ -257,7 +257,7 @@ public final class HNRenderer {
 
                         // here pass InheritStyleStack null to Styles, is to prevent Style being
                         // stored in InheritStyleStack twice
-                        Styles.applyStyle(context, sandBoxContext, v, tree, layoutCreator,
+                        Styles.applyStyle(context, sandBoxContext, v, element, layoutCreator,
                                 parent, viewStyleHandler, extraStyleHandler, parentLayoutAttr,
                                 entry, false, null);
 
@@ -270,16 +270,16 @@ public final class HNRenderer {
 
             // 4 - use CSS to render
             if (styleSheet != null) {
-                CssSelector[] matchedSelectors = styleSheet.matchedSelector(type, tree.getId(),
-                        tree.getClazz());
+                CssSelector[] matchedSelectors = styleSheet.matchedSelector(type, element.getId(),
+                        element.getClazz());
 
                 for (CssSelector selector : matchedSelectors) {
                     if (selector != null) {
-                        if (selector.matchWhole(tree)) {
+                        if (selector.matchWhole(element)) {
 
                             try {
                                 Styles.apply(context, sandBoxContext, styleSheet, v, selector,
-                                        tree, parent, layoutCreator, false, false,
+                                        element, parent, layoutCreator, false, false,
                                         viewStyleHandler, extraStyleHandler, parentLayoutAttr,
                                         stack);
 
@@ -295,7 +295,7 @@ public final class HNRenderer {
             // 5 - use inline-style to render
             try {
                 if (attrsSet != null) {
-                    Styles.apply(context, sandBoxContext, attrsSet, v, owner, tree, parent,
+                    Styles.apply(context, sandBoxContext, attrsSet, v, owner, element, parent,
                             layoutCreator, true, false, viewStyleHandler, extraStyleHandler,
                             parentLayoutAttr, stack);
                 }
