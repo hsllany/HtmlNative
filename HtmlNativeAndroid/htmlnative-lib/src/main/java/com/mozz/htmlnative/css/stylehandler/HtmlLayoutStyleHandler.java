@@ -14,8 +14,8 @@ import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
 class HtmlLayoutStyleHandler extends StyleHandler {
     @Override
     public void apply(Context context, View v, DomElement domElement, View parent,
-                      LayoutParamsLazyCreator paramsLazyCreator, String params, Object value,
-                      boolean isParent) throws AttrApplyException {
+                      LayoutParamsLazyCreator paramsLazyCreator, String params, Object value)
+            throws AttrApplyException {
 
         if (InheritStylesRegistry.isInherit(params)) {
             HNDiv div = (HNDiv) v;

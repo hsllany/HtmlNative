@@ -13,8 +13,9 @@ import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
 
 public class AbsoluteStyleHandler extends StyleHandler {
     @Override
-    public void apply(Context context, View v, DomElement domElement, View parent, LayoutParamsLazyCreator paramsLazyCreator, String params, Object value, boolean isParent) throws
-            AttrApplyException {
+    public void apply(Context context, View v, DomElement domElement, View parent,
+                      LayoutParamsLazyCreator paramsLazyCreator, String params, Object value)
+            throws AttrApplyException {
 
     }
 }

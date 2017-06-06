@@ -14,17 +14,33 @@ public final class InheritStylesRegistry {
 
     }
 
-    private static final Set<String> sInheritAttrs = new HashSet<>();
+    /**
+     * To save the inherit style
+     */
+    private static final Set<String> sInheritStyles = new HashSet<>();
 
-    public static void register(String attr) {
-        sInheritAttrs.add(attr);
+    /**
+     * To save the preserved style that dose not inherit
+     */
+    private static final Set<String> sPreservedStyles = new HashSet<>();
+
+    public static void register(String style) {
+        sInheritStyles.add(style);
     }
 
-    public static boolean isInherit(String attr) {
-        return sInheritAttrs.contains(attr);
+    public static void preserve(String style) {
+        sPreservedStyles.add(style);
+    }
+
+    public static boolean isInherit(String style) {
+        return sInheritStyles.contains(style);
+    }
+
+    public static boolean isPreserved(String style) {
+        return sPreservedStyles.contains(style);
     }
 
     public static Iterator<String> iterator() {
-        return sInheritAttrs.iterator();
+        return sInheritStyles.iterator();
     }
 }

@@ -136,12 +136,16 @@ public final class HNativeEngine {
         return HNEnvironment.versionCode;
     }
 
-    /**
-     * @param tag
-     * @param HNViewItem
-     */
-    public static void registerHNiew(String tag, @NonNull HNViewItem HNViewItem) {
-        ViewTypeRelations.registerExtraView(tag, HNViewItem);
+    public static void registerViewType(@NonNull HNViewType viewType) {
+        HNViewTypeManager.registerViewType(viewType);
+    }
+
+    public static void unregisterViewType(HNViewType viewType) {
+        HNViewTypeManager.unregisterViewType(viewType);
+    }
+
+    public static void clearAllViewType() {
+        HNViewTypeManager.clearAllViewType();
     }
 
     public void destroy() {
@@ -156,17 +160,13 @@ public final class HNativeEngine {
         return sConfig.getImageViewAdapter();
     }
 
-    public static void registerViewFactory(String androidViewClassName, ViewFactory viewFactory) {
+    public static void registerViewFactory(String androidViewClassName, HNRenderer.ViewFactory
+            viewFactory) {
         HNRenderer.registerViewFactory(androidViewClassName, viewFactory);
     }
 
-
     public static onHrefClick getHrefLinkHandler() {
         return sConfig.getHrefLinkHandler();
-    }
-
-    public static void registerScriptCallback(ScriptCallback callback) {
-        HNScriptRunnerThread.setErrorCallback(callback);
     }
 
 

@@ -16,13 +16,10 @@ import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
 
 class FlexBoxLayoutStyleHandler extends LayoutStyleHandler {
     @Override
-    public void apply(Context context, View v, DomElement domElement, View parent, LayoutParamsLazyCreator paramsLazyCreator, String params, Object value, boolean isParent) throws
-            AttrApplyException {
+    public void apply(Context context, View v, DomElement domElement, View parent,
+                      LayoutParamsLazyCreator paramsLazyCreator, String params, Object value)
+            throws AttrApplyException {
         FlexboxLayout flexboxLayout = (FlexboxLayout) v;
-
-        if (isParent) {
-            return;
-        }
 
         switch (params) {
             case "flex-direction": {
@@ -44,12 +41,16 @@ class FlexBoxLayoutStyleHandler extends LayoutStyleHandler {
     }
 
     @Override
-    public void applyToChild(Context context, View v, DomElement domElement, View parent, LayoutParamsLazyCreator paramsLazyCreator, String params, Object value, boolean isParent) throws AttrApplyException {
+    public void applyToChild(Context context, View v, DomElement domElement, View parent,
+                             LayoutParamsLazyCreator paramsLazyCreator, String params, Object
+                                         value, boolean isParent) throws AttrApplyException {
 
     }
 
     @Override
-    public void setDefault(Context context, View v, DomElement domElement, LayoutParamsLazyCreator paramsLazyCreator, View parent) throws AttrApplyException {
+    public void setDefault(Context context, View v, DomElement domElement,
+                           LayoutParamsLazyCreator paramsLazyCreator, View parent) throws
+            AttrApplyException {
         super.setDefault(context, v, domElement, paramsLazyCreator, parent);
 
         paramsLazyCreator.width = ViewGroup.LayoutParams.MATCH_PARENT;

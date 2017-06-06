@@ -10,7 +10,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
-import com.mozz.htmlnative.css.stylehandler.StyleHandlerFactory;
 import com.mozz.htmlnative.view.HNDiv;
 import com.mozz.htmlnative.view.HNImg;
 import com.mozz.htmlnative.view.HNText;
@@ -35,7 +34,7 @@ public final class ViewTypeRelations {
     /**
      * For extra tag, lazy initialize later.
      */
-    private static Map<String, HNViewItem> sExtraTagClassTable;
+    private static Map<String, String> sExtraTagClassTable;
 
     static {
         sReservedTagClassTable.put(BOX, HNDiv.class.getName());
@@ -86,21 +85,32 @@ public final class ViewTypeRelations {
             return null;
         }
 
-        HNViewItem HNViewItem = sExtraTagClassTable.get(type);
-        if (HNViewItem != null) {
-            return HNViewItem.onGetViewClassName().getName();
+        viewClassName = sExtraTagClassTable.get(type);
+        if (viewClassName != null) {
+            return viewClassName;
         }
 
         return null;
     }
 
-    public static void registerExtraView(String tag, @NonNull HNViewItem HNViewItem) {
+    static void registerExtraView(@NonNull String htmlType, @NonNull String androidViewClassName) {
         if (sExtraTagClassTable == null) {
             sExtraTagClassTable = new ArrayMap<>();
         }
 
-        sExtraTagClassTable.put(tag, HNViewItem);
-        StyleHandlerFactory.registerExtraStyleHandler(HNViewItem.getViewClass(), HNViewItem
-                .getHandler());
+        sExtraTagClassTable.put(htmlType, androidViewClassName);
+
+    }
+
+    static void unregisterExtraView(@NonNull String htmlType) {
+        if (sExtraTagClassTable != null) {
+            sExtraTagClassTable.remove(htmlType);
+        }
+    }
+
+    static void clearAllExtraView() {
+        if (sExtraTagClassTable != null) {
+            sExtraTagClassTable.clear();
+        }
     }
 }

@@ -102,6 +102,14 @@ public final class StyleHandlerFactory {
         return sExtraAttrHandlerCache.put(viewClass, styleHandler);
     }
 
+    public static void unregisterExtraStyleHandler(Class<? extends View> viewClass) {
+        sExtraAttrHandlerCache.remove(viewClass);
+    }
+
+    public static void clearExtraStyleHandler() {
+        sExtraAttrHandlerCache.clear();
+    }
+
     public static void clear() {
         sExtraAttrHandlerCache.clear();
         sAttrHandlerCache.clear();

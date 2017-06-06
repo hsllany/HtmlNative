@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import com.mozz.htmlnative.HNativeEngine;
 import com.mozz.htmlnative.css.Background;
+import com.mozz.htmlnative.css.InheritStylesRegistry;
 import com.mozz.htmlnative.dom.DomElement;
 import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.view.BackgroundViewDelegate;
@@ -14,11 +15,16 @@ import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
 
 class ImageViewStyleHandler extends StyleHandler {
 
+    static {
+        // to protect the build-in styles
+        InheritStylesRegistry.preserve("src");
+    }
+
     @Override
     public void apply(Context context, View v, DomElement domElement, View parent,
-                      LayoutParamsLazyCreator paramsLazyCreator, String params, Object value,
-                      boolean isParent) throws AttrApplyException {
-        if (params.equals("src") && HNativeEngine.getImageViewAdapter() != null && !isParent) {
+                      LayoutParamsLazyCreator paramsLazyCreator, String params, Object value)
+            throws AttrApplyException {
+        if (params.equals("src") && HNativeEngine.getImageViewAdapter() != null) {
             Matrix matrix = null;
             String url = value.toString();
             Background background = null;

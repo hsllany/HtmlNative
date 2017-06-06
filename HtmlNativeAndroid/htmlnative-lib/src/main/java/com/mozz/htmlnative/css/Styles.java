@@ -78,19 +78,45 @@ public final class Styles {
     static {
         InheritStylesRegistry.register(ATTR_VISIBLE);
         InheritStylesRegistry.register(ATTR_DIRECTION);
+
+        // to protect the build-in styles
+        InheritStylesRegistry.preserve(ATTR_STYLE);
+        InheritStylesRegistry.preserve(ATTR_WIDTH);
+        InheritStylesRegistry.preserve(ATTR_HEIGHT);
+        InheritStylesRegistry.preserve(ATTR_BACKGROUND);
+        InheritStylesRegistry.preserve(ATTR_PADDING);
+        InheritStylesRegistry.preserve(ATTR_PADDING_LEFT);
+        InheritStylesRegistry.preserve(ATTR_PADDING_RIGHT);
+        InheritStylesRegistry.preserve(ATTR_PADDING_TOP);
+        InheritStylesRegistry.preserve(ATTR_PADDING_BOTTOM);
+        InheritStylesRegistry.preserve(ATTR_MARGIN);
+        InheritStylesRegistry.preserve(ATTR_MARGIN_LEFT);
+        InheritStylesRegistry.preserve(ATTR_MARGIN_RIGHT);
+        InheritStylesRegistry.preserve(ATTR_MARGIN_TOP);
+        InheritStylesRegistry.preserve(ATTR_MARGIN_BOTTOM);
+        InheritStylesRegistry.preserve(ATTR_LEFT);
+        InheritStylesRegistry.preserve(ATTR_TOP);
+        InheritStylesRegistry.preserve(ATTR_RIGHT);
+        InheritStylesRegistry.preserve(ATTR_BOTTOM);
+        InheritStylesRegistry.preserve(ATTR_FLOAT);
+        InheritStylesRegistry.preserve(ATTR_ALPHA);
+        InheritStylesRegistry.preserve(ATTR_ONCLICK);
+        InheritStylesRegistry.preserve(ATTR_DISPLAY);
+        InheritStylesRegistry.preserve(ATTR_HREF);
+
     }
 
 
-    public static void applyStyle(Context context, final HNSandBoxContext sandBoxContext, View v,
-                                  DomElement domElement, @NonNull LayoutParamsLazyCreator
-                                          layoutCreator, @NonNull ViewGroup parent, StyleHandler
-                                          viewStyleHandler, StyleHandler extraStyleHandler,
-                                  LayoutStyleHandler parentAttr, StyleEntry entry, boolean
-                                          isParent, InheritStyleStack outStack) throws
-            AttrApplyException {
-        applyStyle(context, sandBoxContext, v, domElement, layoutCreator, parent,
+    public static void applySingleStyle(Context context, final HNSandBoxContext sandBoxContext,
+                                        View v, DomElement domElement, @NonNull
+                                                LayoutParamsLazyCreator layoutCreator, @NonNull
+                                                ViewGroup parent, StyleHandler viewStyleHandler,
+                                        StyleHandler extraStyleHandler, LayoutStyleHandler
+                                                parentAttr, StyleEntry entry, InheritStyleStack
+                                                outStack) throws AttrApplyException {
+        applySingleStyle(context, sandBoxContext, v, domElement, layoutCreator, parent,
                 viewStyleHandler, extraStyleHandler, parentAttr, entry.getStyleName(), entry
-                        .getStyle(), isParent, outStack);
+                        .getStyle(), outStack);
     }
 
     /**
@@ -106,12 +132,12 @@ public final class Styles {
      * @param styleName      parameter name
      * @param style          parameter value     @throws AttrApplyException
      */
-    public static void applyStyle(@NonNull Context context, @NonNull final HNSandBoxContext
+    public static void applySingleStyle(@NonNull Context context, @NonNull final HNSandBoxContext
             sandBoxContext, @NonNull View v, @Nullable DomElement domElement, @NonNull
             LayoutParamsLazyCreator layoutCreator, @NonNull ViewGroup parent, StyleHandler
             viewStyleHandler, StyleHandler extraStyleHandler, LayoutStyleHandler parentAttr,
-                                  String styleName, final Object style, boolean isParent,
-                                  InheritStyleStack outStack) throws AttrApplyException {
+                                        String styleName, final Object style, InheritStyleStack
+                                                outStack) throws AttrApplyException {
 
         if (styleName == null || style == null) {
             return;
@@ -120,12 +146,6 @@ public final class Styles {
         if (domElement != null) {
             HNLog.d(HNLog.STYLE, "set style \"" + styleName + ": " + style + "\"  to " +
                     domElement.getType());
-        }
-
-        if (isParent) {
-            if (!InheritStylesRegistry.isInherit(styleName)) {
-                return;
-            }
         }
 
         switch (styleName) {
@@ -417,19 +437,19 @@ public final class Styles {
 
                 if (viewStyleHandler != null) {
                     viewStyleHandler.apply(context, v, domElement, parent, layoutCreator,
-                            styleName, style, isParent);
+                            styleName, style);
                 }
 
                 // If there extra attr is set, then should be applied also.
                 if (extraStyleHandler != null) {
                     extraStyleHandler.apply(context, v, domElement, parent, layoutCreator,
-                            styleName, style, isParent);
+                            styleName, style);
                 }
 
                 // finally apply corresponding parent attr to child
                 if (parentAttr != null) {
                     parentAttr.applyToChild(context, v, domElement, parent, layoutCreator,
-                            styleName, style, isParent);
+                            styleName, style, false);
                 }
                 break;
         }
@@ -476,24 +496,22 @@ public final class Styles {
      * @param extraStyleHandler
      * @param parentAttrHandler @throws AttrApplyException
      */
-    public static void apply(Context context, @NonNull final HNSandBoxContext sandBoxContext,
-                             AttrsSet source, View v, @NonNull AttrsSet.AttrsOwner tree,
-                             DomElement domElement, @NonNull ViewGroup parent, @NonNull
-                                     LayoutParamsLazyCreator paramsLazyCreator, boolean
-                                     applyDefault, boolean isParent, StyleHandler
-                                     viewStyleHandler, StyleHandler extraStyleHandler,
-                             LayoutStyleHandler parentAttrHandler, InheritStyleStack stack)
+    public static void applyStyles(Context context, @NonNull final HNSandBoxContext
+            sandBoxContext, AttrsSet source, View v, @NonNull AttrsSet.AttrsOwner tree,
+                                   DomElement domElement, @NonNull ViewGroup parent, @NonNull
+                                           LayoutParamsLazyCreator paramsLazyCreator,
+                                   StyleHandler viewStyleHandler, StyleHandler extraStyleHandler,
+                                   LayoutStyleHandler parentAttrHandler, InheritStyleStack stack)
             throws AttrApplyException {
         // Apply the default attr to view first;
         // Then process each parameter.
-
         Iterator<StyleEntry> itr = source.iterator(tree);
         while (itr.hasNext()) {
             StyleEntry styleEntry = itr.next();
 
-            applyStyle(context, sandBoxContext, v, domElement, paramsLazyCreator, parent,
+            applySingleStyle(context, sandBoxContext, v, domElement, paramsLazyCreator, parent,
                     viewStyleHandler, extraStyleHandler, parentAttrHandler, styleEntry
-                            .getStyleName(), styleEntry.getStyle(), isParent, stack);
+                            .getStyleName(), styleEntry.getStyle(), stack);
 
         }
     }

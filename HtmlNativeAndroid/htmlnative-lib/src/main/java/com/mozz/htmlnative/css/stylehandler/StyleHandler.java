@@ -14,7 +14,7 @@ import com.mozz.htmlnative.view.LayoutParamsLazyCreator;
 public abstract class StyleHandler {
     public abstract void apply(Context context, View v, DomElement domElement, View parent,
                                LayoutParamsLazyCreator paramsLazyCreator, String params, Object
-                                       value, boolean isParent) throws AttrApplyException;
+                                       value) throws AttrApplyException;
 
     public void setDefault(Context context, View v, DomElement domElement,
                            LayoutParamsLazyCreator paramsLazyCreator, View parent) throws

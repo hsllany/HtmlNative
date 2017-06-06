@@ -130,7 +130,7 @@ class LView extends LObject {
                                     instanceof ViewGroup) ? (ViewGroup) mView.getParent() : null;
                             try {
                                 HNRenderer.renderStyle(mView.getContext(), mContext, mView,
-                                        mDomElement, tempCreator, parent, styleMaps, false, null);
+                                        mDomElement, tempCreator, parent, styleMaps, null);
                                 createLayoutParams(tempCreator, mView.getLayoutParams());
                                 mView.requestLayout();
 
@@ -382,7 +382,7 @@ class LView extends LObject {
                         try {
                             HNRenderer.renderStyle(child.mView.getContext(), parent.mContext,
                                     child.mView, child.mDomElement, creator, (ViewGroup) parent
-                                            .mView, inlineStyles, false, inheritStyleStack);
+                                            .mView, inlineStyles, inheritStyleStack);
 
                             if (child.mToBeAddText != null) {
                                 if (child.mView instanceof TextView) {

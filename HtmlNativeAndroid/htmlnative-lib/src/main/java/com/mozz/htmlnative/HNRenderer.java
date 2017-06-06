@@ -143,10 +143,9 @@ public final class HNRenderer {
     }
 
     private View renderInternal(@NonNull Context context, @NonNull HNSandBoxContext
-            sandBoxContext, HNDomTree dom, HNSegment segment, @NonNull ViewGroup parent,
-                                @NonNull LayoutParamsLazyCreator paramsCreator, @NonNull
-                                        HNRootView root, StyleSheet styleSheet) throws
-            HNRenderException {
+            sandBoxContext, HNDomTree dom, HNSegment segment, @NonNull ViewGroup parent, @NonNull
+            LayoutParamsLazyCreator paramsCreator, @NonNull HNRootView root, StyleSheet
+            styleSheet) throws HNRenderException {
 
         AttrsSet attrsSet = segment.getInlineStyles();
 
@@ -195,10 +194,12 @@ public final class HNRenderer {
     }
 
 
-    public static View createView(AttrsSet.AttrsOwner owner, @NonNull DomElement element, @NonNull
-            HNSandBoxContext sandBoxContext, ViewGroup parent, @NonNull Context context, AttrsSet
-            attrsSet, @NonNull LayoutParamsLazyCreator layoutCreator, StyleSheet styleSheet,
-                                  InheritStyleStack stack) throws HNRenderException {
+    public static View createView(AttrsSet.AttrsOwner owner, @NonNull DomElement element,
+                                  @NonNull HNSandBoxContext sandBoxContext, ViewGroup parent,
+                                  @NonNull Context context, AttrsSet attrsSet, @NonNull
+                                          LayoutParamsLazyCreator layoutCreator, StyleSheet
+                                          styleSheet, InheritStyleStack stack) throws
+            HNRenderException {
 
         String type = element.getType();
 
@@ -257,9 +258,9 @@ public final class HNRenderer {
 
                         // here pass InheritStyleStack null to Styles, is to prevent Style being
                         // stored in InheritStyleStack twice
-                        Styles.applyStyle(context, sandBoxContext, v, element, layoutCreator,
-                                parent, viewStyleHandler, extraStyleHandler, parentLayoutAttr,
-                                entry, false, null);
+                        Styles.applySingleStyle(context, sandBoxContext, v, element,
+                                layoutCreator, parent, viewStyleHandler, extraStyleHandler,
+                                parentLayoutAttr, entry, null);
 
                     }
                 }
@@ -270,16 +271,16 @@ public final class HNRenderer {
 
             // 4 - use CSS to render
             if (styleSheet != null) {
-                CssSelector[] matchedSelectors = styleSheet.matchedSelector(type, element.getId(),
-                        element.getClazz());
+                CssSelector[] matchedSelectors = styleSheet.matchedSelector(type, element.getId()
+                        , element.getClazz());
 
                 for (CssSelector selector : matchedSelectors) {
                     if (selector != null) {
                         if (selector.matchWhole(element)) {
 
                             try {
-                                Styles.apply(context, sandBoxContext, styleSheet, v, selector,
-                                        element, parent, layoutCreator, false, false,
+                                Styles.applyStyles(context, sandBoxContext, styleSheet, v,
+                                        selector, element, parent, layoutCreator,
                                         viewStyleHandler, extraStyleHandler, parentLayoutAttr,
                                         stack);
 
@@ -295,8 +296,8 @@ public final class HNRenderer {
             // 5 - use inline-style to render
             try {
                 if (attrsSet != null) {
-                    Styles.apply(context, sandBoxContext, attrsSet, v, owner, element, parent,
-                            layoutCreator, true, false, viewStyleHandler, extraStyleHandler,
+                    Styles.applyStyles(context, sandBoxContext, attrsSet, v, owner, element,
+                            parent, layoutCreator, viewStyleHandler, extraStyleHandler,
                             parentLayoutAttr, stack);
                 }
             } catch (AttrApplyException e) {
@@ -397,15 +398,14 @@ public final class HNRenderer {
         StyleHandler extraStyleHandler = StyleHandlerFactory.extraGet(v);
         LayoutStyleHandler parentLayoutAttr = StyleHandlerFactory.parentGet(v);
 
-        Styles.applyStyle(context, sandBoxContext, v, domElement, layoutCreator, parent,
-                viewStyleHandler, extraStyleHandler, parentLayoutAttr, styleName, style,
-                isParent, stack);
+        Styles.applySingleStyle(context, sandBoxContext, v, domElement, layoutCreator, parent,
+                viewStyleHandler, extraStyleHandler, parentLayoutAttr, styleName, style, stack);
     }
 
     public static void renderStyle(Context context, @NonNull final HNSandBoxContext
             sandBoxContext, @NonNull View v, DomElement domElement, @NonNull
             LayoutParamsLazyCreator layoutCreator, ViewGroup parent, @NonNull Map<String, Object>
-            styles, boolean isParent, InheritStyleStack stack) throws AttrApplyException {
+            styles, InheritStyleStack stack) throws AttrApplyException {
 
         final StyleHandler viewStyleHandler = StyleHandlerFactory.get(v);
         final StyleHandler extraStyleHandler = StyleHandlerFactory.extraGet(v);
@@ -414,9 +414,9 @@ public final class HNRenderer {
         for (Map.Entry<String, Object> entry : styles.entrySet()) {
 
             try {
-                Styles.applyStyle(v.getContext(), sandBoxContext, v, domElement, layoutCreator,
-                        parent, viewStyleHandler, extraStyleHandler, parentAttr, entry.getKey(),
-                        entry.getValue(), isParent, stack);
+                Styles.applySingleStyle(v.getContext(), sandBoxContext, v, domElement,
+                        layoutCreator, parent, viewStyleHandler, extraStyleHandler, parentAttr,
+                        entry.getKey(), entry.getValue(), stack);
 
 
             } catch (AttrApplyException e) {
@@ -450,6 +450,10 @@ public final class HNRenderer {
 
     public static void unregisterViewFactory(String androidClassName) {
         sViewFactory.remove(androidClassName);
+    }
+
+    public static void clearAllViewFactory() {
+        sViewFactory.clear();
     }
 
     private static View createViewByViewFactory(Context context, @NonNull String viewClassName) {
@@ -491,5 +495,15 @@ public final class HNRenderer {
         public HNRenderException(Throwable throwable) {
             super(throwable);
         }
+    }
+
+    /**
+     * Used to hook the view creation process.
+     *
+     * @author Yang Tao, 17/3/8.
+     */
+
+    public interface ViewFactory<T extends View> {
+        T create(Context context);
     }
 }

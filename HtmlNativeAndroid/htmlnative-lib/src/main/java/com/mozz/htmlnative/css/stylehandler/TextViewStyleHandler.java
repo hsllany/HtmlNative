@@ -63,12 +63,17 @@ class TextViewStyleHandler extends StyleHandler {
         InheritStylesRegistry.register(FONT_WEIGHT);
         InheritStylesRegistry.register(TEXT_ALIGN);
         InheritStylesRegistry.register(TEXT_WORD_SPACING);
+        InheritStylesRegistry.register(TEXT_TRANSFORM);
+
+        // to protect the build-in styles
+        InheritStylesRegistry.preserve(TEXT);
+        InheritStylesRegistry.preserve(TEXT_OVER_FLOW);
     }
 
     @Override
     public void apply(Context context, View v, DomElement domElement, View parent,
                       LayoutParamsLazyCreator paramsLazyCreator, String params, final Object
-                                  value, boolean isParent) throws AttrApplyException {
+                                  value) throws AttrApplyException {
 
         final TextView textView = (TextView) v;
         switch (params) {
