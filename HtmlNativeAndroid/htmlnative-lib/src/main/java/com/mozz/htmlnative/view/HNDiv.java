@@ -25,9 +25,9 @@ import java.util.Map;
 
 public class HNDiv extends ViewGroup implements IBackgroundView {
 
-    private List<List<View>> mAllViews = new ArrayList<>();
+    private List<Integer> mLineIndexes = new ArrayList<>();
     private List<View> mFloatViews = new LinkedList<>();
-    private List<Integer> mLineLength = new ArrayList<>();
+    private List<Integer> mLineHeights = new ArrayList<>();
     private BackgroundManager mBackgroundMgr;
     private Map<String, Object> mSavedInheritStyles = new HashMap<>();
 
@@ -120,8 +120,8 @@ public class HNDiv extends ViewGroup implements IBackgroundView {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        mAllViews.clear();
-        mLineLength.clear();
+        mLineHeights.clear();
+        mLineIndexes.clear();
 
         int width = getWidth();
 
@@ -132,9 +132,8 @@ public class HNDiv extends ViewGroup implements IBackgroundView {
         int paddingRight = getPaddingRight();
         int paddingTop = getPaddingTop();
 
-        List<View> lineViews = new ArrayList<>();
-        int cCount = getChildCount();
-        for (int i = 0; i < cCount; i++) {
+        final int childCount = getChildCount();
+        for (int i = 0; i < childCount; i++) {
             View child = getChildAt(i);
             HNDivLayoutParams lp = (HNDivLayoutParams) child.getLayoutParams();
             int childWidth = child.getMeasuredWidth();
@@ -144,11 +143,9 @@ public class HNDiv extends ViewGroup implements IBackgroundView {
                     HNDivLayoutParams.POSITION_RELATIVE) {
                 if (childWidth + lp.leftMargin + lp.rightMargin + lineWidth + paddingLeft +
                         paddingRight > width) {
-                    mLineLength.add(lineHeight);
-                    mAllViews.add(lineViews);
+                    mLineIndexes.add(i);
+                    mLineHeights.add(lineHeight);
                     lineWidth = childWidth;
-                    lineViews = new ArrayList<>();
-                    lineViews.add(child);
                     lineHeight = childHeight;
                 } else {
                     /*
@@ -156,45 +153,50 @@ public class HNDiv extends ViewGroup implements IBackgroundView {
                      */
                     lineWidth += childWidth + lp.leftMargin + lp.rightMargin;
                     lineHeight = Math.max(lineHeight, childHeight + lp.topMargin + lp.bottomMargin);
-                    lineViews.add(child);
                 }
             } else if (lp.positionMode == HNDivLayoutParams.POSITION_ABSOLUTE) {
                 child.layout(lp.left, lp.top, lp.left + child.getMeasuredWidth(), lp.top + child
                         .getMeasuredHeight());
             }
         }
-        mLineLength.add(lineHeight);
-        mAllViews.add(lineViews);
+
+        mLineHeights.add(lineHeight);
+        mLineIndexes.add(childCount);
 
         int left = paddingLeft;
         int top = paddingTop;
-        int lineNums = mAllViews.size();
-        for (int i = 0; i < lineNums; i++) {
-            lineViews = mAllViews.get(i);
-            lineHeight = mLineLength.get(i);
 
-            for (int j = 0; j < lineViews.size(); j++) {
-                View child = lineViews.get(j);
-                if (child.getVisibility() == View.GONE) {
-                    continue;
-                }
-                HNDivLayoutParams lp = (HNDivLayoutParams) child.getLayoutParams();
+        int line = 0;
+        int currentLineIndex = mLineIndexes.get(line);
+        lineHeight = mLineHeights.get(line);
 
-                int lc = left + lp.leftMargin;
-                int tc = top + lp.topMargin;
-                int rc = lc + child.getMeasuredWidth();
-                int bc = tc + child.getMeasuredHeight();
-
-                if (lp.positionMode == HNDivLayoutParams.POSITION_STATIC) {
-                    child.layout(lc, tc, rc, bc);
-                } else {
-                    child.layout(lc + lp.left, tc + lp.top, rc, bc);
-                }
-
-                left += child.getMeasuredWidth() + lp.rightMargin + lp.leftMargin;
+        for (int i = 0; i < childCount; i++) {
+            if (i >= currentLineIndex) {
+                line++;
+                currentLineIndex = mLineIndexes.get(line);
+                left = paddingLeft;
+                top += lineHeight;
+                lineHeight = mLineHeights.get(line);
             }
-            left = paddingLeft;
-            top += lineHeight;
+
+            View child = getChildAt(i);
+            if (child.getVisibility() == View.GONE) {
+                continue;
+            }
+            HNDivLayoutParams lp = (HNDivLayoutParams) child.getLayoutParams();
+
+            int lc = left + lp.leftMargin;
+            int tc = top + lp.topMargin;
+            int rc = lc + child.getMeasuredWidth();
+            int bc = tc + child.getMeasuredHeight();
+
+            if (lp.positionMode == HNDivLayoutParams.POSITION_STATIC) {
+                child.layout(lc, tc, rc, bc);
+            } else {
+                child.layout(lc + lp.left, tc + lp.top, rc, bc);
+            }
+
+            left += child.getMeasuredWidth() + lp.rightMargin + lp.leftMargin;
         }
 
         top = paddingTop;
