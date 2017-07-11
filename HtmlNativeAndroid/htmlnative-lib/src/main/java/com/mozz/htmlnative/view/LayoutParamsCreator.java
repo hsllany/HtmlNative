@@ -21,8 +21,8 @@ public class LayoutParamsCreator {
     public int right;
     public int bottom;
 
-    @HNDiv.HNDivLayoutParams.HNDivPosition
-    public int positionMode = HNDiv.HNDivLayoutParams.POSITION_STATIC;
+    @HNDivLayout.HNDivLayoutParams.HNDivPosition
+    public int positionMode = HNDivLayout.HNDivLayoutParams.POSITION_STATIC;
 
     public LayoutParamsCreator() {
 
@@ -39,18 +39,18 @@ public class LayoutParamsCreator {
             marginBottom = ((ViewGroup.MarginLayoutParams) params).bottomMargin;
         }
 
-        if (params instanceof HNDiv.HNDivLayoutParams) {
-            left = ((HNDiv.HNDivLayoutParams) params).left;
-            top = ((HNDiv.HNDivLayoutParams) params).top;
-            right = ((HNDiv.HNDivLayoutParams) params).right;
-            bottom = ((HNDiv.HNDivLayoutParams) params).bottom;
-            positionMode = ((HNDiv.HNDivLayoutParams) params).positionMode;
+        if (params instanceof HNDivLayout.HNDivLayoutParams) {
+            left = ((HNDivLayout.HNDivLayoutParams) params).left;
+            top = ((HNDivLayout.HNDivLayoutParams) params).top;
+            right = ((HNDivLayout.HNDivLayoutParams) params).right;
+            bottom = ((HNDivLayout.HNDivLayoutParams) params).bottom;
+            positionMode = ((HNDivLayout.HNDivLayoutParams) params).positionMode;
         }
 
     }
 
     public LayoutParamsCreator(int width, int height, int marginLeft, int marginTop, int
-            marginRight, int marginBottom, int left, int top, int right, int bottom, @HNDiv
+            marginRight, int marginBottom, int left, int top, int right, int bottom, @HNDivLayout
             .HNDivLayoutParams.HNDivPosition int floatMode) {
         this.width = width;
         this.height = height;
@@ -87,8 +87,8 @@ public class LayoutParamsCreator {
         return layoutParams;
     }
 
-    public HNDiv.HNDivLayoutParams toHNDivLayoutParams() {
-        HNDiv.HNDivLayoutParams hnDivLayoutParams = new HNDiv.HNDivLayoutParams(width, height);
+    public HNDivLayout.HNDivLayoutParams toHNDivLayoutParams() {
+        HNDivLayout.HNDivLayoutParams hnDivLayoutParams = new HNDivLayout.HNDivLayoutParams(width, height);
         hnDivLayoutParams.setMargins(marginLeft, marginTop, marginRight, marginBottom);
         hnDivLayoutParams.left = left;
         hnDivLayoutParams.top = top;
@@ -105,7 +105,7 @@ public class LayoutParamsCreator {
 
     public static ViewGroup.LayoutParams createLayoutParams(View parent, LayoutParamsCreator
             creator) {
-        if (parent instanceof HNDiv) {
+        if (parent instanceof HNDivLayout) {
             return creator.toHNDivLayoutParams();
         } else if (parent instanceof HNRootView) {
             return creator.toMarginLayoutParams();
@@ -121,14 +121,14 @@ public class LayoutParamsCreator {
             outParams) {
         outParams.height = creator.height;
         outParams.width = creator.width;
-        if (outParams instanceof HNDiv.HNDivLayoutParams) {
-            ((HNDiv.HNDivLayoutParams) outParams).setMargins(creator.marginLeft, creator
+        if (outParams instanceof HNDivLayout.HNDivLayoutParams) {
+            ((HNDivLayout.HNDivLayoutParams) outParams).setMargins(creator.marginLeft, creator
                     .marginTop, creator.marginRight, creator.marginBottom);
-            ((HNDiv.HNDivLayoutParams) outParams).positionMode = creator.positionMode;
-            ((HNDiv.HNDivLayoutParams) outParams).left = creator.left;
-            ((HNDiv.HNDivLayoutParams) outParams).top = creator.top;
-            ((HNDiv.HNDivLayoutParams) outParams).bottom = creator.bottom;
-            ((HNDiv.HNDivLayoutParams) outParams).right = creator.right;
+            ((HNDivLayout.HNDivLayoutParams) outParams).positionMode = creator.positionMode;
+            ((HNDivLayout.HNDivLayoutParams) outParams).left = creator.left;
+            ((HNDivLayout.HNDivLayoutParams) outParams).top = creator.top;
+            ((HNDivLayout.HNDivLayoutParams) outParams).bottom = creator.bottom;
+            ((HNDivLayout.HNDivLayoutParams) outParams).right = creator.right;
         } else if (outParams instanceof FlexboxLayout.LayoutParams) {
             //TODO complete
         } else if (outParams instanceof ViewGroup.MarginLayoutParams) {

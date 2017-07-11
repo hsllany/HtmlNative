@@ -24,7 +24,7 @@ import com.mozz.htmlnative.exception.AttrApplyException;
 import com.mozz.htmlnative.utils.ParametersUtils;
 import com.mozz.htmlnative.utils.ResourceUtils;
 import com.mozz.htmlnative.view.BackgroundViewDelegate;
-import com.mozz.htmlnative.view.HNDiv;
+import com.mozz.htmlnative.view.HNDivLayout;
 import com.mozz.htmlnative.view.IBackgroundView;
 import com.mozz.htmlnative.view.LayoutParamsCreator;
 
@@ -375,10 +375,10 @@ public final class Styles {
             case ATTR_FLOAT: {
                 switch (style.toString()) {
                     case "left":
-                        layoutCreator.positionMode = HNDiv.HNDivLayoutParams.POSITION_FLOAT_LEFT;
+                        layoutCreator.positionMode = HNDivLayout.HNDivLayoutParams.POSITION_FLOAT_LEFT;
                         break;
                     case "right":
-                        layoutCreator.positionMode = HNDiv.HNDivLayoutParams.POSITION_FLOAT_RIGHT;
+                        layoutCreator.positionMode = HNDivLayout.HNDivLayoutParams.POSITION_FLOAT_RIGHT;
                         break;
                 }
             }

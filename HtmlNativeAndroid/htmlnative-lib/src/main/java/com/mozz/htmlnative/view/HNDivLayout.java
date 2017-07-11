@@ -23,7 +23,7 @@ import java.util.Map;
  * @author Yang Tao, 17/4/18.
  */
 
-public class HNDiv extends ViewGroup implements IBackgroundView {
+public class HNDivLayout extends ViewGroup implements IBackgroundView {
 
     private List<Integer> mLineIndexes = new ArrayList<>();
     private List<View> mFloatViews = new LinkedList<>();
@@ -31,23 +31,23 @@ public class HNDiv extends ViewGroup implements IBackgroundView {
     private BackgroundManager mBackgroundMgr;
     private Map<String, Object> mSavedInheritStyles = new HashMap<>();
 
-    public HNDiv(Context context) {
+    public HNDivLayout(Context context) {
         super(context);
         mBackgroundMgr = new BackgroundManager(this);
     }
 
-    public HNDiv(Context context, AttributeSet attrs) {
+    public HNDivLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         mBackgroundMgr = new BackgroundManager(this);
     }
 
-    public HNDiv(Context context, AttributeSet attrs, int defStyleAttr) {
+    public HNDivLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mBackgroundMgr = new BackgroundManager(this);
     }
 
 
-    public HNDiv(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public HNDivLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         mBackgroundMgr = new BackgroundManager(this);
     }

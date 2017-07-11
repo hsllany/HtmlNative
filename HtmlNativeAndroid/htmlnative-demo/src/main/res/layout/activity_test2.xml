@@ -3,16 +3,16 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <com.mozz.htmlnative.view.HNDiv
+    <com.mozz.htmlnative.view.HNDivLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/black"
         android:padding="10px">
 
-        <com.mozz.htmlnative.view.HNDiv
+        <com.mozz.htmlnative.view.HNDivLayout
             android:layout_width="match_parent"
             android:layout_height="300px"
             android:background="@color/colorAccent"/>
-    </com.mozz.htmlnative.view.HNDiv>
+    </com.mozz.htmlnative.view.HNDivLayout>
 
 </LinearLayout>

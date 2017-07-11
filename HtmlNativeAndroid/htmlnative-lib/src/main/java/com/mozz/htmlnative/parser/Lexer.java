@@ -191,7 +191,7 @@ class Lexer implements SyntaxExceptionSource {
 
     @Nullable
     private Token scanNumber() throws EOFException, HNSyntaxError {
-        long startColumn = getColumn();
+        long column = getColumn();
         long line = getLine();
         int v = 0;
         boolean negative = false;
@@ -202,7 +202,7 @@ class Lexer implements SyntaxExceptionSource {
 
         while (!Lexer.isDigit(peek())) {
             mSyntaxErrorHandler.throwException("Illegal word when reading Number!" + peek(),
-                    line, startColumn);
+                    line, column);
         }
 
         do {
@@ -211,13 +211,13 @@ class Lexer implements SyntaxExceptionSource {
         } while (isDigit(peek()));
 
         if (peek() != '.' && peek() != 'E' && peek() != 'e' && peek() != '%') {
-            return Token.obtainToken(TokenType.Int, negative ? -v : v, line, startColumn);
+            return Token.obtainToken(TokenType.Int, negative ? -v : v, line, column);
         }
 
         if (peek() == '%') {
             next();
             return Token.obtainToken(TokenType.Double, negative ? -v / 100.f : v / 100.f, line,
-                    startColumn, Token.EXTRA_NUMBER_PERCENTAGE);
+                    column, Token.EXTRA_NUMBER_PERCENTAGE);
         }
 
         double x = v, d = 10;
@@ -236,7 +236,7 @@ class Lexer implements SyntaxExceptionSource {
         if (peek() == '%') {
             next();
             return Token.obtainToken(TokenType.Double, negative ? -x / 100.f : x / 100.f, line,
-                    startColumn, Token.EXTRA_NUMBER_PERCENTAGE);
+                    column, Token.EXTRA_NUMBER_PERCENTAGE);
         }
 
         mReserved = 1;
@@ -248,7 +248,7 @@ class Lexer implements SyntaxExceptionSource {
             next();
 
             if (!Lexer.isDigit(peek()) && peek() != '-') {
-                return Token.obtainToken(TokenType.Double, negative ? -x : x, line, startColumn);
+                return Token.obtainToken(TokenType.Double, negative ? -x : x, line, column);
             }
             boolean expIsNegative = false;
             if (peek() == '-') {
@@ -266,16 +266,16 @@ class Lexer implements SyntaxExceptionSource {
 
             double exp = Math.pow(10, n);
             return Token.obtainToken(TokenType.Double, negative ? (-x * exp) : (x * exp), line,
-                    startColumn);
+                    column);
 
         } else {
-            return Token.obtainToken(TokenType.Double, negative ? -x : x, line, startColumn);
+            return Token.obtainToken(TokenType.Double, negative ? -x : x, line, column);
         }
     }
 
     @Nullable
     private Token scanId() throws EOFException {
-        long startColumn = getColumn();
+        long column = getColumn();
         long line = getLine();
 
         clearBuf();
@@ -337,20 +337,20 @@ class Lexer implements SyntaxExceptionSource {
             tokenContent = idStr;
         }
 
-        return Token.obtainToken(type, tokenContent, line, startColumn);
+        return Token.obtainToken(type, tokenContent, line, column);
 
     }
 
     @Nullable
     private Token scanValue() throws EOFException {
-        long startColumn = getColumn();
+        long column = getColumn();
         long line = getLine();
 
         clearBuf();
 
         if (peek() == '"') {
             next();
-            return Token.obtainToken(TokenType.Value, "", line, startColumn);
+            return Token.obtainToken(TokenType.Value, "", line, column);
         }
 
         do {
@@ -370,13 +370,13 @@ class Lexer implements SyntaxExceptionSource {
 
         next();
 
-        return Token.obtainToken(TokenType.Value, mBuffer.toString(), line, startColumn);
+        return Token.obtainToken(TokenType.Value, mBuffer.toString(), line, column);
 
     }
 
     @Nullable
     private Token scanInner() throws EOFException {
-        long startColumn = getColumn();
+        long column = getColumn();
         long line = getLine();
 
         clearBuf();
@@ -407,7 +407,7 @@ class Lexer implements SyntaxExceptionSource {
         if (lastChar == '\n' || lastChar == '\r') {
             mBuffer.deleteCharAt(mBuffer.length() - 1);
         }
-        return Token.obtainToken(TokenType.Inner, mBuffer.toString(), line, startColumn);
+        return Token.obtainToken(TokenType.Inner, mBuffer.toString(), line, column);
     }
 
     /**
@@ -424,12 +424,12 @@ class Lexer implements SyntaxExceptionSource {
      * @throws HNSyntaxError
      */
     final Token scanScript() throws EOFException, HNSyntaxError {
-        long startColumn = getColumn();
+        long column = getColumn();
         long line = getLine();
 
         while (currentPositionInFile() < CACHE_SIZE) {
             mSyntaxErrorHandler.throwException("wrong status, too early for script.", line,
-                    startColumn);
+                    column);
         }
 
 
@@ -454,7 +454,7 @@ class Lexer implements SyntaxExceptionSource {
         if (meetEndTagFirst == 2) {
             mReserved = 2;
             next();
-            return Token.obtainToken(TokenType.ScriptCode, "", line, startColumn);
+            return Token.obtainToken(TokenType.ScriptCode, "", line, column);
         }
 
         next();
@@ -491,7 +491,7 @@ class Lexer implements SyntaxExceptionSource {
             next();
         }
 
-        return Token.obtainToken(TokenType.ScriptCode, mBuffer.toString(), line, startColumn);
+        return Token.obtainToken(TokenType.ScriptCode, mBuffer.toString(), line, column);
     }
 
 

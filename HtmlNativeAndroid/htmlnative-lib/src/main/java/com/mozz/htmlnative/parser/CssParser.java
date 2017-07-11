@@ -60,6 +60,9 @@ public final class CssParser implements SyntaxExceptionSource {
     private static final int CHAIN_CHILD = 0x02;
     private static final int CHAIN_GROUP = 0x03;
 
+    private long mMarkedLine = -1;
+    private long mMarkedColumn = -1;
+
 
     @Nullable
     private Token mCurToken;
@@ -347,7 +350,7 @@ public final class CssParser implements SyntaxExceptionSource {
                     // if parse process didn't end, then there is a syntax error.
                 default:
                     mSyntaxErrorHandler.throwException("unknown token " + mCurToken.toString() +
-                            " when " + "parsing css", mCurToken.getLine(), mCurToken.getColumn());
+                            " when " + "parsing css");
             }
         }
     }
@@ -367,19 +370,30 @@ public final class CssParser implements SyntaxExceptionSource {
         }
         mCurToken = lexer.scan();
 
+        if (mCurToken != null) {
+            mark(mCurToken.getLine(), mCurToken.getColumn());
+        } else {
+            mark(-1, -1);
+        }
+
         HNLog.d(HNLog.CSS_PARSER, "StyleSheet -> next is " + mCurToken.toString());
+    }
+
+    private void mark(long line, long column) {
+        mMarkedColumn = column;
+        mMarkedLine = line;
     }
 
     private boolean shouldScanValue = false;
 
     @Override
     public long getLine() {
-        return lexer.getLine();
+        return mMarkedLine;
     }
 
     @Override
     public long getColumn() {
-        return lexer.getColumn();
+        return mMarkedColumn;
     }
 
     @Override

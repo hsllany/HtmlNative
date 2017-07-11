@@ -10,7 +10,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
-import com.mozz.htmlnative.view.HNDiv;
+import com.mozz.htmlnative.view.HNDivLayout;
 import com.mozz.htmlnative.view.HNImg;
 import com.mozz.htmlnative.view.HNText;
 
@@ -37,12 +37,12 @@ public final class ViewTypeRelations {
     private static Map<String, String> sExtraTagClassTable;
 
     static {
-        sReservedTagClassTable.put(BOX, HNDiv.class.getName());
-        sReservedTagClassTable.put(LINEAR_BOX, HNDiv.class.getName());
+        sReservedTagClassTable.put(BOX, HNDivLayout.class.getName());
+        sReservedTagClassTable.put(LINEAR_BOX, HNDivLayout.class.getName());
         sReservedTagClassTable.put(FLEX_BOX, FlexboxLayout.class.getName());
 
-        sReservedTagClassTable.put(HtmlTag.BODY, HNDiv.class.getName());
-        sReservedTagClassTable.put(HtmlTag.TEMPLATE, HNDiv.class.getName());
+        sReservedTagClassTable.put(HtmlTag.BODY, HNDivLayout.class.getName());
+        sReservedTagClassTable.put(HtmlTag.TEMPLATE, HNDivLayout.class.getName());
 
         sReservedTagClassTable.put(HtmlTag.P, HNText.class.getName());
         sReservedTagClassTable.put(HtmlTag.TEXT, HNText.class.getName());
@@ -53,7 +53,7 @@ public final class ViewTypeRelations {
         sReservedTagClassTable.put(HtmlTag.IFRAME, WebView.class.getName());
         sReservedTagClassTable.put(HtmlTag.WEB, WebView.class.getName());
         sReservedTagClassTable.put(HtmlTag.A, HNText.class.getName());
-        sReservedTagClassTable.put(HtmlTag.SPAN, HNDiv.class.getName());
+        sReservedTagClassTable.put(HtmlTag.SPAN, HNDivLayout.class.getName());
         sReservedTagClassTable.put(HtmlTag.H1, HNText.class.getName());
         sReservedTagClassTable.put(HtmlTag.H2, HNText.class.getName());
         sReservedTagClassTable.put(HtmlTag.H3, HNText.class.getName());

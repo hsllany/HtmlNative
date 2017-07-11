@@ -6,12 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.webkit.WebView;
-import android.widget.AbsoluteLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
-import com.mozz.htmlnative.view.HNDiv;
+import com.mozz.htmlnative.view.HNDivLayout;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,10 +23,9 @@ public final class StyleHandlerFactory {
 
     private static TextViewStyleHandler sText = new TextViewStyleHandler();
     private static ImageViewStyleHandler sImage = new ImageViewStyleHandler();
-    private static HtmlLayoutStyleHandler sLinear = new HtmlLayoutStyleHandler();
+    private static DivLayoutStyleHandler sDiv = new DivLayoutStyleHandler();
     private static FlexBoxLayoutStyleHandler sFlex = new FlexBoxLayoutStyleHandler();
     private static WebViewStyleHandler sWebview = new WebViewStyleHandler();
-    private static AbsoluteStyleHandler sAbsolute = new AbsoluteStyleHandler();
     @NonNull
     private static Map<Class<? extends View>, StyleHandler> sAttrHandlerCache = new HashMap<>();
     private static Map<Class<? extends View>, StyleHandler> sExtraAttrHandlerCache = new
@@ -44,14 +42,12 @@ public final class StyleHandlerFactory {
             return sText;
         } else if (ImageView.class.isAssignableFrom(clazz)) {
             return sImage;
-        } else if (clazz.equals(HNDiv.class)) {
-            return sLinear;
+        } else if (clazz.equals(HNDivLayout.class)) {
+            return sDiv;
         } else if (clazz.equals(FlexboxLayout.class)) {
             return sFlex;
         } else if (clazz.equals(WebView.class)) {
             return sWebview;
-        } else if (clazz.equals(AbsoluteLayout.class)) {
-            return sAbsolute;
         } else {
             return null;
         }
