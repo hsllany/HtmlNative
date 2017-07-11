@@ -64,8 +64,8 @@ public final class HNDomTree implements ParseCallback, AttrsSet.AttrsOwner, DomE
         this(inlineStyle, null, parent, depth, index);
     }
 
-    private HNDomTree(@NonNull AttrsSet inlineStyle, String tag, HNDomTree parent, int depth, int
-            index) {
+    private HNDomTree(@NonNull AttrsSet inlineStyle, @Nullable String tag, HNDomTree parent, int
+            depth, int index) {
         mInlineStyle = inlineStyle;
         mType = tag;
         mDepth = depth;
@@ -89,8 +89,7 @@ public final class HNDomTree implements ParseCallback, AttrsSet.AttrsOwner, DomE
                 }
             } catch (IllegalArgumentException e) {
                 HNLog.e(HNLog.DOM, "Wrong when read order, expecting integer while actual is " +
-                        style +
-                        ", " + style.getClass().toString());
+                        style + ", " + style.getClass().toString());
             } catch (ParametersUtils.ParametersParseException e) {
                 e.printStackTrace();
             }

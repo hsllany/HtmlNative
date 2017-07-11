@@ -21,7 +21,7 @@ public class HNConfig {
     }
 
     private ImageFetcher mImageFetcher = DefaultImageAdapter.sInstance;
-    private onHrefClick mOnHrefClick = DefaultOnHrefClick.sInstance;
+    private OnHrefClick mOnHrefClick = DefaultOnHrefClick.sInstance;
     private HNHttpClient mHttpClient = EmptyHttpClient.instance;
     private ScriptCallback mScriptCallback;
 
@@ -29,7 +29,7 @@ public class HNConfig {
         return mImageFetcher;
     }
 
-    public onHrefClick getHrefLinkHandler() {
+    public OnHrefClick getHrefLinkHandler() {
         return mOnHrefClick;
     }
 
@@ -45,7 +45,7 @@ public class HNConfig {
      * @author Yang Tao, 17/3/11.
      */
 
-    private static final class DefaultOnHrefClick implements onHrefClick {
+    private static final class DefaultOnHrefClick implements OnHrefClick {
 
         @NonNull
         static final DefaultOnHrefClick sInstance;
@@ -119,7 +119,7 @@ public class HNConfig {
             return this;
         }
 
-        public Builder setOnHrefClick(onHrefClick onHrefClick) {
+        public Builder setOnHrefClick(OnHrefClick onHrefClick) {
             if (onHrefClick != null) {
                 sConfig.mOnHrefClick = onHrefClick;
             }

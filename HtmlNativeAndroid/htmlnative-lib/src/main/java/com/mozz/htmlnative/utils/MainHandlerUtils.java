@@ -2,6 +2,7 @@ package com.mozz.htmlnative.utils;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.NonNull;
 
 public final class MainHandlerUtils {
@@ -13,12 +14,20 @@ public final class MainHandlerUtils {
 
     }
 
-    public void post(Runnable r) {
-        mHandler.post(r);
+    public void postAsynchronous(Runnable r) {
+
+        Message renderMsg = Message.obtain(mHandler, r);
+        renderMsg.setAsynchronous(true);
+
+        mHandler.sendMessage(renderMsg);
     }
 
-    public void post(Runnable r, long delay) {
+    public void postAsynchronousDelay(Runnable r, long delay) {
         mHandler.postDelayed(r, delay);
+    }
+
+    public void post(Runnable r) {
+        mHandler.post(r);
     }
 
     @NonNull

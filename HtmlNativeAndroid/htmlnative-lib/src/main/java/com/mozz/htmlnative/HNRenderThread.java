@@ -54,7 +54,8 @@ final class HNRenderThread {
                     HNLog.d(HNLog.PROCESS_THREAD, "SCRIPT " + segment.getScriptInfo().toString());
                 }
 
-                MainHandlerUtils.instance().post(new Runnable() {
+
+                MainHandlerUtils.instance().postAsynchronous(new Runnable() {
                     @Override
                     public void run() {
                         mCallback.onHead(segment.getHead());
@@ -72,7 +73,7 @@ final class HNRenderThread {
 
             } catch (@NonNull final HNSyntaxError e) {
                 e.printStackTrace();
-                MainHandlerUtils.instance().post(new Runnable() {
+                MainHandlerUtils.instance().postAsynchronous(new Runnable() {
                     @Override
                     public void run() {
                         mCallback.onError(e);

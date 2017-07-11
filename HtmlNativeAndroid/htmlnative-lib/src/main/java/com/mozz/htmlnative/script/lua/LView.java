@@ -124,8 +124,8 @@ class LView extends LObject {
                     MainHandlerUtils.instance().post(new Runnable() {
                         @Override
                         public void run() {
-                            LayoutParamsCreator tempCreator = new LayoutParamsCreator
-                                    (mView.getLayoutParams());
+                            LayoutParamsCreator tempCreator = new LayoutParamsCreator(mView
+                                    .getLayoutParams());
                             ViewGroup parent = (mView.getParent() != null && mView.getParent()
                                     instanceof ViewGroup) ? (ViewGroup) mView.getParent() : null;
                             try {

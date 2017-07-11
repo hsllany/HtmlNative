@@ -12,6 +12,8 @@ import com.mozz.htmlnative.css.selector.CssSelector;
 import com.mozz.htmlnative.css.selector.IdSelector;
 import com.mozz.htmlnative.css.selector.TypeSelector;
 import com.mozz.htmlnative.exception.HNSyntaxError;
+import com.mozz.htmlnative.parser.syntaxexc.SyntaxErrorHandler;
+import com.mozz.htmlnative.parser.syntaxexc.SyntaxExceptionSource;
 import com.mozz.htmlnative.parser.token.Token;
 import com.mozz.htmlnative.parser.token.TokenType;
 
@@ -25,7 +27,7 @@ import static com.mozz.htmlnative.parser.StyleItemParser.parseStyleSingle;
  * @author Yang Tao, 17/3/26.
  */
 
-public final class CssParser {
+public final class CssParser implements SyntaxExceptionSource {
 
     private static final int SELECTOR_HASH = 1 << 7;
     private static final int SELECTOR_DOT = 1 << 8;
@@ -66,9 +68,13 @@ public final class CssParser {
 
     private Map<String, Object> styleCache;
 
-    public CssParser(Lexer lexer, Parser parentParser) {
+    private SyntaxErrorHandler mSyntaxErrorHandler;
+
+    CssParser(Lexer lexer, Parser parentParser, SyntaxErrorHandler errorHandler) {
         this.lexer = new CssLexer(lexer);
         this.styleCache = parentParser.getStyleCache();
+        mSyntaxErrorHandler = errorHandler;
+        mSyntaxErrorHandler.setSource(this);
     }
 
     /**
@@ -340,10 +346,8 @@ public final class CssParser {
                     }
                     // if parse process didn't end, then there is a syntax error.
                 default:
-                    HNLog.e(HNLog.CSS_PARSER, "unknown token " + mCurToken.toString() + " when " +
-                            "parsing css");
-                    throw new HNSyntaxError("unknown token " + mCurToken.toString() + " when " +
-                            "parsing css", lexer.line(), lexer.column());
+                    mSyntaxErrorHandler.throwException("unknown token " + mCurToken.toString() +
+                            " when " + "parsing css", mCurToken.getLine(), mCurToken.getColumn());
             }
         }
     }
@@ -368,7 +372,22 @@ public final class CssParser {
 
     private boolean shouldScanValue = false;
 
-    private class CssLexer {
+    @Override
+    public long getLine() {
+        return lexer.getLine();
+    }
+
+    @Override
+    public long getColumn() {
+        return lexer.getColumn();
+    }
+
+    @Override
+    public void onSyntaxException() throws HNSyntaxError, EOFException {
+        scan();
+    }
+
+    private class CssLexer implements SyntaxExceptionSource {
 
         private Lexer lexer;
 
@@ -380,7 +399,7 @@ public final class CssParser {
         }
 
         @Nullable
-        public Token scan() throws EOFException, HNSyntaxError {
+        Token scan() throws EOFException, HNSyntaxError {
             lexer.skipWhiteSpace();
 
             if (shouldScanValue) {
@@ -393,13 +412,13 @@ public final class CssParser {
             }
         }
 
-        public char peek() {
+        char peek() {
             return lexer.peek();
         }
 
         Token scanValue() throws EOFException {
-            long startColumn = lexer.column();
-            long line = lexer.line();
+            long startColumn = lexer.getColumn();
+            long line = lexer.getLine();
 
             lexer.skipWhiteSpace();
 
@@ -425,8 +444,8 @@ public final class CssParser {
         }
 
         Token scanIdWithMinus() throws EOFException {
-            long startColumn = lexer.column();
-            long line = lexer.line();
+            long startColumn = lexer.getColumn();
+            long line = lexer.getLine();
 
             buffer.setLength(0);
 
@@ -444,33 +463,32 @@ public final class CssParser {
             return Token.obtainToken(type, buffer.toString(), line, startColumn);
         }
 
-        public long line() {
-            return lexer.line();
+        @Override
+        public long getLine() {
+            return lexer.getLine();
         }
 
-        public long column() {
-            return lexer.column();
+        @Override
+        public long getColumn() {
+            return lexer.getColumn();
+        }
+
+        @Override
+        public void onSyntaxException() throws EOFException, HNSyntaxError {
+            this.lexer.onSyntaxException();
         }
     }
 
 
-    private void check(int status) throws HNSyntaxError {
+    private void check(int status) throws HNSyntaxError, EOFException {
         if (!isLookingFor(status)) {
             HNLog.d(HNLog.CSS_PARSER, " Looking for " + lookForToString(status) + ", but " +
-                    "currently is " +
-                    lookForToString(this.lookFor));
-            throw new HNSyntaxError(" Looking for " + lookForToString(status) + ", but " +
-                    "currently is " +
-                    lookForToString(this.lookFor), lexer.line(), lexer.column());
+                    "currently is " + lookForToString(this.lookFor));
+            mSyntaxErrorHandler.throwException(" Looking for " + lookForToString(status) + ", " +
+                    "but" + " " + "currently is " + lookForToString(this.lookFor));
         }
     }
 
-    /**
-     * @param root
-     * @param newCss
-     * @param chainType
-     * @return switch Root With NewCss if true
-     */
     private static boolean chain(CssSelector root, CssSelector newCss, int chainType) {
         switch (chainType) {
             case CHAIN_CHILD:
@@ -541,9 +559,9 @@ public final class CssParser {
 
     }
 
-    public static class StyleHolder {
+    static class StyleHolder {
         public String key;
-        public Object obj;
+        Object obj;
         public String cacheKey;
     }
 }

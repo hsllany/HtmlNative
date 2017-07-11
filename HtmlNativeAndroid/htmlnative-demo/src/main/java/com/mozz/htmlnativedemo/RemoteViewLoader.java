@@ -1,13 +1,14 @@
 package com.mozz.htmlnativedemo;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.HandlerThread;
 
 import com.mozz.htmlnative.HNativeEngine;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -18,36 +19,46 @@ import okhttp3.Response;
 
 public class RemoteViewLoader {
 
-    private HandlerThread mThread = new HandlerThread("Running");
-    private Handler mHandler;
-
+    private static OkHttpClient sOkHttpClient = new OkHttpClient();
     private Context mContext;
 
     public RemoteViewLoader(Context context) {
         mContext = context;
-
-        mThread.start();
-        mHandler = new Handler(mThread.getLooper());
     }
 
     public void load(final String url, final HNativeEngine.OnHNViewLoaded callback) {
-        Runnable r = new Runnable() {
+        Request request = new Request.Builder().url(url).build();
+        sOkHttpClient.newCall(request).enqueue(new HttpCallback(mContext) {
             @Override
-            public void run() {
-                OkHttpClient okHttpClient = new OkHttpClient();
-                Request request = new Request.Builder().url(url).build();
-
-                Response r = null;
-                try {
-                    r = okHttpClient.newCall(request).execute();
-                    HNativeEngine.getInstance().loadView(mContext, r.body().byteStream(), callback);
-                } catch (IOException e) {
-                    e.printStackTrace();
+            public void onFailure(Call call, IOException e) {
+                if (callback != null) {
+                    callback.onError(e);
                 }
             }
-        };
 
-        mHandler.post(r);
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Context context = mContextWekRef.get();
+                if (context != null) {
+                    HNativeEngine.getInstance().loadView(mContext, response.body().byteStream(),
+                            callback);
+
+                } else {
+                    if (callback != null) {
+                        callback.onError(null);
+                    }
+                }
+            }
+        });
+    }
+
+    private abstract static class HttpCallback implements Callback {
+
+        protected WeakReference<Context> mContextWekRef;
+
+        public HttpCallback(Context context) {
+            mContextWekRef = new WeakReference<Context>(context);
+        }
     }
 
 

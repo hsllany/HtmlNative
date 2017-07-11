@@ -57,11 +57,11 @@ class FlexBoxLayoutStyleHandler extends LayoutStyleHandler {
     @FlexboxLayout.FlexDirection
     private static int flexDirection(@NonNull java.lang.String direction) {
         switch (direction) {
-            case "column-reverse":
+            case "getColumn-reverse":
                 return FlexboxLayout.FLEX_DIRECTION_COLUMN_REVERSE;
             case "row-reverse":
                 return FlexboxLayout.FLEX_DIRECTION_ROW_REVERSE;
-            case "column":
+            case "getColumn":
                 return FlexboxLayout.FLEX_DIRECTION_COLUMN;
             default:
                 return FlexboxLayout.FLEX_DIRECTION_ROW;

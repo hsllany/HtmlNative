@@ -165,7 +165,7 @@ public final class HNativeEngine {
         HNRenderer.registerViewFactory(androidViewClassName, viewFactory);
     }
 
-    public static onHrefClick getHrefLinkHandler() {
+    public static OnHrefClick getHrefLinkHandler() {
         return sConfig.getHrefLinkHandler();
     }
 

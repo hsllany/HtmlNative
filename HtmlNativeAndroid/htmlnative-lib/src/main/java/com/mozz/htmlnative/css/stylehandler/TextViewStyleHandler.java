@@ -26,7 +26,7 @@ class TextViewStyleHandler extends StyleHandler {
     private static final String FONT_SIZE = "font-size";
     private static final String COLOR = "color";
     private static final String TEXT = "text";
-    private static final String LINE_HEIGHT = "line-height";
+    private static final String LINE_HEIGHT = "getLine-height";
     private static final String FONT_STYLE = "font-style";
     private static final String FONT_WEIGHT = "font-weight";
     private static final String TEXT_ALIGN = "text-align";

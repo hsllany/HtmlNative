@@ -68,7 +68,7 @@ class LHttp extends LuaTable implements ILApi {
             }
         });
 
-        set("post", new ThreeArgFunction() {
+        set("postAsynchronous", new ThreeArgFunction() {
             @Override
             public LuaValue call(LuaValue url, LuaValue param, final LuaValue callback) {
                 if (LuaUtils.notNull(url)) {

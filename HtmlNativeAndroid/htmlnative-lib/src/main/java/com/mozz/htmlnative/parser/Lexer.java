@@ -7,16 +7,18 @@ import com.mozz.htmlnative.HNLog;
 import com.mozz.htmlnative.HNSegment;
 import com.mozz.htmlnative.common.CharQueue;
 import com.mozz.htmlnative.exception.HNSyntaxError;
-import com.mozz.htmlnative.reader.TextReader;
+import com.mozz.htmlnative.parser.syntaxexc.SyntaxErrorHandler;
+import com.mozz.htmlnative.parser.syntaxexc.SyntaxExceptionSource;
 import com.mozz.htmlnative.parser.token.Token;
 import com.mozz.htmlnative.parser.token.TokenType;
+import com.mozz.htmlnative.reader.TextReader;
 
 import java.io.EOFException;
 
 import static com.mozz.htmlnative.HNLog.LEXER;
 
 
-class Lexer {
+class Lexer implements SyntaxExceptionSource {
 
     private TextReader mReader;
 
@@ -29,6 +31,11 @@ class Lexer {
     private static final int LK_INNER = 1 << 1;
 
     private CharQueue mCacheQueue;
+
+    /**
+     * Max cache size of chars, stores the character picked from source code. See
+     * {@link CharQueue} for more information. This size is used by {@link Lexer#mCacheQueue}
+     */
     private static final int CACHE_SIZE = 7;
 
     private int mReserved = 0;
@@ -36,6 +43,8 @@ class Lexer {
     private char mCurrent = TextReader.INIT_CHAR;
 
     private boolean mIsInStyle = false;
+
+    private SyntaxErrorHandler mSyntaxErrorHandler;
 
     /**
      * Add for recognize code from Inner Element. If < script > is meet, than mLookForScript==3.
@@ -52,119 +61,121 @@ class Lexer {
      */
     private int mLookForScript = 0;
 
-    public Lexer(TextReader reader) {
+    Lexer(TextReader reader, SyntaxErrorHandler syntaxErrorHandler) {
         mReader = reader;
-
         mCacheQueue = new CharQueue(CACHE_SIZE);
-
+        mSyntaxErrorHandler = syntaxErrorHandler;
+        mSyntaxErrorHandler.setSource(this);
         lookFor(LK_NOTHING);
     }
 
     @Nullable
-    public Token scan() throws EOFException, HNSyntaxError {
-        this.skipWhiteSpace();
+    Token scan() throws EOFException, HNSyntaxError {
+        while (true) {
+            this.skipWhiteSpace();
 
-        switch (peek()) {
-            case '<':
-                mLookForScript = 1;
-                lookFor(LK_NOTHING);
-                next();
-                return Token.obtainToken(TokenType.StartAngleBracket, mReader.line(), mReader
-                        .column());
+            long line = getLine();
+            long column = getColumn();
 
-            case '"':
-                next();
+            switch (peek()) {
+                case '<':
+                    mLookForScript = 1;
+                    lookFor(LK_NOTHING);
+                    next();
+                    return Token.obtainToken(TokenType.StartAngleBracket, line, column);
+
+                case '"':
+                    next();
+                    mLookForScript = 0;
+                    return scanValue();
+                case '>':
+                    mLookForScript++;
+                    lookFor(LK_INNER);
+                    next();
+                    return Token.obtainToken(TokenType.EndAngleBracket, line, column);
+
+                case '/':
+                    mLookForScript = 0;
+                    next();
+                    return Token.obtainToken(TokenType.Slash, line, column);
+
+                case '=':
+                    mLookForScript = 0;
+                    next();
+                    return Token.obtainToken(TokenType.Equal, line, column);
+
+                case '{':
+                    mLookForScript = 0;
+                    next();
+                    return Token.obtainToken(TokenType.StartBrace, line, column);
+
+                case '}':
+                    mLookForScript = 0;
+                    next();
+                    return Token.obtainToken(TokenType.EndBrace, line, column);
+
+                case '#':
+                    mLookForScript = 0;
+                    next();
+                    return Token.obtainToken(TokenType.Hash, line, column);
+
+                case '*':
+                    mLookForScript = 0;
+                    next();
+                    return Token.obtainToken(TokenType.Star, line, column);
+
+                case ',':
+                    mLookForScript = 0;
+                    next();
+                    return Token.obtainToken(TokenType.Comma, line, column);
+
+                case '.':
+                    mLookForScript = 0;
+                    next();
+                    return Token.obtainToken(TokenType.Dot, line, column);
+
+                case ':':
+                    mLookForScript = 0;
+                    next();
+                    return Token.obtainToken(TokenType.Colon, line, column);
+
+                case ';':
+                    mLookForScript = 0;
+                    next();
+                    return Token.obtainToken(TokenType.Semicolon, line, column);
+
+                case '(':
+                    mLookForScript = 0;
+                    next();
+                    return Token.obtainToken(TokenType.StartParen, line, column);
+
+                case ')':
+                    mLookForScript = 0;
+                    next();
+                    return Token.obtainToken(TokenType.EndParen, line, column);
+
+                case '!':
+                    mLookForScript = 0;
+                    next();
+                    return Token.obtainToken(TokenType.Exclamation, line, column);
+
+            }
+
+            if (isLookingFor(LK_INNER) && mLookForScript < 3 && peek() != '<' && !mIsInStyle) {
+                return scanInner();
+            }
+
+            if (isDigit(peek()) || peek() == '-') {
                 mLookForScript = 0;
-                return scanValue();
-            case '>':
-                mLookForScript++;
-                lookFor(LK_INNER);
-                next();
-                return Token.obtainToken(TokenType.EndAngleBracket, mReader.line(), mReader
-                        .column());
+                return scanNumber();
+            }
 
-            case '/':
-                mLookForScript = 0;
-                next();
-                return Token.obtainToken(TokenType.Slash, mReader.line(), mReader.column());
+            if (isLetter(peek()) || peek() == '_') {
+                return scanId();
+            }
 
-            case '=':
-                mLookForScript = 0;
-                next();
-                return Token.obtainToken(TokenType.Equal, mReader.line(), mReader.column());
-
-            case '{':
-                mLookForScript = 0;
-                next();
-                return Token.obtainToken(TokenType.StartBrace, mReader.line(), mReader.column());
-
-            case '}':
-                mLookForScript = 0;
-                next();
-                return Token.obtainToken(TokenType.EndBrace, mReader.line(), mReader.column());
-
-            case '#':
-                mLookForScript = 0;
-                next();
-                return Token.obtainToken(TokenType.Hash, mReader.line(), mReader.column());
-
-            case '*':
-                mLookForScript = 0;
-                next();
-                return Token.obtainToken(TokenType.Star, mReader.line(), mReader.column());
-
-            case ',':
-                mLookForScript = 0;
-                next();
-                return Token.obtainToken(TokenType.Comma, mReader.line(), mReader.column());
-
-            case '.':
-                mLookForScript = 0;
-                next();
-                return Token.obtainToken(TokenType.Dot, mReader.line(), mReader.column());
-
-            case ':':
-                mLookForScript = 0;
-                next();
-                return Token.obtainToken(TokenType.Colon, mReader.line(), mReader.column());
-
-            case ';':
-                mLookForScript = 0;
-                next();
-                return Token.obtainToken(TokenType.Semicolon, mReader.line(), mReader.column());
-
-            case '(':
-                mLookForScript = 0;
-                next();
-                return Token.obtainToken(TokenType.StartParen, mReader.line(), mReader.column());
-
-            case ')':
-                mLookForScript = 0;
-                next();
-                return Token.obtainToken(TokenType.EndParen, mReader.line(), mReader.column());
-
-            case '!':
-                mLookForScript = 0;
-                next();
-                return Token.obtainToken(TokenType.Exclamation, mReader.line(), mReader.column());
-
+            mSyntaxErrorHandler.throwException("unknown token " + peek(), line, column);
         }
-
-        if (isLookingFor(LK_INNER) && mLookForScript < 3 && peek() != '<' && !mIsInStyle) {
-            return scanInner();
-        }
-
-        if (isDigit(peek()) || peek() == '-') {
-            mLookForScript = 0;
-            return scanNumber();
-        }
-
-        if (isLetter(peek()) || peek() == '_') {
-            return scanId();
-        }
-
-        HNLog.e(LEXER, "unknown token " + peek() + " at " + line() + "," + column());
-        throw new HNSyntaxError("unknown token " + peek(), line(), column());
     }
 
     public void skipUntil(char c) throws EOFException {
@@ -180,8 +191,8 @@ class Lexer {
 
     @Nullable
     private Token scanNumber() throws EOFException, HNSyntaxError {
-        long startColumn = mReader.column();
-        long line = mReader.line();
+        long startColumn = getColumn();
+        long line = getLine();
         int v = 0;
         boolean negative = false;
         if (peek() == '-') {
@@ -189,9 +200,9 @@ class Lexer {
             next();
         }
 
-        if (!Lexer.isDigit(peek())) {
-            HNLog.e(LEXER, "Illegal word " + peek() + " when reading Number!");
-            throw new HNSyntaxError("Illegal word when reading Number!", line, startColumn);
+        while (!Lexer.isDigit(peek())) {
+            mSyntaxErrorHandler.throwException("Illegal word when reading Number!" + peek(),
+                    line, startColumn);
         }
 
         do {
@@ -264,8 +275,8 @@ class Lexer {
 
     @Nullable
     private Token scanId() throws EOFException {
-        long startColumn = mReader.column();
-        long line = mReader.line();
+        long startColumn = getColumn();
+        long line = getLine();
 
         clearBuf();
 
@@ -332,8 +343,8 @@ class Lexer {
 
     @Nullable
     private Token scanValue() throws EOFException {
-        long startColumn = mReader.column();
-        long line = mReader.line();
+        long startColumn = getColumn();
+        long line = getLine();
 
         clearBuf();
 
@@ -365,8 +376,8 @@ class Lexer {
 
     @Nullable
     private Token scanInner() throws EOFException {
-        long startColumn = mReader.column();
-        long line = mReader.line();
+        long startColumn = getColumn();
+        long line = getLine();
 
         clearBuf();
 
@@ -412,12 +423,13 @@ class Lexer {
      * @throws EOFException
      * @throws HNSyntaxError
      */
-    public final Token scanScript() throws EOFException, HNSyntaxError {
-        long startColumn = mReader.column();
-        long line = mReader.line();
+    final Token scanScript() throws EOFException, HNSyntaxError {
+        long startColumn = getColumn();
+        long line = getLine();
 
-        if (currentPositionInFile() < CACHE_SIZE) {
-            throw new HNSyntaxError("wrong status, too early for script.", line, startColumn);
+        while (currentPositionInFile() < CACHE_SIZE) {
+            mSyntaxErrorHandler.throwException("wrong status, too early for script.", line,
+                    startColumn);
         }
 
 
@@ -518,12 +530,19 @@ class Lexer {
         }
     }
 
-    public long line() {
+    @Override
+    public long getLine() {
         return mReader.line();
     }
 
-    public long column() {
+    @Override
+    public long getColumn() {
         return mReader.column();
+    }
+
+    @Override
+    public void onSyntaxException() throws HNSyntaxError, EOFException {
+        next();
     }
 
     public char peek() {
@@ -542,10 +561,10 @@ class Lexer {
     private char peekHistory(int historyBackCount) {
         if (historyBackCount > CACHE_SIZE) {
             throw new IllegalArgumentException("HistoryBackCount must be smaller than CACHE_SIZE " +
-                    "(" + CACHE_SIZE + ")");
+                    "" + "" + "" + "" + "" + "" + "" + "" + "" + "(" + CACHE_SIZE + ")");
         }
 
-        return mCacheQueue.peek(CACHE_SIZE - historyBackCount - 1);
+        return mCacheQueue.peekHistory(historyBackCount);
     }
 
     public void next() throws EOFException {

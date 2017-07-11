@@ -13,6 +13,7 @@ public final class CharQueue {
     private int nextInsertPosition;
     private int startPosition = 0;
     private int endPosition;
+    private int campacity;
 
     private int count;
 
@@ -20,6 +21,7 @@ public final class CharQueue {
 
     public CharQueue(int compacity) {
         cache = new char[compacity];
+        this.campacity = compacity;
     }
 
     public void push(char c) {
@@ -93,6 +95,16 @@ public final class CharQueue {
         return cache[trueIndex];
     }
 
+    /**
+     * Peek the lastest character stored in this cache.
+     *
+     * @param historyBackCount
+     * @return
+     */
+    public char peekHistory(int historyBackCount) {
+        return peek(campacity - historyBackCount - 1);
+    }
+
     public int size() {
         return count;
     }
@@ -113,7 +125,6 @@ public final class CharQueue {
 
     private void log(String action) {
         System.out.println("CharQueue:" + "after " + action + ", start=" + startPosition + ", " +
-                "nextInsert=" +
-                nextInsertPosition + ", end=" + endPosition);
+                "nextInsert=" + nextInsertPosition + ", end=" + endPosition);
     }
 }

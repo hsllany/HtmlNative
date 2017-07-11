@@ -2,7 +2,6 @@ package com.mozz.htmlnative.parser;
 
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.mozz.htmlnative.HNLog;
@@ -13,10 +12,13 @@ import com.mozz.htmlnative.css.Styles;
 import com.mozz.htmlnative.dom.HNDomTree;
 import com.mozz.htmlnative.dom.Meta;
 import com.mozz.htmlnative.exception.HNSyntaxError;
-import com.mozz.htmlnative.reader.TextReader;
-import com.mozz.htmlnative.script.ScriptInfo;
+import com.mozz.htmlnative.parser.syntaxexc.ErrorStack;
+import com.mozz.htmlnative.parser.syntaxexc.SyntaxErrorHandler;
+import com.mozz.htmlnative.parser.syntaxexc.SyntaxExceptionSource;
 import com.mozz.htmlnative.parser.token.Token;
 import com.mozz.htmlnative.parser.token.TokenType;
+import com.mozz.htmlnative.reader.TextReader;
+import com.mozz.htmlnative.script.ScriptInfo;
 import com.mozz.htmlnative.utils.ParametersUtils;
 
 import java.io.EOFException;
@@ -43,7 +45,7 @@ import static com.mozz.htmlnative.parser.token.TokenType.Title;
 /**
  * @author YangTao7
  */
-public final class Parser {
+public final class Parser implements SyntaxExceptionSource {
 
     private static final String ID = "id";
     private static final String CLAZZ = "class";
@@ -59,7 +61,7 @@ public final class Parser {
 
     private int mLookFor;
 
-    @Nullable
+    @NonNull
     private Token mCurToken;
 
     private boolean mReserved = false;
@@ -67,6 +69,8 @@ public final class Parser {
     private Map<String, Object> mStyleCache = new HashMap<>();
 
     private Tracker mTracker;
+
+    private SyntaxErrorHandler mSyntaxErrorHandler;
 
     private static final int LK_StartArrowBracket = 1;
     private static final int LK_EndArrowBracket = 1 << 1;
@@ -82,8 +86,10 @@ public final class Parser {
 
 
     public Parser(TextReader reader) {
-        mLexer = new Lexer(reader);
-        mCssParser = new CssParser(mLexer, this);
+        ErrorStack stack = new ErrorStack();
+        mSyntaxErrorHandler = new SyntaxErrorHandler(stack, this);
+        mLexer = new Lexer(reader, mSyntaxErrorHandler.newChildHandler());
+        mCssParser = new CssParser(mLexer, this, mSyntaxErrorHandler.newChildHandler());
 
         mTracker = new Tracker();
     }
@@ -129,11 +135,13 @@ public final class Parser {
             mTracker.record("Parse Css + Html", SystemClock.currentThreadTimeMillis() -
                     processStartTime);
             Log.i(PERFORMANCE_TAG, mTracker.dump());
+            if (mSyntaxErrorHandler.hasError()) {
+                Log.e(TAG, mSyntaxErrorHandler.forceDump());
+            }
             return segment;
         }
     }
 
-    @NonNull
     private void processHtmlInside(HNSegment segment) throws HNSyntaxError, EOFException {
 
         HNDomTree currentTree = segment.getDom();
@@ -153,9 +161,8 @@ public final class Parser {
                 return;
 
             default:
-                Log.e(TAG, "must init with <template> or <script>");
-                throw new HNSyntaxError("must init with <template> or <script>", mLexer.line(),
-                        mLexer.column());
+                mSyntaxErrorHandler.throwException("must init with <template> or <script>",
+                        mCurToken.getLine(), mCurToken.getColumn());
 
         }
     }
@@ -175,9 +182,8 @@ public final class Parser {
 
     private void processScript(HNSegment segment) throws HNSyntaxError, EOFException {
         if (mCurToken.type() != Script) {
-            Log.e(TAG, "Look for script, but " + mCurToken.toString());
-            throw new HNSyntaxError("Look for script, but " + mCurToken.toString(), mLexer.line()
-                    , mLexer.column());
+            mSyntaxErrorHandler.throwException("Look for script, but " + mCurToken.toString(),
+                    mCurToken.getLine(), mCurToken.getColumn());
         }
 
         String attrName = null;
@@ -195,8 +201,8 @@ public final class Parser {
 
                     Token scriptToken = mLexer.scanScript();
                     if (scriptToken.type() != TokenType.ScriptCode) {
-                        throw new HNSyntaxError("Expect code, but meet " + scriptToken.type()
-                                .toString(), mLexer.line(), mLexer.column());
+                        mSyntaxErrorHandler.throwException("Expect code, but meet " + scriptToken
+                                .type().toString(), mCurToken.getLine(), mCurToken.getColumn());
                     }
 
                     segment.setScriptInfo(new ScriptInfo(scriptToken, type));
@@ -216,7 +222,7 @@ public final class Parser {
 
                 case Value:
                     check(LK_VALUE);
-                    if (attrName.equals("type")) {
+                    if (attrName != null && attrName.equals("type")) {
                         type = mCurToken.stringValue();
                     }
 
@@ -228,9 +234,8 @@ public final class Parser {
 
     private void processHead(HNSegment segment) throws HNSyntaxError, EOFException {
         if (mCurToken.type() != TokenType.Head) {
-            Log.e(TAG, "Look for \"head\", but " + mCurToken.toString());
-            throw new HNSyntaxError("Look for \"head\", but " + mCurToken.toString(), mLexer.line
-                    (), mLexer.column());
+            mSyntaxErrorHandler.throwException("Look for \"head\", but " + mCurToken.toString(),
+                    mCurToken.getLine(), mCurToken.getColumn());
         }
 
         while (true) {
@@ -277,8 +282,8 @@ public final class Parser {
                     break;
 
                 default:
-                    throw new HNSyntaxError("unknown " + mCurToken.toString() + " token in " +
-                            "<style>", mLexer.column(), mLexer.line());
+                    mSyntaxErrorHandler.throwException("unknown " + mCurToken.toString() + " " +
+                            "token in " + "<style>", mCurToken.getLine(), mCurToken.getColumn());
             }
 
             if (mCurToken.type() == EndAngleBracket) {
@@ -296,9 +301,7 @@ public final class Parser {
 
     private void processTitle(HNSegment segment) throws HNSyntaxError, EOFException {
         if (mCurToken.type() != Title) {
-            Log.e(TAG, "Look for head, but " + mCurToken.toString());
-            throw new HNSyntaxError("Look for head, but " + mCurToken.toString(), mLexer.line(),
-                    mLexer.column());
+            mSyntaxErrorHandler.throwException("Look for head, but " + mCurToken.toString());
         }
 
         scanFor(EndAngleBracket);
@@ -312,9 +315,8 @@ public final class Parser {
 
     private void processMeta(HNSegment segment) throws HNSyntaxError, EOFException {
         if (mCurToken.type() != Meta) {
-            Log.e(TAG, "Look for meta, but " + mCurToken.toString());
-            throw new HNSyntaxError("Look for meta, but " + mCurToken.toString(), mLexer.line(),
-                    mLexer.column());
+            mSyntaxErrorHandler.throwException("Look for meta, but " + mCurToken.toString(),
+                    mCurToken.getLine(), mCurToken.getColumn());
         }
 
         Meta meta = new Meta();
@@ -351,25 +353,22 @@ public final class Parser {
                     return;
 
                 default:
-                    Log.e(TAG, "Unknown token " + mCurToken.toString() + " when " +
-                            "parsing <meta>" + mCurToken.toString());
-                    throw new HNSyntaxError("Unknown token " + mCurToken.toString() + " when " +
-                            "parsing <meta>" + mCurToken.toString(), mLexer.line(), mLexer.column
-                            ());
+                    mSyntaxErrorHandler.throwException("Unknown token " + mCurToken.toString() +
+                            " when " + "parsing <meta>" + mCurToken.toString(), mCurToken.getLine
+                            (), mCurToken.getColumn());
             }
         }
 
 
     }
 
-    private void processTemplate(HNDomTree tree) throws HNSyntaxError {
+    private void processTemplate(HNDomTree tree) throws HNSyntaxError, EOFException {
 
         long timeStart = SystemClock.currentThreadTimeMillis();
 
         if (mCurToken.type() != Template) {
-            Log.e(TAG, "Look for Template, but " + mCurToken.toString());
-            throw new HNSyntaxError("Look for Template, but " + mCurToken.toString(), mLexer.line
-                    (), mLexer.column());
+            mSyntaxErrorHandler.throwException("Look for Template, but " + mCurToken.toString(),
+                    mCurToken.getLine(), mCurToken.getColumn());
         }
 
         tree.setType(mCurToken.stringValue());
@@ -378,17 +377,15 @@ public final class Parser {
         mTracker.record("Parse Html", SystemClock.currentThreadTimeMillis() - timeStart);
     }
 
-    private void processInternal(@NonNull HNDomTree tree) throws HNSyntaxError {
+    private void processInternal(@NonNull HNDomTree tree) throws HNSyntaxError, EOFException {
         processInternal(tree, tree);
     }
 
     /**
      * parse the tree recursively
-     *
-     * @throws HNSyntaxError
      */
     private void processInternal(@NonNull HNDomTree tree, @NonNull ParseCallback callback) throws
-            HNSyntaxError {
+            HNSyntaxError, EOFException {
         HNLog.d(HNLog.PARSER, "init to parse tree " + tree.getType());
         int index = 0;
 
@@ -424,29 +421,27 @@ public final class Parser {
 
                             // compare the tag string with tree.nodeName
                             if (!tree.getType().equals(mCurToken.value())) {
-                                Log.e(TAG, "View tag should be in pairs, current " +
-                                        "is<" + tree.getType() + "></" + mCurToken.value() +
-                                        ">");
-                                throw new HNSyntaxError("View tag should be in pairs, current " +
-                                        "is<" + tree.getType() + "></" + mCurToken.value() +
-                                        ">", mLexer.line(), mLexer.column());
+                                mSyntaxErrorHandler.throwException("View tag should be in pairs, " +
+                                        "" + "" + "" + "" + "" + "" + "" + "" + "" + "" + "" + ""
+                                        + "" + "" + "" + "" + "" + "current " + "is<" + tree
+                                        .getType() + "></" + mCurToken.value() + ">", mCurToken
+                                        .getLine(), mCurToken.getColumn());
                             }
 
                             scan();
 
                             if (mCurToken.type() != EndAngleBracket) {
-                                Log.e(TAG, "View tag must be end with >");
-                                throw new HNSyntaxError("View tag must be end with >", mLexer
-                                        .line(), mLexer.column());
+                                mSyntaxErrorHandler.throwException("View tag must be end with >",
+                                        mCurToken.getLine(), mCurToken.getColumn());
                             }
 
                             bracketPair--;
                             if (bracketPair != 0) {
-                                Log.e(TAG, "< > must be in pairs, " + ", current bracket" +
-                                        " pair is " + bracketPair);
-                                throw new HNSyntaxError("< > must be in pairs, " + ", current " +
-                                        "bracket" +
-                                        " pair is " + bracketPair, mLexer.line(), mLexer.column());
+                                mSyntaxErrorHandler.throwException("< > must be in pairs, " + ", " +
+                                        "" + "" + "" + "" + "" + "" + "" + "" + "" + "" + "" + ""
+                                        + "" + "" + "" + "" + "" + "current " + "bracket" + " " +
+                                        "pair " + "is " + "" + bracketPair, mCurToken.getLine(),
+                                        mCurToken.getColumn());
                             }
 
                             // here reach the end of the view tree, just return.
@@ -497,9 +492,8 @@ public final class Parser {
                     case Equal:
                         check(LK_EQUAL);
                         if (attrName == null) {
-                            Log.e(TAG, "attrName is null, please check the state");
-                            throw new HNSyntaxError("attrName is null, please check the state",
-                                    mLexer.line(), mLexer.column());
+                            mSyntaxErrorHandler.throwException("attrName is null, please check "
+                                    + "the state", mCurToken.getLine(), mCurToken.getColumn());
                         }
                         lookFor(LK_VALUE | LK_NUMBER);
                         break;
@@ -545,29 +539,23 @@ public final class Parser {
                         scan();
 
                         if (mCurToken.type() != EndAngleBracket) {
-                            Log.e(TAG, "unknown state, slash should be followed by " +
-                                    ">, " +
-                                    "but currently " + mCurToken.type());
-                            throw new HNSyntaxError("unknown state, slash should be followed by " +
-                                    ">, " +
-                                    "but currently " + mCurToken.type(), mLexer.line(), mLexer
-                                    .column());
+                            mSyntaxErrorHandler.throwException("unknown state, slash should be "
+                                    + "followed by " + ">, " + "but currently " + mCurToken.type
+                                    (), mCurToken.getLine(), mCurToken.getColumn());
                         }
 
                         bracketPair--;
                         if (bracketPair != 0) {
-                            Log.e(TAG, "< > must be in pairs, " + ", current bracket" +
-                                    " pair is " + bracketPair);
-                            throw new HNSyntaxError("< > must be in pairs, " + ", current bracket" +
-                                    " pair is " + bracketPair, mLexer.line(), mLexer.column());
+                            mSyntaxErrorHandler.throwException("< > must be in pairs, " + ", " +
+                                    "current " + "bracket" + " pair is " + bracketPair, mCurToken
+                                    .getLine(), mCurToken.getColumn());
                         }
                         callback.onLeaveParse();
                         return;
 
                     default:
-                        Log.e(TAG, "unknown token " + mCurToken.toString());
-                        throw new HNSyntaxError("unknown token " + mCurToken.toString(), mLexer
-                                .line(), mLexer.column());
+                        mSyntaxErrorHandler.throwException("unknown token " + mCurToken.toString
+                                (), mCurToken.getLine(), mCurToken.getColumn());
 
 
                 }
@@ -575,9 +563,8 @@ public final class Parser {
             }
         } catch (EOFException e) {
             if (meetEndTag) {
-                Log.e(TAG, "View Tag should ends with </");
-                throw new HNSyntaxError("View Tag should ends with </", mLexer.line(), mLexer
-                        .column());
+                mSyntaxErrorHandler.throwException("View Tag should ends with </", mCurToken
+                        .getLine(), mCurToken.getColumn());
             }
         }
     }
@@ -612,9 +599,7 @@ public final class Parser {
             mCurToken.recycle();
         }
         mCurToken = mLexer.scan();
-
         HNLog.d(HNLog.PARSER, "Process token ->" + mCurToken);
-
     }
 
     private void scan(boolean reserved) throws EOFException, HNSyntaxError {
@@ -626,10 +611,9 @@ public final class Parser {
         scan();
 
         if (mCurToken.type() != tokenType) {
-            Log.e(TAG, "syntax error, should be " + tokenType.toString() +
-                    "， but current is " + mCurToken.toString());
-            throw new HNSyntaxError("syntax error, should be " + tokenType.toString() +
-                    "， but current is " + mCurToken.toString(), mLexer.line(), mLexer.column());
+            mSyntaxErrorHandler.throwException("syntax error, should be " + tokenType.toString()
+                    + "， but " + "current is " + mCurToken.toString(), mCurToken.getLine(),
+                    mCurToken.getColumn());
         }
     }
 
@@ -639,14 +623,11 @@ public final class Parser {
         }
     }
 
-    private void check(int status) throws HNSyntaxError {
+    private void check(int status) throws HNSyntaxError, EOFException {
         if (!isLookingFor(status)) {
-            Log.e(TAG, " Looking for " + lookForToString(status) + ", but " +
-                    "currently is " +
-                    lookForToString(mLookFor));
-            throw new HNSyntaxError(" Looking for " + lookForToString(status) + ", but " +
-                    "currently is " +
-                    lookForToString(mLookFor), mLexer.line(), mLexer.column());
+            mSyntaxErrorHandler.throwException(" Looking for " + lookForToString(status) + ", " +
+                    "but" + " " + "currently is " + lookForToString(mLookFor), mCurToken.getLine
+                    (), mCurToken.getColumn());
         }
     }
 
@@ -714,6 +695,21 @@ public final class Parser {
 
         return sb.toString();
 
+    }
+
+    @Override
+    public long getLine() {
+        return mLexer.getLine();
+    }
+
+    @Override
+    public long getColumn() {
+        return mLexer.getColumn();
+    }
+
+    @Override
+    public void onSyntaxException() throws EOFException, HNSyntaxError {
+        scan();
     }
 
 }

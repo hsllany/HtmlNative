@@ -4,18 +4,13 @@ import android.support.annotation.NonNull;
 
 public class HNSyntaxError extends Exception {
 
-    private long mLine;
-    private long mColumn;
-
-    public HNSyntaxError(String msg, long line, long column) {
+    public HNSyntaxError(String msg) {
         super(msg);
-        mLine = line;
-        mColumn = column;
     }
 
     @NonNull
     @Override
     public String getMessage() {
-        return super.getMessage() + " at [" + mLine + "," + mColumn + "]";
+        return super.getMessage();
     }
 }

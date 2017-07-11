@@ -17,7 +17,7 @@ import com.mozz.htmlnative.HNConfig;
 import com.mozz.htmlnative.HNativeEngine;
 import com.mozz.htmlnative.ImageFetcher;
 import com.mozz.htmlnative.ScriptCallback;
-import com.mozz.htmlnative.onHrefClick;
+import com.mozz.htmlnative.OnHrefClick;
 import com.mozz.htmlnative.view.BackgroundViewDelegate;
 import com.squareup.leakcanary.LeakCanary;
 
@@ -51,7 +51,7 @@ public class DemoApplication extends Application {
                 });
 
             }
-        }).setOnHrefClick(new onHrefClick() {
+        }).setOnHrefClick(new OnHrefClick() {
             @Override
             public void onHref(String url, View view) {
                 Toast.makeText(DemoApplication.this, url, Toast.LENGTH_SHORT).show();
