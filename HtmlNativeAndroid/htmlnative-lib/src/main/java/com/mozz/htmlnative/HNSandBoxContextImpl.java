@@ -6,8 +6,8 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 
+import com.mozz.htmlnative.script.ScriptFactory;
 import com.mozz.htmlnative.script.ScriptRunner;
-import com.mozz.htmlnative.script.ScriptRunnerFactory;
 import com.mozz.htmlnative.view.HNRootView;
 
 /**
@@ -78,7 +78,7 @@ final class HNSandBoxContextImpl implements HNSandBoxContext {
     public void onViewCreate() {
         // if there is script code in layout file, then initContextScriptRunner
         if (mSegment.hasSetScript()) {
-            mRunner = ScriptRunnerFactory.createRunner(mSegment.getScriptInfo().type(), this);
+            mRunner = ScriptFactory.createRunner(mSegment.getScriptInfo().type(), this);
         }
 
         initVariablePool();

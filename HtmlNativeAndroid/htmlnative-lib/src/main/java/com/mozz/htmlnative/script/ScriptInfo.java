@@ -8,15 +8,12 @@ import com.mozz.htmlnative.parser.token.Token;
 
 public class ScriptInfo {
 
-    public static final int SCRIPT_JAVASCRIPT = 0x01;
-    public static final int SCRIPT_LUA = 0x02;
-
     private final Token token;
     private final int type;
 
-    public ScriptInfo(Token scriptToken, String type) {
+    public ScriptInfo(Token scriptToken, int type) {
         token = scriptToken;
-        this.type = parseType(type);
+        this.type = type;
     }
 
     public int type() {
@@ -27,25 +24,13 @@ public class ScriptInfo {
         return token.stringValue();
     }
 
-
-    private static int parseType(String typeString) {
-        if (typeString == null) {
-            return SCRIPT_JAVASCRIPT;
-        }
-
-        switch (typeString) {
-            case "text/javascript":
-                return SCRIPT_JAVASCRIPT;
-            case "text/lua":
-                return SCRIPT_LUA;
-            default:
-                return SCRIPT_JAVASCRIPT;
-        }
+    public static ScriptInfo newScript(Token scriptToken, String scriptTypeName) {
+        return new ScriptInfo(scriptToken, ScriptFactory.typeOf(scriptTypeName));
     }
 
     @Override
     public String toString() {
-        return "[" + (type == SCRIPT_JAVASCRIPT ? "javascript" : "lua") + ":" + token.stringValue
-                () + "]";
+        return "[" + (type == ScriptFactory.JAVASCRIPT ? "javascript" : "lua") + ":" +
+                token.stringValue() + "]";
     }
 }

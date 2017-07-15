@@ -206,7 +206,14 @@ public final class Parser implements SyntaxExceptionSource {
                                 .type().toString());
                     }
 
-                    segment.setScriptInfo(new ScriptInfo(scriptToken, type));
+                    String[] mimeType = ParseHelper.parseMimeType(type);
+                    if (mimeType != null && mimeType[1] != null) {
+
+                        String typeName = mimeType[1];
+                        segment.setScriptInfo(ScriptInfo.newScript(scriptToken, typeName));
+                    } else {
+                        mSyntaxErrorHandler.throwException("unknown script type " + type);
+                    }
                     scanFor(StartAngleBracket, Slash, Script, EndAngleBracket);
                     return;
                 }
@@ -419,8 +426,8 @@ public final class Parser implements SyntaxExceptionSource {
                             // compare the tag string with tree.nodeName
                             if (!tree.getType().equals(mCurToken.value())) {
                                 mSyntaxErrorHandler.throwException("View tag should be in pairs, " +
-                                        "" + "current is<" + tree.getType() + "></" + mCurToken
-                                        .value() + ">");
+                                        "" + "" + "" + "" + "" + "" + "" + "current is<" + tree
+                                        .getType() + "></" + mCurToken.value() + ">");
                             }
 
                             scan();
