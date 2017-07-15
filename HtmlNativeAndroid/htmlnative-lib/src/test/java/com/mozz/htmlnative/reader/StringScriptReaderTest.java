@@ -1,10 +1,10 @@
 package com.mozz.htmlnative.reader;
 
-import com.mozz.htmlnative.CodeToTest;
-
 import org.junit.Test;
 
 import java.io.EOFException;
+
+import static com.mozz.htmlnative.CodeToTest.codeScriptFirst;
 
 /**
  * Created by Yang Tao on 17/2/21.
@@ -16,7 +16,7 @@ public class StringScriptReaderTest {
 
     @Test
     public void testStringReader() throws Exception {
-        StringTextReader reader = new StringTextReader(CodeToTest.codeScriptFirst);
+        StringTextReader reader = new StringTextReader(codeScriptFirst);
 
         StringBuilder sb = new StringBuilder();
 
@@ -26,19 +26,15 @@ public class StringScriptReaderTest {
                 char c = reader.nextCh();
                 System.out.println("-->" + c + "," + (int) c);
                 sb.append(c);
-//                assertTrue(c == codeScriptFirst.charAt(i));
-//                System.out.println("->" + c + " , at " + i);
-
+                assert c == codeScriptFirst.charAt(i);
                 i++;
             } catch (EOFException e) {
                 System.out.println(sb.toString());
                 break;
-//                Log.d(TAG, e.getMessage());
-
             }
         }
 
-//        assertTrue(i == codeScriptFirst.length());
+        assert sb.toString().equals(codeScriptFirst);
     }
 
 }

@@ -1,8 +1,8 @@
 package com.mozz.htmlnative.parser;
 
 import com.mozz.htmlnative.exception.HNSyntaxError;
-import com.mozz.htmlnative.reader.StringTextReader;
 import com.mozz.htmlnative.parser.token.Token;
+import com.mozz.htmlnative.reader.StringTextReader;
 
 import org.junit.Test;
 
@@ -10,10 +10,8 @@ import java.io.EOFException;
 import java.io.IOException;
 
 public class LexerTest {
-    
-    private static final String testCode = "<body>\n" +
-            "    <iframe a=123.4e5/>\n" +
-            "</body>";
+
+    private static final String testCode = "<body>\n" + "    <iframe a=123.4e5/>\n" + "</body>";
 
     private static final String testScriptCode = "<script> \nhello world; 1 < 2; /n</script>";
     private static final String testScriptCode2 = "<script></script>";
@@ -29,7 +27,7 @@ public class LexerTest {
         debug("code:");
         debug(code + "\n\ntoken list is:\n");
 
-        Lexer lexer = new Lexer(new StringTextReader(code));
+        Lexer lexer = new Lexer(new StringTextReader(code), null);
 
         while (true) {
             try {
@@ -57,7 +55,7 @@ public class LexerTest {
     }
 
     public static void LexerScriptDebugger(String codeSample) throws HNSyntaxError {
-        Lexer lexer = new Lexer(new StringTextReader(codeSample));
+        Lexer lexer = new Lexer(new StringTextReader(codeSample), null);
 
         try {
             Token t01 = lexer.scan();
