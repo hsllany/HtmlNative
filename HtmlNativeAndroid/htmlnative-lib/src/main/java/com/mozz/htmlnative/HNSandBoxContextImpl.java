@@ -79,6 +79,10 @@ final class HNSandBoxContextImpl implements HNSandBoxContext {
         // if there is script code in layout file, then initContextScriptRunner
         if (mSegment.hasSetScript()) {
             mRunner = ScriptFactory.createRunner(mSegment.getScriptInfo().type(), this);
+            if (mRunner != null) {
+                mRunner.attach(this);
+                mRunner.onLoad();
+            }
         }
 
         initVariablePool();
@@ -151,4 +155,11 @@ final class HNSandBoxContextImpl implements HNSandBoxContext {
         return new HNSandBoxContextImpl(module, context, layout);
     }
 
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        if (mRunner != null) {
+            mRunner.onUnload();
+        }
+    }
 }

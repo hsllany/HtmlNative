@@ -1,44 +1,25 @@
 package com.mozz.htmlnative.script.lua;
 
-import android.os.SystemClock;
-import android.util.Log;
-
 import com.mozz.htmlnative.HNLog;
-import com.mozz.htmlnative.HNSandBoxContext;
-import com.mozz.htmlnative.script.ScriptLib;
+import com.mozz.htmlnative.script.Lauguage;
 import com.mozz.htmlnative.script.ScriptRunner;
 
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
-import static com.mozz.htmlnative.HNEnvironment.PERFORMANCE_TAG;
-
 /**
  * @author Yang Tao, 17/3/21.
  */
 
+@Lauguage(type = "lua")
 public class LuaRunner extends ScriptRunner {
     private Globals mGlobals;
 
     private static final String TAG = LuaRunner.class.getSimpleName();
 
-    public LuaRunner(HNSandBoxContext sandBoxContext) {
-        super(sandBoxContext);
-
-        long time1 = SystemClock.currentThreadTimeMillis();
+    public LuaRunner() {
         mGlobals = JsePlatform.standardGlobals();
-
-        // register global variables
-        register(new LDocument(sandBoxContext));
-        register(LConsole.getInstance());
-
-        register(new LHttp(this));
-
-        // register api
-        register(new LToast(sandBoxContext.getAndroidContext()));
-        Log.i(PERFORMANCE_TAG, "init Lua module spend " + (SystemClock.currentThreadTimeMillis()
-                - time1) + "" + " ms");
     }
 
     @Override
@@ -57,11 +38,20 @@ public class LuaRunner extends ScriptRunner {
     }
 
     @Override
-    protected void installLib(ScriptLib lib) {
-        if (lib instanceof LuaLib) {
-            getGlobals().set(lib.libName(), (LuaValue) lib);
-        }
+    public void onLoad() {
+        // register global variables
+        register(new LDocument(getSandboxContext()));
+        register(LConsole.getInstance());
+        register(new LHttp(this));
+        // register api
+        register(new LToast(getSandboxContext().getAndroidContext()));
     }
+
+    @Override
+    public void onUnload() {
+
+    }
+
 
     protected final void register(ILApi api) {
         if (api instanceof LuaValue) {

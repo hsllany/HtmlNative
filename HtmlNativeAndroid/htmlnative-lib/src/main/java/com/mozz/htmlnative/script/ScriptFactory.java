@@ -1,9 +1,9 @@
 package com.mozz.htmlnative.script;
 
 import android.util.ArrayMap;
+import android.util.Log;
 
 import com.mozz.htmlnative.HNSandBoxContext;
-import com.mozz.htmlnative.script.lua.LuaRunner;
 
 import java.util.Map;
 
@@ -16,36 +16,35 @@ public final class ScriptFactory {
     private ScriptFactory() {
     }
 
-    private static Map<String, Integer> sSupportedScriptType = new ArrayMap<>();
+    private static Map<String, Class<? extends ScriptRunner>> sSupportedScriptType = new
+            ArrayMap<>();
 
-    public static final int JAVASCRIPT = 0x01;
-    public static final int LUA = 0x02;
-
-    static {
-        sSupportedScriptType.put("JavaScript", JAVASCRIPT);
-        sSupportedScriptType.put("Lua", LUA);
-    }
-
-    public static ScriptRunner createRunner(int type, HNSandBoxContext context) {
-        if (type == LUA) {
-            return new LuaRunner(context);
-        } else {
-            return null;
-        }
-    }
-
-    public static int typeOf(String scriptName) {
-        return sSupportedScriptType.get(scriptName);
-    }
-
-    public static String nameOf(int type) {
-
-        for (Map.Entry<String, Integer> entry : sSupportedScriptType.entrySet()) {
-            if (entry.getValue() == type) {
-                return entry.getKey();
+    public static ScriptRunner createRunner(String type, HNSandBoxContext context) {
+        Class<? extends ScriptRunner> clazz = sSupportedScriptType.get(type);
+        if (clazz != null) {
+            try {
+                return clazz.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
             }
         }
 
         return null;
+    }
+
+    public static boolean register(Class<? extends ScriptRunner> runnerClazz) {
+        Lauguage lauguage = runnerClazz.getAnnotation(Lauguage.class);
+        if (lauguage != null && lauguage.type() != null) {
+            String type = lauguage.type();
+            if (sSupportedScriptType.containsKey(type)) {
+                return false;
+            }
+
+            sSupportedScriptType.put(type, runnerClazz);
+            return true;
+        } else {
+            Log.e("HtmlNative", "Runner must have Lauguage Annotation!");
+            return false;
+        }
     }
 }

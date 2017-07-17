@@ -12,8 +12,10 @@ import com.mozz.htmlnative.common.ContextProvider;
 import com.mozz.htmlnative.css.stylehandler.StyleHandlerFactory;
 import com.mozz.htmlnative.dom.HNHead;
 import com.mozz.htmlnative.http.HNHttpClient;
+import com.mozz.htmlnative.script.ScriptFactory;
 import com.mozz.htmlnative.script.ScriptLib;
 import com.mozz.htmlnative.script.ScriptRunner;
+import com.mozz.htmlnative.script.lua.LuaRunner;
 import com.mozz.htmlnative.utils.ParametersUtils;
 
 import java.io.InputStream;
@@ -40,6 +42,10 @@ public final class HNativeEngine {
 
         ContextProvider.install(application);
         initScreenMetrics(application);
+
+        // currently we have only lua runner
+        registerRunner(LuaRunner.class);
+
         if (config == null) {
             throw new IllegalArgumentException("Config can't be null.");
         }
@@ -47,6 +53,10 @@ public final class HNativeEngine {
         sConfig.install();
 
         sInit = true;
+    }
+
+    public static void registerRunner(Class<? extends ScriptRunner> runner) {
+        ScriptFactory.register(runner);
     }
 
     @Nullable
@@ -172,10 +182,6 @@ public final class HNativeEngine {
 
     public static HNHttpClient getHttpClient() {
         return sConfig.getHttpClient();
-    }
-
-    public static final void registerScriptLib(ScriptLib lib) {
-        ScriptRunner.registerLib(lib);
     }
 
     public interface OnHNViewLoaded {

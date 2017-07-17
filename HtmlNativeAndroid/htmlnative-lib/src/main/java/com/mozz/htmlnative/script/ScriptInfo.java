@@ -9,14 +9,14 @@ import com.mozz.htmlnative.parser.token.Token;
 public class ScriptInfo {
 
     private final Token token;
-    private final int type;
+    private final String type;
 
-    public ScriptInfo(Token scriptToken, int type) {
+    public ScriptInfo(Token scriptToken, String type) {
         token = scriptToken;
         this.type = type;
     }
 
-    public int type() {
+    public String type() {
         return type;
     }
 
@@ -25,12 +25,11 @@ public class ScriptInfo {
     }
 
     public static ScriptInfo newScript(Token scriptToken, String scriptTypeName) {
-        return new ScriptInfo(scriptToken, ScriptFactory.typeOf(scriptTypeName));
+        return new ScriptInfo(scriptToken, scriptTypeName);
     }
 
     @Override
     public String toString() {
-        return "[" + (type == ScriptFactory.JAVASCRIPT ? "javascript" : "lua") + ":" +
-                token.stringValue() + "]";
+        return type;
     }
 }

@@ -2,21 +2,21 @@ package com.mozz.htmlnative.script;
 
 import com.mozz.htmlnative.HNSandBoxContext;
 
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * @author Yang Tao, 17/3/21.
  */
 
+
 public abstract class ScriptRunner {
-    private static Set<ScriptLib> sLibs = new HashSet<>();
 
-    protected final HNSandBoxContext mSandbox;
+    private HNSandBoxContext mSandbox;
 
-    public ScriptRunner(HNSandBoxContext sandBoxContext) {
-        this.mSandbox = sandBoxContext;
-        installLibs();
+    public final void attach(HNSandBoxContext context) {
+        this.mSandbox = context;
+    }
+
+    public final HNSandBoxContext getSandboxContext() {
+        return mSandbox;
     }
 
     public abstract void run(String script);
@@ -27,16 +27,7 @@ public abstract class ScriptRunner {
         mSandbox.postInScriptThread(runnable);
     }
 
-    private void installLibs() {
-        for (ScriptLib lib : sLibs) {
-            installLib(lib);
-        }
-    }
+    public abstract void onLoad();
 
-    protected abstract void installLib(ScriptLib lib);
-
-    public static final void registerLib(ScriptLib lib) {
-        sLibs.add(lib);
-    }
-
+    public abstract void onUnload();
 }
