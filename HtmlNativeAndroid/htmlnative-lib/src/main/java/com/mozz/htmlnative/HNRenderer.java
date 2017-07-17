@@ -143,8 +143,9 @@ public final class HNRenderer {
     }
 
     private View renderInternal(@NonNull Context context, @NonNull HNSandBoxContext
-            sandBoxContext, HNDomTree dom, HNSegment segment, @NonNull ViewGroup parent, @NonNull LayoutParamsCreator paramsCreator, @NonNull HNRootView root, StyleSheet
-            styleSheet) throws HNRenderException {
+            sandBoxContext, HNDomTree dom, HNSegment segment, @NonNull ViewGroup parent, @NonNull
+            LayoutParamsCreator paramsCreator, @NonNull HNRootView root, StyleSheet styleSheet)
+            throws HNRenderException {
 
         AttrsSet attrsSet = segment.getInlineStyles();
 
@@ -195,7 +196,8 @@ public final class HNRenderer {
 
     public static View createView(AttrsSet.AttrsOwner owner, @NonNull DomElement element,
                                   @NonNull HNSandBoxContext sandBoxContext, ViewGroup parent,
-                                  @NonNull Context context, AttrsSet attrsSet, @NonNull LayoutParamsCreator layoutCreator, StyleSheet
+                                  @NonNull Context context, AttrsSet attrsSet, @NonNull
+                                          LayoutParamsCreator layoutCreator, StyleSheet
                                           styleSheet, InheritStyleStack stack) throws
             HNRenderException {
 
@@ -401,8 +403,9 @@ public final class HNRenderer {
     }
 
     public static void renderStyle(Context context, @NonNull final HNSandBoxContext
-            sandBoxContext, @NonNull View v, DomElement domElement, @NonNull LayoutParamsCreator layoutCreator, ViewGroup parent, @NonNull Map<String, Object>
-            styles, InheritStyleStack stack) throws AttrApplyException {
+            sandBoxContext, @NonNull View v, DomElement domElement, @NonNull LayoutParamsCreator
+            layoutCreator, ViewGroup parent, @NonNull Map<String, Object> styles,
+                                   InheritStyleStack stack) throws AttrApplyException {
 
         final StyleHandler viewStyleHandler = StyleHandlerFactory.get(v);
         final StyleHandler extraStyleHandler = StyleHandlerFactory.extraGet(v);
@@ -431,8 +434,7 @@ public final class HNRenderer {
         parent.addView(v, LayoutParamsCreator.createLayoutParams(parent, creator));
     }
 
-    public static void addView(ViewGroup parent, View v, LayoutParamsCreator creator, int
-            index) {
+    public static void addView(ViewGroup parent, View v, LayoutParamsCreator creator, int index) {
         if (parent == null || v == null) {
             HNLog.e(HNLog.RENDER, "Wrong when trying to add " + v + " to " + parent + " with " +
                     "creator " + creator);
