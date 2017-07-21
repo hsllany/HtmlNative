@@ -3,8 +3,9 @@ package com.mozz.htmlnative.script.lua;
 import android.webkit.URLUtil;
 
 import com.mozz.htmlnative.HNativeEngine;
-import com.mozz.htmlnative.http.Http;
 import com.mozz.htmlnative.http.HttpRequest;
+import com.mozz.htmlnative.http.HttpResponse;
+import com.mozz.htmlnative.http.RequestCallback;
 import com.mozz.htmlnative.script.ScriptRunner;
 
 import org.luaj.vm2.LuaInteger;
@@ -40,11 +41,11 @@ class LHttp extends LuaTable implements ILApi {
 
                     if (URLUtil.isValidUrl(urlJ)) {
 
-                        HNativeEngine.getHttpClient().send(new HttpRequest(urlJ, Http.Method.GET)
-                                , new Http.RequestCallback() {
+                        HNativeEngine.getHttpClient().send(new HttpRequest(urlJ, HttpRequest
+                                .Method.GET, (byte[]) null, null), new RequestCallback() {
 
                             @Override
-                            public void onResponse(final Http.Response response) {
+                            public void onResponse(final HttpResponse response) {
                                 mRunner.postRun(new Runnable() {
                                     @Override
                                     public void run() {
@@ -68,7 +69,7 @@ class LHttp extends LuaTable implements ILApi {
             }
         });
 
-        set("postAsynchronous", new ThreeArgFunction() {
+        set("post", new ThreeArgFunction() {
             @Override
             public LuaValue call(LuaValue url, LuaValue param, final LuaValue callback) {
                 if (LuaUtils.notNull(url)) {
@@ -79,11 +80,11 @@ class LHttp extends LuaTable implements ILApi {
                     }
 
                     if (URLUtil.isValidUrl(urlJ)) {
-                        HNativeEngine.getHttpClient().send(new HttpRequest(urlJ, paramsJ, Http
-                                .Method.POST), new Http.RequestCallback() {
+                        HNativeEngine.getHttpClient().send(new HttpRequest(urlJ, HttpRequest
+                                .Method.POST, paramsJ, null), new RequestCallback() {
 
                             @Override
-                            public void onResponse(final Http.Response response) {
+                            public void onResponse(final HttpResponse response) {
                                 mRunner.postRun(new Runnable() {
                                     @Override
                                     public void run() {
@@ -93,7 +94,6 @@ class LHttp extends LuaTable implements ILApi {
                                         LuaValue responseFun = callback.get("onResponse");
                                         if (responseFun != null && responseFun.isclosure()) {
                                             responseFun.call(LResponse.wrap(response));
-
                                         }
 
                                     }
@@ -112,7 +112,7 @@ class LHttp extends LuaTable implements ILApi {
         return "http";
     }
 
-    static class LResponse extends LObject implements Http.Response {
+    private static class LResponse extends LObject {
         private String mHeader;
         private int mStatusCode;
         private String mBody;
@@ -152,47 +152,16 @@ class LHttp extends LuaTable implements ILApi {
             return "httpResponse";
         }
 
+        public static LResponse wrap(HttpResponse response) {
 
-        @Override
-        public void setHeader(String header) {
-            mHeader = header;
-        }
-
-        @Override
-        public String header() {
-            return mHeader;
-        }
-
-        @Override
-        public void setBody(String body) {
-            mBody = body;
-        }
-
-        @Override
-        public String body() {
-            return mBody;
-        }
-
-        @Override
-        public void setStatusCode(int code) {
-            mStatusCode = code;
-        }
-
-        @Override
-        public int statusCode() {
-            return mStatusCode;
-        }
-
-        public static LResponse wrap(Http.Response response) {
-            if (response instanceof LResponse) {
-                return (LResponse) response;
-            } else {
-                LResponse luaResponse = new LResponse();
-                luaResponse.setStatusCode(response.statusCode());
-                luaResponse.setHeader(response.header());
-                luaResponse.setBody(response.body());
-                return luaResponse;
+            LResponse luaResponse = new LResponse();
+            luaResponse.mStatusCode = response.getStatusCode();
+            if (response.getHeader() != null) {
+                luaResponse.mHeader = response.getHeader().toString();
             }
+            luaResponse.mBody = response.getBodyAsString();
+            return luaResponse;
+
         }
     }
 

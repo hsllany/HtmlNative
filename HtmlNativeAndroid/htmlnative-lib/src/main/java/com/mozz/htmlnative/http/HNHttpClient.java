@@ -5,5 +5,5 @@ package com.mozz.htmlnative.http;
  */
 
 public interface HNHttpClient {
-    void send(HttpRequest request, Http.RequestCallback callback);
+    void send(HttpRequest request, RequestCallback callback);
 }

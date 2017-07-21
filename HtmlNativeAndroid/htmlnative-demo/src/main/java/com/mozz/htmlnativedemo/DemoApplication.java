@@ -16,10 +16,12 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.mozz.htmlnative.HNConfig;
 import com.mozz.htmlnative.HNativeEngine;
 import com.mozz.htmlnative.ImageFetcher;
-import com.mozz.htmlnative.ScriptCallback;
 import com.mozz.htmlnative.OnHrefClick;
+import com.mozz.htmlnative.ScriptCallback;
 import com.mozz.htmlnative.view.BackgroundViewDelegate;
 import com.squareup.leakcanary.LeakCanary;
+
+import java.util.Arrays;
 
 /**
  * @author Yang Tao, 17/3/1.
@@ -66,8 +68,8 @@ public class DemoApplication extends Application {
                 mMainHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(DemoApplication.this, e.getMessage(), Toast.LENGTH_LONG)
-                                .show();
+                        Toast.makeText(DemoApplication.this, Arrays.toString(e.getStackTrace()),
+                                Toast.LENGTH_LONG).show();
                     }
                 });
             }

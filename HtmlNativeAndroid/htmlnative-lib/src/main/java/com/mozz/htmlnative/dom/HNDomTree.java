@@ -38,7 +38,7 @@ public final class HNDomTree implements ParseCallback, AttrsSet.AttrsOwner, DomE
     private AttrsSet mInlineStyle;
 
     @Nullable
-    private String mInnerText = null;
+    private StringBuilder mInnerText = null;
 
     /**
      * Id in html
@@ -53,7 +53,6 @@ public final class HNDomTree implements ParseCallback, AttrsSet.AttrsOwner, DomE
     private int mAttrIndex;
 
     private int mOrder = -1;
-
     /**
      * Mark whether a tree's children are in order. Set default true, being set to false only when
      * a tree with mOrder!=-1 has been added as child. {@link HNDomTree#addChild(HNDomTree)}
@@ -105,9 +104,9 @@ public final class HNDomTree implements ParseCallback, AttrsSet.AttrsOwner, DomE
 
     public void appendText(String text) {
         if (mInnerText == null) {
-            mInnerText = text;
+            mInnerText = new StringBuilder(text);
         } else {
-            mInnerText += text;
+            mInnerText.append(text);
         }
     }
 
@@ -173,7 +172,7 @@ public final class HNDomTree implements ParseCallback, AttrsSet.AttrsOwner, DomE
     @Nullable
     @Override
     public String getInner() {
-        return mInnerText;
+        return mInnerText != null ? mInnerText.toString() : null;
     }
 
     @Override
